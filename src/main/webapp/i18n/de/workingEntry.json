@@ -1,0 +1,27 @@
+{
+  "timesheetApp": {
+    "workingEntry": {
+      "home": {
+        "title": "Working Entries",
+        "createLabel": "Working Entry erstellen",
+        "createOrEditLabel": "Working Entry erstellen oder bearbeiten",
+        "notFound": "No Working Entry found"
+      },
+      "created": "Working Entry erstellt mit ID {{ param }}",
+      "updated": "Working Entry aktualisiert mit ID {{ param }}",
+      "deleted": "Working Entry gelöscht mit ID {{ param }}",
+      "delete": {
+        "question": "Soll Working Entry {{ id }} wirklich dauerhaft gelöscht werden?"
+      },
+      "detail": {
+        "title": "Working Entry"
+      },
+      "start": "Start",
+      "end": "End",
+      "deleteFlag": "Delete Flag",
+      "employee": "Employee",
+      "activity": "Activity",
+      "location": "Location"
+    }
+  }
+}

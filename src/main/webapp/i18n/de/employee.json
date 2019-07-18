@@ -1,0 +1,27 @@
+{
+  "timesheetApp": {
+    "employee": {
+      "home": {
+        "title": "Employees",
+        "createLabel": "Employee erstellen",
+        "createOrEditLabel": "Employee erstellen oder bearbeiten",
+        "notFound": "No Employee found"
+      },
+      "created": "Employee erstellt mit ID {{ param }}",
+      "updated": "Employee aktualisiert mit ID {{ param }}",
+      "deleted": "Employee gelöscht mit ID {{ param }}",
+      "delete": {
+        "question": "Soll Employee {{ id }} wirklich dauerhaft gelöscht werden?"
+      },
+      "detail": {
+        "title": "Employee"
+      },
+      "firstname": "Firstname",
+      "lastname": "Lastname",
+      "email": "Email",
+      "phone": "Phone",
+      "workingEntry": "Working Entry",
+      "workingDay": "Working Day"
+    }
+  }
+}

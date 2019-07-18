@@ -1,0 +1,53 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="workingEntry">
+            <h2><span jhiTranslate="timesheetApp.workingEntry.detail.title">Working Entry</span> {{workingEntry.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span jhiTranslate="timesheetApp.workingEntry.start">Start</span></dt>
+                <dd>
+                    <span>{{workingEntry.start}}</span>
+                </dd>
+                <dt><span jhiTranslate="timesheetApp.workingEntry.end">End</span></dt>
+                <dd>
+                    <span>{{workingEntry.end}}</span>
+                </dd>
+                <dt><span jhiTranslate="timesheetApp.workingEntry.deleteFlag">Delete Flag</span></dt>
+                <dd>
+                    <span>{{workingEntry.deleteFlag}}</span>
+                </dd>
+                <dt><span jhiTranslate="timesheetApp.workingEntry.employee">Employee</span></dt>
+                <dd>
+                    <div *ngIf="workingEntry.employee">
+                        <a [routerLink]="['/employee-timesheet', workingEntry.employee?.id, 'view']">{{workingEntry.employee?.id}}</a>
+                    </div>
+                </dd>
+                <dt><span jhiTranslate="timesheetApp.workingEntry.activity">Activity</span></dt>
+                <dd>
+                    <div *ngIf="workingEntry.activity">
+                        <a [routerLink]="['/activity-timesheet', workingEntry.activity?.id, 'view']">{{workingEntry.activity?.id}}</a>
+                    </div>
+                </dd>
+                <dt><span jhiTranslate="timesheetApp.workingEntry.location">Location</span></dt>
+                <dd>
+                    <div *ngIf="workingEntry.location">
+                        <a [routerLink]="['/location-timesheet', workingEntry.location?.id, 'view']">{{workingEntry.location?.id}}</a>
+                    </div>
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/working-entry-timesheet', workingEntry.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

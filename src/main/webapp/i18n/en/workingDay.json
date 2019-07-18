@@ -1,0 +1,24 @@
+{
+  "timesheetApp": {
+    "workingDay": {
+      "home": {
+        "title": "Working Days",
+        "createLabel": "Create a new Working Day",
+        "createOrEditLabel": "Create or edit a Working Day",
+        "notFound": "No Working Day found"
+      },
+      "created": "A new Working Day is created with identifier {{ param }}",
+      "updated": "A Working Day is updated with identifier {{ param }}",
+      "deleted": "A Working Day is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Working Day {{ id }}?"
+      },
+      "detail": {
+        "title": "Working Day"
+      },
+      "hours": "Hours",
+      "employee": "Employee",
+      "day": "Day"
+    }
+  }
+}

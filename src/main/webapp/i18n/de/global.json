@@ -7,6 +7,13 @@
       "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
       "entities": {
         "main": "Entitäten",
+        "employeeTimesheet": "Employee",
+        "workingDayTimesheet": "Working Day",
+        "dayTimesheet": "Day",
+        "workingEntryTimesheet": "Working Entry",
+        "activityTimesheet": "Activity",
+        "locationTimesheet": "Location",
+        "countryTimesheet": "Country",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },
       "account": {

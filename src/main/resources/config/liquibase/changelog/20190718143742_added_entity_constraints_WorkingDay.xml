@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+    <!--
+        Added the constraints for entity WorkingDay.
+    -->
+    <changeSet id="20190718143742-2" author="jhipster">
+        
+        <addForeignKeyConstraint baseColumnNames="employee_id"
+                                 baseTableName="working_day"
+                                 constraintName="fk_working_day_employee_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="employee"/>
+
+        <addForeignKeyConstraint baseColumnNames="day_id"
+                                 baseTableName="working_day"
+                                 constraintName="fk_working_day_day_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="day"/>
+
+    </changeSet>
+</databaseChangeLog>

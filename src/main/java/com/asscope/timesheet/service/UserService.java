@@ -232,7 +232,7 @@ public class UserService {
         if (details.get("email") != null) {
             user.setEmail(((String) details.get("email")).toLowerCase());
         } else {
-            user.setEmail((String) details.get("sub"));
+            user.setEmail((String) details.get("unique_name"));
         }
         if (details.get("langKey") != null) {
             user.setLangKey((String) details.get("langKey"));

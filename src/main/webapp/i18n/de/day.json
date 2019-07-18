@@ -1,0 +1,23 @@
+{
+  "timesheetApp": {
+    "day": {
+      "home": {
+        "title": "Days",
+        "createLabel": "Day erstellen",
+        "createOrEditLabel": "Day erstellen oder bearbeiten",
+        "notFound": "No Day found"
+      },
+      "created": "Day erstellt mit ID {{ param }}",
+      "updated": "Day aktualisiert mit ID {{ param }}",
+      "deleted": "Day gelöscht mit ID {{ param }}",
+      "delete": {
+        "question": "Soll Day {{ id }} wirklich dauerhaft gelöscht werden?"
+      },
+      "detail": {
+        "title": "Day"
+      },
+      "name": "Name",
+      "workingDay": "Working Day"
+    }
+  }
+}

@@ -43,6 +43,19 @@ public class CacheConfiguration {
             createCache(cm, com.asscope.timesheet.domain.User.class.getName());
             createCache(cm, com.asscope.timesheet.domain.Authority.class.getName());
             createCache(cm, com.asscope.timesheet.domain.User.class.getName() + ".authorities");
+            createCache(cm, com.asscope.timesheet.domain.Employee.class.getName());
+            createCache(cm, com.asscope.timesheet.domain.Employee.class.getName() + ".workingEntries");
+            createCache(cm, com.asscope.timesheet.domain.Employee.class.getName() + ".workingDays");
+            createCache(cm, com.asscope.timesheet.domain.WorkingDay.class.getName());
+            createCache(cm, com.asscope.timesheet.domain.Day.class.getName());
+            createCache(cm, com.asscope.timesheet.domain.Day.class.getName() + ".workingDays");
+            createCache(cm, com.asscope.timesheet.domain.WorkingEntry.class.getName());
+            createCache(cm, com.asscope.timesheet.domain.Activity.class.getName());
+            createCache(cm, com.asscope.timesheet.domain.Activity.class.getName() + ".workingEntries");
+            createCache(cm, com.asscope.timesheet.domain.Location.class.getName());
+            createCache(cm, com.asscope.timesheet.domain.Location.class.getName() + ".workingEntries");
+            createCache(cm, com.asscope.timesheet.domain.Country.class.getName());
+            createCache(cm, com.asscope.timesheet.domain.Country.class.getName() + ".locations");
             // jhipster-needle-ehcache-add-entry
         };
     }
