@@ -1,0 +1,60 @@
+
+entity Employee {
+	firstname String required,
+    lastname String required,
+    email String required,
+    phone String required
+}
+
+entity WorkingDay {
+	hours Integer
+}
+
+entity Day {
+	name String required
+}
+
+entity WorkingEntry {
+	start Instant required,
+    end Instant required,
+    deleteFlag Boolean,
+}
+
+entity Activity {
+	name String,
+    description String
+}
+
+entity Location {
+	street String,
+    streetNumber String,
+    postalCode String,
+    city String
+}
+
+entity Country {
+	countryName String
+}
+
+// defining multiple OneToMany relationships with comments
+relationship OneToMany {
+	Employee{workingEntry} to WorkingEntry{employee},
+    Employee{workingDay} to WorkingDay{employee},
+    Day{workingDay} to WorkingDay{day},
+    Activity{workingEntry} to WorkingEntry{activity},
+    Location{workingEntry} to WorkingEntry{location},
+    Country{location} to Location{country}
+}
+
+// Set pagination options
+//paginate JobHistory, Employee with infinite-scroll
+//paginate Job with pagination
+
+// Use Data Transfert Objects (DTO)
+// dto * with mapstruct
+
+// Set service options to all except few
+service all with serviceClass //except Employee, Job
+
+// Set an angular suffix
+angularSuffix * with timesheet
