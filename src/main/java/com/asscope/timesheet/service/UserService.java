@@ -140,8 +140,23 @@ public class UserService {
     }
 
     private User syncUserWithIdP(Map<String, Object> details, User user) {
-        // save authorities in to sync user roles/groups between IdP and JHipster's local database
+        // save authorities in to sync user roles/groups between IdP and JHipster's local database 	
         Collection<String> dbAuthorities = getAuthorities();
+        
+        Collection<Authority> authorities = authorityRepository.findAll();
+        
+        if (details.get("groups") != null) {
+        	List<String> groups = (List<String>) details.get("groups");
+        	for(String group: groups) {
+        		for (Authority authority: authorities) {
+        			if (group.equals(authority.getAzureObjectID())) {
+        				user.getAuthorities().add(authority);
+        				userRepository.save(user); // TODO Besseren Ort für save finden!
+        			}
+        		}
+        	}
+        }
+        
         Collection<String> userAuthorities =
             user.getAuthorities().stream().map(Authority::getName).collect(Collectors.toList());
         for (String authority : userAuthorities) {
@@ -253,6 +268,7 @@ public class UserService {
             user.setImageUrl((String) details.get("picture"));
         }
         user.setActivated(true);
+        
         return user;
     }
 

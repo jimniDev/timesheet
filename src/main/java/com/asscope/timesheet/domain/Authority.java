@@ -26,6 +26,8 @@ public class Authority implements Serializable {
     @Id
     @Column(length = 50)
     private String name;
+    
+    private String azureObjectID;
 
     public String getName() {
         return name;
@@ -57,4 +59,12 @@ public class Authority implements Serializable {
             "name='" + name + '\'' +
             "}";
     }
+
+	public String getAzureObjectID() {
+		return azureObjectID;
+	}
+
+	public void setAzureObjectID(String azureObjectID) {
+		this.azureObjectID = azureObjectID;
+	}
 }
