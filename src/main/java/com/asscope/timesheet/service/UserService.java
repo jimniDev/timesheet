@@ -151,12 +151,12 @@ public class UserService {
         		for (Authority authority: authorities) {
         			if (group.equals(authority.getAzureObjectID())) {
         				user.getAuthorities().add(authority);
-        				userRepository.save(user); // TODO Besseren Ort für save finden!
+        				//userRepository.save(user); // TODO Besseren Ort für save finden!
         			}
         		}
         	}
         }
-        
+                
         Collection<String> userAuthorities =
             user.getAuthorities().stream().map(Authority::getName).collect(Collectors.toList());
         for (String authority : userAuthorities) {
@@ -230,8 +230,8 @@ public class UserService {
         } else {
             user.setId((String) details.get("sub"));
         }
-        if (details.get("preferred_username") != null) {
-            user.setLogin(((String) details.get("preferred_username")).toLowerCase());
+        if (details.get("unique_name") != null) {
+            user.setLogin(((String) details.get("unique_name")).toLowerCase());
         } else if (user.getLogin() == null) {
             user.setLogin(user.getId());
         }
