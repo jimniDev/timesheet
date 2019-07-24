@@ -23,7 +23,7 @@
     <include file="config/liquibase/changelog/20190718143747_added_entity_Country.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190719135456_changelog.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190723071306_changelog.xml" relativeToChangelogFile="false"/>
-
+	<include file="config/liquibase/changelog/20190724143853_changelog.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <include file="config/liquibase/changelog/20190718143742_added_entity_constraints_WorkingDay.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190718143744_added_entity_constraints_WorkingEntry.xml" relativeToChangelogFile="false"/>

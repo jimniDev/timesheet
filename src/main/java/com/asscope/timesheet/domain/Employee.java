@@ -24,21 +24,21 @@ public class Employee implements Serializable {
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
-    @NotNull
-    @Column(name = "firstname", nullable = false)
-    private String firstname;
-
-    @NotNull
-    @Column(name = "lastname", nullable = false)
-    private String lastname;
-
-    @NotNull
-    @Column(name = "email", nullable = false)
-    private String email;
-
-    @NotNull
-    @Column(name = "phone", nullable = false)
-    private String phone;
+//    @NotNull
+//    @Column(name = "firstname", nullable = false)
+//    private String firstname;
+//
+//    @NotNull
+//    @Column(name = "lastname", nullable = false)
+//    private String lastname;
+//
+//    @NotNull
+//    @Column(name = "email", nullable = false)
+//    private String email;
+//
+//    @NotNull
+//    @Column(name = "phone", nullable = false)
+//    private String phone;
 
     @OneToMany(mappedBy = "employee")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
@@ -49,10 +49,17 @@ public class Employee implements Serializable {
     private Set<WorkingDay> workingDays = new HashSet<>();
     
     @OneToOne
-    @MapsId
     private User user;
 
-    // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
+    public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	// jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
     }
@@ -61,57 +68,57 @@ public class Employee implements Serializable {
         this.id = id;
     }
 
-    public String getFirstname() {
-        return firstname;
-    }
-
-    public Employee firstname(String firstname) {
-        this.firstname = firstname;
-        return this;
-    }
-
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
-    }
-
-    public String getLastname() {
-        return lastname;
-    }
-
-    public Employee lastname(String lastname) {
-        this.lastname = lastname;
-        return this;
-    }
-
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public Employee email(String email) {
-        this.email = email;
-        return this;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public Employee phone(String phone) {
-        this.phone = phone;
-        return this;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
+//    public String getFirstname() {
+//        return firstname;
+//    }
+//
+//    public Employee firstname(String firstname) {
+//        this.firstname = firstname;
+//        return this;
+//    }
+//
+//    public void setFirstname(String firstname) {
+//        this.firstname = firstname;
+//    }
+//
+//    public String getLastname() {
+//        return lastname;
+//    }
+//
+//    public Employee lastname(String lastname) {
+//        this.lastname = lastname;
+//        return this;
+//    }
+//
+//    public void setLastname(String lastname) {
+//        this.lastname = lastname;
+//    }
+//
+//    public String getEmail() {
+//        return email;
+//    }
+//
+//    public Employee email(String email) {
+//        this.email = email;
+//        return this;
+//    }
+//
+//    public void setEmail(String email) {
+//        this.email = email;
+//    }
+//
+//    public String getPhone() {
+//        return phone;
+//    }
+//
+//    public Employee phone(String phone) {
+//        this.phone = phone;
+//        return this;
+//    }
+//
+//    public void setPhone(String phone) {
+//        this.phone = phone;
+//    }
 
     public Set<WorkingEntry> getWorkingEntries() {
         return workingEntries;
@@ -184,10 +191,10 @@ public class Employee implements Serializable {
     public String toString() {
         return "Employee{" +
             "id=" + getId() +
-            ", firstname='" + getFirstname() + "'" +
-            ", lastname='" + getLastname() + "'" +
-            ", email='" + getEmail() + "'" +
-            ", phone='" + getPhone() + "'" +
+//            ", firstname='" + getFirstname() + "'" +
+//            ", lastname='" + getLastname() + "'" +
+//            ", email='" + getEmail() + "'" +
+//            ", phone='" + getPhone() + "'" +
             "}";
     }
 }

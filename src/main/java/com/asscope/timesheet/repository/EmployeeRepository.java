@@ -1,6 +1,10 @@
 package com.asscope.timesheet.repository;
 
 import com.asscope.timesheet.domain.Employee;
+import com.asscope.timesheet.domain.User;
+
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 
@@ -11,5 +15,7 @@ import org.springframework.stereotype.Repository;
 @SuppressWarnings("unused")
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
-
+	
+	Optional<Employee> findOneByUser(User user);
+	
 }

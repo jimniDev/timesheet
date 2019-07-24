@@ -2,8 +2,10 @@ package com.asscope.timesheet.service;
 
 import com.asscope.timesheet.config.Constants;
 import com.asscope.timesheet.domain.Authority;
+import com.asscope.timesheet.domain.Employee;
 import com.asscope.timesheet.domain.User;
 import com.asscope.timesheet.repository.AuthorityRepository;
+import com.asscope.timesheet.repository.EmployeeRepository;
 import com.asscope.timesheet.repository.UserRepository;
 import com.asscope.timesheet.security.SecurityUtils;
 import com.asscope.timesheet.service.dto.UserDTO;
@@ -37,13 +39,16 @@ public class UserService {
     private final UserRepository userRepository;
 
     private final AuthorityRepository authorityRepository;
+    
+    private final EmployeeRepository employeeRepository;
 
     private final CacheManager cacheManager;
 
-    public UserService(UserRepository userRepository, AuthorityRepository authorityRepository, CacheManager cacheManager) {
+    public UserService(UserRepository userRepository, AuthorityRepository authorityRepository, CacheManager cacheManager, EmployeeRepository employeeRepository) {
         this.userRepository = userRepository;
         this.authorityRepository = authorityRepository;
         this.cacheManager = cacheManager;
+        this.employeeRepository = employeeRepository;
     }
 
     /**
@@ -152,6 +157,7 @@ public class UserService {
                 authorityRepository.save(authorityToSave);
             }
         }
+        
         // save account in to sync users between IdP and JHipster's local database
         Optional<User> existingUser = userRepository.findOneByLogin(user.getLogin());
         if (existingUser.isPresent()) {
@@ -172,10 +178,25 @@ public class UserService {
             }
         } else {
             log.debug("Saving user '{}' in local database", user.getLogin());
-            userRepository.save(user);
+            user = userRepository.save(user);
             this.clearUserCaches(user);
         }
+        createEmployeeWithUser(user);
         return user;
+    }
+    
+    public void createEmployeeWithUser(User user) {
+        employeeRepository
+        .findOneByUser(user)
+        .ifPresentOrElse(
+     		   (employee) -> {
+     			   // TODO maybe update the employee information according to the user information from azure ad (Maybe not because of duplicate data)
+     		   }, () -> {
+     			   // if there is now employee mapped to the user, create a new employee.
+     			   Employee employee = new Employee();
+     			   employee.setUser(user);
+     			   employeeRepository.save(employee);
+     		   });
     }
 
     /**
