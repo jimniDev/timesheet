@@ -30,8 +30,8 @@ public final class SecurityUtils {
                     return springSecurityUser.getUsername();
                 } else if (authentication.getPrincipal() instanceof DefaultOidcUser) {
                     Map<String, Object> attributes = ((DefaultOidcUser) authentication.getPrincipal()).getAttributes();
-                    if (attributes.containsKey("preferred_username")) {
-                        return (String) attributes.get("preferred_username");
+                    if (attributes.containsKey("unique_name")) {
+                        return (String) attributes.get("unique_name");
                     }
                 } else if (authentication.getPrincipal() instanceof String) {
                     return (String) authentication.getPrincipal();

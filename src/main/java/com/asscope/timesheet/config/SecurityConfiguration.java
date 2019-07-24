@@ -107,10 +107,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
             authorities.forEach(authority -> {
                 OidcUserAuthority oidcUserAuthority = (OidcUserAuthority) authority;
-                if (oidcUserAuthority.getUserInfo() != null) {
-                    mappedAuthorities.addAll(mapRolesToGrantedAuthorities(
-                            getRolesFromClaims(oidcUserAuthority.getUserInfo().getClaims())));
-                }
+                //mappedAuthorities.addAll(mapRolesToGrantedAuthorities(
+                //        getRolesFromClaims(oidcUserAuthority.getUserInfo().getClaims())));
+                mappedAuthorities.addAll(mapRolesToGrantedAuthorities(
+                        getRolesFromClaims(oidcUserAuthority.getAttributes())));
             });
 
             return mappedAuthorities;

@@ -47,6 +47,10 @@ public class Employee implements Serializable {
     @OneToMany(mappedBy = "employee")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<WorkingDay> workingDays = new HashSet<>();
+    
+    @OneToOne
+    @MapsId
+    private User user;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {

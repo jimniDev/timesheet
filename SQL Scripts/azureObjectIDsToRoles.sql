@@ -1,0 +1,2 @@
+update jhi_authority set azure_objectid = 'b294783d-78db-434b-bdb2-4f1f9f355f04' where name = 'ROLE_ADMIN';
+update jhi_authority set azure_objectid = 'db47d7b8-c472-4413-a8da-45ecc35208de' where name = 'ROLE_USER';
