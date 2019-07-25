@@ -108,6 +108,7 @@ spring:
           oidc:
             client-id: 29a1467a-afb9-4d9e-8741-fc386259ad43
             client-secret: :ofwfE.VDaI7V:[BtrH4ZRXOOKBFEM37
+            #redirect-uri: https://asscopetimesheet.azurewebsites.net/login/oauth2/code/oidc
 server:
   servlet:
     session:

@@ -36,15 +36,15 @@ spring:
       indent-output: true
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:postgresql://localhost:5432/timesheet
+    url: jdbc:sqlserver://localhost:1433;databaseName=timesheetDB
     username: timesheet
-    password: admin
+    password: fsdf5E-qwersd-poZcn4
     hikari:
       poolName: Hikari
       auto-commit: false
   jpa:
-    database-platform: io.github.jhipster.domain.util.FixedPostgreSQL95Dialect
-    database: POSTGRESQL
+    database-platform: org.hibernate.dialect.SQLServer2012Dialect
+    database: SQL_SERVER
     show-sql: true
     properties:
       hibernate.id.new_generator_mappings: true
@@ -54,7 +54,7 @@ spring:
       hibernate.generate_statistics: false
   liquibase:
     # Remove 'faker' if you do not want the sample data to be loaded automatically
-    contexts: dev#, faker
+    contexts: dev #, faker
   mail:
     host: localhost
     port: 25

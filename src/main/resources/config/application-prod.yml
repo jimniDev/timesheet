@@ -35,13 +35,13 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource
     url: jdbc:sqlserver://timedbasscope.database.windows.net:1433;database=TimesheetDB;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;
     username: timedbadmin@timedbasscope
-    password:
+    password: zohmUb-guvdyk-myfpi5
     hikari:
       poolName: Hikari
       auto-commit: false
   jpa:
-    database-platform: io.github.jhipster.domain.util.FixedPostgreSQL95Dialect
-    database: POSTGRESQL
+    database-platform: org.hibernate.dialect.SQLServer2012Dialect
+    database: SQL_SERVER
     show-sql: false
     properties:
       hibernate.id.new_generator_mappings: true

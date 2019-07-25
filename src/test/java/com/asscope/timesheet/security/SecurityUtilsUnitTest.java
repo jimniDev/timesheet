@@ -37,7 +37,7 @@ public class SecurityUtilsUnitTest {
         Map<String, Object> claims = new HashMap<>();
         claims.put("groups", "ROLE_USER");
         claims.put("sub", 123);
-        claims.put("preferred_username", "admin");
+        claims.put("unique_name", "admin");
         OidcIdToken idToken = new OidcIdToken(ID_TOKEN, Instant.now(),
             Instant.now().plusSeconds(60), claims);
         Collection<GrantedAuthority> authorities = new ArrayList<>();
