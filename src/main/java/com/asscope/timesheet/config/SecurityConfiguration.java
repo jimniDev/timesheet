@@ -13,14 +13,19 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import com.asscope.timesheet.security.oauth2.AudienceValidator;
+
+import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.jwt.*;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.core.oidc.user.OidcUserAuthority;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -36,9 +41,12 @@ import org.zalando.problem.spring.web.advice.security.SecurityProblemSupport;
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final CorsFilter corsFilter;
+    
+    @Autowired
+    private OAuth2UserService<OidcUserRequest, OidcUser> oidcUserService;
 
-    @Value("${spring.security.oauth2.client.provider.oidc.issuer-uri}")
-    private String issuerUri;
+    //@Value("${spring.security.oauth2.client.provider.oidc.issuer-uri}")
+    //private String issuerUri;
     private final SecurityProblemSupport problemSupport;
 
     public SecurityConfiguration(CorsFilter corsFilter, SecurityProblemSupport problemSupport) {
@@ -87,10 +95,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .antMatchers("/management/**").hasAuthority(AuthoritiesConstants.ADMIN)
         .and()
             .oauth2Login()
-        .and()
-            .oauth2ResourceServer()
-                .jwt()
-                .jwtAuthenticationConverter(mapGroupOrRolesClaimToGrantedAuthorities());
+            .userInfoEndpoint()
+            .oidcUserService(oidcUserService);
+//        .and()
+//            .oauth2ResourceServer()
+//                .jwt()
+//                .jwtAuthenticationConverter(mapGroupOrRolesClaimToGrantedAuthorities());
         // @formatter:on
     }
 
@@ -117,16 +127,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         };
     }
 
-    private Converter<Jwt, AbstractAuthenticationToken> mapGroupOrRolesClaimToGrantedAuthorities() {
-        return new JwtAuthenticationConverter() {
-            @Override
-            protected Collection<GrantedAuthority> extractAuthorities(Jwt jwt) {
-                return mapRolesToGrantedAuthorities(
-                    getRolesFromClaims(jwt.getClaims())
-                );
-            }
-        };
-    }
+//    private Converter<Jwt, AbstractAuthenticationToken> mapGroupOrRolesClaimToGrantedAuthorities() {
+//        return new JwtAuthenticationConverter() {
+//            @Override
+//            protected Collection<GrantedAuthority> extractAuthorities(Jwt jwt) {
+//                return mapRolesToGrantedAuthorities(
+//                    getRolesFromClaims(jwt.getClaims())
+//                );
+//            }
+//        };
+//    }
 
     @SuppressWarnings("unchecked")
     private Collection<String> getRolesFromClaims(Map<String, Object> claims) {
@@ -140,17 +150,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .map(SimpleGrantedAuthority::new).collect(Collectors.toList());
     }
 
-    @Bean
-    JwtDecoder jwtDecoder() {
-        NimbusJwtDecoderJwkSupport jwtDecoder = (NimbusJwtDecoderJwkSupport)
-            JwtDecoders.fromOidcIssuerLocation(issuerUri);
-
-        OAuth2TokenValidator<Jwt> audienceValidator = new AudienceValidator();
-        OAuth2TokenValidator<Jwt> withIssuer = JwtValidators.createDefaultWithIssuer(issuerUri);
-        OAuth2TokenValidator<Jwt> withAudience = new DelegatingOAuth2TokenValidator<>(withIssuer, audienceValidator);
-
-        jwtDecoder.setJwtValidator(withAudience);
-
-        return jwtDecoder;
-    }
+//    @Bean
+//    JwtDecoder jwtDecoder() {
+//        NimbusJwtDecoderJwkSupport jwtDecoder = (NimbusJwtDecoderJwkSupport)
+//            JwtDecoders.fromOidcIssuerLocation(issuerUri);
+//
+//        OAuth2TokenValidator<Jwt> audienceValidator = new AudienceValidator();
+//        OAuth2TokenValidator<Jwt> withIssuer = JwtValidators.createDefaultWithIssuer(issuerUri);
+//        OAuth2TokenValidator<Jwt> withAudience = new DelegatingOAuth2TokenValidator<>(withIssuer, audienceValidator);
+//
+//        jwtDecoder.setJwtValidator(withAudience);
+//
+//        return jwtDecoder;
+//    }
 }

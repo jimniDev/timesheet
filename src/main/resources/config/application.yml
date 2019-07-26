@@ -101,14 +101,19 @@ spring:
   security:
     oauth2:
       client:
-        provider:
-          oidc:
-            issuer-uri: https://sts.windows.net/3d30347c-e6e9-4b24-9255-b8a9b88794f7/
+        #provider:
+        #azure:
+        #issuer-uri: https://sts.windows.net/3d30347c-e6e9-4b24-9255-b8a9b88794f7/
         registration:
-          oidc:
+          azure:
             client-id: 29a1467a-afb9-4d9e-8741-fc386259ad43
             client-secret: :ofwfE.VDaI7V:[BtrH4ZRXOOKBFEM37
             #redirect-uri: https://asscopetimesheet.azurewebsites.net/login/oauth2/code/oidc
+
+azure:
+  activedirectory:
+    tenant-id: 29a1467a-afb9-4d9e-8741-fc386259ad43
+    active-directory-groups: AllUsers
 server:
   servlet:
     session:

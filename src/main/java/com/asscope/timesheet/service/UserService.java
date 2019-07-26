@@ -18,7 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
+//import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -207,12 +207,14 @@ public class UserService {
      * @return the user from the authentication.
      */
     public UserDTO getUserFromAuthentication(AbstractAuthenticationToken authToken) {
-        Map<String, Object> attributes;
+        Map<String, Object> attributes = new HashMap<>();
         if (authToken instanceof OAuth2AuthenticationToken) {
             attributes = ((OAuth2AuthenticationToken) authToken).getPrincipal().getAttributes();
-        } else if (authToken instanceof JwtAuthenticationToken) {
-            attributes = ((JwtAuthenticationToken) authToken).getTokenAttributes();
-        } else {
+        } 
+        //else if (authToken instanceof JwtAuthenticationToken) {
+        //    attributes = ((JwtAuthenticationToken) authToken).getTokenAttributes();
+        //} 
+    	else {
             throw new IllegalArgumentException("AuthenticationToken is not OAuth2 or JWT!");
         }
         User user = getUser(attributes);

@@ -52,6 +52,7 @@
 		<profile.tls />
 
 		<!-- Dependency versions -->
+		<azure.version>2.1.6</azure.version>
 		<jhipster-dependencies.version>3.0.3</jhipster-dependencies.version>
 		<!-- The spring-boot version should match the one managed by https://mvnrepository.com/artifact/io.github.jhipster/jhipster-dependencies/${jhipster-dependencies.version} -->
 		<spring-boot.version>2.1.6.RELEASE</spring-boot.version>
@@ -115,7 +116,16 @@
 			<groupId>io.github.jhipster</groupId>
 			<artifactId>jhipster-framework</artifactId>
 		</dependency>
-
+		<dependency>
+      		<groupId>com.microsoft.azure</groupId>
+      		<artifactId>azure-active-directory-spring-boot-starter</artifactId>
+      		<version>${azure.version}</version>
+    	</dependency>
+    	<dependency>
+      		<groupId>com.microsoft.azure</groupId>
+      		<artifactId>azure-spring-boot-starter</artifactId>
+      		<version>${azure.version}</version>
+    	</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-cache</artifactId>
@@ -304,8 +314,8 @@
 			<artifactId>spring-boot-starter-oauth2-client</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+		   <groupId>org.springframework.security</groupId>
+		   <artifactId>spring-security-oauth2-jose</artifactId>
 		</dependency>
 		<!-- Spring Cloud -->
 		<dependency>
