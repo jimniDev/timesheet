@@ -1,28 +1,46 @@
 
 entity Employee {
-	firstname String required,
-    lastname String required,
-    email String required,
-    phone String required
+	isEmployed Boolean
 }
 
-entity WorkingDay {
-	hours Integer
+entity TargetWorkingDay {
+	hours Integer required
 }
 
-entity Day {
+entity DayOfWeek {
 	name String required
+}
+
+entity WeeklyWorkingHours {
+	hours Integer,
+	startDate Date,
+	endDate Date
 }
 
 entity WorkingEntry {
 	start Instant required,
     end Instant required,
     deleteFlag Boolean,
+    lockedFlag Boolean,
+    createdAt Instant required
+}
+
+entity WorkDay {
+	date Date required
+}
+
+entity Break {
+	minutes Integer required
 }
 
 entity Activity {
-	name String,
+	name String required,
     description String
+}
+
+entity Role {
+	name String required,
+	description String
 }
 
 entity Location {
@@ -39,9 +57,15 @@ entity Country {
 // defining multiple OneToMany relationships with comments
 relationship OneToMany {
 	Employee{workingEntry} to WorkingEntry{employee},
-    Employee{workingDay} to WorkingDay{employee},
-    Day{workingDay} to WorkingDay{day},
+    Employee{targetWorkingDay} to TargetWorkingDay{employee},
+    Employee{weeklyWorkingHours} to WeeklyWorkingHours{employee},
+    Employee{workDay} to WorkDay{employee},
+	Employee{break} to Break{employee},
+    DayOfWeek{targetWorkingDay} to TargetWorkingDay{dayOfWeek},
     Activity{workingEntry} to WorkingEntry{activity},
+    Role{activity} to Activity{role},
+    WorkDay{workingEntry} to WorkingEntry{workDay},
+    WorkDay{break} to Break{workDay},
     Location{workingEntry} to WorkingEntry{location},
     Country{location} to Location{country}
 }
@@ -58,3 +82,5 @@ service all with serviceClass //except Employee, Job
 
 // Set an angular suffix
 angularSuffix * with timesheet
+
+filter *
