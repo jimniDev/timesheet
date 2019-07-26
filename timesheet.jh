@@ -29,7 +29,7 @@ entity WorkDay {
 	date Instant required
 }
 
-entity Break {
+entity WorkBreak {
 	minutes Integer required
 }
 
@@ -60,12 +60,12 @@ relationship OneToMany {
     Employee{targetWorkingDay} to TargetWorkingDay{employee},
     Employee{weeklyWorkingHours} to WeeklyWorkingHours{employee},
     Employee{workDay} to WorkDay{employee},
-	Employee{break} to Break{employee},
+	Employee{workBreak} to WorkBreak{employee},
     DayOfWeek{targetWorkingDay} to TargetWorkingDay{dayOfWeek},
     Activity{workingEntry} to WorkingEntry{activity},
     Role{activity} to Activity{role},
     WorkDay{workingEntry} to WorkingEntry{workDay},
-    WorkDay{break} to Break{workDay},
+    WorkDay{workBreak} to WorkBreak{workDay},
     Location{workingEntry} to WorkingEntry{location},
     Country{location} to Location{country}
 }
