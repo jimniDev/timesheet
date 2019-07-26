@@ -7,6 +7,7 @@ import { NgbDatepickerConfig } from '@ng-bootstrap/ng-bootstrap';
 import { NgxWebstorageModule } from 'ngx-webstorage';
 import { NgJhipsterModule } from 'ng-jhipster';
 
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AuthExpiredInterceptor } from './blocks/interceptor/auth-expired.interceptor';
 import { ErrorHandlerInterceptor } from './blocks/interceptor/errorhandler.interceptor';
 import { NotificationInterceptor } from './blocks/interceptor/notification.interceptor';
@@ -18,6 +19,7 @@ import { TimesheetEntityModule } from './entities/entity.module';
 import * as moment from 'moment';
 // jhipster-needle-angular-add-module-import JHipster will add new module here
 import { JhiMainComponent, NavbarComponent, FooterComponent, PageRibbonComponent, ActiveMenuDirective, ErrorComponent } from './layouts';
+import { MatDatepickerModule } from '@angular/material';
 
 @NgModule({
   imports: [
@@ -35,7 +37,9 @@ import { JhiMainComponent, NavbarComponent, FooterComponent, PageRibbonComponent
     TimesheetHomeModule,
     // jhipster-needle-angular-add-module JHipster will add new module here
     TimesheetEntityModule,
-    TimesheetAppRoutingModule
+    TimesheetAppRoutingModule,
+    BrowserAnimationsModule,
+    MatDatepickerModule
   ],
   declarations: [JhiMainComponent, NavbarComponent, ErrorComponent, PageRibbonComponent, ActiveMenuDirective, FooterComponent],
   providers: [

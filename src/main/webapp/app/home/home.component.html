@@ -2,18 +2,67 @@
     <div class="col-md-9">
         
         <div *ngIf="isAuthenticated()">
-            <!-- <div class="alert alert-success" *ngSwitchCase="true">
-                <span id="home-logged-message" *ngIf="account" jhiTranslate="home.logged.message"
-                    [translateValues]="{username: account.login}"> You are logged in as user "{{account.login}}". </span>
-            </div>-->
-            
-            
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                <th><span jhiTranslate="timesheetApp.workingEntry.start">Start</span></th>
+                <th><span jhiTranslate="timesheetApp.workingEntry.end">End</span></th>
+                <th><span jhiTranslate="timesheetApp.workingEntry.sum">Sum</span></th>
+                <th><span jhiTranslate="timesheetApp.workingEntry.activity">Activity</span></th>
+                <th><span jhiTranslate="timesheetApp.workingEntry.location">Location</span></th>
+                <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let workingEntry of workingEntries ;">
+                    <td>{{workingEntry.start | date:'dd.MM.yy HH:mm'}}</td>
+                    <td>{{workingEntry.end | date:'dd.MM.yy HH:mm'}}</td>
+                    <td>{{sumDate(workingEntry.start, workingEntry.end)}}</td>
+                    <td>
+                        <div *ngIf="workingEntry.activity">
+                            <a [routerLink]="['../activity-timesheet', workingEntry.activity?.id, 'view' ]" >{{workingEntry.activity?.id}}</a>
+                        </div>
+                    </td>
+                    <td>
+                        <div *ngIf="workingEntry.location">
+                            <a [routerLink]="['../location-timesheet', workingEntry.location?.id, 'view' ]" >{{workingEntry.location?.id}}</a>
+                        </div>
+                    </td>
+                    <td class="text-right">
+                        <div class="btn-group">
+                            <button type="submit"
+                                    [routerLink]="['/working-entry-timesheet', workingEntry.id, 'view' ]"
+                                    class="btn btn-info btn-sm">
+                                <fa-icon [icon]="'eye'"></fa-icon>
+                                <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+                            </button>
+                            <button type="submit"
+                                    [routerLink]="['/working-entry-timesheet', workingEntry.id, 'edit']"
+                                    class="btn btn-primary btn-sm">
+                                <fa-icon [icon]="'pencil-alt'"></fa-icon>
+                                <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+                            </button>
+                            <button type="submit"
+                                    [routerLink]="['/', 'working-entry-timesheet', { outlets: { popup: workingEntry.id + '/delete'} }]"
+                                    replaceUrl="true"
+                                    queryParamsHandling="merge"
+                                    class="btn btn-danger btn-sm">
+                                <fa-icon [icon]="'times'"></fa-icon>
+                                <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
 
-            
-            <!--<div class="alert alert-warning" *ngSwitchCase="false">
-                <span jhiTranslate="global.messages.info.authenticated.prefix">If you want to </span>
-                <a class="alert-link" (click)="login()" jhiTranslate="global.messages.info.authenticated.link">sign in</a><span jhiTranslate="global.messages.info.authenticated.suffix">, you can try the default accounts:<br/>- Administrator (login="admin" and password="admin") <br/>- User (login="user" and password="user").</span>
-            </div>-->
+            <mat-form-field>
+                <input matInput [matDatepicker]="picker" placeholder="Choose a date">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+
+
         </div>
     </div>
 </div>
