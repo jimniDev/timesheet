@@ -109,8 +109,8 @@ public class WorkingEntryResourceIT {
             .start(DEFAULT_START)
             .end(DEFAULT_END)
             .deleteFlag(DEFAULT_DELETE_FLAG)
-            .lockedFlag(DEFAULT_LOCKED_FLAG)
-            .createdAt(DEFAULT_CREATED_AT);
+            .lockedFlag(DEFAULT_LOCKED_FLAG);
+//            .createdAt(DEFAULT_CREATED_AT);
         return workingEntry;
     }
     /**
@@ -124,8 +124,8 @@ public class WorkingEntryResourceIT {
             .start(UPDATED_START)
             .end(UPDATED_END)
             .deleteFlag(UPDATED_DELETE_FLAG)
-            .lockedFlag(UPDATED_LOCKED_FLAG)
-            .createdAt(UPDATED_CREATED_AT);
+            .lockedFlag(UPDATED_LOCKED_FLAG);
+//            .createdAt(UPDATED_CREATED_AT);
         return workingEntry;
     }
 
@@ -153,7 +153,7 @@ public class WorkingEntryResourceIT {
         assertThat(testWorkingEntry.getEnd()).isEqualTo(DEFAULT_END);
         assertThat(testWorkingEntry.isDeleteFlag()).isEqualTo(DEFAULT_DELETE_FLAG);
         assertThat(testWorkingEntry.isLockedFlag()).isEqualTo(DEFAULT_LOCKED_FLAG);
-        assertThat(testWorkingEntry.getCreatedAt()).isEqualTo(DEFAULT_CREATED_AT);
+//        assertThat(testWorkingEntry.getCreatedAt()).isEqualTo(DEFAULT_CREATED_AT);
     }
 
     @Test
@@ -212,23 +212,23 @@ public class WorkingEntryResourceIT {
         assertThat(workingEntryList).hasSize(databaseSizeBeforeTest);
     }
 
-    @Test
-    @Transactional
-    public void checkCreatedAtIsRequired() throws Exception {
-        int databaseSizeBeforeTest = workingEntryRepository.findAll().size();
-        // set the field null
-        workingEntry.setCreatedAt(null);
-
-        // Create the WorkingEntry, which fails.
-
-        restWorkingEntryMockMvc.perform(post("/api/working-entries")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(workingEntry)))
-            .andExpect(status().isBadRequest());
-
-        List<WorkingEntry> workingEntryList = workingEntryRepository.findAll();
-        assertThat(workingEntryList).hasSize(databaseSizeBeforeTest);
-    }
+//    @Test
+//    @Transactional
+//    public void checkCreatedAtIsRequired() throws Exception {
+//        int databaseSizeBeforeTest = workingEntryRepository.findAll().size();
+//        // set the field null
+//        workingEntry.setCreatedAt(null);
+//
+//        // Create the WorkingEntry, which fails.
+//
+//        restWorkingEntryMockMvc.perform(post("/api/working-entries")
+//            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+//            .content(TestUtil.convertObjectToJsonBytes(workingEntry)))
+//            .andExpect(status().isBadRequest());
+//
+//        List<WorkingEntry> workingEntryList = workingEntryRepository.findAll();
+//        assertThat(workingEntryList).hasSize(databaseSizeBeforeTest);
+//    }
 
     @Test
     @Transactional
@@ -599,8 +599,8 @@ public class WorkingEntryResourceIT {
             .start(UPDATED_START)
             .end(UPDATED_END)
             .deleteFlag(UPDATED_DELETE_FLAG)
-            .lockedFlag(UPDATED_LOCKED_FLAG)
-            .createdAt(UPDATED_CREATED_AT);
+            .lockedFlag(UPDATED_LOCKED_FLAG);
+//            .createdAt(UPDATED_CREATED_AT);
 
         restWorkingEntryMockMvc.perform(put("/api/working-entries")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -615,7 +615,7 @@ public class WorkingEntryResourceIT {
         assertThat(testWorkingEntry.getEnd()).isEqualTo(UPDATED_END);
         assertThat(testWorkingEntry.isDeleteFlag()).isEqualTo(UPDATED_DELETE_FLAG);
         assertThat(testWorkingEntry.isLockedFlag()).isEqualTo(UPDATED_LOCKED_FLAG);
-        assertThat(testWorkingEntry.getCreatedAt()).isEqualTo(UPDATED_CREATED_AT);
+//        assertThat(testWorkingEntry.getCreatedAt()).isEqualTo(UPDATED_CREATED_AT);
     }
 
     @Test

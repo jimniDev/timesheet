@@ -8,14 +8,14 @@ import { RouterModule } from '@angular/router';
         path: 'employee-timesheet',
         loadChildren: './employee-timesheet/employee-timesheet.module#TimesheetEmployeeTimesheetModule'
       },
-      {
-        path: 'working-day-timesheet',
-        loadChildren: './working-day-timesheet/working-day-timesheet.module#TimesheetWorkingDayTimesheetModule'
-      },
-      {
-        path: 'day-timesheet',
-        loadChildren: './day-timesheet/day-timesheet.module#TimesheetDayTimesheetModule'
-      },
+      // {
+      //   path: 'working-day-timesheet',
+      //   loadChildren: './working-day-timesheet/working-day-timesheet.module#TimesheetWorkingDayTimesheetModule'
+      // },
+      // {
+      //   path: 'day-timesheet',
+      //   loadChildren: './day-timesheet/day-timesheet.module#TimesheetDayTimesheetModule'
+      // },
       {
         path: 'working-entry-timesheet',
         loadChildren: './working-entry-timesheet/working-entry-timesheet.module#TimesheetWorkingEntryTimesheetModule'

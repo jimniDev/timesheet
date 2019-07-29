@@ -97,9 +97,9 @@ public class WorkingEntryQueryService extends QueryService<WorkingEntry> {
             if (criteria.getLockedFlag() != null) {
                 specification = specification.and(buildSpecification(criteria.getLockedFlag(), WorkingEntry_.lockedFlag));
             }
-            if (criteria.getCreatedAt() != null) {
-                specification = specification.and(buildRangeSpecification(criteria.getCreatedAt(), WorkingEntry_.createdAt));
-            }
+//            if (criteria.getCreatedAt() != null) {
+//                specification = specification.and(buildRangeSpecification(criteria.getCreatedAt(), WorkingEntry_.createdAt));
+//            }
             if (criteria.getEmployeeId() != null) {
                 specification = specification.and(buildSpecification(criteria.getEmployeeId(),
                     root -> root.join(WorkingEntry_.employee, JoinType.LEFT).get(Employee_.id)));

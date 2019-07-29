@@ -15,7 +15,7 @@ import java.time.Instant;
 @Entity
 @Table(name = "working_entry")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class WorkingEntry implements Serializable {
+public class WorkingEntry extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -38,9 +38,9 @@ public class WorkingEntry implements Serializable {
     @Column(name = "locked_flag")
     private Boolean lockedFlag;
 
-    @NotNull
-    @Column(name = "created_at", nullable = false)
-    private Instant createdAt;
+//    @NotNull
+//    @Column(name = "created_at", nullable = false)
+//    private Instant createdAt;
 
     @ManyToOne
     @JsonIgnoreProperties("workingEntries")
@@ -119,18 +119,18 @@ public class WorkingEntry implements Serializable {
         this.lockedFlag = lockedFlag;
     }
 
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
-
-    public WorkingEntry createdAt(Instant createdAt) {
-        this.createdAt = createdAt;
-        return this;
-    }
-
-    public void setCreatedAt(Instant createdAt) {
-        this.createdAt = createdAt;
-    }
+//    public Instant getCreatedAt() {
+//        return createdAt;
+//    }
+//
+//    public WorkingEntry createdAt(Instant createdAt) {
+//        this.createdAt = createdAt;
+//        return this;
+//    }
+//
+//    public void setCreatedAt(Instant createdAt) {
+//        this.createdAt = createdAt;
+//    }
 
     public Employee getEmployee() {
         return employee;
@@ -209,7 +209,7 @@ public class WorkingEntry implements Serializable {
             ", end='" + getEnd() + "'" +
             ", deleteFlag='" + isDeleteFlag() + "'" +
             ", lockedFlag='" + isLockedFlag() + "'" +
-            ", createdAt='" + getCreatedAt() + "'" +
+//            ", createdAt='" + getCreatedAt() + "'" +
             "}";
     }
 }

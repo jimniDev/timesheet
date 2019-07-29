@@ -1,0 +1,41 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+    <changeSet author="PhilippRingele (generated)" id="1564404207305-4">
+        <addColumn tableName="working_entry">
+            <column name="created_by" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="PhilippRingele (generated)" id="1564404207305-5">
+        <addColumn tableName="working_entry">
+            <column name="created_date" type="datetime"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="PhilippRingele (generated)" id="1564404207305-6">
+        <addColumn tableName="working_entry">
+            <column name="last_modified_by" type="varchar(50)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="PhilippRingele (generated)" id="1564404207305-7">
+        <addColumn tableName="working_entry">
+            <column name="last_modified_date" type="datetime"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="PhilippRingele (generated)" id="1564404207305-8">
+        <dropColumn columnName="created_at" tableName="working_entry"/>
+    </changeSet>
+<!--     <changeSet author="PhilippRingele (generated)" id="1564404207305-1"> -->
+<!--         <alterSequence sequenceName="sequence_generator"/> -->
+<!--         <alterSequence sequenceName="sequence_generator"/> -->
+<!--         <alterSequence sequenceName="sequence_generator"/> -->
+<!--     </changeSet> -->
+<!--     <changeSet author="PhilippRingele (generated)" id="1564404207305-2"> -->
+<!--         <dropUniqueConstraint constraintName="UC_JHI_USEREMAIL_COL" tableName="jhi_user"/> -->
+<!--         <addUniqueConstraint columnNames="email" constraintName="UC_JHI_USEREMAIL_COL" tableName="jhi_user"/> -->
+<!--     </changeSet> -->
+<!--     <changeSet author="PhilippRingele (generated)" id="1564404207305-3"> -->
+<!--         <dropUniqueConstraint constraintName="UC_JHI_USERLOGIN_COL" tableName="jhi_user"/> -->
+<!--         <addUniqueConstraint columnNames="login" constraintName="UC_JHI_USERLOGIN_COL" tableName="jhi_user"/> -->
+<!--     </changeSet> -->
+</databaseChangeLog>
