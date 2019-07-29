@@ -21,8 +21,11 @@
             <th><span jhiTranslate="timesheetApp.workingEntry.start">Start</span></th>
             <th><span jhiTranslate="timesheetApp.workingEntry.end">End</span></th>
             <th><span jhiTranslate="timesheetApp.workingEntry.deleteFlag">Delete Flag</span></th>
+            <th><span jhiTranslate="timesheetApp.workingEntry.lockedFlag">Locked Flag</span></th>
+            <th><span jhiTranslate="timesheetApp.workingEntry.createdAt">Created At</span></th>
             <th><span jhiTranslate="timesheetApp.workingEntry.employee">Employee</span></th>
             <th><span jhiTranslate="timesheetApp.workingEntry.activity">Activity</span></th>
+            <th><span jhiTranslate="timesheetApp.workingEntry.workDay">Work Day</span></th>
             <th><span jhiTranslate="timesheetApp.workingEntry.location">Location</span></th>
             <th></th>
             </tr>
@@ -33,6 +36,8 @@
                 <td>{{workingEntry.start | date:'medium'}}</td>
                 <td>{{workingEntry.end | date:'medium'}}</td>
                 <td>{{workingEntry.deleteFlag}}</td>
+                <td>{{workingEntry.lockedFlag}}</td>
+                <td>{{workingEntry.createdAt | date:'medium'}}</td>
                 <td>
                     <div *ngIf="workingEntry.employee">
                         <a [routerLink]="['../employee-timesheet', workingEntry.employee?.id, 'view' ]" >{{workingEntry.employee?.id}}</a>
@@ -41,6 +46,11 @@
                 <td>
                     <div *ngIf="workingEntry.activity">
                         <a [routerLink]="['../activity-timesheet', workingEntry.activity?.id, 'view' ]" >{{workingEntry.activity?.id}}</a>
+                    </div>
+                </td>
+                <td>
+                    <div *ngIf="workingEntry.workDay">
+                        <a [routerLink]="['../work-day-timesheet', workingEntry.workDay?.id, 'view' ]" >{{workingEntry.workDay?.id}}</a>
                     </div>
                 </td>
                 <td>

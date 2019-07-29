@@ -1,0 +1,43 @@
+{
+    "name": "WorkDay",
+    "fields": [
+        {
+            "fieldName": "date",
+            "fieldType": "Instant",
+            "fieldValidateRules": [
+                "required"
+            ]
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "one-to-many",
+            "otherEntityName": "workingEntry",
+            "otherEntityRelationshipName": "workDay",
+            "relationshipName": "workingEntry"
+        },
+        {
+            "relationshipType": "one-to-many",
+            "otherEntityName": "workBreak",
+            "otherEntityRelationshipName": "workDay",
+            "relationshipName": "workBreak"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "otherEntityName": "employee",
+            "otherEntityRelationshipName": "workDay",
+            "relationshipName": "employee",
+            "otherEntityField": "id"
+        }
+    ],
+    "changelogDate": "20190726193527",
+    "entityTableName": "work_day",
+    "dto": "no",
+    "pagination": "no",
+    "service": "serviceClass",
+    "jpaMetamodelFiltering": true,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*",
+    "angularJSSuffix": "timesheet"
+}

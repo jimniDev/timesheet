@@ -3,6 +3,8 @@ package com.asscope.timesheet.web.rest;
 import com.asscope.timesheet.domain.WorkingEntry;
 import com.asscope.timesheet.service.WorkingEntryService;
 import com.asscope.timesheet.web.rest.errors.BadRequestAlertException;
+import com.asscope.timesheet.service.dto.WorkingEntryCriteria;
+import com.asscope.timesheet.service.WorkingEntryQueryService;
 
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -35,8 +37,11 @@ public class WorkingEntryResource {
 
     private final WorkingEntryService workingEntryService;
 
-    public WorkingEntryResource(WorkingEntryService workingEntryService) {
+    private final WorkingEntryQueryService workingEntryQueryService;
+
+    public WorkingEntryResource(WorkingEntryService workingEntryService, WorkingEntryQueryService workingEntryQueryService) {
         this.workingEntryService = workingEntryService;
+        this.workingEntryQueryService = workingEntryQueryService;
     }
 
     /**
@@ -82,12 +87,26 @@ public class WorkingEntryResource {
     /**
      * {@code GET  /working-entries} : get all the workingEntries.
      *
+     * @param criteria the criteria which the requested entities should match.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of workingEntries in body.
      */
     @GetMapping("/working-entries")
-    public List<WorkingEntry> getAllWorkingEntries() {
-        log.debug("REST request to get all WorkingEntries");
-        return workingEntryService.findAll();
+    public ResponseEntity<List<WorkingEntry>> getAllWorkingEntries(WorkingEntryCriteria criteria) {
+        log.debug("REST request to get WorkingEntries by criteria: {}", criteria);
+        List<WorkingEntry> entityList = workingEntryQueryService.findByCriteria(criteria);
+        return ResponseEntity.ok().body(entityList);
+    }
+
+    /**
+    * {@code GET  /working-entries/count} : count all the workingEntries.
+    *
+    * @param criteria the criteria which the requested entities should match.
+    * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
+    */
+    @GetMapping("/working-entries/count")
+    public ResponseEntity<Long> countWorkingEntries(WorkingEntryCriteria criteria) {
+        log.debug("REST request to count WorkingEntries by criteria: {}", criteria);
+        return ResponseEntity.ok().body(workingEntryQueryService.countByCriteria(criteria));
     }
 
     /**

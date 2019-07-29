@@ -1,0 +1,24 @@
+{
+  "timesheetApp": {
+    "role": {
+      "home": {
+        "title": "Roles",
+        "createLabel": "Role erstellen",
+        "createOrEditLabel": "Role erstellen oder bearbeiten",
+        "notFound": "No Role found"
+      },
+      "created": "Role erstellt mit ID {{ param }}",
+      "updated": "Role aktualisiert mit ID {{ param }}",
+      "deleted": "Role gelöscht mit ID {{ param }}",
+      "delete": {
+        "question": "Soll Role {{ id }} wirklich dauerhaft gelöscht werden?"
+      },
+      "detail": {
+        "title": "Role"
+      },
+      "name": "Name",
+      "description": "Description",
+      "activity": "Activity"
+    }
+  }
+}

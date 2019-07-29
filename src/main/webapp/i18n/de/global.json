@@ -14,6 +14,12 @@
         "activityTimesheet": "Activity",
         "locationTimesheet": "Location",
         "countryTimesheet": "Country",
+        "targetWorkingDayTimesheet": "Target Working Day",
+        "dayOfWeekTimesheet": "Day Of Week",
+        "weeklyWorkingHoursTimesheet": "Weekly Working Hours",
+        "workDayTimesheet": "Work Day",
+        "workBreakTimesheet": "Work Break",
+        "roleTimesheet": "Role",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },
       "account": {

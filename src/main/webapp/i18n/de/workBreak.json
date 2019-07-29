@@ -1,0 +1,24 @@
+{
+  "timesheetApp": {
+    "workBreak": {
+      "home": {
+        "title": "Work Breaks",
+        "createLabel": "Work Break erstellen",
+        "createOrEditLabel": "Work Break erstellen oder bearbeiten",
+        "notFound": "No Work Break found"
+      },
+      "created": "Work Break erstellt mit ID {{ param }}",
+      "updated": "Work Break aktualisiert mit ID {{ param }}",
+      "deleted": "Work Break gelöscht mit ID {{ param }}",
+      "delete": {
+        "question": "Soll Work Break {{ id }} wirklich dauerhaft gelöscht werden?"
+      },
+      "detail": {
+        "title": "Work Break"
+      },
+      "minutes": "Minutes",
+      "employee": "Employee",
+      "workDay": "Work Day"
+    }
+  }
+}

@@ -19,8 +19,11 @@
       "start": "Start",
       "end": "End",
       "deleteFlag": "Delete Flag",
+      "lockedFlag": "Locked Flag",
+      "createdAt": "Created At",
       "employee": "Employee",
       "activity": "Activity",
+      "workDay": "Work Day",
       "location": "Location"
     }
   }

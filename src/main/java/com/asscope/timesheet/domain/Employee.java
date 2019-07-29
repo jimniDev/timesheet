@@ -3,7 +3,6 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
-import javax.validation.constraints.*;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -24,21 +23,8 @@ public class Employee implements Serializable {
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
-//    @NotNull
-//    @Column(name = "firstname", nullable = false)
-//    private String firstname;
-//
-//    @NotNull
-//    @Column(name = "lastname", nullable = false)
-//    private String lastname;
-//
-//    @NotNull
-//    @Column(name = "email", nullable = false)
-//    private String email;
-//
-//    @NotNull
-//    @Column(name = "phone", nullable = false)
-//    private String phone;
+    @Column(name = "is_employed")
+    private Boolean isEmployed;
 
     @OneToMany(mappedBy = "employee")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
@@ -46,10 +32,31 @@ public class Employee implements Serializable {
 
     @OneToMany(mappedBy = "employee")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<WorkingDay> workingDays = new HashSet<>();
+    private Set<TargetWorkingDay> targetWorkingDays = new HashSet<>();
+
+    @OneToMany(mappedBy = "employee")
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    private Set<WeeklyWorkingHours> weeklyWorkingHours = new HashSet<>();
+
+    @OneToMany(mappedBy = "employee")
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    private Set<WorkDay> workDays = new HashSet<>();
+
+    @OneToMany(mappedBy = "employee")
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    private Set<WorkBreak> workBreaks = new HashSet<>();
     
     @OneToOne
     private User user;
+
+    // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public User getUser() {
 		return user;
@@ -59,66 +66,18 @@ public class Employee implements Serializable {
 		this.user = user;
 	}
 
-	// jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
-    public Long getId() {
-        return id;
+	public Boolean isIsEmployed() {
+        return isEmployed;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public Employee isEmployed(Boolean isEmployed) {
+        this.isEmployed = isEmployed;
+        return this;
     }
 
-//    public String getFirstname() {
-//        return firstname;
-//    }
-//
-//    public Employee firstname(String firstname) {
-//        this.firstname = firstname;
-//        return this;
-//    }
-//
-//    public void setFirstname(String firstname) {
-//        this.firstname = firstname;
-//    }
-//
-//    public String getLastname() {
-//        return lastname;
-//    }
-//
-//    public Employee lastname(String lastname) {
-//        this.lastname = lastname;
-//        return this;
-//    }
-//
-//    public void setLastname(String lastname) {
-//        this.lastname = lastname;
-//    }
-//
-//    public String getEmail() {
-//        return email;
-//    }
-//
-//    public Employee email(String email) {
-//        this.email = email;
-//        return this;
-//    }
-//
-//    public void setEmail(String email) {
-//        this.email = email;
-//    }
-//
-//    public String getPhone() {
-//        return phone;
-//    }
-//
-//    public Employee phone(String phone) {
-//        this.phone = phone;
-//        return this;
-//    }
-//
-//    public void setPhone(String phone) {
-//        this.phone = phone;
-//    }
+    public void setIsEmployed(Boolean isEmployed) {
+        this.isEmployed = isEmployed;
+    }
 
     public Set<WorkingEntry> getWorkingEntries() {
         return workingEntries;
@@ -145,29 +104,104 @@ public class Employee implements Serializable {
         this.workingEntries = workingEntries;
     }
 
-    public Set<WorkingDay> getWorkingDays() {
-        return workingDays;
+    public Set<TargetWorkingDay> getTargetWorkingDays() {
+        return targetWorkingDays;
     }
 
-    public Employee workingDays(Set<WorkingDay> workingDays) {
-        this.workingDays = workingDays;
+    public Employee targetWorkingDays(Set<TargetWorkingDay> targetWorkingDays) {
+        this.targetWorkingDays = targetWorkingDays;
         return this;
     }
 
-    public Employee addWorkingDay(WorkingDay workingDay) {
-        this.workingDays.add(workingDay);
-        workingDay.setEmployee(this);
+    public Employee addTargetWorkingDay(TargetWorkingDay targetWorkingDay) {
+        this.targetWorkingDays.add(targetWorkingDay);
+        targetWorkingDay.setEmployee(this);
         return this;
     }
 
-    public Employee removeWorkingDay(WorkingDay workingDay) {
-        this.workingDays.remove(workingDay);
-        workingDay.setEmployee(null);
+    public Employee removeTargetWorkingDay(TargetWorkingDay targetWorkingDay) {
+        this.targetWorkingDays.remove(targetWorkingDay);
+        targetWorkingDay.setEmployee(null);
         return this;
     }
 
-    public void setWorkingDays(Set<WorkingDay> workingDays) {
-        this.workingDays = workingDays;
+    public void setTargetWorkingDays(Set<TargetWorkingDay> targetWorkingDays) {
+        this.targetWorkingDays = targetWorkingDays;
+    }
+
+    public Set<WeeklyWorkingHours> getWeeklyWorkingHours() {
+        return weeklyWorkingHours;
+    }
+
+    public Employee weeklyWorkingHours(Set<WeeklyWorkingHours> weeklyWorkingHours) {
+        this.weeklyWorkingHours = weeklyWorkingHours;
+        return this;
+    }
+
+    public Employee addWeeklyWorkingHours(WeeklyWorkingHours weeklyWorkingHours) {
+        this.weeklyWorkingHours.add(weeklyWorkingHours);
+        weeklyWorkingHours.setEmployee(this);
+        return this;
+    }
+
+    public Employee removeWeeklyWorkingHours(WeeklyWorkingHours weeklyWorkingHours) {
+        this.weeklyWorkingHours.remove(weeklyWorkingHours);
+        weeklyWorkingHours.setEmployee(null);
+        return this;
+    }
+
+    public void setWeeklyWorkingHours(Set<WeeklyWorkingHours> weeklyWorkingHours) {
+        this.weeklyWorkingHours = weeklyWorkingHours;
+    }
+
+    public Set<WorkDay> getWorkDays() {
+        return workDays;
+    }
+
+    public Employee workDays(Set<WorkDay> workDays) {
+        this.workDays = workDays;
+        return this;
+    }
+
+    public Employee addWorkDay(WorkDay workDay) {
+        this.workDays.add(workDay);
+        workDay.setEmployee(this);
+        return this;
+    }
+
+    public Employee removeWorkDay(WorkDay workDay) {
+        this.workDays.remove(workDay);
+        workDay.setEmployee(null);
+        return this;
+    }
+
+    public void setWorkDays(Set<WorkDay> workDays) {
+        this.workDays = workDays;
+    }
+
+    public Set<WorkBreak> getWorkBreaks() {
+        return workBreaks;
+    }
+
+    public Employee workBreaks(Set<WorkBreak> workBreaks) {
+        this.workBreaks = workBreaks;
+        return this;
+    }
+
+    public Employee addWorkBreak(WorkBreak workBreak) {
+        this.workBreaks.add(workBreak);
+        workBreak.setEmployee(this);
+        return this;
+    }
+
+    public Employee removeWorkBreak(WorkBreak workBreak) {
+        this.workBreaks.remove(workBreak);
+        workBreak.setEmployee(null);
+        return this;
+    }
+
+    public void setWorkBreaks(Set<WorkBreak> workBreaks) {
+        this.workBreaks = workBreaks;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
@@ -191,10 +225,7 @@ public class Employee implements Serializable {
     public String toString() {
         return "Employee{" +
             "id=" + getId() +
-//            ", firstname='" + getFirstname() + "'" +
-//            ", lastname='" + getLastname() + "'" +
-//            ", email='" + getEmail() + "'" +
-//            ", phone='" + getPhone() + "'" +
+            ", isEmployed='" + isIsEmployed() + "'" +
             "}";
     }
 }

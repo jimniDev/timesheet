@@ -1,0 +1,38 @@
+{
+    "name": "WorkBreak",
+    "fields": [
+        {
+            "fieldName": "minutes",
+            "fieldType": "Integer",
+            "fieldValidateRules": [
+                "required"
+            ]
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "otherEntityName": "employee",
+            "otherEntityRelationshipName": "workBreak",
+            "relationshipName": "employee",
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "otherEntityName": "workDay",
+            "otherEntityRelationshipName": "workBreak",
+            "relationshipName": "workDay",
+            "otherEntityField": "id"
+        }
+    ],
+    "changelogDate": "20190726193528",
+    "entityTableName": "work_break",
+    "dto": "no",
+    "pagination": "no",
+    "service": "serviceClass",
+    "jpaMetamodelFiltering": true,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*",
+    "angularJSSuffix": "timesheet"
+}

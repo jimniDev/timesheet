@@ -1,0 +1,24 @@
+{
+  "timesheetApp": {
+    "targetWorkingDay": {
+      "home": {
+        "title": "Target Working Days",
+        "createLabel": "Target Working Day erstellen",
+        "createOrEditLabel": "Target Working Day erstellen oder bearbeiten",
+        "notFound": "No Target Working Day found"
+      },
+      "created": "Target Working Day erstellt mit ID {{ param }}",
+      "updated": "Target Working Day aktualisiert mit ID {{ param }}",
+      "deleted": "Target Working Day gelöscht mit ID {{ param }}",
+      "delete": {
+        "question": "Soll Target Working Day {{ id }} wirklich dauerhaft gelöscht werden?"
+      },
+      "detail": {
+        "title": "Target Working Day"
+      },
+      "hours": "Hours",
+      "employee": "Employee",
+      "dayOfWeek": "Day Of Week"
+    }
+  }
+}

@@ -16,12 +16,12 @@
       "detail": {
         "title": "Employee"
       },
-      "firstname": "Firstname",
-      "lastname": "Lastname",
-      "email": "Email",
-      "phone": "Phone",
+      "isEmployed": "Is Employed",
       "workingEntry": "Working Entry",
-      "workingDay": "Working Day"
+      "targetWorkingDay": "Target Working Day",
+      "weeklyWorkingHours": "Weekly Working Hours",
+      "workDay": "Work Day",
+      "workBreak": "Work Break"
     }
   }
 }

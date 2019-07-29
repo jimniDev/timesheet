@@ -1,0 +1,39 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="workBreak">
+            <h2><span jhiTranslate="timesheetApp.workBreak.detail.title">Work Break</span> {{workBreak.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span jhiTranslate="timesheetApp.workBreak.minutes">Minutes</span></dt>
+                <dd>
+                    <span>{{workBreak.minutes}}</span>
+                </dd>
+                <dt><span jhiTranslate="timesheetApp.workBreak.employee">Employee</span></dt>
+                <dd>
+                    <div *ngIf="workBreak.employee">
+                        <a [routerLink]="['/employee-timesheet', workBreak.employee?.id, 'view']">{{workBreak.employee?.id}}</a>
+                    </div>
+                </dd>
+                <dt><span jhiTranslate="timesheetApp.workBreak.workDay">Work Day</span></dt>
+                <dd>
+                    <div *ngIf="workBreak.workDay">
+                        <a [routerLink]="['/work-day-timesheet', workBreak.workDay?.id, 'view']">{{workBreak.workDay?.id}}</a>
+                    </div>
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/work-break-timesheet', workBreak.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

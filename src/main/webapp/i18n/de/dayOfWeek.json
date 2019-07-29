@@ -1,0 +1,23 @@
+{
+  "timesheetApp": {
+    "dayOfWeek": {
+      "home": {
+        "title": "Day Of Weeks",
+        "createLabel": "Day Of Week erstellen",
+        "createOrEditLabel": "Day Of Week erstellen oder bearbeiten",
+        "notFound": "No Day Of Week found"
+      },
+      "created": "Day Of Week erstellt mit ID {{ param }}",
+      "updated": "Day Of Week aktualisiert mit ID {{ param }}",
+      "deleted": "Day Of Week gelöscht mit ID {{ param }}",
+      "delete": {
+        "question": "Soll Day Of Week {{ id }} wirklich dauerhaft gelöscht werden?"
+      },
+      "detail": {
+        "title": "Day Of Week"
+      },
+      "name": "Name",
+      "targetWorkingDay": "Target Working Day"
+    }
+  }
+}

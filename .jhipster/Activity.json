@@ -3,7 +3,10 @@
     "fields": [
         {
             "fieldName": "name",
-            "fieldType": "String"
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
         },
         {
             "fieldName": "description",
@@ -16,14 +19,21 @@
             "otherEntityName": "workingEntry",
             "otherEntityRelationshipName": "activity",
             "relationshipName": "workingEntry"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "otherEntityName": "role",
+            "otherEntityRelationshipName": "activity",
+            "relationshipName": "role",
+            "otherEntityField": "id"
         }
     ],
-    "changelogDate": "20190718143745",
+    "changelogDate": "20190726193529",
     "entityTableName": "activity",
     "dto": "no",
     "pagination": "no",
     "service": "serviceClass",
-    "jpaMetamodelFiltering": false,
+    "jpaMetamodelFiltering": true,
     "fluentMethods": true,
     "clientRootFolder": "",
     "applications": "*",

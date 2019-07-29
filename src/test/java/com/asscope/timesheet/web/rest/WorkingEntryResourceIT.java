@@ -3,9 +3,15 @@ package com.asscope.timesheet.web.rest;
 import com.asscope.timesheet.TimesheetApp;
 import com.asscope.timesheet.config.TestSecurityConfiguration;
 import com.asscope.timesheet.domain.WorkingEntry;
+import com.asscope.timesheet.domain.Employee;
+import com.asscope.timesheet.domain.Activity;
+import com.asscope.timesheet.domain.WorkDay;
+import com.asscope.timesheet.domain.Location;
 import com.asscope.timesheet.repository.WorkingEntryRepository;
 import com.asscope.timesheet.service.WorkingEntryService;
 import com.asscope.timesheet.web.rest.errors.ExceptionTranslator;
+import com.asscope.timesheet.service.dto.WorkingEntryCriteria;
+import com.asscope.timesheet.service.WorkingEntryQueryService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -46,11 +52,20 @@ public class WorkingEntryResourceIT {
     private static final Boolean DEFAULT_DELETE_FLAG = false;
     private static final Boolean UPDATED_DELETE_FLAG = true;
 
+    private static final Boolean DEFAULT_LOCKED_FLAG = false;
+    private static final Boolean UPDATED_LOCKED_FLAG = true;
+
+    private static final Instant DEFAULT_CREATED_AT = Instant.ofEpochMilli(0L);
+    private static final Instant UPDATED_CREATED_AT = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+
     @Autowired
     private WorkingEntryRepository workingEntryRepository;
 
     @Autowired
     private WorkingEntryService workingEntryService;
+
+    @Autowired
+    private WorkingEntryQueryService workingEntryQueryService;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -74,7 +89,7 @@ public class WorkingEntryResourceIT {
     @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final WorkingEntryResource workingEntryResource = new WorkingEntryResource(workingEntryService);
+        final WorkingEntryResource workingEntryResource = new WorkingEntryResource(workingEntryService, workingEntryQueryService);
         this.restWorkingEntryMockMvc = MockMvcBuilders.standaloneSetup(workingEntryResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -93,7 +108,9 @@ public class WorkingEntryResourceIT {
         WorkingEntry workingEntry = new WorkingEntry()
             .start(DEFAULT_START)
             .end(DEFAULT_END)
-            .deleteFlag(DEFAULT_DELETE_FLAG);
+            .deleteFlag(DEFAULT_DELETE_FLAG)
+            .lockedFlag(DEFAULT_LOCKED_FLAG)
+            .createdAt(DEFAULT_CREATED_AT);
         return workingEntry;
     }
     /**
@@ -106,7 +123,9 @@ public class WorkingEntryResourceIT {
         WorkingEntry workingEntry = new WorkingEntry()
             .start(UPDATED_START)
             .end(UPDATED_END)
-            .deleteFlag(UPDATED_DELETE_FLAG);
+            .deleteFlag(UPDATED_DELETE_FLAG)
+            .lockedFlag(UPDATED_LOCKED_FLAG)
+            .createdAt(UPDATED_CREATED_AT);
         return workingEntry;
     }
 
@@ -133,6 +152,8 @@ public class WorkingEntryResourceIT {
         assertThat(testWorkingEntry.getStart()).isEqualTo(DEFAULT_START);
         assertThat(testWorkingEntry.getEnd()).isEqualTo(DEFAULT_END);
         assertThat(testWorkingEntry.isDeleteFlag()).isEqualTo(DEFAULT_DELETE_FLAG);
+        assertThat(testWorkingEntry.isLockedFlag()).isEqualTo(DEFAULT_LOCKED_FLAG);
+        assertThat(testWorkingEntry.getCreatedAt()).isEqualTo(DEFAULT_CREATED_AT);
     }
 
     @Test
@@ -193,6 +214,24 @@ public class WorkingEntryResourceIT {
 
     @Test
     @Transactional
+    public void checkCreatedAtIsRequired() throws Exception {
+        int databaseSizeBeforeTest = workingEntryRepository.findAll().size();
+        // set the field null
+        workingEntry.setCreatedAt(null);
+
+        // Create the WorkingEntry, which fails.
+
+        restWorkingEntryMockMvc.perform(post("/api/working-entries")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(workingEntry)))
+            .andExpect(status().isBadRequest());
+
+        List<WorkingEntry> workingEntryList = workingEntryRepository.findAll();
+        assertThat(workingEntryList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
     public void getAllWorkingEntries() throws Exception {
         // Initialize the database
         workingEntryRepository.saveAndFlush(workingEntry);
@@ -204,7 +243,9 @@ public class WorkingEntryResourceIT {
             .andExpect(jsonPath("$.[*].id").value(hasItem(workingEntry.getId().intValue())))
             .andExpect(jsonPath("$.[*].start").value(hasItem(DEFAULT_START.toString())))
             .andExpect(jsonPath("$.[*].end").value(hasItem(DEFAULT_END.toString())))
-            .andExpect(jsonPath("$.[*].deleteFlag").value(hasItem(DEFAULT_DELETE_FLAG.booleanValue())));
+            .andExpect(jsonPath("$.[*].deleteFlag").value(hasItem(DEFAULT_DELETE_FLAG.booleanValue())))
+            .andExpect(jsonPath("$.[*].lockedFlag").value(hasItem(DEFAULT_LOCKED_FLAG.booleanValue())))
+            .andExpect(jsonPath("$.[*].createdAt").value(hasItem(DEFAULT_CREATED_AT.toString())));
     }
     
     @Test
@@ -220,8 +261,319 @@ public class WorkingEntryResourceIT {
             .andExpect(jsonPath("$.id").value(workingEntry.getId().intValue()))
             .andExpect(jsonPath("$.start").value(DEFAULT_START.toString()))
             .andExpect(jsonPath("$.end").value(DEFAULT_END.toString()))
-            .andExpect(jsonPath("$.deleteFlag").value(DEFAULT_DELETE_FLAG.booleanValue()));
+            .andExpect(jsonPath("$.deleteFlag").value(DEFAULT_DELETE_FLAG.booleanValue()))
+            .andExpect(jsonPath("$.lockedFlag").value(DEFAULT_LOCKED_FLAG.booleanValue()))
+            .andExpect(jsonPath("$.createdAt").value(DEFAULT_CREATED_AT.toString()));
     }
+
+    @Test
+    @Transactional
+    public void getAllWorkingEntriesByStartIsEqualToSomething() throws Exception {
+        // Initialize the database
+        workingEntryRepository.saveAndFlush(workingEntry);
+
+        // Get all the workingEntryList where start equals to DEFAULT_START
+        defaultWorkingEntryShouldBeFound("start.equals=" + DEFAULT_START);
+
+        // Get all the workingEntryList where start equals to UPDATED_START
+        defaultWorkingEntryShouldNotBeFound("start.equals=" + UPDATED_START);
+    }
+
+    @Test
+    @Transactional
+    public void getAllWorkingEntriesByStartIsInShouldWork() throws Exception {
+        // Initialize the database
+        workingEntryRepository.saveAndFlush(workingEntry);
+
+        // Get all the workingEntryList where start in DEFAULT_START or UPDATED_START
+        defaultWorkingEntryShouldBeFound("start.in=" + DEFAULT_START + "," + UPDATED_START);
+
+        // Get all the workingEntryList where start equals to UPDATED_START
+        defaultWorkingEntryShouldNotBeFound("start.in=" + UPDATED_START);
+    }
+
+    @Test
+    @Transactional
+    public void getAllWorkingEntriesByStartIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        workingEntryRepository.saveAndFlush(workingEntry);
+
+        // Get all the workingEntryList where start is not null
+        defaultWorkingEntryShouldBeFound("start.specified=true");
+
+        // Get all the workingEntryList where start is null
+        defaultWorkingEntryShouldNotBeFound("start.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllWorkingEntriesByEndIsEqualToSomething() throws Exception {
+        // Initialize the database
+        workingEntryRepository.saveAndFlush(workingEntry);
+
+        // Get all the workingEntryList where end equals to DEFAULT_END
+        defaultWorkingEntryShouldBeFound("end.equals=" + DEFAULT_END);
+
+        // Get all the workingEntryList where end equals to UPDATED_END
+        defaultWorkingEntryShouldNotBeFound("end.equals=" + UPDATED_END);
+    }
+
+    @Test
+    @Transactional
+    public void getAllWorkingEntriesByEndIsInShouldWork() throws Exception {
+        // Initialize the database
+        workingEntryRepository.saveAndFlush(workingEntry);
+
+        // Get all the workingEntryList where end in DEFAULT_END or UPDATED_END
+        defaultWorkingEntryShouldBeFound("end.in=" + DEFAULT_END + "," + UPDATED_END);
+
+        // Get all the workingEntryList where end equals to UPDATED_END
+        defaultWorkingEntryShouldNotBeFound("end.in=" + UPDATED_END);
+    }
+
+    @Test
+    @Transactional
+    public void getAllWorkingEntriesByEndIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        workingEntryRepository.saveAndFlush(workingEntry);
+
+        // Get all the workingEntryList where end is not null
+        defaultWorkingEntryShouldBeFound("end.specified=true");
+
+        // Get all the workingEntryList where end is null
+        defaultWorkingEntryShouldNotBeFound("end.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllWorkingEntriesByDeleteFlagIsEqualToSomething() throws Exception {
+        // Initialize the database
+        workingEntryRepository.saveAndFlush(workingEntry);
+
+        // Get all the workingEntryList where deleteFlag equals to DEFAULT_DELETE_FLAG
+        defaultWorkingEntryShouldBeFound("deleteFlag.equals=" + DEFAULT_DELETE_FLAG);
+
+        // Get all the workingEntryList where deleteFlag equals to UPDATED_DELETE_FLAG
+        defaultWorkingEntryShouldNotBeFound("deleteFlag.equals=" + UPDATED_DELETE_FLAG);
+    }
+
+    @Test
+    @Transactional
+    public void getAllWorkingEntriesByDeleteFlagIsInShouldWork() throws Exception {
+        // Initialize the database
+        workingEntryRepository.saveAndFlush(workingEntry);
+
+        // Get all the workingEntryList where deleteFlag in DEFAULT_DELETE_FLAG or UPDATED_DELETE_FLAG
+        defaultWorkingEntryShouldBeFound("deleteFlag.in=" + DEFAULT_DELETE_FLAG + "," + UPDATED_DELETE_FLAG);
+
+        // Get all the workingEntryList where deleteFlag equals to UPDATED_DELETE_FLAG
+        defaultWorkingEntryShouldNotBeFound("deleteFlag.in=" + UPDATED_DELETE_FLAG);
+    }
+
+    @Test
+    @Transactional
+    public void getAllWorkingEntriesByDeleteFlagIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        workingEntryRepository.saveAndFlush(workingEntry);
+
+        // Get all the workingEntryList where deleteFlag is not null
+        defaultWorkingEntryShouldBeFound("deleteFlag.specified=true");
+
+        // Get all the workingEntryList where deleteFlag is null
+        defaultWorkingEntryShouldNotBeFound("deleteFlag.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllWorkingEntriesByLockedFlagIsEqualToSomething() throws Exception {
+        // Initialize the database
+        workingEntryRepository.saveAndFlush(workingEntry);
+
+        // Get all the workingEntryList where lockedFlag equals to DEFAULT_LOCKED_FLAG
+        defaultWorkingEntryShouldBeFound("lockedFlag.equals=" + DEFAULT_LOCKED_FLAG);
+
+        // Get all the workingEntryList where lockedFlag equals to UPDATED_LOCKED_FLAG
+        defaultWorkingEntryShouldNotBeFound("lockedFlag.equals=" + UPDATED_LOCKED_FLAG);
+    }
+
+    @Test
+    @Transactional
+    public void getAllWorkingEntriesByLockedFlagIsInShouldWork() throws Exception {
+        // Initialize the database
+        workingEntryRepository.saveAndFlush(workingEntry);
+
+        // Get all the workingEntryList where lockedFlag in DEFAULT_LOCKED_FLAG or UPDATED_LOCKED_FLAG
+        defaultWorkingEntryShouldBeFound("lockedFlag.in=" + DEFAULT_LOCKED_FLAG + "," + UPDATED_LOCKED_FLAG);
+
+        // Get all the workingEntryList where lockedFlag equals to UPDATED_LOCKED_FLAG
+        defaultWorkingEntryShouldNotBeFound("lockedFlag.in=" + UPDATED_LOCKED_FLAG);
+    }
+
+    @Test
+    @Transactional
+    public void getAllWorkingEntriesByLockedFlagIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        workingEntryRepository.saveAndFlush(workingEntry);
+
+        // Get all the workingEntryList where lockedFlag is not null
+        defaultWorkingEntryShouldBeFound("lockedFlag.specified=true");
+
+        // Get all the workingEntryList where lockedFlag is null
+        defaultWorkingEntryShouldNotBeFound("lockedFlag.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllWorkingEntriesByCreatedAtIsEqualToSomething() throws Exception {
+        // Initialize the database
+        workingEntryRepository.saveAndFlush(workingEntry);
+
+        // Get all the workingEntryList where createdAt equals to DEFAULT_CREATED_AT
+        defaultWorkingEntryShouldBeFound("createdAt.equals=" + DEFAULT_CREATED_AT);
+
+        // Get all the workingEntryList where createdAt equals to UPDATED_CREATED_AT
+        defaultWorkingEntryShouldNotBeFound("createdAt.equals=" + UPDATED_CREATED_AT);
+    }
+
+    @Test
+    @Transactional
+    public void getAllWorkingEntriesByCreatedAtIsInShouldWork() throws Exception {
+        // Initialize the database
+        workingEntryRepository.saveAndFlush(workingEntry);
+
+        // Get all the workingEntryList where createdAt in DEFAULT_CREATED_AT or UPDATED_CREATED_AT
+        defaultWorkingEntryShouldBeFound("createdAt.in=" + DEFAULT_CREATED_AT + "," + UPDATED_CREATED_AT);
+
+        // Get all the workingEntryList where createdAt equals to UPDATED_CREATED_AT
+        defaultWorkingEntryShouldNotBeFound("createdAt.in=" + UPDATED_CREATED_AT);
+    }
+
+    @Test
+    @Transactional
+    public void getAllWorkingEntriesByCreatedAtIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        workingEntryRepository.saveAndFlush(workingEntry);
+
+        // Get all the workingEntryList where createdAt is not null
+        defaultWorkingEntryShouldBeFound("createdAt.specified=true");
+
+        // Get all the workingEntryList where createdAt is null
+        defaultWorkingEntryShouldNotBeFound("createdAt.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllWorkingEntriesByEmployeeIsEqualToSomething() throws Exception {
+        // Initialize the database
+        Employee employee = EmployeeResourceIT.createEntity(em);
+        em.persist(employee);
+        em.flush();
+        workingEntry.setEmployee(employee);
+        workingEntryRepository.saveAndFlush(workingEntry);
+        Long employeeId = employee.getId();
+
+        // Get all the workingEntryList where employee equals to employeeId
+        defaultWorkingEntryShouldBeFound("employeeId.equals=" + employeeId);
+
+        // Get all the workingEntryList where employee equals to employeeId + 1
+        defaultWorkingEntryShouldNotBeFound("employeeId.equals=" + (employeeId + 1));
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllWorkingEntriesByActivityIsEqualToSomething() throws Exception {
+        // Initialize the database
+        Activity activity = ActivityResourceIT.createEntity(em);
+        em.persist(activity);
+        em.flush();
+        workingEntry.setActivity(activity);
+        workingEntryRepository.saveAndFlush(workingEntry);
+        Long activityId = activity.getId();
+
+        // Get all the workingEntryList where activity equals to activityId
+        defaultWorkingEntryShouldBeFound("activityId.equals=" + activityId);
+
+        // Get all the workingEntryList where activity equals to activityId + 1
+        defaultWorkingEntryShouldNotBeFound("activityId.equals=" + (activityId + 1));
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllWorkingEntriesByWorkDayIsEqualToSomething() throws Exception {
+        // Initialize the database
+        WorkDay workDay = WorkDayResourceIT.createEntity(em);
+        em.persist(workDay);
+        em.flush();
+        workingEntry.setWorkDay(workDay);
+        workingEntryRepository.saveAndFlush(workingEntry);
+        Long workDayId = workDay.getId();
+
+        // Get all the workingEntryList where workDay equals to workDayId
+        defaultWorkingEntryShouldBeFound("workDayId.equals=" + workDayId);
+
+        // Get all the workingEntryList where workDay equals to workDayId + 1
+        defaultWorkingEntryShouldNotBeFound("workDayId.equals=" + (workDayId + 1));
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllWorkingEntriesByLocationIsEqualToSomething() throws Exception {
+        // Initialize the database
+        Location location = LocationResourceIT.createEntity(em);
+        em.persist(location);
+        em.flush();
+        workingEntry.setLocation(location);
+        workingEntryRepository.saveAndFlush(workingEntry);
+        Long locationId = location.getId();
+
+        // Get all the workingEntryList where location equals to locationId
+        defaultWorkingEntryShouldBeFound("locationId.equals=" + locationId);
+
+        // Get all the workingEntryList where location equals to locationId + 1
+        defaultWorkingEntryShouldNotBeFound("locationId.equals=" + (locationId + 1));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is returned.
+     */
+    private void defaultWorkingEntryShouldBeFound(String filter) throws Exception {
+        restWorkingEntryMockMvc.perform(get("/api/working-entries?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(workingEntry.getId().intValue())))
+            .andExpect(jsonPath("$.[*].start").value(hasItem(DEFAULT_START.toString())))
+            .andExpect(jsonPath("$.[*].end").value(hasItem(DEFAULT_END.toString())))
+            .andExpect(jsonPath("$.[*].deleteFlag").value(hasItem(DEFAULT_DELETE_FLAG.booleanValue())))
+            .andExpect(jsonPath("$.[*].lockedFlag").value(hasItem(DEFAULT_LOCKED_FLAG.booleanValue())))
+            .andExpect(jsonPath("$.[*].createdAt").value(hasItem(DEFAULT_CREATED_AT.toString())));
+
+        // Check, that the count call also returns 1
+        restWorkingEntryMockMvc.perform(get("/api/working-entries/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("1"));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is not returned.
+     */
+    private void defaultWorkingEntryShouldNotBeFound(String filter) throws Exception {
+        restWorkingEntryMockMvc.perform(get("/api/working-entries?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restWorkingEntryMockMvc.perform(get("/api/working-entries/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("0"));
+    }
+
 
     @Test
     @Transactional
@@ -246,7 +598,9 @@ public class WorkingEntryResourceIT {
         updatedWorkingEntry
             .start(UPDATED_START)
             .end(UPDATED_END)
-            .deleteFlag(UPDATED_DELETE_FLAG);
+            .deleteFlag(UPDATED_DELETE_FLAG)
+            .lockedFlag(UPDATED_LOCKED_FLAG)
+            .createdAt(UPDATED_CREATED_AT);
 
         restWorkingEntryMockMvc.perform(put("/api/working-entries")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -260,6 +614,8 @@ public class WorkingEntryResourceIT {
         assertThat(testWorkingEntry.getStart()).isEqualTo(UPDATED_START);
         assertThat(testWorkingEntry.getEnd()).isEqualTo(UPDATED_END);
         assertThat(testWorkingEntry.isDeleteFlag()).isEqualTo(UPDATED_DELETE_FLAG);
+        assertThat(testWorkingEntry.isLockedFlag()).isEqualTo(UPDATED_LOCKED_FLAG);
+        assertThat(testWorkingEntry.getCreatedAt()).isEqualTo(UPDATED_CREATED_AT);
     }
 
     @Test

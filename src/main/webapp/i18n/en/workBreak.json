@@ -1,0 +1,24 @@
+{
+  "timesheetApp": {
+    "workBreak": {
+      "home": {
+        "title": "Work Breaks",
+        "createLabel": "Create a new Work Break",
+        "createOrEditLabel": "Create or edit a Work Break",
+        "notFound": "No Work Break found"
+      },
+      "created": "A new Work Break is created with identifier {{ param }}",
+      "updated": "A Work Break is updated with identifier {{ param }}",
+      "deleted": "A Work Break is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Work Break {{ id }}?"
+      },
+      "detail": {
+        "title": "Work Break"
+      },
+      "minutes": "Minutes",
+      "employee": "Employee",
+      "workDay": "Work Day"
+    }
+  }
+}
