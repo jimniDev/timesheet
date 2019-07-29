@@ -18,7 +18,8 @@
       },
       "name": "Name",
       "description": "Description",
-      "workingEntry": "Working Entry"
+      "workingEntry": "Working Entry",
+      "role": "Role"
     }
   }
 }

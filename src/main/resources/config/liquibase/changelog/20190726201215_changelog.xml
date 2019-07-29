@@ -1,0 +1,149 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+    <changeSet author="PhilippRingele (generated)" id="1564172013573-5">
+        <createTable tableName="day_of_week">
+            <column autoIncrement="true" name="id" type="numeric(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="day_of_weekPK"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="PhilippRingele (generated)" id="1564172013573-6">
+        <createTable tableName="role">
+            <column autoIncrement="true" name="id" type="numeric(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="rolePK"/>
+            </column>
+            <column name="description" type="varchar(255)"/>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="PhilippRingele (generated)" id="1564172013573-7">
+        <createTable tableName="target_working_day">
+            <column autoIncrement="true" name="id" type="numeric(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="target_working_dayPK"/>
+            </column>
+            <column name="hours" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="day_of_week_id" type="numeric(19, 0)"/>
+            <column name="employee_id" type="numeric(19, 0)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="PhilippRingele (generated)" id="1564172013573-8">
+        <createTable tableName="weekly_working_hours">
+            <column autoIncrement="true" name="id" type="numeric(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="weekly_working_hoursPK"/>
+            </column>
+            <column name="end_date" type="datetime"/>
+            <column name="hours" type="int"/>
+            <column name="start_date" type="datetime"/>
+            <column name="employee_id" type="numeric(19, 0)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="PhilippRingele (generated)" id="1564172013573-9">
+        <createTable tableName="work_break">
+            <column autoIncrement="true" name="id" type="numeric(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="work_breakPK"/>
+            </column>
+            <column name="minutes" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="employee_id" type="bigint"/>
+            <column name="work_day_id" type="numeric(19, 0)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="PhilippRingele (generated)" id="1564172013573-10">
+        <createTable tableName="work_day">
+            <column autoIncrement="true" name="id" type="numeric(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="work_dayPK"/>
+            </column>
+            <column name="date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="employee_id" type="numeric(19, 0)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="PhilippRingele (generated)" id="1564172013573-11">
+        <addColumn tableName="working_entry">
+            <column name="created_at" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="PhilippRingele (generated)" id="1564172013573-12">
+        <addColumn tableName="employee">
+            <column name="is_employed" type="bit"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="PhilippRingele (generated)" id="1564172013573-13">
+        <addColumn tableName="working_entry">
+            <column name="locked_flag" type="bit"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="PhilippRingele (generated)" id="1564172013573-14">
+        <addColumn tableName="activity">
+            <column name="role_id" type="numeric(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="PhilippRingele (generated)" id="1564172013573-15">
+        <addColumn tableName="working_entry">
+            <column name="work_day_id" type="numeric(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="PhilippRingele (generated)" id="1564172013573-16">
+        <addForeignKeyConstraint baseColumnNames="employee_id" baseTableName="work_day" constraintName="FK4cwadmdodwax7kqbmos98rlxw" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="employee" validate="true"/>
+    </changeSet>
+    <changeSet author="PhilippRingele (generated)" id="1564172013573-17">
+        <addForeignKeyConstraint baseColumnNames="employee_id" baseTableName="work_break" constraintName="FKc6agh11swkwqpa66r1a612t03" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="employee" validate="true"/>
+    </changeSet>
+    <changeSet author="PhilippRingele (generated)" id="1564172013573-18">
+        <addForeignKeyConstraint baseColumnNames="role_id" baseTableName="activity" constraintName="FKcl3qfu8njpmfxdvv570ad8gnf" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="role" validate="true"/>
+    </changeSet>
+    <changeSet author="PhilippRingele (generated)" id="1564172013573-19">
+        <addForeignKeyConstraint baseColumnNames="employee_id" baseTableName="weekly_working_hours" constraintName="FKfo495ybfa6mgxy3jikiw0j4x0" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="employee" validate="true"/>
+    </changeSet>
+    <changeSet author="PhilippRingele (generated)" id="1564172013573-20">
+        <addForeignKeyConstraint baseColumnNames="employee_id" baseTableName="target_working_day" constraintName="FKlth7p29hjvw5ekv50tflesg2j" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="employee" validate="true"/>
+    </changeSet>
+    <changeSet author="PhilippRingele (generated)" id="1564172013573-21">
+        <addForeignKeyConstraint baseColumnNames="work_day_id" baseTableName="work_break" constraintName="FKp9upo3jieqegc0duc54o3s2oi" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="work_day" validate="true"/>
+    </changeSet>
+    <changeSet author="PhilippRingele (generated)" id="1564172013573-22">
+        <addForeignKeyConstraint baseColumnNames="day_of_week_id" baseTableName="target_working_day" constraintName="FKq6n4p2c3jcnuv0mnr3kg3v6b8" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="day_of_week" validate="true"/>
+    </changeSet>
+    <changeSet author="PhilippRingele (generated)" id="1564172013573-23">
+        <addForeignKeyConstraint baseColumnNames="work_day_id" baseTableName="working_entry" constraintName="FKsrvbf6inxd2tdipmi7u1ya45w" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="work_day" validate="true"/>
+    </changeSet>
+    <changeSet author="PhilippRingele (generated)" id="1564172013573-24">
+        <dropForeignKeyConstraint baseTableName="working_day" constraintName="fk_working_day_day_id"/>
+    </changeSet>
+    <changeSet author="PhilippRingele (generated)" id="1564172013573-25">
+        <dropForeignKeyConstraint baseTableName="working_day" constraintName="fk_working_day_employee_id"/>
+    </changeSet>
+    <changeSet author="PhilippRingele (generated)" id="1564172013573-26">
+        <dropTable tableName="day"/>
+    </changeSet>
+    <changeSet author="PhilippRingele (generated)" id="1564172013573-27">
+        <dropTable tableName="working_day"/>
+    </changeSet>
+    <changeSet author="PhilippRingele (generated)" id="1564172013573-1">
+        <alterSequence sequenceName="sequence_generator"/>
+        <alterSequence sequenceName="sequence_generator"/>
+        <alterSequence sequenceName="sequence_generator"/>
+    </changeSet>
+    <changeSet author="PhilippRingele (generated)" id="1564172013573-2">
+        <addNotNullConstraint columnDataType="varchar(255)" columnName="name" tableName="activity"/>
+    </changeSet>
+    <changeSet author="PhilippRingele (generated)" id="1564172013573-3">
+        <dropUniqueConstraint constraintName="UC_JHI_USEREMAIL_COL" tableName="jhi_user"/>
+        <addUniqueConstraint columnNames="email" constraintName="UC_JHI_USEREMAIL_COL" tableName="jhi_user"/>
+    </changeSet>
+    <changeSet author="PhilippRingele (generated)" id="1564172013573-4">
+        <dropUniqueConstraint constraintName="UC_JHI_USERLOGIN_COL" tableName="jhi_user"/>
+        <addUniqueConstraint columnNames="login" constraintName="UC_JHI_USERLOGIN_COL" tableName="jhi_user"/>
+    </changeSet>
+</databaseChangeLog>

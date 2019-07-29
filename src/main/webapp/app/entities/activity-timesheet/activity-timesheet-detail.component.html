@@ -13,6 +13,12 @@
                 <dd>
                     <span>{{activity.description}}</span>
                 </dd>
+                <dt><span jhiTranslate="timesheetApp.activity.role">Role</span></dt>
+                <dd>
+                    <div *ngIf="activity.role">
+                        <a [routerLink]="['/role-timesheet', activity.role?.id, 'view']">{{activity.role?.id}}</a>
+                    </div>
+                </dd>
             </dl>
 
             <button type="submit"

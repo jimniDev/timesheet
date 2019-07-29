@@ -27,7 +27,7 @@ describe('Service Tests', () => {
       httpMock = injector.get(HttpTestingController);
       currentDate = moment();
 
-      elemDefault = new WorkingEntryTimesheet(0, currentDate, currentDate, false);
+      elemDefault = new WorkingEntryTimesheet(0, currentDate, currentDate, false, false, currentDate);
     });
 
     describe('Service methods', () => {
@@ -35,7 +35,8 @@ describe('Service Tests', () => {
         const returnedFromService = Object.assign(
           {
             start: currentDate.format(DATE_TIME_FORMAT),
-            end: currentDate.format(DATE_TIME_FORMAT)
+            end: currentDate.format(DATE_TIME_FORMAT),
+            createdAt: currentDate.format(DATE_TIME_FORMAT)
           },
           elemDefault
         );
@@ -54,14 +55,16 @@ describe('Service Tests', () => {
           {
             id: 0,
             start: currentDate.format(DATE_TIME_FORMAT),
-            end: currentDate.format(DATE_TIME_FORMAT)
+            end: currentDate.format(DATE_TIME_FORMAT),
+            createdAt: currentDate.format(DATE_TIME_FORMAT)
           },
           elemDefault
         );
         const expected = Object.assign(
           {
             start: currentDate,
-            end: currentDate
+            end: currentDate,
+            createdAt: currentDate
           },
           returnedFromService
         );
@@ -79,7 +82,9 @@ describe('Service Tests', () => {
           {
             start: currentDate.format(DATE_TIME_FORMAT),
             end: currentDate.format(DATE_TIME_FORMAT),
-            deleteFlag: true
+            deleteFlag: true,
+            lockedFlag: true,
+            createdAt: currentDate.format(DATE_TIME_FORMAT)
           },
           elemDefault
         );
@@ -87,7 +92,8 @@ describe('Service Tests', () => {
         const expected = Object.assign(
           {
             start: currentDate,
-            end: currentDate
+            end: currentDate,
+            createdAt: currentDate
           },
           returnedFromService
         );
@@ -105,14 +111,17 @@ describe('Service Tests', () => {
           {
             start: currentDate.format(DATE_TIME_FORMAT),
             end: currentDate.format(DATE_TIME_FORMAT),
-            deleteFlag: true
+            deleteFlag: true,
+            lockedFlag: true,
+            createdAt: currentDate.format(DATE_TIME_FORMAT)
           },
           elemDefault
         );
         const expected = Object.assign(
           {
             start: currentDate,
-            end: currentDate
+            end: currentDate,
+            createdAt: currentDate
           },
           returnedFromService
         );

@@ -3,9 +3,13 @@ package com.asscope.timesheet.web.rest;
 import com.asscope.timesheet.TimesheetApp;
 import com.asscope.timesheet.config.TestSecurityConfiguration;
 import com.asscope.timesheet.domain.Activity;
+import com.asscope.timesheet.domain.WorkingEntry;
+import com.asscope.timesheet.domain.Role;
 import com.asscope.timesheet.repository.ActivityRepository;
 import com.asscope.timesheet.service.ActivityService;
 import com.asscope.timesheet.web.rest.errors.ExceptionTranslator;
+import com.asscope.timesheet.service.dto.ActivityCriteria;
+import com.asscope.timesheet.service.ActivityQueryService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,6 +52,9 @@ public class ActivityResourceIT {
     private ActivityService activityService;
 
     @Autowired
+    private ActivityQueryService activityQueryService;
+
+    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Autowired
@@ -69,7 +76,7 @@ public class ActivityResourceIT {
     @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final ActivityResource activityResource = new ActivityResource(activityService);
+        final ActivityResource activityResource = new ActivityResource(activityService, activityQueryService);
         this.restActivityMockMvc = MockMvcBuilders.standaloneSetup(activityResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -149,6 +156,24 @@ public class ActivityResourceIT {
 
     @Test
     @Transactional
+    public void checkNameIsRequired() throws Exception {
+        int databaseSizeBeforeTest = activityRepository.findAll().size();
+        // set the field null
+        activity.setName(null);
+
+        // Create the Activity, which fails.
+
+        restActivityMockMvc.perform(post("/api/activities")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(activity)))
+            .andExpect(status().isBadRequest());
+
+        List<Activity> activityList = activityRepository.findAll();
+        assertThat(activityList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
     public void getAllActivities() throws Exception {
         // Initialize the database
         activityRepository.saveAndFlush(activity);
@@ -176,6 +201,157 @@ public class ActivityResourceIT {
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
             .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION.toString()));
     }
+
+    @Test
+    @Transactional
+    public void getAllActivitiesByNameIsEqualToSomething() throws Exception {
+        // Initialize the database
+        activityRepository.saveAndFlush(activity);
+
+        // Get all the activityList where name equals to DEFAULT_NAME
+        defaultActivityShouldBeFound("name.equals=" + DEFAULT_NAME);
+
+        // Get all the activityList where name equals to UPDATED_NAME
+        defaultActivityShouldNotBeFound("name.equals=" + UPDATED_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllActivitiesByNameIsInShouldWork() throws Exception {
+        // Initialize the database
+        activityRepository.saveAndFlush(activity);
+
+        // Get all the activityList where name in DEFAULT_NAME or UPDATED_NAME
+        defaultActivityShouldBeFound("name.in=" + DEFAULT_NAME + "," + UPDATED_NAME);
+
+        // Get all the activityList where name equals to UPDATED_NAME
+        defaultActivityShouldNotBeFound("name.in=" + UPDATED_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllActivitiesByNameIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        activityRepository.saveAndFlush(activity);
+
+        // Get all the activityList where name is not null
+        defaultActivityShouldBeFound("name.specified=true");
+
+        // Get all the activityList where name is null
+        defaultActivityShouldNotBeFound("name.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllActivitiesByDescriptionIsEqualToSomething() throws Exception {
+        // Initialize the database
+        activityRepository.saveAndFlush(activity);
+
+        // Get all the activityList where description equals to DEFAULT_DESCRIPTION
+        defaultActivityShouldBeFound("description.equals=" + DEFAULT_DESCRIPTION);
+
+        // Get all the activityList where description equals to UPDATED_DESCRIPTION
+        defaultActivityShouldNotBeFound("description.equals=" + UPDATED_DESCRIPTION);
+    }
+
+    @Test
+    @Transactional
+    public void getAllActivitiesByDescriptionIsInShouldWork() throws Exception {
+        // Initialize the database
+        activityRepository.saveAndFlush(activity);
+
+        // Get all the activityList where description in DEFAULT_DESCRIPTION or UPDATED_DESCRIPTION
+        defaultActivityShouldBeFound("description.in=" + DEFAULT_DESCRIPTION + "," + UPDATED_DESCRIPTION);
+
+        // Get all the activityList where description equals to UPDATED_DESCRIPTION
+        defaultActivityShouldNotBeFound("description.in=" + UPDATED_DESCRIPTION);
+    }
+
+    @Test
+    @Transactional
+    public void getAllActivitiesByDescriptionIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        activityRepository.saveAndFlush(activity);
+
+        // Get all the activityList where description is not null
+        defaultActivityShouldBeFound("description.specified=true");
+
+        // Get all the activityList where description is null
+        defaultActivityShouldNotBeFound("description.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllActivitiesByWorkingEntryIsEqualToSomething() throws Exception {
+        // Initialize the database
+        WorkingEntry workingEntry = WorkingEntryResourceIT.createEntity(em);
+        em.persist(workingEntry);
+        em.flush();
+        activity.addWorkingEntry(workingEntry);
+        activityRepository.saveAndFlush(activity);
+        Long workingEntryId = workingEntry.getId();
+
+        // Get all the activityList where workingEntry equals to workingEntryId
+        defaultActivityShouldBeFound("workingEntryId.equals=" + workingEntryId);
+
+        // Get all the activityList where workingEntry equals to workingEntryId + 1
+        defaultActivityShouldNotBeFound("workingEntryId.equals=" + (workingEntryId + 1));
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllActivitiesByRoleIsEqualToSomething() throws Exception {
+        // Initialize the database
+        Role role = RoleResourceIT.createEntity(em);
+        em.persist(role);
+        em.flush();
+        activity.setRole(role);
+        activityRepository.saveAndFlush(activity);
+        Long roleId = role.getId();
+
+        // Get all the activityList where role equals to roleId
+        defaultActivityShouldBeFound("roleId.equals=" + roleId);
+
+        // Get all the activityList where role equals to roleId + 1
+        defaultActivityShouldNotBeFound("roleId.equals=" + (roleId + 1));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is returned.
+     */
+    private void defaultActivityShouldBeFound(String filter) throws Exception {
+        restActivityMockMvc.perform(get("/api/activities?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(activity.getId().intValue())))
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)));
+
+        // Check, that the count call also returns 1
+        restActivityMockMvc.perform(get("/api/activities/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("1"));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is not returned.
+     */
+    private void defaultActivityShouldNotBeFound(String filter) throws Exception {
+        restActivityMockMvc.perform(get("/api/activities?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restActivityMockMvc.perform(get("/api/activities/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("0"));
+    }
+
 
     @Test
     @Transactional

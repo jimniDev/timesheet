@@ -46,9 +46,6 @@ public class CacheConfiguration {
             createCache(cm, com.asscope.timesheet.domain.Employee.class.getName());
             createCache(cm, com.asscope.timesheet.domain.Employee.class.getName() + ".workingEntries");
             createCache(cm, com.asscope.timesheet.domain.Employee.class.getName() + ".workingDays");
-            createCache(cm, com.asscope.timesheet.domain.WorkingDay.class.getName());
-            createCache(cm, com.asscope.timesheet.domain.Day.class.getName());
-            createCache(cm, com.asscope.timesheet.domain.Day.class.getName() + ".workingDays");
             createCache(cm, com.asscope.timesheet.domain.WorkingEntry.class.getName());
             createCache(cm, com.asscope.timesheet.domain.Activity.class.getName());
             createCache(cm, com.asscope.timesheet.domain.Activity.class.getName() + ".workingEntries");
@@ -56,6 +53,20 @@ public class CacheConfiguration {
             createCache(cm, com.asscope.timesheet.domain.Location.class.getName() + ".workingEntries");
             createCache(cm, com.asscope.timesheet.domain.Country.class.getName());
             createCache(cm, com.asscope.timesheet.domain.Country.class.getName() + ".locations");
+            createCache(cm, com.asscope.timesheet.domain.Employee.class.getName() + ".targetWorkingDays");
+            createCache(cm, com.asscope.timesheet.domain.Employee.class.getName() + ".weeklyWorkingHours");
+            createCache(cm, com.asscope.timesheet.domain.Employee.class.getName() + ".workDays");
+            createCache(cm, com.asscope.timesheet.domain.Employee.class.getName() + ".workBreaks");
+            createCache(cm, com.asscope.timesheet.domain.TargetWorkingDay.class.getName());
+            createCache(cm, com.asscope.timesheet.domain.DayOfWeek.class.getName());
+            createCache(cm, com.asscope.timesheet.domain.DayOfWeek.class.getName() + ".targetWorkingDays");
+            createCache(cm, com.asscope.timesheet.domain.WeeklyWorkingHours.class.getName());
+            createCache(cm, com.asscope.timesheet.domain.WorkDay.class.getName());
+            createCache(cm, com.asscope.timesheet.domain.WorkDay.class.getName() + ".workingEntries");
+            createCache(cm, com.asscope.timesheet.domain.WorkDay.class.getName() + ".workBreaks");
+            createCache(cm, com.asscope.timesheet.domain.WorkBreak.class.getName());
+            createCache(cm, com.asscope.timesheet.domain.Role.class.getName());
+            createCache(cm, com.asscope.timesheet.domain.Role.class.getName() + ".activities");
             // jhipster-needle-ehcache-add-entry
         };
     }

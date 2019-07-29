@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+    <!--
+        Added the constraints for entity WorkBreak.
+    -->
+    <changeSet id="20190726193528-2" author="jhipster">
+        
+        <addForeignKeyConstraint baseColumnNames="employee_id"
+                                 baseTableName="work_break"
+                                 constraintName="fk_work_break_employee_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="employee"/>
+
+        <addForeignKeyConstraint baseColumnNames="work_day_id"
+                                 baseTableName="work_break"
+                                 constraintName="fk_work_break_work_day_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="work_day"/>
+
+    </changeSet>
+</databaseChangeLog>

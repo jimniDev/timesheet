@@ -24,9 +24,28 @@
     <include file="config/liquibase/changelog/20190719135456_changelog.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190723071306_changelog.xml" relativeToChangelogFile="false"/>
 	<include file="config/liquibase/changelog/20190724143853_changelog.xml" relativeToChangelogFile="false"/>
+	<include file="config/liquibase/changelog/20190726201215_changelog.xml" relativeToChangelogFile="false"/>
+<!--     <include file="config/liquibase/changelog/20190726193522_added_entity_Employee.xml" relativeToChangelogFile="false"/> -->
+<!--     <include file="config/liquibase/changelog/20190726193523_added_entity_TargetWorkingDay.xml" relativeToChangelogFile="false"/> -->
+<!--     <include file="config/liquibase/changelog/20190726193524_added_entity_DayOfWeek.xml" relativeToChangelogFile="false"/> -->
+<!--     <include file="config/liquibase/changelog/20190726193525_added_entity_WeeklyWorkingHours.xml" relativeToChangelogFile="false"/> -->
+<!--     <include file="config/liquibase/changelog/20190726193526_added_entity_WorkingEntry.xml" relativeToChangelogFile="false"/> -->
+<!--     <include file="config/liquibase/changelog/20190726193527_added_entity_WorkDay.xml" relativeToChangelogFile="false"/> -->
+<!--     <include file="config/liquibase/changelog/20190726193528_added_entity_WorkBreak.xml" relativeToChangelogFile="false"/> -->
+<!--     <include file="config/liquibase/changelog/20190726193529_added_entity_Activity.xml" relativeToChangelogFile="false"/> -->
+<!--     <include file="config/liquibase/changelog/20190726193530_added_entity_Role.xml" relativeToChangelogFile="false"/> -->
+<!--     <include file="config/liquibase/changelog/20190726193531_added_entity_Location.xml" relativeToChangelogFile="false"/> -->
+<!--     <include file="config/liquibase/changelog/20190726193532_added_entity_Country.xml" relativeToChangelogFile="false"/> -->
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <include file="config/liquibase/changelog/20190718143742_added_entity_constraints_WorkingDay.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190718143744_added_entity_constraints_WorkingEntry.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190718143746_added_entity_constraints_Location.xml" relativeToChangelogFile="false"/>
+<!--     <include file="config/liquibase/changelog/20190726193523_added_entity_constraints_TargetWorkingDay.xml" relativeToChangelogFile="false"/> -->
+<!--     <include file="config/liquibase/changelog/20190726193525_added_entity_constraints_WeeklyWorkingHours.xml" relativeToChangelogFile="false"/> -->
+<!--     <include file="config/liquibase/changelog/20190726193526_added_entity_constraints_WorkingEntry.xml" relativeToChangelogFile="false"/> -->
+<!--     <include file="config/liquibase/changelog/20190726193527_added_entity_constraints_WorkDay.xml" relativeToChangelogFile="false"/> -->
+<!--     <include file="config/liquibase/changelog/20190726193528_added_entity_constraints_WorkBreak.xml" relativeToChangelogFile="false"/> -->
+<!--     <include file="config/liquibase/changelog/20190726193529_added_entity_constraints_Activity.xml" relativeToChangelogFile="false"/> -->
+<!--     <include file="config/liquibase/changelog/20190726193531_added_entity_constraints_Location.xml" relativeToChangelogFile="false"/> -->
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
 </databaseChangeLog>

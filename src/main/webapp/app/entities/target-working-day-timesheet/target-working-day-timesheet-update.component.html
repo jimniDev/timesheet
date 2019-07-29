@@ -1,0 +1,53 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+            <h2 id="jhi-target-working-day-timesheet-heading" jhiTranslate="timesheetApp.targetWorkingDay.home.createOrEditLabel">Create or edit a Target Working Day</h2>
+            <div>
+                <jhi-alert-error></jhi-alert-error>
+                <div class="form-group" [hidden]="!editForm.get('id').value">
+                    <label for="id" jhiTranslate="global.field.id">ID</label>
+                    <input type="text" class="form-control" id="id" name="id" formControlName="id"
+                        readonly />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="timesheetApp.targetWorkingDay.hours" for="field_hours">Hours</label>
+                    <input type="number" class="form-control" name="hours" id="field_hours"
+                           formControlName="hours"/>
+                    <div *ngIf="editForm.get('hours').invalid && (editForm.get('hours').dirty || editForm.get('hours').touched)">
+                        <small class="form-text text-danger"
+                               *ngIf="editForm.get('hours').errors.required" jhiTranslate="entity.validation.required">
+                        This field is required.
+                        </small>
+                        <small class="form-text text-danger"
+                            [hidden]="!editForm.get('hours')?.errors?.number" jhiTranslate="entity.validation.number">
+                            This field should be a number.
+                        </small>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="timesheetApp.targetWorkingDay.employee" for="field_employee">Employee</label>
+                    <select class="form-control" id="field_employee" name="employee" formControlName="employee">
+                        <option [ngValue]="null"></option>
+                        <option [ngValue]="employeeOption.id === editForm.get('employee').value?.id ? editForm.get('employee').value : employeeOption" *ngFor="let employeeOption of employees; trackBy: trackEmployeeById">{{employeeOption.id}}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="timesheetApp.targetWorkingDay.dayOfWeek" for="field_dayOfWeek">Day Of Week</label>
+                    <select class="form-control" id="field_dayOfWeek" name="dayOfWeek" formControlName="dayOfWeek">
+                        <option [ngValue]="null"></option>
+                        <option [ngValue]="dayOfWeekOption.id === editForm.get('dayOfWeek').value?.id ? editForm.get('dayOfWeek').value : dayOfWeekOption" *ngFor="let dayOfWeekOption of dayofweeks; trackBy: trackDayOfWeekById">{{dayOfWeekOption.id}}</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">
+                    <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+                </button>
+                <button type="submit" id="save-entity" [disabled]="editForm.invalid || isSaving" class="btn btn-primary">
+                    <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

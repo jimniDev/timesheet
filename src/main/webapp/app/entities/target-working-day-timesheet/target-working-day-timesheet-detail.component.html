@@ -1,0 +1,39 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="targetWorkingDay">
+            <h2><span jhiTranslate="timesheetApp.targetWorkingDay.detail.title">Target Working Day</span> {{targetWorkingDay.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span jhiTranslate="timesheetApp.targetWorkingDay.hours">Hours</span></dt>
+                <dd>
+                    <span>{{targetWorkingDay.hours}}</span>
+                </dd>
+                <dt><span jhiTranslate="timesheetApp.targetWorkingDay.employee">Employee</span></dt>
+                <dd>
+                    <div *ngIf="targetWorkingDay.employee">
+                        <a [routerLink]="['/employee-timesheet', targetWorkingDay.employee?.id, 'view']">{{targetWorkingDay.employee?.id}}</a>
+                    </div>
+                </dd>
+                <dt><span jhiTranslate="timesheetApp.targetWorkingDay.dayOfWeek">Day Of Week</span></dt>
+                <dd>
+                    <div *ngIf="targetWorkingDay.dayOfWeek">
+                        <a [routerLink]="['/day-of-week-timesheet', targetWorkingDay.dayOfWeek?.id, 'view']">{{targetWorkingDay.dayOfWeek?.id}}</a>
+                    </div>
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/target-working-day-timesheet', targetWorkingDay.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

@@ -3,6 +3,8 @@ package com.asscope.timesheet.web.rest;
 import com.asscope.timesheet.domain.Activity;
 import com.asscope.timesheet.service.ActivityService;
 import com.asscope.timesheet.web.rest.errors.BadRequestAlertException;
+import com.asscope.timesheet.service.dto.ActivityCriteria;
+import com.asscope.timesheet.service.ActivityQueryService;
 
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -34,8 +37,11 @@ public class ActivityResource {
 
     private final ActivityService activityService;
 
-    public ActivityResource(ActivityService activityService) {
+    private final ActivityQueryService activityQueryService;
+
+    public ActivityResource(ActivityService activityService, ActivityQueryService activityQueryService) {
         this.activityService = activityService;
+        this.activityQueryService = activityQueryService;
     }
 
     /**
@@ -46,7 +52,7 @@ public class ActivityResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/activities")
-    public ResponseEntity<Activity> createActivity(@RequestBody Activity activity) throws URISyntaxException {
+    public ResponseEntity<Activity> createActivity(@Valid @RequestBody Activity activity) throws URISyntaxException {
         log.debug("REST request to save Activity : {}", activity);
         if (activity.getId() != null) {
             throw new BadRequestAlertException("A new activity cannot already have an ID", ENTITY_NAME, "idexists");
@@ -67,7 +73,7 @@ public class ActivityResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/activities")
-    public ResponseEntity<Activity> updateActivity(@RequestBody Activity activity) throws URISyntaxException {
+    public ResponseEntity<Activity> updateActivity(@Valid @RequestBody Activity activity) throws URISyntaxException {
         log.debug("REST request to update Activity : {}", activity);
         if (activity.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -81,12 +87,26 @@ public class ActivityResource {
     /**
      * {@code GET  /activities} : get all the activities.
      *
+     * @param criteria the criteria which the requested entities should match.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of activities in body.
      */
     @GetMapping("/activities")
-    public List<Activity> getAllActivities() {
-        log.debug("REST request to get all Activities");
-        return activityService.findAll();
+    public ResponseEntity<List<Activity>> getAllActivities(ActivityCriteria criteria) {
+        log.debug("REST request to get Activities by criteria: {}", criteria);
+        List<Activity> entityList = activityQueryService.findByCriteria(criteria);
+        return ResponseEntity.ok().body(entityList);
+    }
+
+    /**
+    * {@code GET  /activities/count} : count all the activities.
+    *
+    * @param criteria the criteria which the requested entities should match.
+    * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
+    */
+    @GetMapping("/activities/count")
+    public ResponseEntity<Long> countActivities(ActivityCriteria criteria) {
+        log.debug("REST request to count Activities by criteria: {}", criteria);
+        return ResponseEntity.ok().body(activityQueryService.countByCriteria(criteria));
     }
 
     /**

@@ -1,0 +1,25 @@
+{
+  "timesheetApp": {
+    "weeklyWorkingHours": {
+      "home": {
+        "title": "Weekly Working Hours",
+        "createLabel": "Weekly Working Hours erstellen",
+        "createOrEditLabel": "Weekly Working Hours erstellen oder bearbeiten",
+        "notFound": "No Weekly Working Hours found"
+      },
+      "created": "Weekly Working Hours erstellt mit ID {{ param }}",
+      "updated": "Weekly Working Hours aktualisiert mit ID {{ param }}",
+      "deleted": "Weekly Working Hours gelöscht mit ID {{ param }}",
+      "delete": {
+        "question": "Soll Weekly Working Hours {{ id }} wirklich dauerhaft gelöscht werden?"
+      },
+      "detail": {
+        "title": "Weekly Working Hours"
+      },
+      "hours": "Hours",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "employee": "Employee"
+    }
+  }
+}

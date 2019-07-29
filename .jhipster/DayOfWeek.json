@@ -1,0 +1,30 @@
+{
+    "name": "DayOfWeek",
+    "fields": [
+        {
+            "fieldName": "name",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "one-to-many",
+            "otherEntityName": "targetWorkingDay",
+            "otherEntityRelationshipName": "dayOfWeek",
+            "relationshipName": "targetWorkingDay"
+        }
+    ],
+    "changelogDate": "20190726193524",
+    "entityTableName": "day_of_week",
+    "dto": "no",
+    "pagination": "no",
+    "service": "serviceClass",
+    "jpaMetamodelFiltering": true,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*",
+    "angularJSSuffix": "timesheet"
+}

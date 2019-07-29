@@ -1,0 +1,38 @@
+{
+    "name": "TargetWorkingDay",
+    "fields": [
+        {
+            "fieldName": "hours",
+            "fieldType": "Integer",
+            "fieldValidateRules": [
+                "required"
+            ]
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "otherEntityName": "employee",
+            "otherEntityRelationshipName": "targetWorkingDay",
+            "relationshipName": "employee",
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "otherEntityName": "dayOfWeek",
+            "otherEntityRelationshipName": "targetWorkingDay",
+            "relationshipName": "dayOfWeek",
+            "otherEntityField": "id"
+        }
+    ],
+    "changelogDate": "20190726193523",
+    "entityTableName": "target_working_day",
+    "dto": "no",
+    "pagination": "no",
+    "service": "serviceClass",
+    "jpaMetamodelFiltering": true,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*",
+    "angularJSSuffix": "timesheet"
+}

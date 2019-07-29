@@ -17,6 +17,14 @@
                 <dd>
                     <span>{{workingEntry.deleteFlag}}</span>
                 </dd>
+                <dt><span jhiTranslate="timesheetApp.workingEntry.lockedFlag">Locked Flag</span></dt>
+                <dd>
+                    <span>{{workingEntry.lockedFlag}}</span>
+                </dd>
+                <dt><span jhiTranslate="timesheetApp.workingEntry.createdAt">Created At</span></dt>
+                <dd>
+                    <span>{{workingEntry.createdAt}}</span>
+                </dd>
                 <dt><span jhiTranslate="timesheetApp.workingEntry.employee">Employee</span></dt>
                 <dd>
                     <div *ngIf="workingEntry.employee">
@@ -27,6 +35,12 @@
                 <dd>
                     <div *ngIf="workingEntry.activity">
                         <a [routerLink]="['/activity-timesheet', workingEntry.activity?.id, 'view']">{{workingEntry.activity?.id}}</a>
+                    </div>
+                </dd>
+                <dt><span jhiTranslate="timesheetApp.workingEntry.workDay">Work Day</span></dt>
+                <dd>
+                    <div *ngIf="workingEntry.workDay">
+                        <a [routerLink]="['/work-day-timesheet', workingEntry.workDay?.id, 'view']">{{workingEntry.workDay?.id}}</a>
                     </div>
                 </dd>
                 <dt><span jhiTranslate="timesheetApp.workingEntry.location">Location</span></dt>

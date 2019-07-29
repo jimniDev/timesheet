@@ -35,6 +35,13 @@ public class WorkingEntry implements Serializable {
     @Column(name = "delete_flag")
     private Boolean deleteFlag;
 
+    @Column(name = "locked_flag")
+    private Boolean lockedFlag;
+
+    @NotNull
+    @Column(name = "created_at", nullable = false)
+    private Instant createdAt;
+
     @ManyToOne
     @JsonIgnoreProperties("workingEntries")
     private Employee employee;
@@ -42,6 +49,10 @@ public class WorkingEntry implements Serializable {
     @ManyToOne
     @JsonIgnoreProperties("workingEntries")
     private Activity activity;
+
+    @ManyToOne
+    @JsonIgnoreProperties("workingEntries")
+    private WorkDay workDay;
 
     @ManyToOne
     @JsonIgnoreProperties("workingEntries")
@@ -95,6 +106,32 @@ public class WorkingEntry implements Serializable {
         this.deleteFlag = deleteFlag;
     }
 
+    public Boolean isLockedFlag() {
+        return lockedFlag;
+    }
+
+    public WorkingEntry lockedFlag(Boolean lockedFlag) {
+        this.lockedFlag = lockedFlag;
+        return this;
+    }
+
+    public void setLockedFlag(Boolean lockedFlag) {
+        this.lockedFlag = lockedFlag;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public WorkingEntry createdAt(Instant createdAt) {
+        this.createdAt = createdAt;
+        return this;
+    }
+
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
+    }
+
     public Employee getEmployee() {
         return employee;
     }
@@ -119,6 +156,19 @@ public class WorkingEntry implements Serializable {
 
     public void setActivity(Activity activity) {
         this.activity = activity;
+    }
+
+    public WorkDay getWorkDay() {
+        return workDay;
+    }
+
+    public WorkingEntry workDay(WorkDay workDay) {
+        this.workDay = workDay;
+        return this;
+    }
+
+    public void setWorkDay(WorkDay workDay) {
+        this.workDay = workDay;
     }
 
     public Location getLocation() {
@@ -158,6 +208,8 @@ public class WorkingEntry implements Serializable {
             ", start='" + getStart() + "'" +
             ", end='" + getEnd() + "'" +
             ", deleteFlag='" + isDeleteFlag() + "'" +
+            ", lockedFlag='" + isLockedFlag() + "'" +
+            ", createdAt='" + getCreatedAt() + "'" +
             "}";
     }
 }

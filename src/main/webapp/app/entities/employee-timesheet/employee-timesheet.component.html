@@ -18,20 +18,14 @@
             <thead>
             <tr>
             <th><span jhiTranslate="global.field.id">ID</span></th>
-            <th><span jhiTranslate="timesheetApp.employee.firstname">Firstname</span></th>
-            <th><span jhiTranslate="timesheetApp.employee.lastname">Lastname</span></th>
-            <th><span jhiTranslate="timesheetApp.employee.email">Email</span></th>
-            <th><span jhiTranslate="timesheetApp.employee.phone">Phone</span></th>
+            <th><span jhiTranslate="timesheetApp.employee.isEmployed">Is Employed</span></th>
             <th></th>
             </tr>
             </thead>
             <tbody>
             <tr *ngFor="let employee of employees ;trackBy: trackId">
                 <td><a [routerLink]="['/employee-timesheet', employee.id, 'view' ]">{{employee.id}}</a></td>
-                <td>{{employee.firstname}}</td>
-                <td>{{employee.lastname}}</td>
-                <td>{{employee.email}}</td>
-                <td>{{employee.phone}}</td>
+                <td>{{employee.isEmployed}}</td>
                 <td class="text-right">
                     <div class="btn-group">
                         <button type="submit"

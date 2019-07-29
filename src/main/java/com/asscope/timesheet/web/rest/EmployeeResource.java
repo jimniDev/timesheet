@@ -3,6 +3,8 @@ package com.asscope.timesheet.web.rest;
 import com.asscope.timesheet.domain.Employee;
 import com.asscope.timesheet.service.EmployeeService;
 import com.asscope.timesheet.web.rest.errors.BadRequestAlertException;
+import com.asscope.timesheet.service.dto.EmployeeCriteria;
+import com.asscope.timesheet.service.EmployeeQueryService;
 
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -12,7 +14,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -35,8 +36,11 @@ public class EmployeeResource {
 
     private final EmployeeService employeeService;
 
-    public EmployeeResource(EmployeeService employeeService) {
+    private final EmployeeQueryService employeeQueryService;
+
+    public EmployeeResource(EmployeeService employeeService, EmployeeQueryService employeeQueryService) {
         this.employeeService = employeeService;
+        this.employeeQueryService = employeeQueryService;
     }
 
     /**
@@ -47,7 +51,7 @@ public class EmployeeResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/employees")
-    public ResponseEntity<Employee> createEmployee(@Valid @RequestBody Employee employee) throws URISyntaxException {
+    public ResponseEntity<Employee> createEmployee(@RequestBody Employee employee) throws URISyntaxException {
         log.debug("REST request to save Employee : {}", employee);
         if (employee.getId() != null) {
             throw new BadRequestAlertException("A new employee cannot already have an ID", ENTITY_NAME, "idexists");
@@ -68,7 +72,7 @@ public class EmployeeResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/employees")
-    public ResponseEntity<Employee> updateEmployee(@Valid @RequestBody Employee employee) throws URISyntaxException {
+    public ResponseEntity<Employee> updateEmployee(@RequestBody Employee employee) throws URISyntaxException {
         log.debug("REST request to update Employee : {}", employee);
         if (employee.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -82,12 +86,26 @@ public class EmployeeResource {
     /**
      * {@code GET  /employees} : get all the employees.
      *
+     * @param criteria the criteria which the requested entities should match.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of employees in body.
      */
     @GetMapping("/employees")
-    public List<Employee> getAllEmployees() {
-        log.debug("REST request to get all Employees");
-        return employeeService.findAll();
+    public ResponseEntity<List<Employee>> getAllEmployees(EmployeeCriteria criteria) {
+        log.debug("REST request to get Employees by criteria: {}", criteria);
+        List<Employee> entityList = employeeQueryService.findByCriteria(criteria);
+        return ResponseEntity.ok().body(entityList);
+    }
+
+    /**
+    * {@code GET  /employees/count} : count all the employees.
+    *
+    * @param criteria the criteria which the requested entities should match.
+    * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
+    */
+    @GetMapping("/employees/count")
+    public ResponseEntity<Long> countEmployees(EmployeeCriteria criteria) {
+        log.debug("REST request to count Employees by criteria: {}", criteria);
+        return ResponseEntity.ok().body(employeeQueryService.countByCriteria(criteria));
     }
 
     /**

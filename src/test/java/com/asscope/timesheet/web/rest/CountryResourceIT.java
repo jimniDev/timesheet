@@ -3,9 +3,12 @@ package com.asscope.timesheet.web.rest;
 import com.asscope.timesheet.TimesheetApp;
 import com.asscope.timesheet.config.TestSecurityConfiguration;
 import com.asscope.timesheet.domain.Country;
+import com.asscope.timesheet.domain.Location;
 import com.asscope.timesheet.repository.CountryRepository;
 import com.asscope.timesheet.service.CountryService;
 import com.asscope.timesheet.web.rest.errors.ExceptionTranslator;
+import com.asscope.timesheet.service.dto.CountryCriteria;
+import com.asscope.timesheet.service.CountryQueryService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -45,6 +48,9 @@ public class CountryResourceIT {
     private CountryService countryService;
 
     @Autowired
+    private CountryQueryService countryQueryService;
+
+    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Autowired
@@ -66,7 +72,7 @@ public class CountryResourceIT {
     @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final CountryResource countryResource = new CountryResource(countryService);
+        final CountryResource countryResource = new CountryResource(countryService, countryQueryService);
         this.restCountryMockMvc = MockMvcBuilders.standaloneSetup(countryResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -168,6 +174,98 @@ public class CountryResourceIT {
             .andExpect(jsonPath("$.id").value(country.getId().intValue()))
             .andExpect(jsonPath("$.countryName").value(DEFAULT_COUNTRY_NAME.toString()));
     }
+
+    @Test
+    @Transactional
+    public void getAllCountriesByCountryNameIsEqualToSomething() throws Exception {
+        // Initialize the database
+        countryRepository.saveAndFlush(country);
+
+        // Get all the countryList where countryName equals to DEFAULT_COUNTRY_NAME
+        defaultCountryShouldBeFound("countryName.equals=" + DEFAULT_COUNTRY_NAME);
+
+        // Get all the countryList where countryName equals to UPDATED_COUNTRY_NAME
+        defaultCountryShouldNotBeFound("countryName.equals=" + UPDATED_COUNTRY_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllCountriesByCountryNameIsInShouldWork() throws Exception {
+        // Initialize the database
+        countryRepository.saveAndFlush(country);
+
+        // Get all the countryList where countryName in DEFAULT_COUNTRY_NAME or UPDATED_COUNTRY_NAME
+        defaultCountryShouldBeFound("countryName.in=" + DEFAULT_COUNTRY_NAME + "," + UPDATED_COUNTRY_NAME);
+
+        // Get all the countryList where countryName equals to UPDATED_COUNTRY_NAME
+        defaultCountryShouldNotBeFound("countryName.in=" + UPDATED_COUNTRY_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllCountriesByCountryNameIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        countryRepository.saveAndFlush(country);
+
+        // Get all the countryList where countryName is not null
+        defaultCountryShouldBeFound("countryName.specified=true");
+
+        // Get all the countryList where countryName is null
+        defaultCountryShouldNotBeFound("countryName.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllCountriesByLocationIsEqualToSomething() throws Exception {
+        // Initialize the database
+        Location location = LocationResourceIT.createEntity(em);
+        em.persist(location);
+        em.flush();
+        country.addLocation(location);
+        countryRepository.saveAndFlush(country);
+        Long locationId = location.getId();
+
+        // Get all the countryList where location equals to locationId
+        defaultCountryShouldBeFound("locationId.equals=" + locationId);
+
+        // Get all the countryList where location equals to locationId + 1
+        defaultCountryShouldNotBeFound("locationId.equals=" + (locationId + 1));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is returned.
+     */
+    private void defaultCountryShouldBeFound(String filter) throws Exception {
+        restCountryMockMvc.perform(get("/api/countries?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(country.getId().intValue())))
+            .andExpect(jsonPath("$.[*].countryName").value(hasItem(DEFAULT_COUNTRY_NAME)));
+
+        // Check, that the count call also returns 1
+        restCountryMockMvc.perform(get("/api/countries/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("1"));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is not returned.
+     */
+    private void defaultCountryShouldNotBeFound(String filter) throws Exception {
+        restCountryMockMvc.perform(get("/api/countries?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restCountryMockMvc.perform(get("/api/countries/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("0"));
+    }
+
 
     @Test
     @Transactional

@@ -2,32 +2,8 @@
     "name": "Employee",
     "fields": [
         {
-            "fieldName": "firstname",
-            "fieldType": "String",
-            "fieldValidateRules": [
-                "required"
-            ]
-        },
-        {
-            "fieldName": "lastname",
-            "fieldType": "String",
-            "fieldValidateRules": [
-                "required"
-            ]
-        },
-        {
-            "fieldName": "email",
-            "fieldType": "String",
-            "fieldValidateRules": [
-                "required"
-            ]
-        },
-        {
-            "fieldName": "phone",
-            "fieldType": "String",
-            "fieldValidateRules": [
-                "required"
-            ]
+            "fieldName": "isEmployed",
+            "fieldType": "Boolean"
         }
     ],
     "relationships": [
@@ -39,17 +15,35 @@
         },
         {
             "relationshipType": "one-to-many",
-            "otherEntityName": "workingDay",
+            "otherEntityName": "targetWorkingDay",
             "otherEntityRelationshipName": "employee",
-            "relationshipName": "workingDay"
+            "relationshipName": "targetWorkingDay"
+        },
+        {
+            "relationshipType": "one-to-many",
+            "otherEntityName": "weeklyWorkingHours",
+            "otherEntityRelationshipName": "employee",
+            "relationshipName": "weeklyWorkingHours"
+        },
+        {
+            "relationshipType": "one-to-many",
+            "otherEntityName": "workDay",
+            "otherEntityRelationshipName": "employee",
+            "relationshipName": "workDay"
+        },
+        {
+            "relationshipType": "one-to-many",
+            "otherEntityName": "workBreak",
+            "otherEntityRelationshipName": "employee",
+            "relationshipName": "workBreak"
         }
     ],
-    "changelogDate": "20190718143741",
+    "changelogDate": "20190726193522",
     "entityTableName": "employee",
     "dto": "no",
     "pagination": "no",
     "service": "serviceClass",
-    "jpaMetamodelFiltering": false,
+    "jpaMetamodelFiltering": true,
     "fluentMethods": true,
     "clientRootFolder": "",
     "applications": "*",

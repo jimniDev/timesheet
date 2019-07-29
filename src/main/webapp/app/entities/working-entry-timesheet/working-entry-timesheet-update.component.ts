@@ -13,6 +13,8 @@ import { IEmployeeTimesheet } from 'app/shared/model/employee-timesheet.model';
 import { EmployeeTimesheetService } from 'app/entities/employee-timesheet';
 import { IActivityTimesheet } from 'app/shared/model/activity-timesheet.model';
 import { ActivityTimesheetService } from 'app/entities/activity-timesheet';
+import { IWorkDayTimesheet } from 'app/shared/model/work-day-timesheet.model';
+import { WorkDayTimesheetService } from 'app/entities/work-day-timesheet';
 import { ILocationTimesheet } from 'app/shared/model/location-timesheet.model';
 import { LocationTimesheetService } from 'app/entities/location-timesheet';
 
@@ -27,6 +29,8 @@ export class WorkingEntryTimesheetUpdateComponent implements OnInit {
 
   activities: IActivityTimesheet[];
 
+  workdays: IWorkDayTimesheet[];
+
   locations: ILocationTimesheet[];
 
   editForm = this.fb.group({
@@ -34,8 +38,11 @@ export class WorkingEntryTimesheetUpdateComponent implements OnInit {
     start: [null, [Validators.required]],
     end: [null, [Validators.required]],
     deleteFlag: [],
+    lockedFlag: [],
+    createdAt: [null, [Validators.required]],
     employee: [],
     activity: [],
+    workDay: [],
     location: []
   });
 
@@ -44,6 +51,7 @@ export class WorkingEntryTimesheetUpdateComponent implements OnInit {
     protected workingEntryService: WorkingEntryTimesheetService,
     protected employeeService: EmployeeTimesheetService,
     protected activityService: ActivityTimesheetService,
+    protected workDayService: WorkDayTimesheetService,
     protected locationService: LocationTimesheetService,
     protected activatedRoute: ActivatedRoute,
     private fb: FormBuilder
@@ -68,6 +76,13 @@ export class WorkingEntryTimesheetUpdateComponent implements OnInit {
         map((response: HttpResponse<IActivityTimesheet[]>) => response.body)
       )
       .subscribe((res: IActivityTimesheet[]) => (this.activities = res), (res: HttpErrorResponse) => this.onError(res.message));
+    this.workDayService
+      .query()
+      .pipe(
+        filter((mayBeOk: HttpResponse<IWorkDayTimesheet[]>) => mayBeOk.ok),
+        map((response: HttpResponse<IWorkDayTimesheet[]>) => response.body)
+      )
+      .subscribe((res: IWorkDayTimesheet[]) => (this.workdays = res), (res: HttpErrorResponse) => this.onError(res.message));
     this.locationService
       .query()
       .pipe(
@@ -83,8 +98,11 @@ export class WorkingEntryTimesheetUpdateComponent implements OnInit {
       start: workingEntry.start != null ? workingEntry.start.format(DATE_TIME_FORMAT) : null,
       end: workingEntry.end != null ? workingEntry.end.format(DATE_TIME_FORMAT) : null,
       deleteFlag: workingEntry.deleteFlag,
+      lockedFlag: workingEntry.lockedFlag,
+      createdAt: workingEntry.createdAt != null ? workingEntry.createdAt.format(DATE_TIME_FORMAT) : null,
       employee: workingEntry.employee,
       activity: workingEntry.activity,
+      workDay: workingEntry.workDay,
       location: workingEntry.location
     });
   }
@@ -110,8 +128,12 @@ export class WorkingEntryTimesheetUpdateComponent implements OnInit {
       start: this.editForm.get(['start']).value != null ? moment(this.editForm.get(['start']).value, DATE_TIME_FORMAT) : undefined,
       end: this.editForm.get(['end']).value != null ? moment(this.editForm.get(['end']).value, DATE_TIME_FORMAT) : undefined,
       deleteFlag: this.editForm.get(['deleteFlag']).value,
+      lockedFlag: this.editForm.get(['lockedFlag']).value,
+      createdAt:
+        this.editForm.get(['createdAt']).value != null ? moment(this.editForm.get(['createdAt']).value, DATE_TIME_FORMAT) : undefined,
       employee: this.editForm.get(['employee']).value,
       activity: this.editForm.get(['activity']).value,
+      workDay: this.editForm.get(['workDay']).value,
       location: this.editForm.get(['location']).value
     };
   }
@@ -137,6 +159,10 @@ export class WorkingEntryTimesheetUpdateComponent implements OnInit {
   }
 
   trackActivityById(index: number, item: IActivityTimesheet) {
+    return item.id;
+  }
+
+  trackWorkDayById(index: number, item: IWorkDayTimesheet) {
     return item.id;
   }
 

@@ -15,10 +15,7 @@ export class EmployeeTimesheetUpdateComponent implements OnInit {
 
   editForm = this.fb.group({
     id: [],
-    firstname: [null, [Validators.required]],
-    lastname: [null, [Validators.required]],
-    email: [null, [Validators.required]],
-    phone: [null, [Validators.required]]
+    isEmployed: []
   });
 
   constructor(protected employeeService: EmployeeTimesheetService, protected activatedRoute: ActivatedRoute, private fb: FormBuilder) {}
@@ -33,10 +30,7 @@ export class EmployeeTimesheetUpdateComponent implements OnInit {
   updateForm(employee: IEmployeeTimesheet) {
     this.editForm.patchValue({
       id: employee.id,
-      firstname: employee.firstname,
-      lastname: employee.lastname,
-      email: employee.email,
-      phone: employee.phone
+      isEmployed: employee.isEmployed
     });
   }
 
@@ -58,10 +52,7 @@ export class EmployeeTimesheetUpdateComponent implements OnInit {
     return {
       ...new EmployeeTimesheet(),
       id: this.editForm.get(['id']).value,
-      firstname: this.editForm.get(['firstname']).value,
-      lastname: this.editForm.get(['lastname']).value,
-      email: this.editForm.get(['email']).value,
-      phone: this.editForm.get(['phone']).value
+      isEmployed: this.editForm.get(['isEmployed']).value
     };
   }
 

@@ -1,8 +1,10 @@
 package com.asscope.timesheet.domain;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -23,7 +25,8 @@ public class Activity implements Serializable {
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
-    @Column(name = "name")
+    @NotNull
+    @Column(name = "name", nullable = false)
     private String name;
 
     @Column(name = "description")
@@ -32,6 +35,10 @@ public class Activity implements Serializable {
     @OneToMany(mappedBy = "activity")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<WorkingEntry> workingEntries = new HashSet<>();
+
+    @ManyToOne
+    @JsonIgnoreProperties("activities")
+    private Role role;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -91,6 +98,19 @@ public class Activity implements Serializable {
 
     public void setWorkingEntries(Set<WorkingEntry> workingEntries) {
         this.workingEntries = workingEntries;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public Activity role(Role role) {
+        this.role = role;
+        return this;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 

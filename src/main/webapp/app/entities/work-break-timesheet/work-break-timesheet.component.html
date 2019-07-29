@@ -1,0 +1,69 @@
+<div>
+    <h2 id="page-heading">
+        <span jhiTranslate="timesheetApp.workBreak.home.title">Work Breaks</span>
+        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-work-break-timesheet" [routerLink]="['/work-break-timesheet/new']">
+            <fa-icon [icon]="'plus'"></fa-icon>
+            <span  jhiTranslate="timesheetApp.workBreak.home.createLabel">
+            Create new Work Break
+            </span>
+        </button>
+    </h2>
+    <jhi-alert></jhi-alert>
+    <br/>
+    <div class="alert alert-warning" *ngIf="workBreaks?.length === 0">
+        <span jhiTranslate="timesheetApp.workBreak.home.notFound">No workBreaks found</span>
+    </div>
+    <div class="table-responsive" *ngIf="workBreaks?.length > 0">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+            <th><span jhiTranslate="global.field.id">ID</span></th>
+            <th><span jhiTranslate="timesheetApp.workBreak.minutes">Minutes</span></th>
+            <th><span jhiTranslate="timesheetApp.workBreak.employee">Employee</span></th>
+            <th><span jhiTranslate="timesheetApp.workBreak.workDay">Work Day</span></th>
+            <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let workBreak of workBreaks ;trackBy: trackId">
+                <td><a [routerLink]="['/work-break-timesheet', workBreak.id, 'view' ]">{{workBreak.id}}</a></td>
+                <td>{{workBreak.minutes}}</td>
+                <td>
+                    <div *ngIf="workBreak.employee">
+                        <a [routerLink]="['../employee-timesheet', workBreak.employee?.id, 'view' ]" >{{workBreak.employee?.id}}</a>
+                    </div>
+                </td>
+                <td>
+                    <div *ngIf="workBreak.workDay">
+                        <a [routerLink]="['../work-day-timesheet', workBreak.workDay?.id, 'view' ]" >{{workBreak.workDay?.id}}</a>
+                    </div>
+                </td>
+                <td class="text-right">
+                    <div class="btn-group">
+                        <button type="submit"
+                                [routerLink]="['/work-break-timesheet', workBreak.id, 'view' ]"
+                                class="btn btn-info btn-sm">
+                            <fa-icon [icon]="'eye'"></fa-icon>
+                            <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/work-break-timesheet', workBreak.id, 'edit']"
+                                class="btn btn-primary btn-sm">
+                            <fa-icon [icon]="'pencil-alt'"></fa-icon>
+                            <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/', 'work-break-timesheet', { outlets: { popup: workBreak.id + '/delete'} }]"
+                                replaceUrl="true"
+                                queryParamsHandling="merge"
+                                class="btn btn-danger btn-sm">
+                            <fa-icon [icon]="'times'"></fa-icon>
+                            <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

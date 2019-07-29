@@ -14,12 +14,12 @@
             "relationshipName": "location"
         }
     ],
-    "changelogDate": "20190718143747",
+    "changelogDate": "20190726193532",
     "entityTableName": "country",
     "dto": "no",
     "pagination": "no",
     "service": "serviceClass",
-    "jpaMetamodelFiltering": false,
+    "jpaMetamodelFiltering": true,
     "fluentMethods": true,
     "clientRootFolder": "",
     "applications": "*",

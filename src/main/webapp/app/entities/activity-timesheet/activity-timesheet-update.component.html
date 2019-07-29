@@ -13,6 +13,12 @@
                     <label class="form-control-label" jhiTranslate="timesheetApp.activity.name" for="field_name">Name</label>
                     <input type="text" class="form-control" name="name" id="field_name"
                            formControlName="name"/>
+                    <div *ngIf="editForm.get('name').invalid && (editForm.get('name').dirty || editForm.get('name').touched)">
+                        <small class="form-text text-danger"
+                               *ngIf="editForm.get('name').errors.required" jhiTranslate="entity.validation.required">
+                        This field is required.
+                        </small>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="timesheetApp.activity.description" for="field_description">Description</label>
@@ -20,6 +26,13 @@
                            formControlName="description"/>
                 </div>
 
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="timesheetApp.activity.role" for="field_role">Role</label>
+                    <select class="form-control" id="field_role" name="role" formControlName="role">
+                        <option [ngValue]="null"></option>
+                        <option [ngValue]="roleOption.id === editForm.get('role').value?.id ? editForm.get('role').value : roleOption" *ngFor="let roleOption of roles; trackBy: trackRoleById">{{roleOption.id}}</option>
+                    </select>
+                </div>
             </div>
             <div>
                 <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">

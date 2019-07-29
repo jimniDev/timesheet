@@ -18,6 +18,17 @@
         {
             "fieldName": "deleteFlag",
             "fieldType": "Boolean"
+        },
+        {
+            "fieldName": "lockedFlag",
+            "fieldType": "Boolean"
+        },
+        {
+            "fieldName": "createdAt",
+            "fieldType": "Instant",
+            "fieldValidateRules": [
+                "required"
+            ]
         }
     ],
     "relationships": [
@@ -37,18 +48,25 @@
         },
         {
             "relationshipType": "many-to-one",
+            "otherEntityName": "workDay",
+            "otherEntityRelationshipName": "workingEntry",
+            "relationshipName": "workDay",
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipType": "many-to-one",
             "otherEntityName": "location",
             "otherEntityRelationshipName": "workingEntry",
             "relationshipName": "location",
             "otherEntityField": "id"
         }
     ],
-    "changelogDate": "20190718143744",
+    "changelogDate": "20190726193526",
     "entityTableName": "working_entry",
     "dto": "no",
     "pagination": "no",
     "service": "serviceClass",
-    "jpaMetamodelFiltering": false,
+    "jpaMetamodelFiltering": true,
     "fluentMethods": true,
     "clientRootFolder": "",
     "applications": "*",

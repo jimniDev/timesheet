@@ -23,7 +23,7 @@ describe('Service Tests', () => {
       service = injector.get(EmployeeTimesheetService);
       httpMock = injector.get(HttpTestingController);
 
-      elemDefault = new EmployeeTimesheet(0, 'AAAAAAA', 'AAAAAAA', 'AAAAAAA', 'AAAAAAA');
+      elemDefault = new EmployeeTimesheet(0, false);
     });
 
     describe('Service methods', () => {
@@ -59,10 +59,7 @@ describe('Service Tests', () => {
       it('should update a EmployeeTimesheet', async () => {
         const returnedFromService = Object.assign(
           {
-            firstname: 'BBBBBB',
-            lastname: 'BBBBBB',
-            email: 'BBBBBB',
-            phone: 'BBBBBB'
+            isEmployed: true
           },
           elemDefault
         );
@@ -80,10 +77,7 @@ describe('Service Tests', () => {
       it('should return a list of EmployeeTimesheet', async () => {
         const returnedFromService = Object.assign(
           {
-            firstname: 'BBBBBB',
-            lastname: 'BBBBBB',
-            email: 'BBBBBB',
-            phone: 'BBBBBB'
+            isEmployed: true
           },
           elemDefault
         );

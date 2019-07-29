@@ -52,7 +52,8 @@ export class WorkingEntryTimesheetService {
   protected convertDateFromClient(workingEntry: IWorkingEntryTimesheet): IWorkingEntryTimesheet {
     const copy: IWorkingEntryTimesheet = Object.assign({}, workingEntry, {
       start: workingEntry.start != null && workingEntry.start.isValid() ? workingEntry.start.toJSON() : null,
-      end: workingEntry.end != null && workingEntry.end.isValid() ? workingEntry.end.toJSON() : null
+      end: workingEntry.end != null && workingEntry.end.isValid() ? workingEntry.end.toJSON() : null,
+      createdAt: workingEntry.createdAt != null && workingEntry.createdAt.isValid() ? workingEntry.createdAt.toJSON() : null
     });
     return copy;
   }
@@ -61,6 +62,7 @@ export class WorkingEntryTimesheetService {
     if (res.body) {
       res.body.start = res.body.start != null ? moment(res.body.start) : null;
       res.body.end = res.body.end != null ? moment(res.body.end) : null;
+      res.body.createdAt = res.body.createdAt != null ? moment(res.body.createdAt) : null;
     }
     return res;
   }
@@ -70,6 +72,7 @@ export class WorkingEntryTimesheetService {
       res.body.forEach((workingEntry: IWorkingEntryTimesheet) => {
         workingEntry.start = workingEntry.start != null ? moment(workingEntry.start) : null;
         workingEntry.end = workingEntry.end != null ? moment(workingEntry.end) : null;
+        workingEntry.createdAt = workingEntry.createdAt != null ? moment(workingEntry.createdAt) : null;
       });
     }
     return res;
