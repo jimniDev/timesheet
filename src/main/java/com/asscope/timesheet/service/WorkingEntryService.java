@@ -45,7 +45,7 @@ public class WorkingEntryService {
     @Transactional(readOnly = true)
     public List<WorkingEntry> findAll() {
         log.debug("Request to get all WorkingEntries");
-        return workingEntryRepository.findAll();
+        return workingEntryRepository.findAllActiveWorkingEntries();
     }
 
 
@@ -68,6 +68,9 @@ public class WorkingEntryService {
      */
     public void delete(Long id) {
         log.debug("Request to delete WorkingEntry : {}", id);
-        workingEntryRepository.deleteById(id);
+        //workingEntryRepository.deleteById(id);
+        workingEntryRepository.findById(id).ifPresent((we) -> {
+        	we.setDeleteFlag(true);
+        });
     }
 }

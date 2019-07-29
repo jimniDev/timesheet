@@ -91,9 +91,9 @@ public class WorkingEntryResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of workingEntries in body.
      */
     @GetMapping("/working-entries")
-    public ResponseEntity<List<WorkingEntry>> getAllWorkingEntries(WorkingEntryCriteria criteria) {
-        log.debug("REST request to get WorkingEntries by criteria: {}", criteria);
-        List<WorkingEntry> entityList = workingEntryQueryService.findByCriteria(criteria);
+    public ResponseEntity<List<WorkingEntry>> getAllWorkingEntries() {
+        log.debug("REST request to get WorkingEntries by criteria: {}");
+        List<WorkingEntry> entityList = workingEntryService.findAll();
         return ResponseEntity.ok().body(entityList);
     }
 
