@@ -1,7 +1,10 @@
 package com.asscope.timesheet.service;
 
 import com.asscope.timesheet.domain.Employee;
+import com.asscope.timesheet.domain.User;
 import com.asscope.timesheet.repository.EmployeeRepository;
+import com.asscope.timesheet.repository.UserRepository;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,9 +24,12 @@ public class EmployeeService {
     private final Logger log = LoggerFactory.getLogger(EmployeeService.class);
 
     private final EmployeeRepository employeeRepository;
+    
+    private final UserRepository userRepository;
 
-    public EmployeeService(EmployeeRepository employeeRepository) {
+    public EmployeeService(EmployeeRepository employeeRepository, UserRepository userRepository) {
         this.employeeRepository = employeeRepository;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -59,6 +65,13 @@ public class EmployeeService {
     public Optional<Employee> findOne(Long id) {
         log.debug("Request to get Employee : {}", id);
         return employeeRepository.findById(id);
+    }
+    
+    @Transactional(readOnly = true)
+    public Optional<Employee> findOneByUsername(String name) {
+        log.debug("Request to get Employee : {}", name);
+        User user = userRepository.findById(name).get();
+        return employeeRepository.findOneByUser(user);
     }
 
     /**

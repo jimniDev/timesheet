@@ -1,5 +1,6 @@
 package com.asscope.timesheet.service;
 
+import com.asscope.timesheet.domain.Employee;
 import com.asscope.timesheet.domain.WorkingEntry;
 import com.asscope.timesheet.repository.WorkingEntryRepository;
 import org.slf4j.Logger;
@@ -46,6 +47,12 @@ public class WorkingEntryService {
     public List<WorkingEntry> findAll() {
         log.debug("Request to get all WorkingEntries");
         return workingEntryRepository.findAllActiveWorkingEntries();
+    }
+    
+    @Transactional(readOnly = true)
+    public List<WorkingEntry> findAllByEmployee(Employee employee) {
+        log.debug("Request to get all WorkingEntries");
+        return workingEntryRepository.findAllActiveWorkingEntriesByEmployee(employee);
     }
 
 

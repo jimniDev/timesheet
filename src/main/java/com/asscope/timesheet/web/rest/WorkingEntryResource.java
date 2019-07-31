@@ -1,9 +1,11 @@
 package com.asscope.timesheet.web.rest;
 
+import com.asscope.timesheet.domain.Employee;
 import com.asscope.timesheet.domain.WorkingEntry;
 import com.asscope.timesheet.service.WorkingEntryService;
 import com.asscope.timesheet.web.rest.errors.BadRequestAlertException;
 import com.asscope.timesheet.service.dto.WorkingEntryCriteria;
+import com.asscope.timesheet.service.EmployeeService;
 import com.asscope.timesheet.service.WorkingEntryQueryService;
 
 import io.github.jhipster.web.util.HeaderUtil;
@@ -12,12 +14,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
-
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,12 +39,15 @@ public class WorkingEntryResource {
     private String applicationName;
 
     private final WorkingEntryService workingEntryService;
+    
+    private final EmployeeService employeeService;
 
     private final WorkingEntryQueryService workingEntryQueryService;
 
-    public WorkingEntryResource(WorkingEntryService workingEntryService, WorkingEntryQueryService workingEntryQueryService) {
+    public WorkingEntryResource(WorkingEntryService workingEntryService, WorkingEntryQueryService workingEntryQueryService, EmployeeService employeeService) {
         this.workingEntryService = workingEntryService;
         this.workingEntryQueryService = workingEntryQueryService;
+        this.employeeService = employeeService;
     }
 
     /**
@@ -91,12 +97,22 @@ public class WorkingEntryResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of workingEntries in body.
      */
     @GetMapping("/working-entries")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<List<WorkingEntry>> getAllWorkingEntries() {
         log.debug("REST request to get WorkingEntries by criteria: {}");
         List<WorkingEntry> entityList = workingEntryService.findAll();
         return ResponseEntity.ok().body(entityList);
     }
 
+    @GetMapping("/employees/me/working-entries")
+    @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
+    public ResponseEntity<List<WorkingEntry>> getAllWorkingEntriesByEmployee(Principal principal) {
+        log.debug("REST request to get WorkingEntries by criteria: {}");
+        Employee employee = employeeService.findOneByUsername(principal.getName()).get();
+        List<WorkingEntry> entityList = workingEntryService.findAllByEmployee(employee);
+        return ResponseEntity.ok().body(entityList);
+    }
+    
     /**
     * {@code GET  /working-entries/count} : count all the workingEntries.
     *
