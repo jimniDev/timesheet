@@ -150,4 +150,10 @@ public class WorkingEntryResource {
         workingEntryService.delete(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
     }
+    
+    @GetMapping("/working-entries/start")
+    @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
+    public ResponseEntity<WorkingEntry> startWorkingEntry(Principal principal) {    	
+    	return ResponseEntity.ok().body(workingEntryService.startForEmployee(principal.getName()));
+    }
 }

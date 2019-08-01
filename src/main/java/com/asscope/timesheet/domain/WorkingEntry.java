@@ -1,4 +1,5 @@
 package com.asscope.timesheet.domain;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -28,11 +29,11 @@ public class WorkingEntry extends AbstractAuditingEntity implements Serializable
     @Column(name = "start", nullable = false)
     private Instant start;
 
-    @NotNull
-    @Column(name = "jhi_end", nullable = false)
+    @Column(name = "jhi_end")
     private Instant end;
 
     @Column(name = "delete_flag")
+    @JsonIgnore
     private Boolean deleteFlag;
 
     @Column(name = "locked_flag")
@@ -43,7 +44,7 @@ public class WorkingEntry extends AbstractAuditingEntity implements Serializable
 //    private Instant createdAt;
 
     @ManyToOne
-    @JsonIgnoreProperties("workingEntries")
+    @JsonIgnoreProperties({"workingEntries", "workDays"})
     private Employee employee;
 
     @ManyToOne
