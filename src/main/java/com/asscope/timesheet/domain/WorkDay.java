@@ -7,7 +7,7 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 
 import java.io.Serializable;
-import java.time.Instant;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,7 +15,8 @@ import java.util.Set;
  * A WorkDay.
  */
 @Entity
-@Table(name = "work_day")
+@Table(name = "work_day", uniqueConstraints=
+@UniqueConstraint(columnNames={"date", "employee_id"}))
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class WorkDay implements Serializable {
 
@@ -28,7 +29,7 @@ public class WorkDay implements Serializable {
 
     @NotNull
     @Column(name = "date", nullable = false)
-    private Instant date;
+    private LocalDate date;
 
     @OneToMany(mappedBy = "workDay")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
@@ -39,6 +40,7 @@ public class WorkDay implements Serializable {
     private Set<WorkBreak> workBreaks = new HashSet<>();
 
     @ManyToOne
+    @JoinColumn(name = "employee_id")
     @JsonIgnoreProperties("workDays")
     private Employee employee;
 
@@ -51,16 +53,16 @@ public class WorkDay implements Serializable {
         this.id = id;
     }
 
-    public Instant getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public WorkDay date(Instant date) {
+    public WorkDay date(LocalDate date) {
         this.date = date;
         return this;
     }
 
-    public void setDate(Instant date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 

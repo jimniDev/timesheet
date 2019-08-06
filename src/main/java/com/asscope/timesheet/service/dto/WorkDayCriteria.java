@@ -8,6 +8,7 @@ import io.github.jhipster.service.filter.DoubleFilter;
 import io.github.jhipster.service.filter.Filter;
 import io.github.jhipster.service.filter.FloatFilter;
 import io.github.jhipster.service.filter.IntegerFilter;
+import io.github.jhipster.service.filter.LocalDateFilter;
 import io.github.jhipster.service.filter.LongFilter;
 import io.github.jhipster.service.filter.StringFilter;
 import io.github.jhipster.service.filter.InstantFilter;
@@ -27,7 +28,7 @@ public class WorkDayCriteria implements Serializable, Criteria {
 
     private LongFilter id;
 
-    private InstantFilter date;
+    private LocalDateFilter date;
 
     private LongFilter workingEntryId;
 
@@ -59,11 +60,11 @@ public class WorkDayCriteria implements Serializable, Criteria {
         this.id = id;
     }
 
-    public InstantFilter getDate() {
+    public LocalDateFilter getDate() {
         return date;
     }
 
-    public void setDate(InstantFilter date) {
+    public void setDate(LocalDateFilter date) {
         this.date = date;
     }
 

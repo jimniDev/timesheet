@@ -9,7 +9,6 @@ import com.asscope.timesheet.domain.Employee;
 import com.asscope.timesheet.repository.WorkDayRepository;
 import com.asscope.timesheet.service.WorkDayService;
 import com.asscope.timesheet.web.rest.errors.ExceptionTranslator;
-import com.asscope.timesheet.service.dto.WorkDayCriteria;
 import com.asscope.timesheet.service.WorkDayQueryService;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -26,8 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
+import java.time.LocalDate;
 import java.util.List;
 
 import static com.asscope.timesheet.web.rest.TestUtil.createFormattingConversionService;
@@ -42,8 +40,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = {TimesheetApp.class, TestSecurityConfiguration.class})
 public class WorkDayResourceIT {
 
-    private static final Instant DEFAULT_DATE = Instant.ofEpochMilli(0L);
-    private static final Instant UPDATED_DATE = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+    private static final LocalDate DEFAULT_DATE = LocalDate.ofEpochDay(0L);
+    private static final LocalDate UPDATED_DATE = LocalDate.now();
 
     @Autowired
     private WorkDayRepository workDayRepository;

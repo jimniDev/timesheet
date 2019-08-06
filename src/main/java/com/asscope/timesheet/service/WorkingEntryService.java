@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -91,19 +91,52 @@ public class WorkingEntryService {
         });
     }
     
+    /**
+     * TBD
+     * @param username
+     * @return
+     */
     public WorkingEntry startForEmployee(String username) {
     	Employee employee = employeeService.findOneByUsername(username).get();
     	Instant now = Instant.now();
     	WorkDay workDay;
     	WorkingEntry workingEntry;
-    	Optional<WorkDay> oWorkDay = employee.getWorkDays().parallelStream().filter((wd) -> 
-    		wd.getDate().truncatedTo(ChronoUnit.DAYS).equals(now.truncatedTo(ChronoUnit.DAYS))
-    	).reduce((a, b) -> a);
-    	if (oWorkDay.isEmpty()) {
+    	Optional<WorkingEntry> oWorkingEntry = workingEntryRepository.findStartedWorkingEntryByEmployeeAndDate(employee, LocalDate.now());
+    	if (oWorkingEntry.isEmpty()) {
     		workDay = new WorkDay();
     		workDay.setEmployee(employee);
-    		workDay.setDate(now);
+    		workDay.setDate(LocalDate.now());
     		workDay = workDayRepository.save(workDay);
+    		
+        	workingEntry = new WorkingEntry();
+        	workingEntry.setEmployee(employee);
+        	workingEntry.setStart(now);
+        	workingEntry.deleteFlag(false);
+        	workingEntry.lockedFlag(false);
+        	workingEntry.setWorkDay(workDay);
+        	return workingEntryRepository.save(workingEntry);
+    	} else {
+    		workingEntry = oWorkingEntry.get();
+    		return workingEntry;
+    	}
+
+    }
+    
+    /**
+     * TBD
+     * @param username
+     * @return
+     */
+    public WorkingEntry stopForEmployee(String username) {
+    	Employee employee = employeeService.findOneByUsername(username).get();
+    	Instant now = Instant.now();
+    	WorkDay workDay;
+    	WorkingEntry workingEntry;
+    	Optional<WorkDay> oWorkDay = employee.getWorkDays().parallelStream().filter((wd) -> 
+    		wd.getDate().equals(LocalDate.now())
+    	).reduce((a, b) -> a);
+    	if (oWorkDay.isEmpty()) {
+    			return null;
     	}
     	else {
     		workDay = oWorkDay.get();
@@ -116,15 +149,10 @@ public class WorkingEntryService {
     			})
     			.reduce((a,b) -> a);
     	if (oWorkingEntry.isEmpty()) {
-        	workingEntry = new WorkingEntry();
-        	workingEntry.setEmployee(employee);
-        	workingEntry.setStart(now);
-        	workingEntry.deleteFlag(false);
-        	workingEntry.lockedFlag(false);
-        	workingEntry.setWorkDay(workDay);
-        	return workingEntryRepository.save(workingEntry);
+    		return null;
     	} else {
     		workingEntry = oWorkingEntry.get();
+    		workingEntry.setEnd(now);
     		return workingEntry;
     	}
 

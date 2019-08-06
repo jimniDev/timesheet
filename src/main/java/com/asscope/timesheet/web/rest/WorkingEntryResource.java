@@ -156,4 +156,10 @@ public class WorkingEntryResource {
     public ResponseEntity<WorkingEntry> startWorkingEntry(Principal principal) {    	
     	return ResponseEntity.ok().body(workingEntryService.startForEmployee(principal.getName()));
     }
+    
+    @GetMapping("/working-entries/stop")
+    @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
+    public ResponseEntity<WorkingEntry> stopWorkingEntry(Principal principal) {    	
+    	return ResponseEntity.ok().body(workingEntryService.stopForEmployee(principal.getName()));
+    }
 }

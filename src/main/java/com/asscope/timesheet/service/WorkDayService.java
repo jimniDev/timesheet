@@ -25,7 +25,7 @@ public class WorkDayService {
     public WorkDayService(WorkDayRepository workDayRepository) {
         this.workDayRepository = workDayRepository;
     }
-
+    
     /**
      * Save a workDay.
      *
