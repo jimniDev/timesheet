@@ -26,15 +26,21 @@ public class WorkingEntryService {
     private final Logger log = LoggerFactory.getLogger(WorkingEntryService.class);
     
     private final EmployeeService employeeService;
+    
+    private final WorkDayService workDayService;
 
     private final WorkingEntryRepository workingEntryRepository;
     
     private final WorkDayRepository workDayRepository;
 
-    public WorkingEntryService(WorkingEntryRepository workingEntryRepository, EmployeeService employeeService, WorkDayRepository workDayRepository) {
+    public WorkingEntryService(WorkingEntryRepository workingEntryRepository, 
+    		EmployeeService employeeService, 
+    		WorkDayRepository workDayRepository,
+    		WorkDayService workDayService) {
         this.workingEntryRepository = workingEntryRepository;
         this.employeeService = employeeService;
         this.workDayRepository = workDayRepository;
+        this.workDayService = workDayService;
     }
 
     /**
@@ -92,7 +98,7 @@ public class WorkingEntryService {
     }
     
     /**
-     * TBD
+     * TODO TBD
      * @param username
      * @return
      */
@@ -101,12 +107,10 @@ public class WorkingEntryService {
     	Instant now = Instant.now();
     	WorkDay workDay;
     	WorkingEntry workingEntry;
-    	Optional<WorkingEntry> oWorkingEntry = workingEntryRepository.findStartedWorkingEntryByEmployeeAndDate(employee, LocalDate.now());
+    	Optional<WorkingEntry> oWorkingEntry = workingEntryRepository
+    			.findStartedWorkingEntryByEmployeeAndDate(employee, LocalDate.now());
     	if (oWorkingEntry.isEmpty()) {
-    		workDay = new WorkDay();
-    		workDay.setEmployee(employee);
-    		workDay.setDate(LocalDate.now());
-    		workDay = workDayRepository.save(workDay);
+    		workDay = workDayService.current(employee);
     		
         	workingEntry = new WorkingEntry();
         	workingEntry.setEmployee(employee);
@@ -123,38 +127,30 @@ public class WorkingEntryService {
     }
     
     /**
-     * TBD
+     * TODO TBD
      * @param username
      * @return
      */
-    public WorkingEntry stopForEmployee(String username) {
+    public Optional<WorkingEntry> stopForEmployee(String username) {
     	Employee employee = employeeService.findOneByUsername(username).get();
     	Instant now = Instant.now();
-    	WorkDay workDay;
-    	WorkingEntry workingEntry;
-    	Optional<WorkDay> oWorkDay = employee.getWorkDays().parallelStream().filter((wd) -> 
-    		wd.getDate().equals(LocalDate.now())
-    	).reduce((a, b) -> a);
-    	if (oWorkDay.isEmpty()) {
-    			return null;
+    	Optional<WorkingEntry> oWorkingEntry = workingEntryRepository
+    			.findStartedWorkingEntryByEmployeeAndDate(employee, LocalDate.now());
+    	if (!oWorkingEntry.isEmpty()) {
+    		oWorkingEntry.get().setEnd(now);
     	}
-    	else {
-    		workDay = oWorkDay.get();
-    	}
-    	Optional<WorkingEntry> oWorkingEntry = workDay
-    			.getWorkingEntries()
-    			.parallelStream()
-    			.filter((we) -> {
-    				return we.getEnd() == null;
-    			})
-    			.reduce((a,b) -> a);
-    	if (oWorkingEntry.isEmpty()) {
-    		return null;
-    	} else {
-    		workingEntry = oWorkingEntry.get();
-    		workingEntry.setEnd(now);
-    		return workingEntry;
-    	}
+    	return oWorkingEntry;
 
     }
+    
+    /**
+     * TODO TBD
+     * @param name
+     * @return
+     */
+	public Optional<WorkingEntry> getActiveFromEmployee(String name) {
+		Employee employee = employeeService.findOneByUsername(name).get();
+		return workingEntryRepository
+				.findStartedWorkingEntryByEmployeeAndDate(employee, LocalDate.now());
+	}
 }

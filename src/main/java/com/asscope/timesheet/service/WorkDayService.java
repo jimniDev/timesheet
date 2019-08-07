@@ -1,5 +1,6 @@
 package com.asscope.timesheet.service;
 
+import com.asscope.timesheet.domain.Employee;
 import com.asscope.timesheet.domain.WorkDay;
 import com.asscope.timesheet.repository.WorkDayRepository;
 import org.slf4j.Logger;
@@ -8,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -69,5 +71,24 @@ public class WorkDayService {
     public void delete(Long id) {
         log.debug("Request to delete WorkDay : {}", id);
         workDayRepository.deleteById(id);
+    }
+    
+    /**
+     * Get the current WorkDay from an employee. If there is no current WorkDay, one will be created.
+     * @param employee
+     * @return the current WorkDay
+     */
+    public WorkDay current(Employee employee) {
+    	WorkDay workDay;
+    	Optional<WorkDay> oWorkDay = workDayRepository.findByEmployeeAndDate(employee, LocalDate.now());
+    	if (oWorkDay.isEmpty()) {
+    		workDay = new WorkDay();
+    		workDay.setDate(LocalDate.now());
+    		workDay.setEmployee(employee);
+    		workDay = workDayRepository.save(workDay);
+    	} else {
+    		workDay = oWorkDay.get();
+    	}
+    	return workDay;
     }
 }

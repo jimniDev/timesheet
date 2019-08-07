@@ -39,10 +39,6 @@ public class WorkingEntry extends AbstractAuditingEntity implements Serializable
     @Column(name = "locked_flag")
     private Boolean lockedFlag;
 
-//    @NotNull
-//    @Column(name = "created_at", nullable = false)
-//    private Instant createdAt;
-
     @ManyToOne
     @JsonIgnoreProperties({"workingEntries", "workDays"})
     private Employee employee;
@@ -119,19 +115,6 @@ public class WorkingEntry extends AbstractAuditingEntity implements Serializable
     public void setLockedFlag(Boolean lockedFlag) {
         this.lockedFlag = lockedFlag;
     }
-
-//    public Instant getCreatedAt() {
-//        return createdAt;
-//    }
-//
-//    public WorkingEntry createdAt(Instant createdAt) {
-//        this.createdAt = createdAt;
-//        return this;
-//    }
-//
-//    public void setCreatedAt(Instant createdAt) {
-//        this.createdAt = createdAt;
-//    }
 
     public Employee getEmployee() {
         return employee;
@@ -210,7 +193,6 @@ public class WorkingEntry extends AbstractAuditingEntity implements Serializable
             ", end='" + getEnd() + "'" +
             ", deleteFlag='" + isDeleteFlag() + "'" +
             ", lockedFlag='" + isLockedFlag() + "'" +
-//            ", createdAt='" + getCreatedAt() + "'" +
             "}";
     }
 }

@@ -151,15 +151,21 @@ public class WorkingEntryResource {
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
     }
     
-    @GetMapping("/working-entries/start")
+    @GetMapping("/working-entries/me/start")
     @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<WorkingEntry> startWorkingEntry(Principal principal) {    	
     	return ResponseEntity.ok().body(workingEntryService.startForEmployee(principal.getName()));
     }
     
-    @GetMapping("/working-entries/stop")
+    @GetMapping("/working-entries/me/stop")
     @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<WorkingEntry> stopWorkingEntry(Principal principal) {    	
-    	return ResponseEntity.ok().body(workingEntryService.stopForEmployee(principal.getName()));
+    	return ResponseUtil.wrapOrNotFound(workingEntryService.stopForEmployee(principal.getName()));
+    }
+    
+    @GetMapping("/working-entries/me/active")
+    @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
+    public ResponseEntity<WorkingEntry> activeWorkingEntry(Principal principal) {    	
+    	return ResponseUtil.wrapOrNotFound(workingEntryService.getActiveFromEmployee(principal.getName()));
     }
 }
