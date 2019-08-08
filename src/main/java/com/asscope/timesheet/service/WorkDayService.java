@@ -78,7 +78,7 @@ public class WorkDayService {
      * @param employee
      * @return the current WorkDay
      */
-    public WorkDay current(Employee employee) {
+    public WorkDay currentWorkDay(Employee employee) {
     	WorkDay workDay;
     	Optional<WorkDay> oWorkDay = workDayRepository.findByEmployeeAndDate(employee, LocalDate.now());
     	if (oWorkDay.isEmpty()) {

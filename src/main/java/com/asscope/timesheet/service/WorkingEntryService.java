@@ -30,8 +30,6 @@ public class WorkingEntryService {
     private final WorkDayService workDayService;
 
     private final WorkingEntryRepository workingEntryRepository;
-    
-    private final WorkDayRepository workDayRepository;
 
     public WorkingEntryService(WorkingEntryRepository workingEntryRepository, 
     		EmployeeService employeeService, 
@@ -39,7 +37,6 @@ public class WorkingEntryService {
     		WorkDayService workDayService) {
         this.workingEntryRepository = workingEntryRepository;
         this.employeeService = employeeService;
-        this.workDayRepository = workDayRepository;
         this.workDayService = workDayService;
     }
 
@@ -51,6 +48,10 @@ public class WorkingEntryService {
      */
     public WorkingEntry save(WorkingEntry workingEntry) {
         log.debug("Request to save WorkingEntry : {}", workingEntry);
+        if (workingEntry.getWorkDay() == null) {
+        	WorkDay workDay = workDayService.currentWorkDay(workingEntry.getEmployee());
+        	workingEntry.setWorkDay(workDay);
+        }
         return workingEntryRepository.save(workingEntry);
     }
 
@@ -91,7 +92,6 @@ public class WorkingEntryService {
      */
     public void delete(Long id) {
         log.debug("Request to delete WorkingEntry : {}", id);
-        //workingEntryRepository.deleteById(id);
         workingEntryRepository.findById(id).ifPresent((we) -> {
         	we.setDeleteFlag(true);
         });
@@ -110,8 +110,7 @@ public class WorkingEntryService {
     	Optional<WorkingEntry> oWorkingEntry = workingEntryRepository
     			.findStartedWorkingEntryByEmployeeAndDate(employee, LocalDate.now());
     	if (oWorkingEntry.isEmpty()) {
-    		workDay = workDayService.current(employee);
-    		
+    		workDay = workDayService.currentWorkDay(employee);   		
         	workingEntry = new WorkingEntry();
         	workingEntry.setEmployee(employee);
         	workingEntry.setStart(now);
@@ -140,7 +139,6 @@ public class WorkingEntryService {
     		oWorkingEntry.get().setEnd(now);
     	}
     	return oWorkingEntry;
-
     }
     
     /**
