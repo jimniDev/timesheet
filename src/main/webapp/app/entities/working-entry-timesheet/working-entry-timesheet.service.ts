@@ -49,6 +49,24 @@ export class WorkingEntryTimesheetService {
     return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
+  start(): Observable<EntityResponseType> {
+    return this.http
+      .get<IWorkingEntryTimesheet>(this.resourceUrl + '/me/start', { observe: 'response' })
+      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
+  }
+
+  end(): Observable<EntityResponseType> {
+    return this.http
+      .get<IWorkingEntryTimesheet>(this.resourceUrl + '/me/stop', { observe: 'response' })
+      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
+  }
+
+  active(): Observable<EntityResponseType> {
+    return this.http
+      .get<IWorkingEntryTimesheet>(this.resourceUrl + '/me/active', { observe: 'response' })
+      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
+  }
+
   protected convertDateFromClient(workingEntry: IWorkingEntryTimesheet): IWorkingEntryTimesheet {
     const copy: IWorkingEntryTimesheet = Object.assign({}, workingEntry, {
       start: workingEntry.start != null && workingEntry.start.isValid() ? workingEntry.start.toJSON() : null,

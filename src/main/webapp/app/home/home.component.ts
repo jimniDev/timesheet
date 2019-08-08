@@ -15,6 +15,7 @@ export class HomeComponent implements OnInit {
   account: Account;
   workingEntries: IWorkingEntryTimesheet[];
   math = Math;
+  startBtnName: string;
 
   constructor(
     private accountService: AccountService,
@@ -27,6 +28,15 @@ export class HomeComponent implements OnInit {
       this.account = account;
     });
     this.loadAll();
+    this.workingEntryService.active().subscribe(res => {
+      //check the response from server
+      //check header
+      if (res.ok) {
+        this.startBtnName = 'Stop';
+      } else {
+        this.startBtnName = 'Start';
+      }
+    });
   }
 
   loadAll() {
@@ -60,4 +70,6 @@ export class HomeComponent implements OnInit {
   login() {
     this.loginService.login();
   }
+
+  start() {}
 }
