@@ -13,6 +13,7 @@ import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -166,6 +167,11 @@ public class WorkingEntryResource {
     @GetMapping("/working-entries/me/active")
     @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<WorkingEntry> activeWorkingEntry(Principal principal) {    	
-    	return ResponseUtil.wrapOrNotFound(workingEntryService.getActiveFromEmployee(principal.getName()));
+    	Optional<WorkingEntry> oWorkingEntry = workingEntryService.getActiveFromEmployee(principal.getName());
+    	if(oWorkingEntry.isPresent()) {
+    		return ResponseEntity.ok().body(oWorkingEntry.get());
+    	} else {
+    		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    	}
     }
 }
