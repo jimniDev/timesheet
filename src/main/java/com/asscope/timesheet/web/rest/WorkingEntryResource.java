@@ -171,7 +171,7 @@ public class WorkingEntryResource {
     	if(oWorkingEntry.isPresent()) {
     		return ResponseEntity.ok().body(oWorkingEntry.get());
     	} else {
-    		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     	}
     }
 }
