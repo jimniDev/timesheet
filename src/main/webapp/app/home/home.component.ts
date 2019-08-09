@@ -42,29 +42,7 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  loadAll() {
-    this.workingEntryService
-      .query()
-      .pipe(
-        filter((res: HttpResponse<IWorkingEntryTimesheet[]>) => res.ok),
-        map((res: HttpResponse<IWorkingEntryTimesheet[]>) => res.body)
-      )
-      .subscribe(
-        (res: IWorkingEntryTimesheet[]) => {
-          this.workingEntries = res;
-        },
-        (res: HttpErrorResponse) => this.onError(res.message)
-      );
-  }
-
-  onError(message: string) {
-    throw new Error('Method not implemented.');
-  }
-
-  sumDate(date1: any, date2: any): String {
-    let sum = Math.abs(date1 - date2) / 36e5;
-    return sum.toFixed(2);
-  }
+  loadAll() {}
 
   isAuthenticated() {
     return this.accountService.isAuthenticated();
