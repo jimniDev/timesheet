@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { WorkingEntryTimesheetService } from 'app/entities/working-entry-timesheet';
 import { IWorkingEntryTimesheet } from 'app/shared/model/working-entry-timesheet.model';
 import { faThumbsDown } from '@fortawesome/free-solid-svg-icons';
@@ -6,6 +6,7 @@ import { thisExpression } from '@babel/types';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { filter, map } from 'rxjs/operators';
 import { Sort } from '@angular/material/sort';
+import { template } from '@babel/core';
 
 @Component({
   selector: 'jhi-timetable',
@@ -16,16 +17,15 @@ export class TimetableComponent implements OnInit {
   workingEntries: IWorkingEntryTimesheet[];
   sWorkingEntries: IWorkingEntryTimesheet[]; //sorted
 
+  @Output() initialized = new EventEmitter<boolean>();
+
   constructor(private workingEntryService: WorkingEntryTimesheetService) {}
 
   ngOnInit() {
-    this.loadAll();
-    this.sWorkingEntries = this.workingEntries.slice();
-    //this.sortData(tis.sWorkingEntries);
-    console.log(this.workingEntries);
+    this.loadAllandSort();
   }
 
-  loadAll() {
+  loadAllandSort() {
     this.workingEntryService
       .timetable()
       .pipe(
@@ -35,6 +35,8 @@ export class TimetableComponent implements OnInit {
       .subscribe(
         (res: IWorkingEntryTimesheet[]) => {
           this.workingEntries = res;
+          this.workingEntries = this.sortData(this.workingEntries);
+          this.initialized.emit(true);
         },
         (res: HttpErrorResponse) => this.onError(res.message)
       );
@@ -44,9 +46,9 @@ export class TimetableComponent implements OnInit {
     throw new Error('Method not implemented.');
   }
 
-  sortData(array: IWorkingEntryTimesheet[]): IWorkingEntryTimesheet[] {
-    const data = array.slice();
-    return (array = data.sort((a, b) => a.start.valueOf() - b.start.valueOf()));
+  sortData(workingEntries: IWorkingEntryTimesheet[]): IWorkingEntryTimesheet[] {
+    let sortarray = workingEntries.sort((a, b) => b.start.valueOf() - a.start.valueOf());
+    return sortarray;
   }
 
   sumDate(date1: any, date2: any): String {

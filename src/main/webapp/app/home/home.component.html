@@ -3,10 +3,10 @@
 
         <div *ngIf="isAuthenticated()">
 
-            <jhi-timetable></jhi-timetable>
+            <jhi-timetable (initialized)="enableButton($event)"></jhi-timetable>
             
             <div>
-                <button class="btn btn-primary" type="button" (click)="startStop()">{{startBtnName}}</button>
+                <button class="btn btn-primary" type="button" [disabled]="disableButton ? 'disabled': null" (click)="startStop()">{{startBtnName}}</button>
             </div>
 
             <!-- <mat-form-field>

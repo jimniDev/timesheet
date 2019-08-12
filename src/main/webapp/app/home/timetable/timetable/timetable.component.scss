@@ -1,12 +1,121 @@
-.table-container {
+.container {
   text-align: center;
-  //height: ;
+  height: 40vh;
   overflow: auto;
+  margin-bottom: 10px;
+  width: 100%;
+  margin-left: 0px;
+  display: inline-block;
 }
 
-.table {
-  //width: 100%;
-  //display: inline;
-  height: 60vh;
-  //idth: ;
+.scrollbar {
+  margin-left: 30px;
+  float: left;
+  height: 300px;
+  width: 65px;
+  background: #fff;
+  overflow-y: scroll;
+  margin-bottom: 25px;
+}
+
+.force-overflow {
+  min-height: 450px;
+}
+
+.scrollbar-primary::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+  background-color: #f5f5f5;
+  border-radius: 10px;
+}
+
+.scrollbar-primary::-webkit-scrollbar {
+  width: 12px;
+  background-color: #f5f5f5;
+}
+
+.scrollbar-primary::-webkit-scrollbar-thumb {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  background-color: #2bbbad;
+}
+
+@media only screen and (max-width: 760px), (min-device-width: 768px) and (max-device-width: 1024px) {
+  /* Force table to not be like tables anymore */
+  table,
+  thead,
+  tbody,
+  th,
+  td,
+  tr {
+    display: block;
+  }
+
+  /* Hide table headers (but not display: none;, for accessibility) */
+  thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+
+  tr {
+    border: 1px solid #eee;
+    border-radius: 7px;
+    margin-bottom: 10px;
+  }
+
+  td {
+    /* Behave  like a "row" */
+    border: none;
+    border-bottom: 0.5px solid #eee;
+    position: relative;
+    padding-left: 50%;
+  }
+
+  td:before {
+    /* Now like a table header */
+    position: absolute;
+    /* Top/left values mimic padding */
+    left: 3px;
+    width: 45%;
+    padding-right: 10px;
+    white-space: nowrap;
+  }
+
+  .table th,
+  .table td {
+    padding-top: 0.55rem;
+    padding-bottom: 0.55rem;
+  }
+
+  /*
+	Label the data
+	*/
+  td:nth-of-type(1):before {
+    content: 'Date';
+  }
+  td:nth-of-type(2):before {
+    content: 'Start';
+  }
+  td:nth-of-type(3):before {
+    content: 'End';
+  }
+  td:nth-of-type(4):before {
+    content: 'Sum';
+  }
+  td:nth-of-type(5):before {
+    content: 'Activity';
+  }
+  td:nth-of-type(6):before {
+    content: 'Loation';
+  }
+  td:nth-of-type(6) {
+    border-bottom: 0px;
+  }
+  td:nth-of-type(7) {
+    border-bottom: 0px;
+  }
+  td:nth-of-type(7):before {
+    top: -10px;
+  }
+  //td.text-right {}
 }

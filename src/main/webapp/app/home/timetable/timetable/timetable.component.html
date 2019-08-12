@@ -1,8 +1,5 @@
-<p>
-  timetable works!
-</p>
-<div class = container>
-    <table class="table table-hover, table-responisve">
+<div class = "container scroll scrollbar-primary">
+    <table class="table table-hover table-responisve force-overflow">
     <thead>
     <tr>
     <th>Date</th>
@@ -11,20 +8,23 @@
     <th>Sum</th>
     <th>Activity</th>
     <th>Location</th>
+    <th></th>
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let workingEntry of workingEntries;">
+    <tr *ngFor="let workingEntry of workingEntries;" >
         <td>{{workingEntry.start | date:'dd.MM.yy'}}</td>
         <td>{{workingEntry.start | date:'HH:mm'}}</td>
         <td>{{workingEntry.end | date: 'HH:mm'}}</td>
         <td>{{sumDate(workingEntry.start, workingEntry.end)}}</td>
         <td>
+                working
             <!-- <div *ngIf="workingEntry.activity">
                 <a [routerLink]="['../activity-timesheet', workingEntry.activity?.id, 'view' ]" >{{workingEntry.activity?.id}}</a>
             </div> -->
         </td>
         <td>
+            location
             <!-- <div *ngIf="workingEntry.location">
                 <a [routerLink]="['../location-timesheet', workingEntry.location?.id, 'view' ]" >{{workingEntry.location?.id}}</a>
             </div> -->

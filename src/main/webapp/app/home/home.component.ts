@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, ViewChild } from '@angular/core';
 
 import { LoginService, AccountService, Account } from 'app/core';
-import { IWorkingEntryTimesheet } from 'app/shared/model/working-entry-timesheet.model';
+import { IWorkingEntryTimesheet, WorkingEntryTimesheet } from 'app/shared/model/working-entry-timesheet.model';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { filter, map } from 'rxjs/operators';
 import { WorkingEntryTimesheetService } from 'app/entities/working-entry-timesheet';
+import { TimetableComponent } from './timetable/timetable/timetable.component';
 
 @Component({
   selector: 'jhi-home',
@@ -13,10 +14,12 @@ import { WorkingEntryTimesheetService } from 'app/entities/working-entry-timeshe
 })
 export class HomeComponent implements OnInit {
   account: Account;
-  workingEntries: IWorkingEntryTimesheet[];
-  math = Math;
   startBtnName: string;
   started: boolean;
+  disableButton: boolean = true;
+
+  @ViewChild(TimetableComponent, { static: false })
+  timetableComponent: TimetableComponent;
 
   constructor(
     private accountService: AccountService,
@@ -52,10 +55,16 @@ export class HomeComponent implements OnInit {
     this.loginService.login();
   }
 
+  enableButton(enabled: boolean) {
+    this.disableButton = !enabled;
+  }
   startStop() {
     if (this.started) {
       this.workingEntryService.end().subscribe(res => {
         if (res.ok) {
+          let workingEntry = <IWorkingEntryTimesheet>res.body;
+          let indexToUpdate = this.timetableComponent.workingEntries.findIndex(we => we.id == workingEntry.id);
+          this.timetableComponent.workingEntries[indexToUpdate] = workingEntry;
           this.startBtnName = 'Start';
           this.started = false;
         }
@@ -63,6 +72,8 @@ export class HomeComponent implements OnInit {
     } else {
       this.workingEntryService.start().subscribe(res => {
         if (res.ok) {
+          let workingEntry = <IWorkingEntryTimesheet>res.body;
+          this.timetableComponent.workingEntries.unshift(workingEntry);
           this.startBtnName = 'Stop';
           this.started = true;
         }
