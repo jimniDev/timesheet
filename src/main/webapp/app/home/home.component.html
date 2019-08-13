@@ -1,63 +1,12 @@
 <div class="row">
     <div class="col-md-9">
-        
-        <div *ngIf="isAuthenticated()">
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                <th><span jhiTranslate="timesheetApp.workingEntry.start">Start</span></th>
-                <th><span jhiTranslate="timesheetApp.workingEntry.end">End</span></th>
-                <th><span jhiTranslate="timesheetApp.workingEntry.sum">Sum</span></th>
-                <th><span jhiTranslate="timesheetApp.workingEntry.activity">Activity</span></th>
-                <th><span jhiTranslate="timesheetApp.workingEntry.location">Location</span></th>
-                <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr *ngFor="let workingEntry of workingEntries ;">
-                    <td>{{workingEntry.start | date:'dd.MM.yy HH:mm'}}</td>
-                    <td>{{workingEntry.end | date:'dd.MM.yy HH:mm'}}</td>
-                    <td>{{sumDate(workingEntry.start, workingEntry.end)}}</td>
-                    <td>
-                        <div *ngIf="workingEntry.activity">
-                            <a [routerLink]="['../activity-timesheet', workingEntry.activity?.id, 'view' ]" >{{workingEntry.activity?.id}}</a>
-                        </div>
-                    </td>
-                    <td>
-                        <div *ngIf="workingEntry.location">
-                            <a [routerLink]="['../location-timesheet', workingEntry.location?.id, 'view' ]" >{{workingEntry.location?.id}}</a>
-                        </div>
-                    </td>
-                    <td class="text-right">
-                        <div class="btn-group">
-                            <button type="submit"
-                                    [routerLink]="['/working-entry-timesheet', workingEntry.id, 'view' ]"
-                                    class="btn btn-info btn-sm">
-                                <fa-icon [icon]="'eye'"></fa-icon>
-                                <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
-                            </button>
-                            <button type="submit"
-                                    [routerLink]="['/working-entry-timesheet', workingEntry.id, 'edit']"
-                                    class="btn btn-primary btn-sm">
-                                <fa-icon [icon]="'pencil-alt'"></fa-icon>
-                                <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
-                            </button>
-                            <button type="submit"
-                                    [routerLink]="['/', 'working-entry-timesheet', { outlets: { popup: workingEntry.id + '/delete'} }]"
-                                    replaceUrl="true"
-                                    queryParamsHandling="merge"
-                                    class="btn btn-danger btn-sm">
-                                <fa-icon [icon]="'times'"></fa-icon>
-                                <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
 
+        <div *ngIf="isAuthenticated()">
+
+            <jhi-timetable (initialized)="enableButton($event)"></jhi-timetable>
+            
             <div>
-                <button class="btn btn-primary" type="button" (click)="startStop()">{{startBtnName}}</button>
+                <button class="btn btn-primary" type="button" [disabled]="disableButton ? 'disabled': null" (click)="startStop()">{{startBtnName}}</button>
             </div>
 
             <!-- <mat-form-field>
