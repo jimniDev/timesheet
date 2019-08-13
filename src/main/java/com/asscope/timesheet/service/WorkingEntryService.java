@@ -146,6 +146,7 @@ public class WorkingEntryService {
      * @param name
      * @return
      */
+    @Transactional(readOnly = true)
 	public Optional<WorkingEntry> getActiveFromEmployee(String name) {
 		Employee employee = employeeService.findOneByUsername(name).get();
 		return workingEntryRepository

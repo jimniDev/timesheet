@@ -54,6 +54,19 @@ public class WorkingEntry extends AbstractAuditingEntity implements Serializable
     @ManyToOne
     @JsonIgnoreProperties("workingEntries")
     private Location location;
+    
+    public Long getWorkingTimeInSeconds() {
+    	if(this.isCompleted()) {
+        	return end.getEpochSecond() - start.getEpochSecond();
+    	}
+    	else {
+    		return 0L;
+    	}
+    }
+    
+    public boolean isCompleted() {
+    	return this.getEnd() != null && this.getStart() != null;
+    }
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {

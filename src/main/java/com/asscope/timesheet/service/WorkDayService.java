@@ -91,4 +91,12 @@ public class WorkDayService {
     	}
     	return workDay;
     }
+    
+    public Optional<Integer> getBreakMinutes(long id) {
+    	Optional<WorkDay> oWorkDay = this.findOne(id);
+    	if(oWorkDay.isPresent()) {
+    		return Optional.of(oWorkDay.get().getBreakMinutes());
+    	}
+    	return Optional.empty();
+    }
 }
