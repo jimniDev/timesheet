@@ -1,0 +1,65 @@
+
+<form [formGroup]="timeForm" (ngSubmit)="onSubmit()"> 
+  <div class="form-row">
+      <!-- <mat-form-field>
+          <input class="form-control" [matDatepicker]="picker" placeholder="Choose a date">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field> -->
+      <form class="form-inline">
+          <div class="form-group">
+            <div class="input-group">
+              <input class="form-control" placeholder="yyyy-mm-dd"
+                     name="dp" [(ngModel)]="model" ngbDatepicker #d="ngbDatepicker">
+              <div class="input-group-append">
+                <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button"></button>
+              </div>
+            </div>
+          </div>
+        </form>
+        
+        <hr/>
+        <pre>Model: {{ model | json }}</pre>
+  </div>
+ 
+  <div class="form-row">
+    <div class="form-group col-6">
+        <label>Start Time</label>
+        <input type="time" class="form-control" formControlName="startTime" required>
+    </div>
+    <div class="form-group col-6">
+        <label>End Time</label>
+        <input type="time" class="form-control" formControlName="endTime" required>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-6">
+        <mat-label>Role</mat-label>
+        <select matNativeControl class="form-control" formControlName="roleControl">
+          <!-- <option label="--select role--"></option>
+          <mat-option [value]="roles">
+            {{roles}}
+          </mat-option> -->
+          <option label="--select activity--"></option>
+          <option value="activity1">activity1</option>
+          <option value="ativity2">activity2</option>
+          <option value="ativity3">activity3</option>
+        </select>
+    </div>
+    <div class="form-group col-6">
+        <mat-label>Activity</mat-label>
+        <select matNativeControl class="form-control" formControlName="activityControl">
+          <option label="--select activity--"></option>
+          <option value="activity1">activity1</option>
+          <option value="ativity2">activity2</option>
+          <option value="ativity3">activity3</option>
+        </select>
+    </div>
+  </div>
+  <div class="form-row">
+      <button class="btn btn-primary" type="submit" [disabled]="!timeForm.valid">Save</button>
+      <ng-content #name select="button"></ng-content>
+  </div> 
+</form>
+
+

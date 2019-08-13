@@ -1,12 +1,8 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { WorkingEntryTimesheetService } from 'app/entities/working-entry-timesheet';
 import { IWorkingEntryTimesheet } from 'app/shared/model/working-entry-timesheet.model';
-import { faThumbsDown } from '@fortawesome/free-solid-svg-icons';
-import { thisExpression } from '@babel/types';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { filter, map } from 'rxjs/operators';
-import { Sort } from '@angular/material/sort';
-import { template } from '@babel/core';
 
 @Component({
   selector: 'jhi-timetable',

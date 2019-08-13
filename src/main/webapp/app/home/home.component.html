@@ -1,21 +1,23 @@
-<div class="row">
-    <div class="col-md-9">
+
+<div class="conatainer-fluid row">
+    <div class="col-md-9" style="float: none; margin: 0 auto;">
 
         <div *ngIf="isAuthenticated()">
-
-            <jhi-timetable (initialized)="enableButton($event)"></jhi-timetable>
-            
-            <div>
-                <button class="btn btn-primary" type="button" [disabled]="disableButton ? 'disabled': null" (click)="startStop()">{{startBtnName}}</button>
-            </div>
-
-            <!-- <mat-form-field>
-                <input matInput [matDatepicker]="picker" placeholder="Choose a date">
-                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                <mat-datepicker #picker></mat-datepicker>
-            </mat-form-field> -->
-
+            <jhi-timetable (initialized)="enableButton($event)"></jhi-timetable>     
 
         </div>
+    </div>
+</div>
+<div class="conatainer-fluid row">
+    <div class="col-md-9 col-sm-6" style="float: none; margin: 0 auto;">
+
+            <jhi-date-form>
+                <div>
+                    <button class="btn btn-primary" type="button" [disabled]="disableButton ? 'disabled': null" (click)="startStop()">{{startBtnName}}</button>
+                </div>
+            </jhi-date-form>
+
+
+
     </div>
 </div>
