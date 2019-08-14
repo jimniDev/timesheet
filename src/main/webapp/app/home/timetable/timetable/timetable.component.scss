@@ -2,10 +2,11 @@
   text-align: center;
   height: 40vh;
   overflow: auto;
-  margin: 10px auto;
+  margin: 20px auto;
   display: block;
-  padding-right: 10px;
-  padding-left: 10px;
+  padding: 20px;
+  border: 0.5px solid #eee;
+  border-radius: 10px;
 }
 
 .scrollbar {
@@ -31,6 +32,7 @@
 .scrollbar-primary::-webkit-scrollbar {
   width: 12px;
   background-color: #f5f5f5;
+  border-radius: 10px;
 }
 
 .scrollbar-primary::-webkit-scrollbar-thumb {
@@ -39,7 +41,41 @@
   background-color: #2bbbad;
 }
 
-@media only screen and (max-width: 760px), (min-device-width: 768px) and (max-device-width: 1024px) {
+// @media (min-width: 1600px) {
+//   .container {
+//     flex: 0 0 45%;
+//     max-width: 45%;
+//   }
+// }
+
+// @media (min-width: 1200px) {
+//   .container {
+//     flex: 0 0 60%;
+//     max-width: 60%;
+//   }
+// }
+
+// @media (min-width: 768px){
+//   .container {
+//     flex: 0 0 75%;
+//     max-width: 75%;
+//   }
+// }
+// @media (min-width: 576px){
+//   .container {
+//     flex: 0 0 83.3333333333%;
+//     max-width: 83.3333333333%;
+//   }
+// }
+
+// @media (min-width: 1200px), (max-width:1760px){
+//   .conatainer {
+//     flex: 0 0 70%;
+//     max-width: 70%;
+//   }
+// }
+
+@media only screen and (max-width: 880px), (min-device-width: 768px) and (max-device-width: 1024px) {
   /* Force table to not be like tables anymore */
   table,
   thead,
@@ -118,4 +154,15 @@
     top: -10px;
   }
   //td.text-right {}
+
+  .container {
+    text-align: center;
+    height: 40vh;
+    overflow: auto;
+    margin: 20px auto;
+    display: block;
+    padding: 10px;
+    border: 0.5px solid #eee;
+    border-radius: 10px;
+  }
 }

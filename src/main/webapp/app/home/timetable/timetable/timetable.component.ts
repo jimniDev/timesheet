@@ -48,10 +48,14 @@ export class TimetableComponent implements OnInit {
   }
 
   sumDate(date1: any, date2: any): String {
-    const sum = Math.abs((date1 - date2) / 1000);
-    const hour = Math.round(sum / 3600);
-    const min = Math.round((sum % 3600) / 60);
-    return this.pad(hour, 2) + ' : ' + this.pad(min, 2);
+    if (date2 != null) {
+      const sum = Math.abs((date1 - date2) / 1000);
+      const hour = Math.round(sum / 3600);
+      const min = Math.round((sum % 3600) / 60);
+      return this.pad(hour, 2) + ' : ' + this.pad(min, 2);
+    } else {
+      return null;
+    }
   }
 
   pad(num: number, size: number): string {

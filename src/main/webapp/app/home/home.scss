@@ -10,6 +10,12 @@ Main page styles
   background-size: contain;
 }
 
+#startBtn {
+  margin: 10px 0px;
+  padding: 0px;
+  width: 100%;
+}
+
 /* wait autoprefixer update to allow simple generation of high pixel density media query */
 @media only screen and (-webkit-min-device-pixel-ratio: 2),
   only screen and (-moz-min-device-pixel-ratio: 2),
@@ -21,3 +27,5 @@ Main page styles
     background-size: contain;
   }
 }
+
+//@import "../node_modules/bootstrap/scss/bootstrap";
