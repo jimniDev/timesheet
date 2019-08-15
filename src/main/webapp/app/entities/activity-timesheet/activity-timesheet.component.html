@@ -20,7 +20,6 @@
             <th><span jhiTranslate="global.field.id">ID</span></th>
             <th><span jhiTranslate="timesheetApp.activity.name">Name</span></th>
             <th><span jhiTranslate="timesheetApp.activity.description">Description</span></th>
-            <th><span jhiTranslate="timesheetApp.activity.role">Role</span></th>
             <th></th>
             </tr>
             </thead>
@@ -29,11 +28,6 @@
                 <td><a [routerLink]="['/activity-timesheet', activity.id, 'view' ]">{{activity.id}}</a></td>
                 <td>{{activity.name}}</td>
                 <td>{{activity.description}}</td>
-                <td>
-                    <div *ngIf="activity.role">
-                        <a [routerLink]="['../role-timesheet', activity.role?.id, 'view' ]" >{{activity.role?.id}}</a>
-                    </div>
-                </td>
                 <td class="text-right">
                     <div class="btn-group">
                         <button type="submit"

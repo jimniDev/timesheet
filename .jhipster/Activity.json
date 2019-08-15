@@ -1,5 +1,21 @@
 {
-    "name": "Activity",
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "relationships": [
+        {
+            "relationshipType": "one-to-many",
+            "otherEntityName": "workingEntry",
+            "otherEntityRelationshipName": "activity",
+            "relationshipName": "workingEntry"
+        },
+        {
+            "relationshipName": "role",
+            "otherEntityName": "role",
+            "relationshipType": "many-to-many",
+            "ownerSide": false,
+            "otherEntityRelationshipName": "activity"
+        }
+    ],
     "fields": [
         {
             "fieldName": "name",
@@ -13,29 +29,13 @@
             "fieldType": "String"
         }
     ],
-    "relationships": [
-        {
-            "relationshipType": "one-to-many",
-            "otherEntityName": "workingEntry",
-            "otherEntityRelationshipName": "activity",
-            "relationshipName": "workingEntry"
-        },
-        {
-            "relationshipType": "many-to-one",
-            "otherEntityName": "role",
-            "otherEntityRelationshipName": "activity",
-            "relationshipName": "role",
-            "otherEntityField": "id"
-        }
-    ],
     "changelogDate": "20190726193529",
-    "entityTableName": "activity",
     "dto": "no",
-    "pagination": "no",
+    "searchEngine": false,
     "service": "serviceClass",
+    "entityTableName": "activity",
+    "databaseType": "sql",
     "jpaMetamodelFiltering": true,
-    "fluentMethods": true,
-    "clientRootFolder": "",
-    "applications": "*",
+    "pagination": "no",
     "angularJSSuffix": "timesheet"
 }

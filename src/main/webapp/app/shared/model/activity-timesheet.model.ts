@@ -6,7 +6,7 @@ export interface IActivityTimesheet {
   name?: string;
   description?: string;
   workingEntries?: IWorkingEntryTimesheet[];
-  role?: IRoleTimesheet;
+  roles?: IRoleTimesheet[];
 }
 
 export class ActivityTimesheet implements IActivityTimesheet {
@@ -15,6 +15,6 @@ export class ActivityTimesheet implements IActivityTimesheet {
     public name?: string,
     public description?: string,
     public workingEntries?: IWorkingEntryTimesheet[],
-    public role?: IRoleTimesheet
+    public roles?: IRoleTimesheet[]
   ) {}
 }

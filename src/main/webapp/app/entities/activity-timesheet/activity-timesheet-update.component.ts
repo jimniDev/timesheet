@@ -22,8 +22,7 @@ export class ActivityTimesheetUpdateComponent implements OnInit {
   editForm = this.fb.group({
     id: [],
     name: [null, [Validators.required]],
-    description: [],
-    role: []
+    description: []
   });
 
   constructor(
@@ -52,8 +51,7 @@ export class ActivityTimesheetUpdateComponent implements OnInit {
     this.editForm.patchValue({
       id: activity.id,
       name: activity.name,
-      description: activity.description,
-      role: activity.role
+      description: activity.description
     });
   }
 
@@ -76,8 +74,7 @@ export class ActivityTimesheetUpdateComponent implements OnInit {
       ...new ActivityTimesheet(),
       id: this.editForm.get(['id']).value,
       name: this.editForm.get(['name']).value,
-      description: this.editForm.get(['description']).value,
-      role: this.editForm.get(['role']).value
+      description: this.editForm.get(['description']).value
     };
   }
 
@@ -99,5 +96,16 @@ export class ActivityTimesheetUpdateComponent implements OnInit {
 
   trackRoleById(index: number, item: IRoleTimesheet) {
     return item.id;
+  }
+
+  getSelected(selectedVals: Array<any>, option: any) {
+    if (selectedVals) {
+      for (let i = 0; i < selectedVals.length; i++) {
+        if (option.id === selectedVals[i].id) {
+          return selectedVals[i];
+        }
+      }
+    }
+    return option;
   }
 }

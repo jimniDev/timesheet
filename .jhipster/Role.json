@@ -1,5 +1,17 @@
 {
-    "name": "Role",
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "relationships": [
+        {
+            "relationshipName": "activity",
+            "otherEntityName": "activity",
+            "relationshipType": "many-to-many",
+            "relationshipValidateRules": [],
+            "otherEntityField": "id",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "role"
+        }
+    ],
     "fields": [
         {
             "fieldName": "name",
@@ -13,22 +25,13 @@
             "fieldType": "String"
         }
     ],
-    "relationships": [
-        {
-            "relationshipType": "one-to-many",
-            "otherEntityName": "activity",
-            "otherEntityRelationshipName": "role",
-            "relationshipName": "activity"
-        }
-    ],
     "changelogDate": "20190726193530",
-    "entityTableName": "role",
     "dto": "no",
-    "pagination": "no",
+    "searchEngine": false,
     "service": "serviceClass",
+    "entityTableName": "role",
+    "databaseType": "sql",
     "jpaMetamodelFiltering": true,
-    "fluentMethods": true,
-    "clientRootFolder": "",
-    "applications": "*",
+    "pagination": "no",
     "angularJSSuffix": "timesheet"
 }

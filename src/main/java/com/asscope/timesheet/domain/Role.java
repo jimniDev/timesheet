@@ -31,8 +31,11 @@ public class Role implements Serializable {
     @Column(name = "description")
     private String description;
 
-    @OneToMany(mappedBy = "role")
+    @ManyToMany
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @JoinTable(name = "role_activity",
+               joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"),
+               inverseJoinColumns = @JoinColumn(name = "activity_id", referencedColumnName = "id"))
     private Set<Activity> activities = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
@@ -81,13 +84,13 @@ public class Role implements Serializable {
 
     public Role addActivity(Activity activity) {
         this.activities.add(activity);
-        activity.setRole(this);
+        activity.getRoles().add(this);
         return this;
     }
 
     public Role removeActivity(Activity activity) {
         this.activities.remove(activity);
-        activity.setRole(null);
+        activity.getRoles().remove(this);
         return this;
     }
 
