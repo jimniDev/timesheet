@@ -49,8 +49,45 @@ public class WorkDay implements Serializable {
     @JsonIgnoreProperties("workDays")
     private Employee employee;
     
-    @JsonProperty("breakMinutes")
-    public int getBreakMinutes() {
+    @JsonProperty("totalWorkingMinutes")
+    public long getTotalWorkingMinutes() {
+    	long seconds = 0;
+    	for (WorkingEntry workingEntry: workingEntries) {
+    		if(workingEntry.isValid()) {
+    			seconds += workingEntry.getWorkingTimeInSeconds();
+    		}
+    	}
+    	return seconds / 60;
+    }
+    
+    @JsonProperty("startTime")
+    public Instant getStartTime() {
+    	Instant start = Instant.MAX;   	
+    	for(WorkingEntry workingEntry: this.workingEntries) {
+    		if(workingEntry.isValid()) {
+        		if(workingEntry.getStart().isBefore(start)) {
+        			start = workingEntry.getStart();
+        		}
+    		}
+    	}
+    	return start;
+    }
+    
+    @JsonProperty("endTime")
+    public Instant getEndTime() {
+    	Instant end = Instant.MIN;   	
+    	for(WorkingEntry workingEntry: this.workingEntries) {
+    		if(workingEntry.isValid()) {
+        		if(workingEntry.getEnd().isAfter(end)) {
+        			end = workingEntry.getEnd();
+        		}
+    		}
+    	}
+    	return end;
+    }
+    
+    @JsonProperty("totalBreakMinutes")
+    public int getTotalBreakMinutes() {
     	int minutes = 0;
     	Instant firstStart = Instant.MAX;
     	Instant lastEnd = Instant.MIN;
@@ -59,7 +96,7 @@ public class WorkDay implements Serializable {
     		minutes += workBreak.getMinutes();
     	}
     	for(WorkingEntry workingEntry: this.workingEntries) {
-    		if(workingEntry.isCompleted()) {
+    		if(workingEntry.isValid()) {
         		totalWorkingSeconds += workingEntry.getWorkingTimeInSeconds();
         		if(workingEntry.getStart().isBefore(firstStart)) {
         			firstStart = workingEntry.getStart();

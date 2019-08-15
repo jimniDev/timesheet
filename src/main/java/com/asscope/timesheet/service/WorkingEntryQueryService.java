@@ -92,10 +92,10 @@ public class WorkingEntryQueryService extends QueryService<WorkingEntry> {
                 specification = specification.and(buildRangeSpecification(criteria.getEnd(), WorkingEntry_.end));
             }
             if (criteria.getDeleteFlag() != null) {
-                specification = specification.and(buildSpecification(criteria.getDeleteFlag(), WorkingEntry_.deleteFlag));
+                specification = specification.and(buildSpecification(criteria.getDeleteFlag(), WorkingEntry_.deleted));
             }
             if (criteria.getLockedFlag() != null) {
-                specification = specification.and(buildSpecification(criteria.getLockedFlag(), WorkingEntry_.lockedFlag));
+                specification = specification.and(buildSpecification(criteria.getLockedFlag(), WorkingEntry_.locked));
             }
 //            if (criteria.getCreatedAt() != null) {
 //                specification = specification.and(buildRangeSpecification(criteria.getCreatedAt(), WorkingEntry_.createdAt));

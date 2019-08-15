@@ -57,7 +57,7 @@ public class WorkingEntryService {
         if (workingEntryToSave.getWorkDay() == null) {
         	WorkDay workDay = workDayService.currentWorkDay(workingEntryToSave.getEmployee());
             for (WorkingEntry wEntry: workDay.getWorkingEntries()) {
-            	if (wEntry.isCompleted() && !wEntry.isDeleteFlag()) {
+            	if (wEntry.isValid()) {
             		long workingEntryToSaveStartSeconds = workingEntryToSave.getStart().getLong(ChronoField.SECOND_OF_DAY);
             		long workingEntryToSaveEndSeconds = workingEntryToSave.getEnd().getLong(ChronoField.SECOND_OF_DAY);
             		long wEntryStartSeconds = wEntry.getStart().getLong(ChronoField.SECOND_OF_DAY);
@@ -113,7 +113,7 @@ public class WorkingEntryService {
     public void delete(Long id) {
         log.debug("Request to delete WorkingEntry : {}", id);
         workingEntryRepository.findById(id).ifPresent((we) -> {
-        	we.setDeleteFlag(true);
+        	we.setDeleted(true);
         });
     }
     
@@ -134,8 +134,8 @@ public class WorkingEntryService {
         	workingEntry = new WorkingEntry();
         	workingEntry.setEmployee(employee);
         	workingEntry.setStart(now);
-        	workingEntry.deleteFlag(false);
-        	workingEntry.lockedFlag(false);
+        	workingEntry.setDeleted(false);
+        	workingEntry.setLocked(false);
         	workingEntry.setWorkDay(workDay);
         	return workingEntryRepository.save(workingEntry);
     	} else {

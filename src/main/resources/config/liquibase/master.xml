@@ -31,6 +31,7 @@
     <include file="config/liquibase/changelog/20190801093603_drop_constraint_working_entry_end.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190806163003_added_unique_constraint_work_day.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190815102945_many_to_many_role_activity.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190815144348_renamed_column_delete_flag_to_deleted_flag.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <include file="config/liquibase/changelog/20190726193523_added_entity_constraints_TargetWorkingDay.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190726193525_added_entity_constraints_WeeklyWorkingHours.xml" relativeToChangelogFile="false"/>

@@ -32,12 +32,12 @@ public class WorkingEntry extends AbstractAuditingEntity implements Serializable
     @Column(name = "jhi_end")
     private Instant end;
 
-    @Column(name = "delete_flag")
+    @Column(name = "deleted_flag")
     @JsonIgnore
-    private Boolean deleteFlag;
+    private Boolean deleted;
 
     @Column(name = "locked_flag")
-    private Boolean lockedFlag;
+    private Boolean locked;
 
     @ManyToOne
     @JsonIgnoreProperties({"workingEntries", "workDays"})
@@ -68,6 +68,10 @@ public class WorkingEntry extends AbstractAuditingEntity implements Serializable
     	return this.getEnd() != null && this.getStart() != null;
     }
 
+    public boolean isValid() {
+    	return this.isCompleted() && !this.isDeleted();
+    }
+    
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
@@ -103,30 +107,30 @@ public class WorkingEntry extends AbstractAuditingEntity implements Serializable
         this.end = end;
     }
 
-    public Boolean isDeleteFlag() {
-        return deleteFlag;
+    public Boolean isDeleted() {
+        return deleted;
     }
 
-    public WorkingEntry deleteFlag(Boolean deleteFlag) {
-        this.deleteFlag = deleteFlag;
+    public WorkingEntry deleted(Boolean deleteFlag) {
+        this.deleted = deleteFlag;
         return this;
     }
 
-    public void setDeleteFlag(Boolean deleteFlag) {
-        this.deleteFlag = deleteFlag;
+    public void setDeleted(Boolean deleteFlag) {
+        this.deleted = deleteFlag;
     }
 
-    public Boolean isLockedFlag() {
-        return lockedFlag;
+    public Boolean isLocked() {
+        return locked;
     }
 
-    public WorkingEntry lockedFlag(Boolean lockedFlag) {
-        this.lockedFlag = lockedFlag;
+    public WorkingEntry locked(Boolean lockedFlag) {
+        this.locked = lockedFlag;
         return this;
     }
 
-    public void setLockedFlag(Boolean lockedFlag) {
-        this.lockedFlag = lockedFlag;
+    public void setLocked(Boolean lockedFlag) {
+        this.locked = lockedFlag;
     }
 
     public Employee getEmployee() {
@@ -204,8 +208,8 @@ public class WorkingEntry extends AbstractAuditingEntity implements Serializable
             "id=" + getId() +
             ", start='" + getStart() + "'" +
             ", end='" + getEnd() + "'" +
-            ", deleteFlag='" + isDeleteFlag() + "'" +
-            ", lockedFlag='" + isLockedFlag() + "'" +
+            ", deleteFlag='" + isDeleted() + "'" +
+            ", lockedFlag='" + isLocked() + "'" +
             "}";
     }
 }

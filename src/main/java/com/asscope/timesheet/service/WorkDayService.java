@@ -95,7 +95,7 @@ public class WorkDayService {
     public Optional<Integer> getBreakMinutes(long id) {
     	Optional<WorkDay> oWorkDay = this.findOne(id);
     	if(oWorkDay.isPresent()) {
-    		return Optional.of(oWorkDay.get().getBreakMinutes());
+    		return Optional.of(oWorkDay.get().getTotalBreakMinutes());
     	}
     	return Optional.empty();
     }
