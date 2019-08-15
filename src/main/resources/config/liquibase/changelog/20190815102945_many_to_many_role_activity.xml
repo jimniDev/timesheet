@@ -1,0 +1,25 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+    <changeSet author="PhilippRingele (generated)" id="1565866781089-5">
+        <createTable tableName="role_activity">
+            <column name="role_id" type="bigint">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="activity_id" type="bigint">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="PhilippRingele (generated)" id="1565866781089-6">
+        <addForeignKeyConstraint baseColumnNames="role_id" baseTableName="role_activity" constraintName="FK3t19ej2lu7qxaecgwhsrx3og9" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="role" validate="true"/>
+    </changeSet>
+    <changeSet author="PhilippRingele (generated)" id="1565866781089-7">
+        <addForeignKeyConstraint baseColumnNames="activity_id" baseTableName="role_activity" constraintName="FKo6dume97twf2bitgc0j73qh53" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="activity" validate="true"/>
+    </changeSet>
+    <changeSet author="PhilippRingele (generated)" id="1565866781089-8">
+        <dropForeignKeyConstraint baseTableName="activity" constraintName="fk_activity_role_id"/>
+    </changeSet>
+    <changeSet author="PhilippRingele (generated)" id="1565866781089-9">
+        <dropColumn columnName="role_id" tableName="activity"/>
+    </changeSet>
+</databaseChangeLog>

@@ -1,5 +1,5 @@
 package com.asscope.timesheet.domain;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -36,9 +36,10 @@ public class Activity implements Serializable {
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<WorkingEntry> workingEntries = new HashSet<>();
 
-    @ManyToOne
-    @JsonIgnoreProperties("activities")
-    private Role role;
+    @ManyToMany(mappedBy = "activities")
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @JsonIgnore
+    private Set<Role> roles = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -100,17 +101,29 @@ public class Activity implements Serializable {
         this.workingEntries = workingEntries;
     }
 
-    public Role getRole() {
-        return role;
+    public Set<Role> getRoles() {
+        return roles;
     }
 
-    public Activity role(Role role) {
-        this.role = role;
+    public Activity roles(Set<Role> roles) {
+        this.roles = roles;
         return this;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
+    public Activity addRole(Role role) {
+        this.roles.add(role);
+        role.getActivities().add(this);
+        return this;
+    }
+
+    public Activity removeRole(Role role) {
+        this.roles.remove(role);
+        role.getActivities().remove(this);
+        return this;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 

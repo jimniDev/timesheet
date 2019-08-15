@@ -5,6 +5,8 @@ import com.asscope.timesheet.repository.RoleRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,9 +47,18 @@ public class RoleService {
     @Transactional(readOnly = true)
     public List<Role> findAll() {
         log.debug("Request to get all Roles");
-        return roleRepository.findAll();
+        return roleRepository.findAllWithEagerRelationships();
     }
 
+    /**
+     * Get all the roles with eager load of many-to-many relationships.
+     *
+     * @return the list of entities.
+     */
+    public Page<Role> findAllWithEagerRelationships(Pageable pageable) {
+        return roleRepository.findAllWithEagerRelationships(pageable);
+    }
+    
 
     /**
      * Get one role by id.
@@ -58,7 +69,7 @@ public class RoleService {
     @Transactional(readOnly = true)
     public Optional<Role> findOne(Long id) {
         log.debug("Request to get Role : {}", id);
-        return roleRepository.findById(id);
+        return roleRepository.findOneWithEagerRelationships(id);
     }
 
     /**

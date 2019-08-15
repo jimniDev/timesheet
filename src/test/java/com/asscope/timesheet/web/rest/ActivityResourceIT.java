@@ -306,7 +306,7 @@ public class ActivityResourceIT {
         Role role = RoleResourceIT.createEntity(em);
         em.persist(role);
         em.flush();
-        activity.setRole(role);
+        activity.addRole(role);
         activityRepository.saveAndFlush(activity);
         Long roleId = role.getId();
 
