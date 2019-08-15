@@ -112,8 +112,8 @@ public class WorkingEntryResourceIT {
         WorkingEntry workingEntry = new WorkingEntry()
             .start(DEFAULT_START)
             .end(DEFAULT_END)
-            .deleteFlag(DEFAULT_DELETE_FLAG)
-            .lockedFlag(DEFAULT_LOCKED_FLAG);
+            .deleted(DEFAULT_DELETE_FLAG)
+            .locked(DEFAULT_LOCKED_FLAG);
 //            .createdAt(DEFAULT_CREATED_AT);
         return workingEntry;
     }
@@ -127,8 +127,8 @@ public class WorkingEntryResourceIT {
         WorkingEntry workingEntry = new WorkingEntry()
             .start(UPDATED_START)
             .end(UPDATED_END)
-            .deleteFlag(UPDATED_DELETE_FLAG)
-            .lockedFlag(UPDATED_LOCKED_FLAG);
+            .deleted(UPDATED_DELETE_FLAG)
+            .locked(UPDATED_LOCKED_FLAG);
 //            .createdAt(UPDATED_CREATED_AT);
         return workingEntry;
     }
@@ -155,8 +155,8 @@ public class WorkingEntryResourceIT {
         WorkingEntry testWorkingEntry = workingEntryList.get(workingEntryList.size() - 1);
         assertThat(testWorkingEntry.getStart()).isEqualTo(DEFAULT_START);
         assertThat(testWorkingEntry.getEnd()).isEqualTo(DEFAULT_END);
-        assertThat(testWorkingEntry.isDeleteFlag()).isEqualTo(DEFAULT_DELETE_FLAG);
-        assertThat(testWorkingEntry.isLockedFlag()).isEqualTo(DEFAULT_LOCKED_FLAG);
+        assertThat(testWorkingEntry.isDeleted()).isEqualTo(DEFAULT_DELETE_FLAG);
+        assertThat(testWorkingEntry.isLocked()).isEqualTo(DEFAULT_LOCKED_FLAG);
 //        assertThat(testWorkingEntry.getCreatedAt()).isEqualTo(DEFAULT_CREATED_AT);
     }
 
@@ -602,8 +602,8 @@ public class WorkingEntryResourceIT {
         updatedWorkingEntry
             .start(UPDATED_START)
             .end(UPDATED_END)
-            .deleteFlag(UPDATED_DELETE_FLAG)
-            .lockedFlag(UPDATED_LOCKED_FLAG);
+            .deleted(UPDATED_DELETE_FLAG)
+            .locked(UPDATED_LOCKED_FLAG);
 //            .createdAt(UPDATED_CREATED_AT);
 
         restWorkingEntryMockMvc.perform(put("/api/working-entries")
@@ -617,8 +617,8 @@ public class WorkingEntryResourceIT {
         WorkingEntry testWorkingEntry = workingEntryList.get(workingEntryList.size() - 1);
         assertThat(testWorkingEntry.getStart()).isEqualTo(UPDATED_START);
         assertThat(testWorkingEntry.getEnd()).isEqualTo(UPDATED_END);
-        assertThat(testWorkingEntry.isDeleteFlag()).isEqualTo(UPDATED_DELETE_FLAG);
-        assertThat(testWorkingEntry.isLockedFlag()).isEqualTo(UPDATED_LOCKED_FLAG);
+        assertThat(testWorkingEntry.isDeleted()).isEqualTo(UPDATED_DELETE_FLAG);
+        assertThat(testWorkingEntry.isLocked()).isEqualTo(UPDATED_LOCKED_FLAG);
 //        assertThat(testWorkingEntry.getCreatedAt()).isEqualTo(UPDATED_CREATED_AT);
     }
 

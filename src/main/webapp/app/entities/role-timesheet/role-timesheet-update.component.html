@@ -26,6 +26,12 @@
                            formControlName="description"/>
                 </div>
 
+                <div class="form-group">
+                    <label jhiTranslate="timesheetApp.role.activity" for="field_activities">Activity</label>
+                    <select class="form-control" id="field_activities" multiple name="activities" formControlName="activities">
+                        <option [ngValue]="getSelected(editForm.get('activities').value, activityOption)" *ngFor="let activityOption of activities; trackBy: trackActivityById">{{activityOption.id}}</option>
+                    </select>
+                </div>
             </div>
             <div>
                 <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">

@@ -78,7 +78,7 @@ public class WorkDayService {
      * @param employee
      * @return the current WorkDay
      */
-    public WorkDay current(Employee employee) {
+    public WorkDay currentWorkDay(Employee employee) {
     	WorkDay workDay;
     	Optional<WorkDay> oWorkDay = workDayRepository.findByEmployeeAndDate(employee, LocalDate.now());
     	if (oWorkDay.isEmpty()) {
@@ -90,5 +90,13 @@ public class WorkDayService {
     		workDay = oWorkDay.get();
     	}
     	return workDay;
+    }
+    
+    public Optional<Integer> getBreakMinutes(long id) {
+    	Optional<WorkDay> oWorkDay = this.findOne(id);
+    	if(oWorkDay.isPresent()) {
+    		return Optional.of(oWorkDay.get().getTotalBreakMinutes());
+    	}
+    	return Optional.empty();
     }
 }

@@ -67,6 +67,7 @@ public class CacheConfiguration {
             createCache(cm, com.asscope.timesheet.domain.WorkBreak.class.getName());
             createCache(cm, com.asscope.timesheet.domain.Role.class.getName());
             createCache(cm, com.asscope.timesheet.domain.Role.class.getName() + ".activities");
+            createCache(cm, com.asscope.timesheet.domain.Activity.class.getName() + ".roles");
             // jhipster-needle-ehcache-add-entry
         };
     }

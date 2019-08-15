@@ -97,7 +97,7 @@ public class ActivityQueryService extends QueryService<Activity> {
             }
             if (criteria.getRoleId() != null) {
                 specification = specification.and(buildSpecification(criteria.getRoleId(),
-                    root -> root.join(Activity_.role, JoinType.LEFT).get(Role_.id)));
+                    root -> root.join(Activity_.roles, JoinType.LEFT).get(Role_.id)));
             }
         }
         return specification;

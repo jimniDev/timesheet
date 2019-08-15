@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
-
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -133,5 +133,10 @@ public class WorkDayResource {
         log.debug("REST request to delete WorkDay : {}", id);
         workDayService.delete(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
+    }
+    
+    @GetMapping("/work-days/{id}/break-minutes")
+    public ResponseEntity<Integer> getBreakMinutes(@PathVariable Long id, Principal principal) {
+    	return ResponseUtil.wrapOrNotFound(workDayService.getBreakMinutes(id));
     }
 }

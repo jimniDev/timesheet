@@ -1,5 +1,7 @@
 package com.asscope.timesheet.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -7,6 +9,7 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
@@ -31,11 +34,13 @@ public class WorkDay implements Serializable {
     @Column(name = "date", nullable = false)
     private LocalDate date;
 
-    @OneToMany(mappedBy = "workDay")
+    @JsonIgnoreProperties("workDay")
+    @OneToMany(mappedBy = "workDay", fetch = FetchType.EAGER)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<WorkingEntry> workingEntries = new HashSet<>();
 
-    @OneToMany(mappedBy = "workDay")
+    @JsonIgnoreProperties("workDay")
+    @OneToMany(mappedBy = "workDay", fetch = FetchType.EAGER)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<WorkBreak> workBreaks = new HashSet<>();
 
@@ -43,6 +48,68 @@ public class WorkDay implements Serializable {
     @JoinColumn(name = "employee_id")
     @JsonIgnoreProperties("workDays")
     private Employee employee;
+    
+    @JsonProperty("totalWorkingMinutes")
+    public long getTotalWorkingMinutes() {
+    	long seconds = 0;
+    	for (WorkingEntry workingEntry: workingEntries) {
+    		if(workingEntry.isValid()) {
+    			seconds += workingEntry.getWorkingTimeInSeconds();
+    		}
+    	}
+    	return seconds / 60;
+    }
+    
+    @JsonProperty("startTime")
+    public Instant getStartTime() {
+    	Instant start = Instant.MAX;   	
+    	for(WorkingEntry workingEntry: this.workingEntries) {
+    		if(workingEntry.isValid()) {
+        		if(workingEntry.getStart().isBefore(start)) {
+        			start = workingEntry.getStart();
+        		}
+    		}
+    	}
+    	return start;
+    }
+    
+    @JsonProperty("endTime")
+    public Instant getEndTime() {
+    	Instant end = Instant.MIN;   	
+    	for(WorkingEntry workingEntry: this.workingEntries) {
+    		if(workingEntry.isValid()) {
+        		if(workingEntry.getEnd().isAfter(end)) {
+        			end = workingEntry.getEnd();
+        		}
+    		}
+    	}
+    	return end;
+    }
+    
+    @JsonProperty("totalBreakMinutes")
+    public int getTotalBreakMinutes() {
+    	int minutes = 0;
+    	Instant firstStart = Instant.MAX;
+    	Instant lastEnd = Instant.MIN;
+    	long totalWorkingSeconds = 0;
+    	for(WorkBreak workBreak: this.workBreaks) {
+    		minutes += workBreak.getMinutes();
+    	}
+    	for(WorkingEntry workingEntry: this.workingEntries) {
+    		if(workingEntry.isValid()) {
+        		totalWorkingSeconds += workingEntry.getWorkingTimeInSeconds();
+        		if(workingEntry.getStart().isBefore(firstStart)) {
+        			firstStart = workingEntry.getStart();
+        		}
+        		if(workingEntry.getEnd().isAfter(lastEnd)) {
+        			lastEnd = workingEntry.getEnd();
+        		}
+    		}
+    	}
+    	long totalSeconds = lastEnd.getEpochSecond() - firstStart.getEpochSecond();
+    	minutes += (int) (totalSeconds - totalWorkingSeconds) / 60;
+    	return minutes;
+    }
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {

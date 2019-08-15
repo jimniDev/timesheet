@@ -5,6 +5,9 @@ import com.asscope.timesheet.domain.WorkDay;
 import com.asscope.timesheet.domain.WorkingEntry;
 import com.asscope.timesheet.repository.WorkDayRepository;
 import com.asscope.timesheet.repository.WorkingEntryRepository;
+import com.asscope.timesheet.service.erros.OverlappingWorkingTimesException;
+import com.asscope.timesheet.web.rest.errors.BadRequestAlertException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.temporal.ChronoField;
+import java.time.temporal.TemporalField;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,8 +35,6 @@ public class WorkingEntryService {
     private final WorkDayService workDayService;
 
     private final WorkingEntryRepository workingEntryRepository;
-    
-    private final WorkDayRepository workDayRepository;
 
     public WorkingEntryService(WorkingEntryRepository workingEntryRepository, 
     		EmployeeService employeeService, 
@@ -39,19 +42,37 @@ public class WorkingEntryService {
     		WorkDayService workDayService) {
         this.workingEntryRepository = workingEntryRepository;
         this.employeeService = employeeService;
-        this.workDayRepository = workDayRepository;
         this.workDayService = workDayService;
     }
 
     /**
      * Save a workingEntry.
      *
-     * @param workingEntry the entity to save.
+     * @param workingEntryToSave the entity to save.
      * @return the persisted entity.
+     * @throws Exception 
      */
-    public WorkingEntry save(WorkingEntry workingEntry) {
-        log.debug("Request to save WorkingEntry : {}", workingEntry);
-        return workingEntryRepository.save(workingEntry);
+    public WorkingEntry save(WorkingEntry workingEntryToSave) throws OverlappingWorkingTimesException {
+        log.debug("Request to save WorkingEntry : {}", workingEntryToSave);
+        if (workingEntryToSave.getWorkDay() == null) {
+        	WorkDay workDay = workDayService.currentWorkDay(workingEntryToSave.getEmployee());
+            for (WorkingEntry wEntry: workDay.getWorkingEntries()) {
+            	if (wEntry.isValid()) {
+            		long workingEntryToSaveStartSeconds = workingEntryToSave.getStart().getLong(ChronoField.SECOND_OF_DAY);
+            		long workingEntryToSaveEndSeconds = workingEntryToSave.getEnd().getLong(ChronoField.SECOND_OF_DAY);
+            		long wEntryStartSeconds = wEntry.getStart().getLong(ChronoField.SECOND_OF_DAY);
+            		long wEntryEndSeconds = wEntry.getEnd().getLong(ChronoField.SECOND_OF_DAY);
+            		if (workingEntryToSaveStartSeconds >= wEntryStartSeconds && workingEntryToSaveStartSeconds <= wEntryEndSeconds) {
+            			throw new OverlappingWorkingTimesException();
+            		}
+            		if (workingEntryToSaveEndSeconds >= wEntryStartSeconds && workingEntryToSaveEndSeconds <= wEntryEndSeconds) {
+            			throw new OverlappingWorkingTimesException();
+            		}
+            	}
+            }
+        	workingEntryToSave.setWorkDay(workDay);
+        }
+        return workingEntryRepository.save(workingEntryToSave);
     }
 
     /**
@@ -91,9 +112,8 @@ public class WorkingEntryService {
      */
     public void delete(Long id) {
         log.debug("Request to delete WorkingEntry : {}", id);
-        //workingEntryRepository.deleteById(id);
         workingEntryRepository.findById(id).ifPresent((we) -> {
-        	we.setDeleteFlag(true);
+        	we.setDeleted(true);
         });
     }
     
@@ -110,13 +130,12 @@ public class WorkingEntryService {
     	Optional<WorkingEntry> oWorkingEntry = workingEntryRepository
     			.findStartedWorkingEntryByEmployeeAndDate(employee, LocalDate.now());
     	if (oWorkingEntry.isEmpty()) {
-    		workDay = workDayService.current(employee);
-    		
+    		workDay = workDayService.currentWorkDay(employee);   		
         	workingEntry = new WorkingEntry();
         	workingEntry.setEmployee(employee);
         	workingEntry.setStart(now);
-        	workingEntry.deleteFlag(false);
-        	workingEntry.lockedFlag(false);
+        	workingEntry.setDeleted(false);
+        	workingEntry.setLocked(false);
         	workingEntry.setWorkDay(workDay);
         	return workingEntryRepository.save(workingEntry);
     	} else {
@@ -140,7 +159,6 @@ public class WorkingEntryService {
     		oWorkingEntry.get().setEnd(now);
     	}
     	return oWorkingEntry;
-
     }
     
     /**
@@ -148,6 +166,7 @@ public class WorkingEntryService {
      * @param name
      * @return
      */
+    @Transactional(readOnly = true)
 	public Optional<WorkingEntry> getActiveFromEmployee(String name) {
 		Employee employee = employeeService.findOneByUsername(name).get();
 		return workingEntryRepository

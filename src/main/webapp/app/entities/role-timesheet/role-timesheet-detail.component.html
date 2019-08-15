@@ -13,6 +13,12 @@
                 <dd>
                     <span>{{role.description}}</span>
                 </dd>
+                <dt><span jhiTranslate="timesheetApp.role.activity">Activity</span></dt>
+                <dd>
+                    <span *ngFor="let activity of role.activities; let last = last">
+                        <a [routerLink]="['/activity-timesheet', activity?.id, 'view' ]">{{activity.id}}</a>{{last ? '' : ', '}}
+                    </span>
+                </dd>
             </dl>
 
             <button type="submit"
