@@ -5,6 +5,7 @@ import com.asscope.timesheet.domain.WorkingEntry;
 import com.asscope.timesheet.service.WorkingEntryService;
 import com.asscope.timesheet.web.rest.errors.BadRequestAlertException;
 import com.asscope.timesheet.service.dto.WorkingEntryCriteria;
+import com.asscope.timesheet.service.erros.OverlappingWorkingTimesException;
 import com.asscope.timesheet.service.EmployeeService;
 import com.asscope.timesheet.service.WorkingEntryQueryService;
 
@@ -57,14 +58,21 @@ public class WorkingEntryResource {
      * @param workingEntry the workingEntry to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new workingEntry, or with status {@code 400 (Bad Request)} if the workingEntry has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
+     * @throws OverlappingWorkingTimesException 
      */
     @PostMapping("/working-entries")
+    @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<WorkingEntry> createWorkingEntry(@Valid @RequestBody WorkingEntry workingEntry) throws URISyntaxException {
         log.debug("REST request to save WorkingEntry : {}", workingEntry);
         if (workingEntry.getId() != null) {
             throw new BadRequestAlertException("A new workingEntry cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        WorkingEntry result = workingEntryService.save(workingEntry);
+        WorkingEntry result;
+		try {
+			result = workingEntryService.save(workingEntry);
+		} catch (OverlappingWorkingTimesException e) {
+			throw new BadRequestAlertException("Overlapping worktime", ENTITY_NAME, "overlappingtime");
+		}
         return ResponseEntity.created(new URI("/api/working-entries/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -85,7 +93,12 @@ public class WorkingEntryResource {
         if (workingEntry.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        WorkingEntry result = workingEntryService.save(workingEntry);
+        WorkingEntry result;
+		try {
+			result = workingEntryService.save(workingEntry);
+		} catch (OverlappingWorkingTimesException e) {
+			throw new BadRequestAlertException("Overlapping worktime", ENTITY_NAME, "overlappingtime");
+		}
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, workingEntry.getId().toString()))
             .body(result);
