@@ -13,12 +13,17 @@ export class DateFormComponent implements OnInit {
   model: NgbDateStruct;
   date: { year: number; month: number };
 
-  startTime = { hour: 13, minute: 30 };
-  endTime = { hour: 13, minute: 30 };
+  startHour = { hour: 13 };
+  startMin = { minute: 30 };
+  endHour = { hour: 13 };
+  endMin = { minute: 30 };
 
   timeForm = new FormGroup({
-    //startTime: new FormControl('', Validators.required),
-    //endTime: new FormControl('', Validators.required),
+    date: new FormControl('', Validators.required),
+    startHour: new FormControl('', Validators.required),
+    startMin: new FormControl('', Validators.required),
+    endHour: new FormControl('', Validators.required),
+    endMin: new FormControl('', Validators.required),
     roleControl: new FormControl(''),
     activityControl: new FormControl('')
   });
@@ -28,10 +33,5 @@ export class DateFormComponent implements OnInit {
   ngOnInit() {}
 
   onSubmit() {}
-
-  selectToday() {
-    this.model = this.calendar.getToday();
-  }
-
-  //@media only screen and (max-width: 880px), (min-device-width: 768px) and (max-device-width: 1024px) {
 }
+//@media only screen and (max-width: 880px), (min-device-width: 768px) and (max-device-width: 1024px) {

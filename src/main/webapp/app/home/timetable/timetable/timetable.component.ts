@@ -13,6 +13,11 @@ export class TimetableComponent implements OnInit {
   workingEntries: IWorkingEntryTimesheet[];
   sWorkingEntries: IWorkingEntryTimesheet[]; //sorted
 
+  targetTime: string = '13:00';
+  actualTime: string = '13:00';
+  diffTime: string = '13:00';
+  todayTime: string = '13:00';
+
   @Output() initialized = new EventEmitter<boolean>();
 
   constructor(private workingEntryService: WorkingEntryTimesheetService) {}

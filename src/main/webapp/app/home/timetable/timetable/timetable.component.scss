@@ -2,7 +2,7 @@
   text-align: center;
   height: 40vh;
   overflow: auto;
-  margin: 20px auto;
+  margin: 15px auto;
   display: block;
   padding: 20px;
   border: 0.5px solid #eee;
@@ -41,6 +41,11 @@
   background-color: #2bbbad;
 }
 
+.timearea {
+  float: left;
+  margin-left: 20px;
+}
+
 // @media (min-width: 1600px) {
 //   .container {
 //     flex: 0 0 45%;
@@ -68,14 +73,36 @@
 //   }
 // }
 
-// @media (min-width: 1200px), (max-width:1760px){
-//   .conatainer {
-//     flex: 0 0 70%;
-//     max-width: 70%;
-//   }
-// }
+@media only screen and (max-width: 880px),
+  (min-width: 1200px) and (max-width: 1760px),
+  (min-device-width: 768px) and (max-device-width: 1024px) {
+  div.row > div:nth-child(1) > button,
+  div.row > div:nth-child(2) > button,
+  div.row > div:nth-child(3) > button {
+    margin-bottom: 5px;
+    margin-right: 0px;
+  }
 
-@media only screen and (max-width: 880px), (min-device-width: 768px) and (max-device-width: 1024px) {
+  div.container.scroll.scrollbar-primary {
+    margin: 0px auto 10px;
+  }
+
+  .timearea {
+  }
+  .timearea {
+    float: none;
+  }
+  div:nth-child(1) > div:nth-child(1),
+  div:nth-child(1) > div:nth-child(2),
+  div:nth-child(1) > div:nth-child(3) {
+    margin: 0 auto;
+  }
+  div:nth-child(1) > div:nth-child(1) > button,
+  div:nth-child(1) > div:nth-child(2) > button,
+  div:nth-child(1) > div:nth-child(3) > button {
+    margin: 0px 0px 0px 0px;
+  }
+
   /* Force table to not be like tables anymore */
   table,
   thead,

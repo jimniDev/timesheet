@@ -1,48 +1,31 @@
-<!-- too implement Timepicker
-<form [formGroup]="timeForm" (ngSubmit)="onSubmit()">  -->
+
+<form [formGroup]="timeForm" (ngSubmit)="onSubmit()">
   <div class="form-row">
-      <!-- <form class="form-inline"> -->
           <div class="form-group col-6" style="float: none; margin: 0 auto;">
+            <mat-label>Date</mat-label>
             <div class="input-group">
-              <input class="form-control" placeholder="yyyy-mm-dd"
-                     name="dp" [(ngModel)]="model" ngbDatepicker #d="ngbDatepicker">
+              <input class="form-control" placeholder="yyyy-mm-dd" formControlName="date"
+                     name="dp" [(ngModel)]="model" ngbDatepicker #d="ngbDatepicker" required>
               <div class="input-group-append">
                 <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button"></button>
               </div>
             </div>
           </div>
-      <!-- </form>   -->
         <!-- <pre>Model: {{ model | json }}</pre> -->
-        <!-- <ngb-datepicker #dp [(ngModel)]="model" (navigate)="date = $event.next"></ngb-datepicker>
-        
-        <hr/>
-        
-        <button class="btn btn-sm btn-outline-primary mr-2" (click)="selectToday()">Select Today</button>
-        <button class="btn btn-sm btn-outline-primary mr-2" (click)="dp.navigateTo()">To current month</button>
-        <button class="btn btn-sm btn-outline-primary mr-2" (click)="dp.navigateTo({year: 2013, month: 2})">To Feb 2013</button>
-        
-        <hr/>
-        
-        <pre>Month: {{ date.month }}.{{ date.year }}</pre>
-        <pre>Model: {{ model | json }}</pre> -->
   </div>
  
   <div class="form-row">
-    <div class="form-group col-6">
-        <label>Start Time</label>
-        <div class="ngb-tp"><ngb-timepicker [(ngModel)]="startTime"></ngb-timepicker></div>
-        <!-- <hr>
-        <pre>Selected time: {{time | json}}</pre> -->
-        <!-- <input pattern="(([01]\d)|(2[0-3])):[0-5]\d" class="form-control" formControlName="startTime" required> -->
+    <mat-label class="col-6">Start Time</mat-label>
+    <mat-label class="col-6">End Time</mat-label>
+    <div class="form-inline col-6">
+          <input type="number" class="form-control col" placeholder="HH" min="00" max="23" formControlName="startHour" required>
+          <p class="col-1">:</p>
+          <input type="number" class="form-control col" placeholder="MM" min="00" max="59" formControlName="startMin" required>
     </div>
-    <div class="form-group col-6">
-        <label>End Time</label>
-        <div class="ngb-tp"><ngb-timepicker [(ngModel)]="endTime"></ngb-timepicker></div>
-        
-        
-        <!-- <hr>
-        <pre>Selected time: {{time | json}}</pre> -->
-        <!-- <input type="time" class="form-control" formControlName="endTime" required> -->
+    <div class="form-inline col-6">
+        <input type="number" class="form-control col" placeholder="HH" min="0" max="23" formControlName="endHour" required>
+        <p class="col-1">:</p>
+        <input type="number" class="form-control col" placeholder="MM" min="00" max="59" formControlName="endMin" required>
     </div>
   </div>
   <div class="form-row">
@@ -69,10 +52,14 @@
         </select>
     </div>
   </div>
-  <div class="form-row" id="btnArea">
-      <button class="btn btn-primary col-6" style="float: none; margin: 0 auto;" type="submit" [disabled]="!timeForm.valid">Save</button>
+  <div class="row" id="btnArea">
+    <div class="col">
+      <button class="btn btn-primary" style="float: none; margin: 0 auto;" type="submit" [disabled]="!timeForm.valid">Save</button>
+    </div>
+    <div class="col">
       <ng-content #name select="button"></ng-content>
+    </div>
   </div> 
-<!-- </form> -->
+</form>
 
 
