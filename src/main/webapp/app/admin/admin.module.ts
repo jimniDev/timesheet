@@ -15,6 +15,7 @@ import {
   JhiConfigurationComponent,
   JhiDocsComponent
 } from './';
+import { EmployeeOverviewComponent } from './employee-overview/employee-overview.component';
 
 @NgModule({
   imports: [
@@ -29,7 +30,8 @@ import {
     JhiHealthCheckComponent,
     JhiHealthModalComponent,
     JhiDocsComponent,
-    JhiMetricsMonitoringComponent
+    JhiMetricsMonitoringComponent,
+    EmployeeOverviewComponent
   ],
   providers: [{ provide: JhiLanguageService, useClass: JhiLanguageService }],
   entryComponents: [JhiHealthModalComponent],
