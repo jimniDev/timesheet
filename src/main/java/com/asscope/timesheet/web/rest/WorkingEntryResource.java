@@ -77,6 +77,32 @@ public class WorkingEntryResource {
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
+    
+    /**
+     * {@code POST  /working-entries} : Create a new workingEntry.
+     *
+     * @param workingEntry the workingEntry to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new workingEntry, or with status {@code 400 (Bad Request)} if the workingEntry has already an ID.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
+     * @throws OverlappingWorkingTimesException 
+     */
+    @PostMapping("/employees/me/working-entries")
+    @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
+    public ResponseEntity<WorkingEntry> createWorkingEntry(@Valid @RequestBody WorkingEntry workingEntry, Principal principal) throws URISyntaxException {
+        log.debug("REST request to save WorkingEntry : {}", workingEntry);
+        if (workingEntry.getId() != null) {
+            throw new BadRequestAlertException("A new workingEntry cannot already have an ID", ENTITY_NAME, "idexists");
+        }
+        WorkingEntry result;
+		try {
+			result = workingEntryService.saveForEmployee(workingEntry, principal.getName());
+		} catch (OverlappingWorkingTimesException e) {
+			throw new BadRequestAlertException("Overlapping worktime", ENTITY_NAME, "overlappingtime");
+		}
+        return ResponseEntity.created(new URI("/api/working-entries/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
+            .body(result);
+    }
 
     /**
      * {@code PUT  /working-entries} : Updates an existing workingEntry.

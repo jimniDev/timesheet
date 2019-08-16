@@ -6,8 +6,6 @@ import com.asscope.timesheet.domain.WorkingEntry;
 import com.asscope.timesheet.repository.WorkDayRepository;
 import com.asscope.timesheet.repository.WorkingEntryRepository;
 import com.asscope.timesheet.service.erros.OverlappingWorkingTimesException;
-import com.asscope.timesheet.web.rest.errors.BadRequestAlertException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.temporal.ChronoField;
-import java.time.temporal.TemporalField;
 import java.util.List;
 import java.util.Optional;
 
@@ -115,6 +112,12 @@ public class WorkingEntryService {
         workingEntryRepository.findById(id).ifPresent((we) -> {
         	we.setDeleted(true);
         });
+    }
+    
+    public WorkingEntry saveForEmployee (WorkingEntry workingEntry, String username) throws OverlappingWorkingTimesException {
+    	Employee employee = employeeService.findOneByUsername(username).get();
+    	workingEntry.setEmployee(employee);
+    	return this.save(workingEntry);
     }
     
     /**
