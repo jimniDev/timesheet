@@ -6,6 +6,8 @@ import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { filter, map } from 'rxjs/operators';
 import { WorkingEntryTimesheetService } from 'app/entities/working-entry-timesheet';
 import { TimetableComponent } from './timetable/timetable/timetable.component';
+import { faThumbsDown } from '@fortawesome/free-solid-svg-icons';
+import { DateFormComponent } from './date-form/date-form.component';
 
 @Component({
   selector: 'jhi-home',
@@ -58,6 +60,11 @@ export class HomeComponent implements OnInit {
   enableButton(enabled: boolean) {
     this.disableButton = !enabled;
   }
+
+  addnewEntry(workingEntry: WorkingEntryTimesheet) {
+    this.timetableComponent.loadNewandSort(workingEntry);
+  }
+
   startStop() {
     if (this.started) {
       this.workingEntryService.end().subscribe(res => {

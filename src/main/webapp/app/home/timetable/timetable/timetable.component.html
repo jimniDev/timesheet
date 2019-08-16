@@ -22,21 +22,21 @@
     </div>         
 </div>
 <div class = "container scroll scrollbar-primary">
-    <table class="table table-hover table-responisve force-overflow">
+    <table class="table table-hover table-responisve-sm force-overflow">
     <thead>
-    <tr>
-    <th>Date</th>
-    <th>Start</th>
-    <th>End</th>
-    <th>Sum</th>
-    <th>Activity</th>
-    <th>Location</th>
-    <th></th>
-    </tr>
+        <tr>
+            <th>Date</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>Sum</th>
+            <th>Activity</th>
+            <th>Location</th>
+            <th></th>
+        </tr>
     </thead>
     <tbody>
     <tr *ngFor="let workingEntry of workingEntries;" >
-        <td>{{workingEntry.start | date:'dd.MM.yy'}}</td>
+        <td>{{workingEntry.workDay.date | date:'dd.MM.yy'}}</td> 
         <td>{{workingEntry.start | date:'HH:mm'}}</td>
         <td>{{workingEntry.end | date: 'HH:mm'}}</td>
         <td>{{sumDate(workingEntry.start, workingEntry.end)}}</td>

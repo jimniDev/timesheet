@@ -1,6 +1,6 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { WorkingEntryTimesheetService } from 'app/entities/working-entry-timesheet';
-import { IWorkingEntryTimesheet } from 'app/shared/model/working-entry-timesheet.model';
+import { IWorkingEntryTimesheet, WorkingEntryTimesheet } from 'app/shared/model/working-entry-timesheet.model';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { filter, map } from 'rxjs/operators';
 
@@ -52,6 +52,16 @@ export class TimetableComponent implements OnInit {
     return sortarray;
   }
 
+  loadNewandSort(workingEntry: WorkingEntryTimesheet) {
+    this.workingEntryService.create(workingEntry).subscribe(res => {
+      if (res.ok) {
+        this.workingEntries.push(res.body);
+        this.workingEntries = this.sortData(this.workingEntries);
+        //this.initialized.emit(true);
+      }
+    });
+  }
+
   sumDate(date1: any, date2: any): String {
     if (date2 != null) {
       const sum = Math.abs((date1 - date2) / 1000);
@@ -67,5 +77,9 @@ export class TimetableComponent implements OnInit {
     let s = num + '';
     while (s.length < size) s = '0' + s;
     return s;
+  }
+
+  workTodaySum(): String {
+    return '13:00';
   }
 }
