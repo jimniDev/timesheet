@@ -69,7 +69,7 @@ public class WorkingEntry extends AbstractAuditingEntity implements Serializable
     }
 
     public boolean isValid() {
-    	return this.isCompleted() && !this.isDeleted();
+    	return this.isCompleted() && (this.isDeleted() == null || !this.isDeleted());
     }
     
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
