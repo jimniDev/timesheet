@@ -69,6 +69,9 @@ public class WorkingEntryService {
             }
         	workingEntryToSave.setWorkDay(workDay);
         }
+        else if (workingEntryToSave.getWorkDay().getId() == null) {
+        	workingEntryToSave.setWorkDay(workDayService.save(workingEntryToSave.getWorkDay()));
+        }
         return workingEntryRepository.save(workingEntryToSave);
     }
 
