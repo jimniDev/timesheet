@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Input } from '@angular/core';
 
 import { LoginService, AccountService, Account } from 'app/core';
 import { IWorkingEntryTimesheet, WorkingEntryTimesheet } from 'app/shared/model/working-entry-timesheet.model';
@@ -20,6 +20,7 @@ export class HomeComponent implements OnInit {
   started: boolean;
   disableButton: boolean = true;
 
+  @Input() btnColors = 'btn btn-success';
   @ViewChild(TimetableComponent, { static: false })
   timetableComponent: TimetableComponent;
 
@@ -74,6 +75,7 @@ export class HomeComponent implements OnInit {
           this.timetableComponent.workingEntries[indexToUpdate] = workingEntry;
           this.startBtnName = 'Start';
           this.started = false;
+          this.btnColors = 'btn btn-success';
         }
       });
     } else {
@@ -83,6 +85,7 @@ export class HomeComponent implements OnInit {
           this.timetableComponent.workingEntries.unshift(workingEntry);
           this.startBtnName = 'Stop';
           this.started = true;
+          this.btnColors = 'btn btn-danger';
         }
       });
     }
