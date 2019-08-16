@@ -8,8 +8,8 @@ export interface IWorkingEntryTimesheet {
   id?: number;
   start?: Moment;
   end?: Moment;
-  deleteFlag?: boolean;
-  lockedFlag?: boolean;
+  deleted?: boolean;
+  locked?: boolean;
   createdAt?: Moment;
   employee?: IEmployeeTimesheet;
   activity?: IActivityTimesheet;
@@ -22,15 +22,15 @@ export class WorkingEntryTimesheet implements IWorkingEntryTimesheet {
     public id?: number,
     public start?: Moment,
     public end?: Moment,
-    public deleteFlag?: boolean,
-    public lockedFlag?: boolean,
+    public deleted?: boolean,
+    public locked?: boolean,
     public createdAt?: Moment,
     public employee?: IEmployeeTimesheet,
     public activity?: IActivityTimesheet,
     public workDay?: IWorkDayTimesheet,
     public location?: ILocationTimesheet
   ) {
-    this.deleteFlag = this.deleteFlag || false;
-    this.lockedFlag = this.lockedFlag || false;
+    this.deleted = this.deleted || false;
+    this.locked = this.locked || false;
   }
 }

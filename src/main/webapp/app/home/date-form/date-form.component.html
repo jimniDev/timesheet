@@ -5,27 +5,28 @@
             <mat-label>Date</mat-label>
             <div class="input-group">
               <input class="form-control" placeholder="yyyy-mm-dd" formControlName="date"
-                     name="dp" [(ngModel)]="model" ngbDatepicker #d="ngbDatepicker" required>
+                     name="dp" [(ngModel)]="datepic" value="date" ngbDatepicker #d="ngbDatepicker" required>
               <div class="input-group-append">
                 <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button"></button>
               </div>
             </div>
           </div>
-        <!-- <pre>Model: {{ model | json }}</pre> -->
+        <pre>Model: {{datepic | date:'yyyy-MM-dd'}}</pre>
+        <pre>Model: {{startString}}</pre>
   </div>
  
   <div class="form-row">
     <mat-label class="col-6">Start Time</mat-label>
     <mat-label class="col-6">End Time</mat-label>
     <div class="form-inline col-6">
-          <input type="number" class="form-control col" placeholder="HH" min="00" max="23" formControlName="startHour" required>
+          <input jhiTwoDigits class="form-control col" placeholder="HH" min="00" max="23" formControlName="startHour" required>
           <p class="col-1">:</p>
-          <input type="number" class="form-control col" placeholder="MM" min="00" max="59" formControlName="startMin" required>
+          <input jhiTwoDigits class="form-control col" placeholder="MM" min="00" max="59" formControlName="startMin" required>
     </div>
     <div class="form-inline col-6">
-        <input type="number" class="form-control col" placeholder="HH" min="0" max="23" formControlName="endHour" required>
+        <input jhiTwoDigits class="form-control col" placeholder="HH" min="0" max="23" formControlName="endHour" required>
         <p class="col-1">:</p>
-        <input type="number" class="form-control col" placeholder="MM" min="00" max="59" formControlName="endMin" required>
+        <input jhiTwoDigits class="form-control col" placeholder="MM" min="00" max="59" formControlName="endMin" required>
     </div>
   </div>
   <div class="form-row">
