@@ -66,6 +66,9 @@ public class WorkingEntryService {
         		workDay = workDayService.save(workDay);
         	}
         }
+        if (workingEntryToSave.isDeleted() == null) {
+        	workingEntryToSave.setDeleted(false);
+        }
         workingEntryToSave.setWorkDay(workDay);
     	// TODO Not Working
         //if (validateOverlappingTime(workingEntryToSave, workDay.getWorkingEntries())) {
