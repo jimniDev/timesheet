@@ -99,4 +99,8 @@ public class WorkDayService {
     	}
     	return Optional.empty();
     }
+    
+    public Optional<WorkDay> findByEmployeeAndDate(Employee employee, LocalDate date) {
+    	return this.workDayRepository.findByEmployeeAndDate(employee, date);
+    }
 }

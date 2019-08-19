@@ -59,12 +59,18 @@ public class WorkingEntryService {
         }
         else if (workDay.getId() == null) {
         	workDay.setEmployee(employee);
-        	workDay = workDayService.save(workDay);
+        	Optional<WorkDay> queriedWorkDay = workDayService.findByEmployeeAndDate(employee, workDay.getDate());
+        	if (queriedWorkDay.isPresent()) {
+        		workDay = queriedWorkDay.get(); 
+        	} else {
+        		workDay = workDayService.save(workDay);
+        	}
         }
         workingEntryToSave.setWorkDay(workDay);
-    	if (validateOverlappingTime(workingEntryToSave, workDay.getWorkingEntries())) {
-    		throw new OverlappingWorkingTimesException();
-    	}
+    	// TODO Not Working
+        //if (validateOverlappingTime(workingEntryToSave, workDay.getWorkingEntries())) {
+    	//	throw new OverlappingWorkingTimesException();
+    	//}
         return workingEntryRepository.save(workingEntryToSave);
     }
 
