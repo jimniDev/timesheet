@@ -55,14 +55,10 @@ export class TimetableComponent implements OnInit {
     return sortarray;
   }
 
-  loadNewandSort(workingEntry: WorkingEntryTimesheet) {
-    this.workingEntryService.create(workingEntry).subscribe(res => {
-      if (res.ok) {
-        this.workingEntries.push(res.body);
-        this.workingEntries = this.sortData(this.workingEntries);
-        //this.initialized.emit(true);
-      }
-    });
+  addNewandSort(workingEntry: WorkingEntryTimesheet) {
+    this.workingEntries.push(workingEntry);
+    this.workingEntries = this.sortData(this.workingEntries);
+    //this.initialized.emit(true);
   }
 
   sumDate(date1: any, date2: any): String {

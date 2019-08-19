@@ -56,7 +56,7 @@ export class DateFormComponent implements OnInit {
     let endTimeString: string;
     let workDay: WorkDayTimesheet = new WorkDayTimesheet();
 
-    const formDate = <Moment>this.timeForm.value.date;
+    const formDate = moment(this.timeForm.value.date);
     workDay.date = formDate;
 
     startTimeString = formDate.format('YYYY-MM-DD') + ' ' + this.timeForm.value.startHour + ':' + this.timeForm.value.startMin;
@@ -71,6 +71,7 @@ export class DateFormComponent implements OnInit {
     //workingEntry.activity = <ActivityTimesheet> this.timeForm.get(['activityControl']).value;
     workingEntry.workDay = workDay;
     //workingEntry.location = <LocationTimesheet> this.editForm.get(['location']).value;
+    workingEntry.deleted = false;
 
     this.workingEntryService.create(workingEntry).subscribe(res => {
       if (res.ok) {

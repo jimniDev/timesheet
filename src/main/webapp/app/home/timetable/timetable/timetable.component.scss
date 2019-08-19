@@ -194,4 +194,14 @@
     border: 0.5px solid #eee;
     border-radius: 10px;
   }
+
+  .input-group-sm:nth-child(1),
+  .input-group-sm:nth-child(2) {
+    padding-right: 1px;
+  }
+
+  .input-group-sm:nth-child(2),
+  .input-group-sm:nth-child(3) {
+    padding-left: 1px;
+  }
 }
