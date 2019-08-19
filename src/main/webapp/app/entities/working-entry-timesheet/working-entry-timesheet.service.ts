@@ -21,7 +21,7 @@ export class WorkingEntryTimesheetService {
   create(workingEntry: IWorkingEntryTimesheet): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(workingEntry);
     return this.http
-      .post<IWorkingEntryTimesheet>(this.resourceUrl, copy, { observe: 'response' })
+      .post<IWorkingEntryTimesheet>(SERVER_API_URL + 'api/employees/me/working-entries', copy, { observe: 'response' })
       .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
   }
 

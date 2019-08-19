@@ -1,0 +1,79 @@
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
+import { Validators } from '@angular/forms';
+import { NgbDateStruct, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
+import { WorkingEntryTimesheet } from 'app/shared/model/working-entry-timesheet.model';
+import { ActivityTimesheet } from 'app/shared/model/activity-timesheet.model';
+import { WorkDayTimesheet } from 'app/shared/model/work-day-timesheet.model';
+import { LocationTimesheet } from 'app/shared/model/location-timesheet.model';
+import { stringLiteral } from '@babel/types';
+import { Moment } from 'moment';
+import * as moment from 'moment';
+import { WorkingEntryTimesheetService } from 'app/entities/working-entry-timesheet';
+import { faThumbsDown } from '@fortawesome/free-solid-svg-icons';
+
+@Component({
+  selector: 'jhi-date-form',
+  templateUrl: './date-form.component.html',
+  styleUrls: ['./date-form.component.scss']
+})
+export class DateFormComponent implements OnInit {
+  //roles: string[];
+  datepic: NgbDateStruct;
+
+  @Output() newWorkingEntry = new EventEmitter<WorkingEntryTimesheet>();
+  @Output() saved = new EventEmitter<boolean>();
+
+  startHour = { hour: 13 };
+  startMin = { minute: 30 };
+  endHour = { hour: 13 };
+  endMin = { minute: 30 };
+
+  timeForm = new FormGroup({
+    date: new FormControl('', Validators.required),
+    startHour: new FormControl('', Validators.required),
+    startMin: new FormControl('', Validators.required),
+    endHour: new FormControl('', Validators.required),
+    endMin: new FormControl('', Validators.required),
+    roleControl: new FormControl(''),
+    activityControl: new FormControl('')
+  });
+
+  constructor(private calendar: NgbCalendar, private workingEntryService: WorkingEntryTimesheetService) {}
+
+  ngOnInit() {}
+
+  makeMoment() {}
+
+  onSubmit() {
+    this.timeForm.value;
+    //const test = 'test';
+
+    let startTimeString: string;
+    let endTimeString: string;
+    let workDay: WorkDayTimesheet = new WorkDayTimesheet();
+
+    const formDate = <Moment>this.timeForm.value.date;
+    workDay.date = formDate;
+
+    startTimeString = formDate.format('YYYY-MM-DD') + ' ' + this.timeForm.value.startHour + ':' + this.timeForm.value.startMin;
+    endTimeString = formDate.format('YYYY-MM-DD') + ' ' + this.timeForm.value.endHour + ':' + this.timeForm.value.endMin;
+    let startMoment = moment(startTimeString);
+    let endMoment = moment(endTimeString);
+
+    let workingEntry: WorkingEntryTimesheet;
+    workingEntry = new WorkingEntryTimesheet();
+    workingEntry.start = startMoment;
+    workingEntry.end = endMoment;
+    //workingEntry.activity = <ActivityTimesheet> this.timeForm.get(['activityControl']).value;
+    workingEntry.workDay = workDay;
+    //workingEntry.location = <LocationTimesheet> this.editForm.get(['location']).value;
+
+    this.workingEntryService.create(workingEntry).subscribe(res => {
+      if (res.ok) {
+        this.newWorkingEntry.emit(res.body);
+        this.saved.emit(true);
+      }
+    });
+  }
+}

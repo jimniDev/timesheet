@@ -1,0 +1,68 @@
+.form-group {
+  margin-bottom: 10px;
+  padding: 0px 5px;
+  text-align: center;
+}
+
+.form-row {
+  margin: 0px 0px;
+  //padding: 0px 5px;
+}
+
+#btnArea {
+  padding: 0px 5px;
+}
+
+label,
+mat-label {
+  //padding-left: 5px;
+  margin-top: 5px;
+  margin-left: 0px;
+  margin-right: 0px;
+  margin-bottom: 5px;
+  display: block;
+}
+
+select {
+  margin-top: 8px 0px;
+}
+
+.btn-primary {
+  margin: 10px 0px;
+  width: 100%;
+}
+
+label {
+  display: block;
+}
+
+.col-1 {
+  margin: 0px;
+  text-align: center;
+  padding: 5px;
+}
+
+.col-6 {
+  text-align: center;
+}
+
+input.form-control.col:nth-of-type(1),
+input.form-control.col:nth-of-type(3) {
+  text-align: right;
+}
+
+form > div:nth-child(1) > div > div > input {
+  text-align: center;
+}
+
+ng-content {
+  width: 100%;
+}
+
+#btnArea > div:nth-child(1) {
+  padding-right: 5px;
+}
+
+#btnArea > div:nth-child(2) {
+  padding-left: 5px;
+}

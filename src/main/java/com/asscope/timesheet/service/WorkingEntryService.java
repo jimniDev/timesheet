@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.temporal.ChronoField;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,24 +52,25 @@ public class WorkingEntryService {
      */
     public WorkingEntry save(WorkingEntry workingEntryToSave) throws OverlappingWorkingTimesException {
         log.debug("Request to save WorkingEntry : {}", workingEntryToSave);
-        if (workingEntryToSave.getWorkDay() == null) {
-        	WorkDay workDay = workDayService.currentWorkDay(workingEntryToSave.getEmployee());
-            for (WorkingEntry wEntry: workDay.getWorkingEntries()) {
-            	if (wEntry.isValid()) {
-            		long workingEntryToSaveStartSeconds = workingEntryToSave.getStart().getLong(ChronoField.SECOND_OF_DAY);
-            		long workingEntryToSaveEndSeconds = workingEntryToSave.getEnd().getLong(ChronoField.SECOND_OF_DAY);
-            		long wEntryStartSeconds = wEntry.getStart().getLong(ChronoField.SECOND_OF_DAY);
-            		long wEntryEndSeconds = wEntry.getEnd().getLong(ChronoField.SECOND_OF_DAY);
-            		if (workingEntryToSaveStartSeconds >= wEntryStartSeconds && workingEntryToSaveStartSeconds <= wEntryEndSeconds) {
-            			throw new OverlappingWorkingTimesException();
-            		}
-            		if (workingEntryToSaveEndSeconds >= wEntryStartSeconds && workingEntryToSaveEndSeconds <= wEntryEndSeconds) {
-            			throw new OverlappingWorkingTimesException();
-            		}
-            	}
-            }
-        	workingEntryToSave.setWorkDay(workDay);
+        Employee employee = workingEntryToSave.getEmployee();
+        WorkDay workDay = workingEntryToSave.getWorkDay();
+        if (workDay == null  || workDay.getDate() == null) {
+        	workDay = workDayService.currentWorkDay(employee);
         }
+        else if (workDay.getId() == null) {
+        	workDay.setEmployee(employee);
+        	Optional<WorkDay> queriedWorkDay = workDayService.findByEmployeeAndDate(employee, workDay.getDate());
+        	if (queriedWorkDay.isPresent()) {
+        		workDay = queriedWorkDay.get(); 
+        	} else {
+        		workDay = workDayService.save(workDay);
+        	}
+        }
+        workingEntryToSave.setWorkDay(workDay);
+    	// TODO Not Working
+        //if (validateOverlappingTime(workingEntryToSave, workDay.getWorkingEntries())) {
+    	//	throw new OverlappingWorkingTimesException();
+    	//}
         return workingEntryRepository.save(workingEntryToSave);
     }
 
@@ -175,4 +177,24 @@ public class WorkingEntryService {
 		return workingEntryRepository
 				.findStartedWorkingEntryByEmployeeAndDate(employee, LocalDate.now());
 	}
+       
+    private static boolean validateOverlappingTime(WorkingEntry workingEntryToValidate, Collection<WorkingEntry> workingEntries) {
+    	 for (WorkingEntry wEntry: workingEntries) {
+         	if (wEntry.isValid()) {
+         		long workingEntryToValidateStartSeconds = workingEntryToValidate.getStart().getLong(ChronoField.SECOND_OF_DAY);
+         		long workingEntryToValidateEndSeconds = workingEntryToValidate.getEnd().getLong(ChronoField.SECOND_OF_DAY);
+         		long wEntryStartSeconds = wEntry.getStart().getLong(ChronoField.SECOND_OF_DAY);
+         		long wEntryEndSeconds = wEntry.getEnd().getLong(ChronoField.SECOND_OF_DAY);
+         		if (workingEntryToValidateStartSeconds >= wEntryStartSeconds && workingEntryToValidateStartSeconds <= wEntryEndSeconds) {
+         			//throw new OverlappingWorkingTimesException();
+         			return true;
+         		}
+         		if (workingEntryToValidateEndSeconds >= wEntryStartSeconds && workingEntryToValidateEndSeconds <= wEntryEndSeconds) {
+         			//throw new OverlappingWorkingTimesException();
+         			return true;
+         		}
+         	}
+         }
+    	 return false;
+    }
 }

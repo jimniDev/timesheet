@@ -1,11 +1,12 @@
 .container {
   text-align: center;
   height: 40vh;
-  overflow: auto;
-  margin-bottom: 10px;
-  width: 100%;
-  margin-left: 0px;
-  display: inline-block;
+  overflow-y: scroll;
+  margin: 15px auto;
+  display: block;
+  padding: 20px;
+  border: 0.5px solid #eee;
+  border-radius: 10px;
 }
 
 .scrollbar {
@@ -31,6 +32,7 @@
 .scrollbar-primary::-webkit-scrollbar {
   width: 12px;
   background-color: #f5f5f5;
+  border-radius: 10px;
 }
 
 .scrollbar-primary::-webkit-scrollbar-thumb {
@@ -39,7 +41,68 @@
   background-color: #2bbbad;
 }
 
-@media only screen and (max-width: 760px), (min-device-width: 768px) and (max-device-width: 1024px) {
+.timearea {
+  float: left;
+  margin-left: 20px;
+}
+
+// @media (min-width: 1600px) {
+//   .container {
+//     flex: 0 0 45%;
+//     max-width: 45%;
+//   }
+// }
+
+// @media (min-width: 1200px) {
+//   .container {
+//     flex: 0 0 60%;
+//     max-width: 60%;
+//   }
+// }
+
+// @media (min-width: 768px){
+//   .container {
+//     flex: 0 0 75%;
+//     max-width: 75%;
+//   }
+// }
+// @media (min-width: 576px){
+//   .container {
+//     flex: 0 0 83.3333333333%;
+//     max-width: 83.3333333333%;
+//   }
+// }
+
+@media only screen and (max-width: 880px),
+  (min-width: 1200px) and (max-width: 1760px),
+  (min-device-width: 768px) and (max-device-width: 1024px) {
+  div.row > div:nth-child(1) > button,
+  div.row > div:nth-child(2) > button,
+  div.row > div:nth-child(3) > button {
+    margin-bottom: 5px;
+    margin-right: 0px;
+  }
+
+  div.container.scroll.scrollbar-primary {
+    margin: 0px auto 10px;
+  }
+
+  .timearea {
+  }
+  .timearea {
+    float: none;
+  }
+  div:nth-child(1) > div:nth-child(1),
+  div:nth-child(1) > div:nth-child(2),
+  div:nth-child(1) > div:nth-child(3) {
+    margin: 0 auto;
+  }
+  div:nth-child(1) > div:nth-child(1) > button,
+  div:nth-child(1) > div:nth-child(2) > button,
+  div:nth-child(1) > div:nth-child(3) > button {
+    margin: 0px 0px 0px 0px;
+  }
+
   /* Force table to not be like tables anymore */
   table,
   thead,
@@ -118,4 +181,15 @@
     top: -10px;
   }
   //td.text-right {}
+
+  .container {
+    text-align: center;
+    height: 40vh;
+    overflow: auto;
+    margin: 20px auto;
+    display: block;
+    padding: 10px;
+    border: 0.5px solid #eee;
+    border-radius: 10px;
+  }
 }

@@ -10,6 +10,10 @@ Main page styles
   background-size: contain;
 }
 
+.btn {
+  width: 100%;
+}
+
 /* wait autoprefixer update to allow simple generation of high pixel density media query */
 @media only screen and (-webkit-min-device-pixel-ratio: 2),
   only screen and (-moz-min-device-pixel-ratio: 2),
@@ -20,4 +24,7 @@ Main page styles
     background: url('../../content/images/jhipster_family_member_2.svg') no-repeat center top;
     background-size: contain;
   }
+}
+
+@media only screen and (max-width: 1850px) and (min-width: 1200px) {
 }

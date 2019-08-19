@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Input } from '@angular/core';
 
 import { LoginService, AccountService, Account } from 'app/core';
 import { IWorkingEntryTimesheet, WorkingEntryTimesheet } from 'app/shared/model/working-entry-timesheet.model';
@@ -6,6 +6,8 @@ import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { filter, map } from 'rxjs/operators';
 import { WorkingEntryTimesheetService } from 'app/entities/working-entry-timesheet';
 import { TimetableComponent } from './timetable/timetable/timetable.component';
+import { faThumbsDown } from '@fortawesome/free-solid-svg-icons';
+import { DateFormComponent } from './date-form/date-form.component';
 
 @Component({
   selector: 'jhi-home',
@@ -18,6 +20,7 @@ export class HomeComponent implements OnInit {
   started: boolean;
   disableButton: boolean = true;
 
+  @Input() btnColors = 'btn btn-success';
   @ViewChild(TimetableComponent, { static: false })
   timetableComponent: TimetableComponent;
 
@@ -58,6 +61,11 @@ export class HomeComponent implements OnInit {
   enableButton(enabled: boolean) {
     this.disableButton = !enabled;
   }
+
+  addnewEntry(workingEntry: WorkingEntryTimesheet) {
+    this.timetableComponent.loadNewandSort(workingEntry);
+  }
+
   startStop() {
     if (this.started) {
       this.workingEntryService.end().subscribe(res => {
@@ -67,6 +75,7 @@ export class HomeComponent implements OnInit {
           this.timetableComponent.workingEntries[indexToUpdate] = workingEntry;
           this.startBtnName = 'Start';
           this.started = false;
+          this.btnColors = 'btn btn-success';
         }
       });
     } else {
@@ -76,6 +85,7 @@ export class HomeComponent implements OnInit {
           this.timetableComponent.workingEntries.unshift(workingEntry);
           this.startBtnName = 'Stop';
           this.started = true;
+          this.btnColors = 'btn btn-danger';
         }
       });
     }
