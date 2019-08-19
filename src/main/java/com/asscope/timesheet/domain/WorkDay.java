@@ -9,8 +9,8 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 
 import java.io.Serializable;
-import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -61,8 +61,8 @@ public class WorkDay implements Serializable {
     }
     
     @JsonProperty("startTime")
-    public Instant getStartTime() {
-    	Instant start = Instant.MAX;   	
+    public LocalTime getStartTime() {
+    	LocalTime start = LocalTime.MAX;   	
     	for(WorkingEntry workingEntry: this.workingEntries) {
     		if(workingEntry.isValid()) {
         		if(workingEntry.getStart().isBefore(start)) {
@@ -74,8 +74,8 @@ public class WorkDay implements Serializable {
     }
     
     @JsonProperty("endTime")
-    public Instant getEndTime() {
-    	Instant end = Instant.MIN;   	
+    public LocalTime getEndTime() {
+    	LocalTime end = LocalTime.MAX;   	
     	for(WorkingEntry workingEntry: this.workingEntries) {
     		if(workingEntry.isValid()) {
         		if(workingEntry.getEnd().isAfter(end)) {
@@ -89,8 +89,8 @@ public class WorkDay implements Serializable {
     @JsonProperty("totalBreakMinutes")
     public int getTotalBreakMinutes() {
     	int minutes = 0;
-    	Instant firstStart = Instant.MAX;
-    	Instant lastEnd = Instant.MIN;
+    	LocalTime firstStart = LocalTime.MAX;
+    	LocalTime lastEnd = LocalTime.MIN;
     	long totalWorkingSeconds = 0;
     	for(WorkBreak workBreak: this.workBreaks) {
     		minutes += workBreak.getMinutes();
@@ -106,7 +106,7 @@ public class WorkDay implements Serializable {
         		}
     		}
     	}
-    	long totalSeconds = lastEnd.getEpochSecond() - firstStart.getEpochSecond();
+    	long totalSeconds = lastEnd.toSecondOfDay() - firstStart.toSecondOfDay();
     	minutes += (int) (totalSeconds - totalWorkingSeconds) / 60;
     	return minutes;
     }

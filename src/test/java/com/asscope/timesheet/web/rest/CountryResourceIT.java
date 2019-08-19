@@ -7,7 +7,6 @@ import com.asscope.timesheet.domain.Location;
 import com.asscope.timesheet.repository.CountryRepository;
 import com.asscope.timesheet.service.CountryService;
 import com.asscope.timesheet.web.rest.errors.ExceptionTranslator;
-import com.asscope.timesheet.service.dto.CountryCriteria;
 import com.asscope.timesheet.service.CountryQueryService;
 
 import org.junit.jupiter.api.BeforeEach;

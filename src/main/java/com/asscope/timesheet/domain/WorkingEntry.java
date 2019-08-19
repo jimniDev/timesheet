@@ -8,7 +8,7 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 
 import java.io.Serializable;
-import java.time.Instant;
+import java.time.LocalTime;
 
 /**
  * A WorkingEntry.
@@ -27,10 +27,10 @@ public class WorkingEntry extends AbstractAuditingEntity implements Serializable
 
     @NotNull
     @Column(name = "start", nullable = false)
-    private Instant start;
+    private LocalTime start;
 
     @Column(name = "jhi_end")
-    private Instant end;
+    private LocalTime end;
 
     @Column(name = "deleted_flag")
     @JsonIgnore
@@ -55,12 +55,12 @@ public class WorkingEntry extends AbstractAuditingEntity implements Serializable
     @JsonIgnoreProperties("workingEntries")
     private Location location;
     
-    public Long getWorkingTimeInSeconds() {
+    public int getWorkingTimeInSeconds() {
     	if(this.isCompleted()) {
-        	return end.getEpochSecond() - start.getEpochSecond();
+        	return end.toSecondOfDay() - start.toSecondOfDay();
     	}
     	else {
-    		return 0L;
+    		return 0;
     	}
     }
     
@@ -81,29 +81,29 @@ public class WorkingEntry extends AbstractAuditingEntity implements Serializable
         this.id = id;
     }
 
-    public Instant getStart() {
+    public LocalTime getStart() {
         return start;
     }
 
-    public WorkingEntry start(Instant start) {
+    public WorkingEntry start(LocalTime start) {
         this.start = start;
         return this;
     }
 
-    public void setStart(Instant start) {
+    public void setStart(LocalTime start) {
         this.start = start;
     }
 
-    public Instant getEnd() {
+    public LocalTime getEnd() {
         return end;
     }
 
-    public WorkingEntry end(Instant end) {
+    public WorkingEntry end(LocalTime end) {
         this.end = end;
         return this;
     }
 
-    public void setEnd(Instant end) {
+    public void setEnd(LocalTime end) {
         this.end = end;
     }
 

@@ -12,9 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.temporal.ChronoField;
+import java.time.LocalTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -67,10 +66,9 @@ public class WorkingEntryService {
         	}
         }
         workingEntryToSave.setWorkDay(workDay);
-    	// TODO Not Working
-        //if (validateOverlappingTime(workingEntryToSave, workDay.getWorkingEntries())) {
-    	//	throw new OverlappingWorkingTimesException();
-    	//}
+        if (validateOverlappingTime(workingEntryToSave, workDay.getWorkingEntries())) {
+    		throw new OverlappingWorkingTimesException();
+    	}
         return workingEntryRepository.save(workingEntryToSave);
     }
 
@@ -129,7 +127,7 @@ public class WorkingEntryService {
      */
     public WorkingEntry startForEmployee(String username) {
     	Employee employee = employeeService.findOneByUsername(username).get();
-    	Instant now = Instant.now();
+    	LocalTime now = LocalTime.now();
     	WorkDay workDay;
     	WorkingEntry workingEntry;
     	Optional<WorkingEntry> oWorkingEntry = workingEntryRepository
@@ -157,7 +155,7 @@ public class WorkingEntryService {
      */
     public Optional<WorkingEntry> stopForEmployee(String username) {
     	Employee employee = employeeService.findOneByUsername(username).get();
-    	Instant now = Instant.now();
+    	LocalTime now = LocalTime.now();
     	Optional<WorkingEntry> oWorkingEntry = workingEntryRepository
     			.findStartedWorkingEntryByEmployeeAndDate(employee, LocalDate.now());
     	if (!oWorkingEntry.isEmpty()) {
@@ -181,20 +179,15 @@ public class WorkingEntryService {
     private static boolean validateOverlappingTime(WorkingEntry workingEntryToValidate, Collection<WorkingEntry> workingEntries) {
     	 for (WorkingEntry wEntry: workingEntries) {
          	if (wEntry.isValid()) {
-         		long workingEntryToValidateStartSeconds = workingEntryToValidate.getStart().getLong(ChronoField.SECOND_OF_DAY);
-         		long workingEntryToValidateEndSeconds = workingEntryToValidate.getEnd().getLong(ChronoField.SECOND_OF_DAY);
-         		long wEntryStartSeconds = wEntry.getStart().getLong(ChronoField.SECOND_OF_DAY);
-         		long wEntryEndSeconds = wEntry.getEnd().getLong(ChronoField.SECOND_OF_DAY);
-         		if (workingEntryToValidateStartSeconds >= wEntryStartSeconds && workingEntryToValidateStartSeconds <= wEntryEndSeconds) {
-         			//throw new OverlappingWorkingTimesException();
-         			return true;
-         		}
-         		if (workingEntryToValidateEndSeconds >= wEntryStartSeconds && workingEntryToValidateEndSeconds <= wEntryEndSeconds) {
-         			//throw new OverlappingWorkingTimesException();
+         		if (!workingEntryToValidate.getStart().isAfter(wEntry.getEnd()) && !wEntry.getStart().isAfter(workingEntryToValidate.getEnd())) {
          			return true;
          		}
          	}
          }
     	 return false;
     }
+
+	public long count() {
+		return workingEntryRepository.count();
+	}
 }

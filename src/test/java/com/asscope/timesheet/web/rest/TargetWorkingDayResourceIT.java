@@ -8,7 +8,6 @@ import com.asscope.timesheet.domain.DayOfWeek;
 import com.asscope.timesheet.repository.TargetWorkingDayRepository;
 import com.asscope.timesheet.service.TargetWorkingDayService;
 import com.asscope.timesheet.web.rest.errors.ExceptionTranslator;
-import com.asscope.timesheet.service.dto.TargetWorkingDayCriteria;
 import com.asscope.timesheet.service.TargetWorkingDayQueryService;
 
 import org.junit.jupiter.api.BeforeEach;

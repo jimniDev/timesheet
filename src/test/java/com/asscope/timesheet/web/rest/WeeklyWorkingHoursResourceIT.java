@@ -7,7 +7,6 @@ import com.asscope.timesheet.domain.Employee;
 import com.asscope.timesheet.repository.WeeklyWorkingHoursRepository;
 import com.asscope.timesheet.service.WeeklyWorkingHoursService;
 import com.asscope.timesheet.web.rest.errors.ExceptionTranslator;
-import com.asscope.timesheet.service.dto.WeeklyWorkingHoursCriteria;
 import com.asscope.timesheet.service.WeeklyWorkingHoursQueryService;
 
 import org.junit.jupiter.api.BeforeEach;

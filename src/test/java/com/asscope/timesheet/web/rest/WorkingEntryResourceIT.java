@@ -10,9 +10,7 @@ import com.asscope.timesheet.domain.Location;
 import com.asscope.timesheet.repository.WorkingEntryRepository;
 import com.asscope.timesheet.service.WorkingEntryService;
 import com.asscope.timesheet.web.rest.errors.ExceptionTranslator;
-import com.asscope.timesheet.service.dto.WorkingEntryCriteria;
 import com.asscope.timesheet.service.EmployeeService;
-import com.asscope.timesheet.service.WorkingEntryQueryService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,6 +27,7 @@ import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
 import java.time.Instant;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -44,11 +43,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = {TimesheetApp.class, TestSecurityConfiguration.class})
 public class WorkingEntryResourceIT {
 
-    private static final Instant DEFAULT_START = Instant.ofEpochMilli(0L);
-    private static final Instant UPDATED_START = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+    private static final LocalTime DEFAULT_START = LocalTime.ofNanoOfDay(0L);
+    private static final LocalTime UPDATED_START = LocalTime.now();
 
-    private static final Instant DEFAULT_END = Instant.ofEpochMilli(0L);
-    private static final Instant UPDATED_END = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+    private static final LocalTime DEFAULT_END = LocalTime.ofNanoOfDay(0L);
+    private static final LocalTime UPDATED_END = LocalTime.now();
 
     private static final Boolean DEFAULT_DELETE_FLAG = false;
     private static final Boolean UPDATED_DELETE_FLAG = true;
@@ -64,9 +63,6 @@ public class WorkingEntryResourceIT {
 
     @Autowired
     private WorkingEntryService workingEntryService;
-
-    @Autowired
-    private WorkingEntryQueryService workingEntryQueryService;
     
     @Autowired
     private EmployeeService employeeService;
@@ -93,7 +89,7 @@ public class WorkingEntryResourceIT {
     @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final WorkingEntryResource workingEntryResource = new WorkingEntryResource(workingEntryService, workingEntryQueryService, employeeService);
+        final WorkingEntryResource workingEntryResource = new WorkingEntryResource(workingEntryService, employeeService);
         this.restWorkingEntryMockMvc = MockMvcBuilders.standaloneSetup(workingEntryResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)

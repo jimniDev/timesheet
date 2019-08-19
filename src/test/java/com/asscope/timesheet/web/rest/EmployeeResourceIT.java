@@ -11,7 +11,6 @@ import com.asscope.timesheet.domain.WorkBreak;
 import com.asscope.timesheet.repository.EmployeeRepository;
 import com.asscope.timesheet.service.EmployeeService;
 import com.asscope.timesheet.web.rest.errors.ExceptionTranslator;
-import com.asscope.timesheet.service.dto.EmployeeCriteria;
 import com.asscope.timesheet.service.EmployeeQueryService;
 
 import org.junit.jupiter.api.BeforeEach;

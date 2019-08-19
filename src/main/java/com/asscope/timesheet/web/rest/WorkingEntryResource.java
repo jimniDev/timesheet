@@ -4,10 +4,8 @@ import com.asscope.timesheet.domain.Employee;
 import com.asscope.timesheet.domain.WorkingEntry;
 import com.asscope.timesheet.service.WorkingEntryService;
 import com.asscope.timesheet.web.rest.errors.BadRequestAlertException;
-import com.asscope.timesheet.service.dto.WorkingEntryCriteria;
 import com.asscope.timesheet.service.erros.OverlappingWorkingTimesException;
 import com.asscope.timesheet.service.EmployeeService;
-import com.asscope.timesheet.service.WorkingEntryQueryService;
 
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -44,11 +42,8 @@ public class WorkingEntryResource {
     
     private final EmployeeService employeeService;
 
-    private final WorkingEntryQueryService workingEntryQueryService;
-
-    public WorkingEntryResource(WorkingEntryService workingEntryService, WorkingEntryQueryService workingEntryQueryService, EmployeeService employeeService) {
+    public WorkingEntryResource(WorkingEntryService workingEntryService, EmployeeService employeeService) {
         this.workingEntryService = workingEntryService;
-        this.workingEntryQueryService = workingEntryQueryService;
         this.employeeService = employeeService;
     }
 
@@ -160,9 +155,9 @@ public class WorkingEntryResource {
     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
     */
     @GetMapping("/working-entries/count")
-    public ResponseEntity<Long> countWorkingEntries(WorkingEntryCriteria criteria) {
-        log.debug("REST request to count WorkingEntries by criteria: {}", criteria);
-        return ResponseEntity.ok().body(workingEntryQueryService.countByCriteria(criteria));
+    public ResponseEntity<Long> countWorkingEntries() {
+        log.debug("REST request to count WorkingEntries");
+        return ResponseEntity.ok().body(workingEntryService.count());
     }
 
     /**

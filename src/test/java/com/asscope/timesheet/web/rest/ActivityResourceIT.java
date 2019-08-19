@@ -8,7 +8,6 @@ import com.asscope.timesheet.domain.Role;
 import com.asscope.timesheet.repository.ActivityRepository;
 import com.asscope.timesheet.service.ActivityService;
 import com.asscope.timesheet.web.rest.errors.ExceptionTranslator;
-import com.asscope.timesheet.service.dto.ActivityCriteria;
 import com.asscope.timesheet.service.ActivityQueryService;
 
 import org.junit.jupiter.api.BeforeEach;

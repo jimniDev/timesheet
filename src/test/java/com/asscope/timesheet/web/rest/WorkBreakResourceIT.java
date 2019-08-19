@@ -8,7 +8,6 @@ import com.asscope.timesheet.domain.WorkDay;
 import com.asscope.timesheet.repository.WorkBreakRepository;
 import com.asscope.timesheet.service.WorkBreakService;
 import com.asscope.timesheet.web.rest.errors.ExceptionTranslator;
-import com.asscope.timesheet.service.dto.WorkBreakCriteria;
 import com.asscope.timesheet.service.WorkBreakQueryService;
 
 import org.junit.jupiter.api.BeforeEach;
