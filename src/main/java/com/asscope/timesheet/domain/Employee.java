@@ -12,6 +12,8 @@ import java.util.Set;
  * A Employee.
  */
 @Entity
+@NamedEntityGraph(name = "Employee.weeklyWorkingHours",
+attributeNodes = @NamedAttributeNode("weeklyWorkingHours"))
 @Table(name = "employee")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Employee implements Serializable {

@@ -50,17 +50,17 @@ public class EmployeeResource {
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new employee, or with status {@code 400 (Bad Request)} if the employee has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PostMapping("/employees")
-    public ResponseEntity<Employee> createEmployee(@RequestBody Employee employee) throws URISyntaxException {
-        log.debug("REST request to save Employee : {}", employee);
-        if (employee.getId() != null) {
-            throw new BadRequestAlertException("A new employee cannot already have an ID", ENTITY_NAME, "idexists");
-        }
-        Employee result = employeeService.save(employee);
-        return ResponseEntity.created(new URI("/api/employees/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
-            .body(result);
-    }
+//    @PostMapping("/employees")
+//    public ResponseEntity<Employee> createEmployee(@RequestBody Employee employee) throws URISyntaxException {
+//        log.debug("REST request to save Employee : {}", employee);
+//        if (employee.getId() != null) {
+//            throw new BadRequestAlertException("A new employee cannot already have an ID", ENTITY_NAME, "idexists");
+//        }
+//        Employee result = employeeService.save(employee);
+//        return ResponseEntity.created(new URI("/api/employees/" + result.getId()))
+//            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
+//            .body(result);
+//    }
 
     /**
      * {@code PUT  /employees} : Updates an existing employee.

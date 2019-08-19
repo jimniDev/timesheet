@@ -33,7 +33,7 @@ export const employeeRoute: Routes = [
     path: '',
     component: EmployeeTimesheetComponent,
     data: {
-      authorities: ['ROLE_USER'],
+      authorities: ['ROLE_ADMIN'],
       pageTitle: 'timesheetApp.employee.home.title'
     },
     canActivate: [UserRouteAccessService]
@@ -45,7 +45,7 @@ export const employeeRoute: Routes = [
       employee: EmployeeTimesheetResolve
     },
     data: {
-      authorities: ['ROLE_USER'],
+      authorities: ['ROLE_ADMIN'],
       pageTitle: 'timesheetApp.employee.home.title'
     },
     canActivate: [UserRouteAccessService]
@@ -57,7 +57,7 @@ export const employeeRoute: Routes = [
       employee: EmployeeTimesheetResolve
     },
     data: {
-      authorities: ['ROLE_USER'],
+      authorities: ['ROLE_ADMIN'],
       pageTitle: 'timesheetApp.employee.home.title'
     },
     canActivate: [UserRouteAccessService]
@@ -69,7 +69,7 @@ export const employeeRoute: Routes = [
       employee: EmployeeTimesheetResolve
     },
     data: {
-      authorities: ['ROLE_USER'],
+      authorities: ['ROLE_ADMIN'],
       pageTitle: 'timesheetApp.employee.home.title'
     },
     canActivate: [UserRouteAccessService]
@@ -84,7 +84,7 @@ export const employeePopupRoute: Routes = [
       employee: EmployeeTimesheetResolve
     },
     data: {
-      authorities: ['ROLE_USER'],
+      authorities: ['ROLE_ADMIN'],
       pageTitle: 'timesheetApp.employee.home.title'
     },
     canActivate: [UserRouteAccessService],

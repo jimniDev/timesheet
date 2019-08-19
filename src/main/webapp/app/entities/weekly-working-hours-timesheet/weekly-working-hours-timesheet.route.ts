@@ -33,7 +33,7 @@ export const weeklyWorkingHoursRoute: Routes = [
     path: '',
     component: WeeklyWorkingHoursTimesheetComponent,
     data: {
-      authorities: ['ROLE_USER'],
+      authorities: ['ROLE_ADMIN'],
       pageTitle: 'timesheetApp.weeklyWorkingHours.home.title'
     },
     canActivate: [UserRouteAccessService]
@@ -45,7 +45,7 @@ export const weeklyWorkingHoursRoute: Routes = [
       weeklyWorkingHours: WeeklyWorkingHoursTimesheetResolve
     },
     data: {
-      authorities: ['ROLE_USER'],
+      authorities: ['ROLE_ADMIN'],
       pageTitle: 'timesheetApp.weeklyWorkingHours.home.title'
     },
     canActivate: [UserRouteAccessService]
@@ -57,7 +57,7 @@ export const weeklyWorkingHoursRoute: Routes = [
       weeklyWorkingHours: WeeklyWorkingHoursTimesheetResolve
     },
     data: {
-      authorities: ['ROLE_USER'],
+      authorities: ['ROLE_ADMIN'],
       pageTitle: 'timesheetApp.weeklyWorkingHours.home.title'
     },
     canActivate: [UserRouteAccessService]
@@ -69,7 +69,7 @@ export const weeklyWorkingHoursRoute: Routes = [
       weeklyWorkingHours: WeeklyWorkingHoursTimesheetResolve
     },
     data: {
-      authorities: ['ROLE_USER'],
+      authorities: ['ROLE_ADMIN'],
       pageTitle: 'timesheetApp.weeklyWorkingHours.home.title'
     },
     canActivate: [UserRouteAccessService]
@@ -84,7 +84,7 @@ export const weeklyWorkingHoursPopupRoute: Routes = [
       weeklyWorkingHours: WeeklyWorkingHoursTimesheetResolve
     },
     data: {
-      authorities: ['ROLE_USER'],
+      authorities: ['ROLE_ADMIN'],
       pageTitle: 'timesheetApp.weeklyWorkingHours.home.title'
     },
     canActivate: [UserRouteAccessService],
