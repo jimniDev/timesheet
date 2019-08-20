@@ -20,7 +20,7 @@
             <td><a [routerLink]="['/employee-timesheet', employee.id, 'view' ]">{{employee.id}}</a></td>
             <td>{{employee.isEmployed}}</td>
             <td>{{employee.user.firstName || ''}} {{employee.user.lastName || ''}}</td>
-            <td>{{getActualWeeklyWorkingHours(employee)}}</td>
+            <td>{{employee.activeWeeklyWorkingHours.hours}}</td>
             <td class="text-right">
                 <div class="btn-group">
                     <button type="submit"

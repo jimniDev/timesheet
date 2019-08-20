@@ -2,10 +2,14 @@ package com.asscope.timesheet.domain;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -28,29 +32,52 @@ public class Employee implements Serializable {
     @Column(name = "is_employed")
     private Boolean isEmployed;
 
+    @JsonIgnoreProperties("employee")
     @OneToMany(mappedBy = "employee")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<WorkingEntry> workingEntries = new HashSet<>();
 
+    @JsonIgnoreProperties("employee")
     @OneToMany(mappedBy = "employee")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<TargetWorkingDay> targetWorkingDays = new HashSet<>();
 
-    @OneToMany(mappedBy = "employee")
+    @JsonIgnoreProperties("employee")
+    @OneToMany(mappedBy = "employee", fetch = FetchType.EAGER)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<WeeklyWorkingHours> weeklyWorkingHours = new HashSet<>();
 
+    @JsonIgnoreProperties("employee")
     @OneToMany(mappedBy = "employee")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<WorkDay> workDays = new HashSet<>();
 
+    @JsonIgnoreProperties("employee")
     @OneToMany(mappedBy = "employee")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<WorkBreak> workBreaks = new HashSet<>();
     
     @OneToOne
     private User user;
+    
+    @Transient
+    private MonthlyWorkTime monthlyWorkTime;
+    
+    @JsonIgnoreProperties("employee")
+    @JsonProperty("activeWeeklyWorkingHours")
+    public WeeklyWorkingHours getActiveWeeklyWorkingHours() {
+    	Optional<WeeklyWorkingHours> maxWWH = this.weeklyWorkingHours.stream().max((wwH1, wwH2) -> wwH1.getStartDate().compareTo(wwH2.getStartDate()));
+    	if (maxWWH.isPresent()) {
+    		return maxWWH.get();
+    	} else {
+    		return null;
+    	}
+    }
 
+    public MonthlyWorkTime getMonthlyWorkTime() {
+    	
+    }
+    
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
