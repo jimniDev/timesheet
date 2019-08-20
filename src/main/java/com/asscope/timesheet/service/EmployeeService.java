@@ -40,6 +40,8 @@ public class EmployeeService {
      */
     public Employee save(Employee employee) {
         log.debug("Request to save Employee : {}", employee);
+        Employee queriedEmployee = employeeRepository.findById(employee.getId()).get();
+        employee.setUser(queriedEmployee.getUser());
         return employeeRepository.save(employee);
     }
 
@@ -51,7 +53,7 @@ public class EmployeeService {
     @Transactional(readOnly = true)
     public List<Employee> findAll() {
         log.debug("Request to get all Employees");
-        return employeeRepository.findAll();
+        return employeeRepository.findAllWithWeeklyWorkingHours();
     }
 
 
