@@ -8,6 +8,7 @@ import { WorkingEntryTimesheetService } from 'app/entities/working-entry-timeshe
 import { TimetableComponent } from './timetable/timetable/timetable.component';
 import { faThumbsDown } from '@fortawesome/free-solid-svg-icons';
 import { DateFormComponent } from './date-form/date-form.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'jhi-home',
@@ -19,6 +20,7 @@ export class HomeComponent implements OnInit {
   startBtnName: string;
   started: boolean;
   disableButton: boolean = true;
+  totalBreakMinutes: number;
 
   @Input() btnColors = 'btn btn-success';
   @ViewChild(TimetableComponent, { static: false })
@@ -27,7 +29,8 @@ export class HomeComponent implements OnInit {
   constructor(
     private accountService: AccountService,
     private loginService: LoginService,
-    private workingEntryService: WorkingEntryTimesheetService
+    private workingEntryService: WorkingEntryTimesheetService,
+    private modalService: NgbModal
   ) {}
 
   ngOnInit() {
@@ -63,16 +66,18 @@ export class HomeComponent implements OnInit {
   }
 
   addnewEntry(workingEntry: WorkingEntryTimesheet) {
-    this.timetableComponent.loadNewandSort(workingEntry);
+    this.timetableComponent.addNewandSort(workingEntry);
   }
 
-  startStop() {
+  startStop(content) {
     if (this.started) {
       this.workingEntryService.end().subscribe(res => {
         if (res.ok) {
           let workingEntry = <IWorkingEntryTimesheet>res.body;
           let indexToUpdate = this.timetableComponent.workingEntries.findIndex(we => we.id == workingEntry.id);
           this.timetableComponent.workingEntries[indexToUpdate] = workingEntry;
+          this.totalBreakMinutes = workingEntry.workDay.totalBreakMinutes;
+          this.openVerticallyCentered(content);
           this.startBtnName = 'Start';
           this.started = false;
           this.btnColors = 'btn btn-success';
@@ -89,5 +94,9 @@ export class HomeComponent implements OnInit {
         }
       });
     }
+  }
+
+  openVerticallyCentered(content) {
+    this.modalService.open(content, { centered: true });
   }
 }

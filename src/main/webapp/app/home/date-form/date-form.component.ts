@@ -1,7 +1,7 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Validators } from '@angular/forms';
-import { NgbDateStruct, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDateStruct, NgbCalendar, NgbDateAdapter, NgbDateNativeAdapter } from '@ng-bootstrap/ng-bootstrap';
 import { WorkingEntryTimesheet } from 'app/shared/model/working-entry-timesheet.model';
 import { ActivityTimesheet } from 'app/shared/model/activity-timesheet.model';
 import { WorkDayTimesheet } from 'app/shared/model/work-day-timesheet.model';
@@ -15,7 +15,8 @@ import { faThumbsDown } from '@fortawesome/free-solid-svg-icons';
 @Component({
   selector: 'jhi-date-form',
   templateUrl: './date-form.component.html',
-  styleUrls: ['./date-form.component.scss']
+  styleUrls: ['./date-form.component.scss'],
+  providers: [{ provide: NgbDateAdapter, useClass: NgbDateNativeAdapter }]
 })
 export class DateFormComponent implements OnInit {
   //roles: string[];
@@ -43,7 +44,9 @@ export class DateFormComponent implements OnInit {
 
   ngOnInit() {}
 
-  makeMoment() {}
+  get today() {
+    return new Date();
+  }
 
   onSubmit() {
     this.timeForm.value;
@@ -53,7 +56,7 @@ export class DateFormComponent implements OnInit {
     let endTimeString: string;
     let workDay: WorkDayTimesheet = new WorkDayTimesheet();
 
-    const formDate = <Moment>this.timeForm.value.date;
+    const formDate = moment(this.timeForm.value.date);
     workDay.date = formDate;
 
     startTimeString = formDate.format('YYYY-MM-DD') + ' ' + this.timeForm.value.startHour + ':' + this.timeForm.value.startMin;
@@ -68,6 +71,7 @@ export class DateFormComponent implements OnInit {
     //workingEntry.activity = <ActivityTimesheet> this.timeForm.get(['activityControl']).value;
     workingEntry.workDay = workDay;
     //workingEntry.location = <LocationTimesheet> this.editForm.get(['location']).value;
+    workingEntry.deleted = false;
 
     this.workingEntryService.create(workingEntry).subscribe(res => {
       if (res.ok) {

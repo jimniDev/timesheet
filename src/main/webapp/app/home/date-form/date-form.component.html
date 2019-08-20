@@ -1,7 +1,7 @@
 
 <form [formGroup]="timeForm" (ngSubmit)="onSubmit()">
   <div class="form-row">
-          <div class="form-group col-6" style="float: none; margin: 0 auto;">
+          <div class="form-group" style="float: none; margin: 0 auto;">
             <mat-label>Date</mat-label>
             <div class="input-group">
               <input class="form-control" placeholder="yyyy-mm-dd" formControlName="date"
@@ -9,6 +9,7 @@
               <div class="input-group-append">
                 <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button"></button>
               </div>
+              <button class="btn btn-sm btn-outline-primary today" (click)="datepic = today">Select Today</button>
             </div>
           </div>
         <!-- <pre>Model: {{datepic | date:'yyyy-MM-dd'}}</pre>

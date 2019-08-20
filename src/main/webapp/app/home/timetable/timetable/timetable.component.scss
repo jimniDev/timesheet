@@ -97,10 +97,12 @@
   div:nth-child(1) > div:nth-child(3) {
     margin: 0 auto;
   }
+
   div:nth-child(1) > div:nth-child(1) > button,
   div:nth-child(1) > div:nth-child(2) > button,
   div:nth-child(1) > div:nth-child(3) > button {
-    margin: 0px 0px 0px 0px;
+    margin-bottom: 3px;
+    margin-right: 1px;
   }
 
   /* Force table to not be like tables anymore */
@@ -191,5 +193,15 @@
     padding: 10px;
     border: 0.5px solid #eee;
     border-radius: 10px;
+  }
+
+  .input-group-sm:nth-child(1),
+  .input-group-sm:nth-child(2) {
+    padding-right: 1px;
+  }
+
+  .input-group-sm:nth-child(2),
+  .input-group-sm:nth-child(3) {
+    padding-left: 1px;
   }
 }
