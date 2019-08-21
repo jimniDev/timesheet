@@ -22,7 +22,7 @@ export class TimetableComponent implements OnInit {
   targetTime: string = '00:00';
   actualTime: string = '00:00';
   diffTime: string = '00:00';
-  todayTime: string;
+  todayTime: string = '00:00';
 
   @Output() initialized = new EventEmitter<boolean>();
 
@@ -39,9 +39,9 @@ export class TimetableComponent implements OnInit {
       if (res.ok) {
         for (let month of res.body.years[0].months) {
           if (month.name === this.monthNames[date.getMonth()]) {
-            this.targetTime = (month.targetWorkingMinutes / 60).toFixed(2);
-            this.actualTime = (month.actualWorkingMinutes / 60).toFixed(2);
-            this.diffTime = (month.actualWorkingMinutes / 60 - month.targetWorkingMinutes / 60).toFixed(2);
+            this.targetTime = this.secondsToHHMM(month.targetWorkingMinutes * 60);
+            this.actualTime = this.secondsToHHMM(month.actualWorkingMinutes * 60);
+            this.diffTime = this.secondsToHHMM(month.actualWorkingMinutes * 60 - month.targetWorkingMinutes * 60);
             return;
           } else {
             this.targetTime = '00:00';
@@ -113,21 +113,25 @@ export class TimetableComponent implements OnInit {
   }
 
   workTodaySum() {
-    let month: number = new Date().getMonth() + 1;
-    let today = new Date().getFullYear() + '-' + month + '-' + new Date().getDate();
-    let todayMoment = moment(today);
-    var toadyEntries = this.workingEntries.filter(function(filterEntry) {
-      let a = filterEntry.workDay.date;
-      if (a == todayMoment) {
+    const month: number = new Date().getMonth() + 1;
+    const today = new Date().getFullYear() + '-' + month + '-' + new Date().getDate();
+    const todayMoment = moment(today);
+    const toadyEntries = this.workingEntries.filter(filterEntry => {
+      const a = filterEntry.workDay.date;
+      if (a === todayMoment) {
         return filterEntry;
       }
     });
     let sum = 0;
-    for (var i = 0; i < toadyEntries.length; i++) {
+    for (let i = 0; i < toadyEntries.length; i++) {
       sum += this.sumToday(toadyEntries[i].start, toadyEntries[i].end);
     }
-    const hour = Math.round(sum / 3600);
-    const min = Math.round((sum % 3600) / 60);
-    this.todayTime = this.pad(hour, 2) + ' : ' + this.pad(min, 2);
+    this.todayTime = this.secondsToHHMM(sum);
+  }
+
+  secondsToHHMM(seconds: number): string {
+    const hour = Math.round(seconds / 3600);
+    const min = Math.round((seconds % 3600) / 60);
+    return this.pad(hour, 2) + ':' + this.pad(min, 2);
   }
 }
