@@ -2,6 +2,7 @@ package com.asscope.timesheet.domain;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import com.asscope.timesheet.domain.monthlyInformation.WorktimeInformation;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -60,9 +61,6 @@ public class Employee implements Serializable {
     @OneToOne
     private User user;
     
-    @Transient
-    private MonthlyWorkTime monthlyWorkTime;
-    
     @JsonIgnoreProperties("employee")
     @JsonProperty("activeWeeklyWorkingHours")
     public WeeklyWorkingHours getActiveWeeklyWorkingHours() {
@@ -73,10 +71,12 @@ public class Employee implements Serializable {
     		return null;
     	}
     }
-
-    public MonthlyWorkTime getMonthlyWorkTime() {
-    	
-    }
+    
+//    @JsonProperty("workTimeInformation")
+//    public WorktimeInformation getWorkTimeInformation() {
+//    	WorktimeInformation wtInformation = new WorktimeInformation(workDays);
+//    	return wtInformation;
+//    }
     
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {

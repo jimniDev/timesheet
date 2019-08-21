@@ -1,6 +1,7 @@
 package com.asscope.timesheet.web.rest;
 
 import com.asscope.timesheet.domain.Employee;
+import com.asscope.timesheet.domain.monthlyInformation.WorktimeInformation;
 import com.asscope.timesheet.service.EmployeeService;
 import com.asscope.timesheet.web.rest.errors.BadRequestAlertException;
 import com.asscope.timesheet.service.dto.EmployeeCriteria;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -132,5 +133,19 @@ public class EmployeeResource {
         log.debug("REST request to delete Employee : {}", id);
         employeeService.delete(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
+    }
+    
+    @GetMapping({"/employees/{id}/worktime", "/employees/{id}/worktime/{year}"})
+    public ResponseEntity<WorktimeInformation> getWorktimeInformation(@PathVariable("id") Long id, @PathVariable("year") Optional<Integer> year) {
+    	log.debug("REST request to get worktimeInformation for Employee : {}", id);
+    	Optional<WorktimeInformation> wtInfo = employeeService.getWorkTimeInformation(id, year);
+    	return ResponseUtil.wrapOrNotFound(wtInfo);
+    }
+    
+    @GetMapping({"/employees/me/worktime", "/employees/me/worktime/{year}"})
+    public ResponseEntity<WorktimeInformation> getWorktimeInformation(Principal principal, @PathVariable("year") Optional<Integer> year) {
+    	log.debug("REST request to get worktimeInformation for Employee : {}", principal.getName());
+    	Optional<WorktimeInformation> wtInfo = employeeService.getWorkTimeInformation(principal, year);
+    	return ResponseUtil.wrapOrNotFound(wtInfo);
     }
 }

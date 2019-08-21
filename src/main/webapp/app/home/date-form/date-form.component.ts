@@ -50,8 +50,6 @@ export class DateFormComponent implements OnInit {
 
   onSubmit() {
     this.timeForm.value;
-    //const test = 'test';
-
     let startTimeString: string;
     let endTimeString: string;
     let workDay: WorkDayTimesheet = new WorkDayTimesheet();
@@ -68,9 +66,7 @@ export class DateFormComponent implements OnInit {
     workingEntry = new WorkingEntryTimesheet();
     workingEntry.start = startMoment;
     workingEntry.end = endMoment;
-    //workingEntry.activity = <ActivityTimesheet> this.timeForm.get(['activityControl']).value;
     workingEntry.workDay = workDay;
-    //workingEntry.location = <LocationTimesheet> this.editForm.get(['location']).value;
     workingEntry.deleted = false;
 
     this.workingEntryService.create(workingEntry).subscribe(res => {

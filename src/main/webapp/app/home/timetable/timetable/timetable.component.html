@@ -1,43 +1,13 @@
 <div class="row">
-    <!-- <div class="timearea">
-        <button type="button" class="btn btn-outline-secondary mr-2 btn-sm" placement="right"
-            ngbPopover="you can check the target time of this month to work.">
-            Target
-        </button>
-        <label>{{targetTime}}</label>       
+    <div class="col-4">
+        Target: {{targetTime}}
     </div>
-    <div class="timearea">
-        <button type="button" class="btn btn-outline-secondary mr-2 btn-sm" placement="down"
-            ngbPopover="Acutal time of this month to work.(Target time - time you worked)">
-            Actual
-        </button>
-        <label>{{actualTime}}</label>               
+    <div class="col-4">
+        Actual: {{actualTime}}
     </div>
-    <div class="timearea">
-        <button type="button" class="btn btn-outline-secondary mr-2 btn-sm" placement="left"
-            ngbPopover="Difference with previous month.">
-            Difference
-        </button>
-        <label>{{diffTime}}</label>               
-    </div> -->
-    <div class="input-group input-group-sm col-xl-3 col-4">
-        <div class="input-group-prepend">
-            <span class="input-group-text" id="basic-addon1">Target</span>
-        </div>
-        <input type="text" class="form-control" placeholder="{{targetTime}}" aria-label="Username" aria-describedby="basic-addon1">
+    <div class="col-4">
+        Difference: {{diffTime}}
     </div>
-    <div class="input-group input-group-sm col-xl-3 col-4">
-        <div class="input-group-prepend">
-            <span class="input-group-text" id="basic-addon1">Actual</span>
-        </div>
-        <input type="text" class="form-control" placeholder="{{actualTime}}" aria-label="Username" aria-describedby="basic-addon1">
-    </div>
-    <div class="input-group input-group-sm col-xl-3 col-4">
-            <div class="input-group-prepend">
-                <span class="input-group-text" id="basic-addon1">Diff</span>
-            </div>
-            <input type="text" class="form-control" placeholder="{{diffTime}}" aria-label="Username" aria-describedby="basic-addon1">
-    </div>                 
 </div>
 <div class = "container scroll scrollbar-primary">
     <table class="table table-hover table-responisve-sm force-overflow">
@@ -100,10 +70,6 @@
 </div>
 <div class="row" id="timeToday">
     <div class="col">
-        <button type="button" class="btn btn-outline-secondary mr-2 btn-sm" placement="right"
-            ngbPopover="total time you worked today">
-            Work Time of today
-        </button>
-        <label>{{todayTime}}</label>       
+        Worktime: <label>{{todayTime}}</label>       
     </div>     
 </div>

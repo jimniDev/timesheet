@@ -5,6 +5,8 @@ import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { filter, map } from 'rxjs/operators';
 import * as moment from 'moment';
 import { Moment } from 'moment';
+import { EmployeeTimesheetService } from 'app/entities/employee-timesheet';
+import { IMonthTimesheet } from 'app/shared/model/month-timesheet.model';
 
 @Component({
   selector: 'jhi-timetable',
@@ -12,20 +14,42 @@ import { Moment } from 'moment';
   styleUrls: ['./timetable.component.scss']
 })
 export class TimetableComponent implements OnInit {
+  monthNames = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER'];
+
   workingEntries: IWorkingEntryTimesheet[];
   sWorkingEntries: IWorkingEntryTimesheet[]; //sorted
 
-  targetTime: string = '13:00';
-  actualTime: string = '13:00';
-  diffTime: string = '13:00';
+  targetTime: string = '00:00';
+  actualTime: string = '00:00';
+  diffTime: string = '00:00';
   todayTime: string;
 
   @Output() initialized = new EventEmitter<boolean>();
 
-  constructor(private workingEntryService: WorkingEntryTimesheetService) {}
+  constructor(private workingEntryService: WorkingEntryTimesheetService, private employeeService: EmployeeTimesheetService) {}
 
   ngOnInit() {
     this.loadAllandSort();
+    this.loadWorktimeInformation();
+  }
+
+  loadWorktimeInformation() {
+    const date = new Date();
+    this.employeeService.currentWorktimeInformation(date.getFullYear()).subscribe(res => {
+      if (res.ok) {
+        for (let month of res.body.years[0].months) {
+          if (month.name === this.monthNames[date.getMonth()]) {
+            this.targetTime = (month.targetWorkingMinutes / 60).toFixed(2);
+            this.actualTime = (month.actualWorkingMinutes / 60).toFixed(2);
+            this.diffTime = (month.actualWorkingMinutes / 60 - month.targetWorkingMinutes / 60).toFixed(2);
+            return;
+          } else {
+            this.targetTime = '00:00';
+            this.actualTime = '00:00';
+          }
+        }
+      }
+    });
   }
 
   loadAllandSort() {
@@ -58,6 +82,7 @@ export class TimetableComponent implements OnInit {
   addNewandSort(workingEntry: WorkingEntryTimesheet) {
     this.workingEntries.push(workingEntry);
     this.workingEntries = this.sortData(this.workingEntries);
+    this.loadWorktimeInformation();
     //this.initialized.emit(true);
   }
 

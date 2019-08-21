@@ -2,17 +2,22 @@ package com.asscope.timesheet.service;
 
 import com.asscope.timesheet.domain.Employee;
 import com.asscope.timesheet.domain.User;
+import com.asscope.timesheet.domain.WorkDay;
+import com.asscope.timesheet.domain.monthlyInformation.WorktimeInformation;
 import com.asscope.timesheet.repository.EmployeeRepository;
 import com.asscope.timesheet.repository.UserRepository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Principal;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing {@link Employee}.
@@ -26,13 +31,16 @@ public class EmployeeService {
     private final EmployeeRepository employeeRepository;
     
     private final UserRepository userRepository;
+    
+    private final CacheManager cacheManager;
 
-    public EmployeeService(EmployeeRepository employeeRepository, UserRepository userRepository) {
+    public EmployeeService(EmployeeRepository employeeRepository, UserRepository userRepository, CacheManager cacheManager) {
         this.employeeRepository = employeeRepository;
         this.userRepository = userRepository;
+        this.cacheManager = cacheManager;
     }
 
-    /**
+	/**
      * Save a employee.
      *
      * @param employee the entity to save.
@@ -54,6 +62,36 @@ public class EmployeeService {
     public List<Employee> findAll() {
         log.debug("Request to get all Employees");
         return employeeRepository.findAllWithWeeklyWorkingHours();
+    }
+    
+    @Transactional(readOnly = true)
+    public Optional<WorktimeInformation> getWorkTimeInformation(long employeeID, Optional<Integer> optionalYear) {
+        Objects.requireNonNull(cacheManager.getCache(com.asscope.timesheet.domain.Employee.class.getName() + ".workDays")).clear();
+    	Optional<Employee> queriedEmployee = employeeRepository.findById(employeeID);
+    	if (queriedEmployee.isPresent()) {
+    		Employee employee = queriedEmployee.get();
+    		if (optionalYear.isPresent()) {
+    			int year = optionalYear.get();
+    			List<WorkDay> filteredWorkDays = employee.getWorkDays().stream().filter(wd -> wd.getDate().getYear() == year).collect(Collectors.toList());
+    			WorktimeInformation wtInfo = new WorktimeInformation(filteredWorkDays); 
+    			return Optional.of(wtInfo);
+    		} else {
+    			WorktimeInformation wtInfo = new WorktimeInformation(employee.getWorkDays());
+    			return Optional.of(wtInfo);
+    		}
+    	} else {
+        	return Optional.empty();
+    	}
+    }
+    
+    @Transactional(readOnly = true)
+    public Optional<WorktimeInformation> getWorkTimeInformation(Principal principal, Optional<Integer> optionalYear) {
+    	Optional<Employee> employee = this.findOneByUsername(principal.getName());
+    	if (employee.isPresent()) {
+    		return this.getWorkTimeInformation(employee.get().getId(), optionalYear);
+    	} else {
+    		return Optional.empty();
+    	}
     }
 
 
