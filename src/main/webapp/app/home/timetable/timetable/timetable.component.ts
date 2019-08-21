@@ -134,4 +134,15 @@ export class TimetableComponent implements OnInit {
     const min = Math.round((seconds % 3600) / 60);
     return this.pad(hour, 2) + ':' + this.pad(min, 2);
   }
+
+  isDifferentWorkingEntryDateBefore(index: number): boolean {
+    if (index > 0) {
+      if (this.workingEntries[index].workDay.date !== this.workingEntries[index - 1].workDay.date) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+    return true;
+  }
 }
