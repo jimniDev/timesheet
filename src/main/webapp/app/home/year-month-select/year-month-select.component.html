@@ -1,0 +1,14 @@
+<div class="row">
+  <div class="col-2"></div>
+  <div class="col-4">
+      <select class="form-control" [ngModel]="selectedYear" (ngModelChange)="onChangeYear($event)" >
+          <option [value]="year" *ngFor="let year of getDistinctYears()">{{year}}</option>
+      </select>
+  </div>
+  <div class="col-4">
+      <select class="form-control"  [ngModel]="selectedMonth" (ngModelChange)="onChangeMonth($event)" >
+          <option [value]="month" *ngFor="let month of getDistinctMonthsFromYear()">{{month}}</option>
+      </select>
+  </div>
+  <div class="col-2"></div>
+</div>

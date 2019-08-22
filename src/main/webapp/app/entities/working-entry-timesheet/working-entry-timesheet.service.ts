@@ -88,6 +88,7 @@ export class WorkingEntryTimesheetService {
       res.body.start = res.body.start != null ? moment(res.body.start) : null;
       res.body.end = res.body.end != null ? moment(res.body.end) : null;
       res.body.createdAt = res.body.createdAt != null ? moment(res.body.createdAt) : null;
+      res.body.workDay.date = res.body.workDay.date != null ? moment(res.body.workDay.date) : null;
     }
     return res;
   }
@@ -98,6 +99,7 @@ export class WorkingEntryTimesheetService {
         workingEntry.start = workingEntry.start != null ? moment(workingEntry.start) : null;
         workingEntry.end = workingEntry.end != null ? moment(workingEntry.end) : null;
         workingEntry.createdAt = workingEntry.createdAt != null ? moment(workingEntry.createdAt) : null;
+        workingEntry.workDay.date = workingEntry.workDay.date != null ? moment(workingEntry.workDay.date) : null;
       });
     }
     return res;

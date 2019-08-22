@@ -4,9 +4,8 @@ import { IWorkingEntryTimesheet, WorkingEntryTimesheet } from 'app/shared/model/
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { filter, map } from 'rxjs/operators';
 import * as moment from 'moment';
-import { Moment } from 'moment';
 import { EmployeeTimesheetService } from 'app/entities/employee-timesheet';
-import { IMonthTimesheet } from 'app/shared/model/month-timesheet.model';
+import { Moment } from 'moment';
 
 @Component({
   selector: 'jhi-timetable',
@@ -16,8 +15,8 @@ import { IMonthTimesheet } from 'app/shared/model/month-timesheet.model';
 export class TimetableComponent implements OnInit {
   monthNames = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER'];
 
+  workingEntriesUnfiltered: IWorkingEntryTimesheet[];
   workingEntries: IWorkingEntryTimesheet[];
-  sWorkingEntries: IWorkingEntryTimesheet[]; //sorted
 
   targetTime: string = '00:00';
   actualTime: string = '00:00';
@@ -52,6 +51,12 @@ export class TimetableComponent implements OnInit {
     });
   }
 
+  filterTimeTable(date: Moment) {
+    this.workingEntries = this.workingEntriesUnfiltered.filter(
+      we => we.workDay.date.year() === date.year() && we.workDay.date.month() === date.month()
+    );
+  }
+
   loadAllandSort() {
     this.workingEntryService
       .timetable()
@@ -64,6 +69,7 @@ export class TimetableComponent implements OnInit {
           this.workingEntries = res;
           this.workTodaySum();
           this.workingEntries = this.sortData(this.workingEntries);
+          this.workingEntriesUnfiltered = this.workingEntries;
           this.initialized.emit(true);
         },
         (res: HttpErrorResponse) => this.onError(res.message)
@@ -83,7 +89,6 @@ export class TimetableComponent implements OnInit {
     this.workingEntries.push(workingEntry);
     this.workingEntries = this.sortData(this.workingEntries);
     this.loadWorktimeInformation();
-    //this.initialized.emit(true);
   }
 
   sumDate(date1: any, date2: any): String {
@@ -137,12 +142,19 @@ export class TimetableComponent implements OnInit {
 
   isDifferentWorkingEntryDateBefore(index: number): boolean {
     if (index > 0) {
-      if (this.workingEntries[index].workDay.date !== this.workingEntries[index - 1].workDay.date) {
+      if (!this.workingEntries[index].workDay.date.isSame(this.workingEntries[index - 1].workDay.date)) {
         return true;
       } else {
         return false;
       }
     }
     return true;
+  }
+
+  getDatesFromWorkingEntries(): Moment[] {
+    if (this.workingEntriesUnfiltered) {
+      return this.workingEntriesUnfiltered.map(we => we.workDay.date);
+    }
+    return null;
   }
 }
