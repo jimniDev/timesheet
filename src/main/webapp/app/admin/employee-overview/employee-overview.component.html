@@ -16,7 +16,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let employee of employees ;trackBy: trackId">
+        <tr *ngFor="let employee of employees">
             <td><a [routerLink]="['/employee-timesheet', employee.id, 'view' ]">{{employee.id}}</a></td>
             <td>{{employee.isEmployed}}</td>
             <td>{{employee.user.firstName || ''}} {{employee.user.lastName || ''}}</td>

@@ -3,7 +3,6 @@ import { WorkingEntryTimesheetService } from 'app/entities/working-entry-timeshe
 import { IWorkingEntryTimesheet, WorkingEntryTimesheet } from 'app/shared/model/working-entry-timesheet.model';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { filter, map } from 'rxjs/operators';
-import * as moment from 'moment';
 import { EmployeeTimesheetService } from 'app/entities/employee-timesheet';
 import { Moment } from 'moment';
 
@@ -67,7 +66,6 @@ export class TimetableComponent implements OnInit {
       .subscribe(
         (res: IWorkingEntryTimesheet[]) => {
           this.workingEntries = res;
-          this.workTodaySum();
           this.workingEntries = this.sortData(this.workingEntries);
           this.workingEntriesUnfiltered = this.workingEntries;
           this.initialized.emit(true);
@@ -102,36 +100,10 @@ export class TimetableComponent implements OnInit {
     }
   }
 
-  sumToday(date1: any, date2: any): number {
-    if (date2 != null) {
-      const sum = Math.abs((date1 - date2) / 1000);
-      return sum;
-    } else {
-      return 0;
-    }
-  }
-
   pad(num: number, size: number): string {
     let s = num + '';
     while (s.length < size) s = '0' + s;
     return s;
-  }
-
-  workTodaySum() {
-    const month: number = new Date().getMonth() + 1;
-    const today = new Date().getFullYear() + '-' + month + '-' + new Date().getDate();
-    const todayMoment = moment(today);
-    const toadyEntries = this.workingEntries.filter(filterEntry => {
-      const a = filterEntry.workDay.date;
-      if (a === todayMoment) {
-        return filterEntry;
-      }
-    });
-    let sum = 0;
-    for (let i = 0; i < toadyEntries.length; i++) {
-      sum += this.sumToday(toadyEntries[i].start, toadyEntries[i].end);
-    }
-    this.todayTime = this.secondsToHHMM(sum);
   }
 
   secondsToHHMM(seconds: number): string {
