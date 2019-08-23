@@ -5,7 +5,7 @@ import { IWorkingEntryTimesheet, WorkingEntryTimesheet } from 'app/shared/model/
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { filter, map } from 'rxjs/operators';
 import { WorkingEntryTimesheetService } from 'app/entities/working-entry-timesheet';
-import { TimetableComponent } from './timetable/timetable/timetable.component';
+import { TimetableComponent } from './timetable/timetable.component';
 import { faThumbsDown } from '@fortawesome/free-solid-svg-icons';
 import { DateFormComponent } from './date-form/date-form.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
