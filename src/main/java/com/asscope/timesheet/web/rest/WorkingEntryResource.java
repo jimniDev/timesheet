@@ -213,4 +213,11 @@ public class WorkingEntryResource {
     		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     	}
     }
+    
+    @GetMapping({"employees/me/working-entries/year/{year}", "employees/me/working-entries/year/{year}/month/{month}"})
+    @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
+    public ResponseEntity<List<WorkingEntry>> getWorkingEntriesByDateForCurrentUser(Principal principal, @PathVariable("year") int year, @PathVariable("month") Optional<Integer> month) {
+    	log.debug("REST request to get WorkingEntries for Employee : {}", principal.getName());
+    	return ResponseEntity.ok().body(this.workingEntryService.findAllByEmployee(principal, year, month));
+    }
 }
