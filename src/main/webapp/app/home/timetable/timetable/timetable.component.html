@@ -15,6 +15,7 @@
     <thead>
         <tr>
             <th>Date</th>
+            <th>Total Worktime</th>
             <th>Start</th>
             <th>End</th>
             <th>Sum</th>
@@ -26,7 +27,9 @@
     <tbody>
     <tr *ngFor="let workingEntry of workingEntries; let i = index" >
         <td *ngIf="isDifferentWorkingEntryDateBefore(i)">{{workingEntry.workDay.date | date:'dd.MM.yy'}}</td>
-        <td *ngIf="!isDifferentWorkingEntryDateBefore(i)" class="border-0"></td> 
+        <td *ngIf="!isDifferentWorkingEntryDateBefore(i)" class="border-0"></td>
+        <td *ngIf="isDifferentWorkingEntryDateBefore(i)">{{secondsToHHMM(workingEntry.workDay.totalWorkingMinutes * 60)}}</td>
+        <td *ngIf="!isDifferentWorkingEntryDateBefore(i)" class="border-0"></td>  
         <td>{{workingEntry.start | date:'HH:mm'}}</td>
         <td>{{workingEntry.end | date: 'HH:mm'}}</td>
         <td>{{sumDate(workingEntry.start, workingEntry.end)}}</td>
