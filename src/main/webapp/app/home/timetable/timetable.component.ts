@@ -109,7 +109,7 @@ export class TimetableComponent implements OnInit {
   secondsToHHMM(seconds: number): string {
     const hour = Math.round(seconds / 3600);
     const min = Math.round((seconds % 3600) / 60);
-    return this.pad(hour, 2) + ':' + this.pad(min, 2);
+    return this.pad(hour, 2) + 'h ' + this.pad(min, 2) + 'm';
   }
 
   isDifferentWorkingEntryDateBefore(index: number): boolean {

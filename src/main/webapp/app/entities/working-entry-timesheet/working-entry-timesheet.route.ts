@@ -33,7 +33,7 @@ export const workingEntryRoute: Routes = [
     path: '',
     component: WorkingEntryTimesheetComponent,
     data: {
-      authorities: ['ROLE_USER'],
+      authorities: ['ROLE_USER', 'ROLE_ADMIN'],
       pageTitle: 'timesheetApp.workingEntry.home.title'
     },
     canActivate: [UserRouteAccessService]
@@ -45,7 +45,7 @@ export const workingEntryRoute: Routes = [
       workingEntry: WorkingEntryTimesheetResolve
     },
     data: {
-      authorities: ['ROLE_USER'],
+      authorities: ['ROLE_USER', 'ROLE_ADMIN'],
       pageTitle: 'timesheetApp.workingEntry.home.title'
     },
     canActivate: [UserRouteAccessService]
@@ -57,7 +57,7 @@ export const workingEntryRoute: Routes = [
       workingEntry: WorkingEntryTimesheetResolve
     },
     data: {
-      authorities: ['ROLE_USER'],
+      authorities: ['ROLE_USER', 'ROLE_ADMIN'],
       pageTitle: 'timesheetApp.workingEntry.home.title'
     },
     canActivate: [UserRouteAccessService]
@@ -69,7 +69,7 @@ export const workingEntryRoute: Routes = [
       workingEntry: WorkingEntryTimesheetResolve
     },
     data: {
-      authorities: ['ROLE_USER'],
+      authorities: ['ROLE_USER', 'ROLE_ADMIN'],
       pageTitle: 'timesheetApp.workingEntry.home.title'
     },
     canActivate: [UserRouteAccessService]
@@ -84,7 +84,7 @@ export const workingEntryPopupRoute: Routes = [
       workingEntry: WorkingEntryTimesheetResolve
     },
     data: {
-      authorities: ['ROLE_USER'],
+      authorities: ['ROLE_USER', 'ROLE_ADMIN'],
       pageTitle: 'timesheetApp.workingEntry.home.title'
     },
     canActivate: [UserRouteAccessService],
