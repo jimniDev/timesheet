@@ -17,9 +17,10 @@ import { AsNavbarMessagesService } from './as-navbar/as-navbar-messages.service'
 import { AsMainCardComponent } from './as-main-card/as-main-card.component';
 import { AsGridComponent } from './as-grid/as-grid.component';
 import { AsMainComponent } from './as-main/as-main.component';
+import { MattimetableComponent } from './mattimetable/mattimetable.component';
 
 @NgModule({
-  declarations: [AsNavbarComponent, AsMainCardComponent, AsMainComponent, AsGridComponent],
+  declarations: [AsNavbarComponent, AsMainCardComponent, AsMainComponent, AsGridComponent, MattimetableComponent],
   imports: [
     CommonModule,
     // AppRoutingModule,
