@@ -18,6 +18,7 @@
       },
       "name": "Name",
       "description": "Description",
+      "absence": "Absence",
       "workingEntry": "Working Entry",
       "role": "Role"
     }

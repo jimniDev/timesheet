@@ -30,6 +30,8 @@ public class ActivityCriteria implements Serializable, Criteria {
 
     private StringFilter description;
 
+    private BooleanFilter absence;
+
     private LongFilter workingEntryId;
 
     private LongFilter roleId;
@@ -41,6 +43,7 @@ public class ActivityCriteria implements Serializable, Criteria {
         this.id = other.id == null ? null : other.id.copy();
         this.name = other.name == null ? null : other.name.copy();
         this.description = other.description == null ? null : other.description.copy();
+        this.absence = other.absence == null ? null : other.absence.copy();
         this.workingEntryId = other.workingEntryId == null ? null : other.workingEntryId.copy();
         this.roleId = other.roleId == null ? null : other.roleId.copy();
     }
@@ -74,6 +77,14 @@ public class ActivityCriteria implements Serializable, Criteria {
         this.description = description;
     }
 
+    public BooleanFilter getAbsence() {
+        return absence;
+    }
+
+    public void setAbsence(BooleanFilter absence) {
+        this.absence = absence;
+    }
+
     public LongFilter getWorkingEntryId() {
         return workingEntryId;
     }
@@ -104,6 +115,7 @@ public class ActivityCriteria implements Serializable, Criteria {
             Objects.equals(id, that.id) &&
             Objects.equals(name, that.name) &&
             Objects.equals(description, that.description) &&
+            Objects.equals(absence, that.absence) &&
             Objects.equals(workingEntryId, that.workingEntryId) &&
             Objects.equals(roleId, that.roleId);
     }
@@ -114,6 +126,7 @@ public class ActivityCriteria implements Serializable, Criteria {
         id,
         name,
         description,
+        absence,
         workingEntryId,
         roleId
         );
@@ -125,6 +138,7 @@ public class ActivityCriteria implements Serializable, Criteria {
                 (id != null ? "id=" + id + ", " : "") +
                 (name != null ? "name=" + name + ", " : "") +
                 (description != null ? "description=" + description + ", " : "") +
+                (absence != null ? "absence=" + absence + ", " : "") +
                 (workingEntryId != null ? "workingEntryId=" + workingEntryId + ", " : "") +
                 (roleId != null ? "roleId=" + roleId + ", " : "") +
             "}";

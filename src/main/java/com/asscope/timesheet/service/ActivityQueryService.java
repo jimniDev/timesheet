@@ -91,6 +91,9 @@ public class ActivityQueryService extends QueryService<Activity> {
             if (criteria.getDescription() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getDescription(), Activity_.description));
             }
+            if (criteria.getAbsence() != null) {
+                specification = specification.and(buildSpecification(criteria.getAbsence(), Activity_.absence));
+            }
             if (criteria.getWorkingEntryId() != null) {
                 specification = specification.and(buildSpecification(criteria.getWorkingEntryId(),
                     root -> root.join(Activity_.workingEntries, JoinType.LEFT).get(WorkingEntry_.id)));

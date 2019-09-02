@@ -45,6 +45,9 @@ public class ActivityResourceIT {
     private static final String DEFAULT_DESCRIPTION = "AAAAAAAAAA";
     private static final String UPDATED_DESCRIPTION = "BBBBBBBBBB";
 
+    private static final Boolean DEFAULT_ABSENCE = false;
+    private static final Boolean UPDATED_ABSENCE = true;
+
     @Autowired
     private ActivityRepository activityRepository;
 
@@ -94,7 +97,8 @@ public class ActivityResourceIT {
     public static Activity createEntity(EntityManager em) {
         Activity activity = new Activity()
             .name(DEFAULT_NAME)
-            .description(DEFAULT_DESCRIPTION);
+            .description(DEFAULT_DESCRIPTION)
+            .absence(DEFAULT_ABSENCE);
         return activity;
     }
     /**
@@ -106,7 +110,8 @@ public class ActivityResourceIT {
     public static Activity createUpdatedEntity(EntityManager em) {
         Activity activity = new Activity()
             .name(UPDATED_NAME)
-            .description(UPDATED_DESCRIPTION);
+            .description(UPDATED_DESCRIPTION)
+            .absence(UPDATED_ABSENCE);
         return activity;
     }
 
@@ -132,6 +137,7 @@ public class ActivityResourceIT {
         Activity testActivity = activityList.get(activityList.size() - 1);
         assertThat(testActivity.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(testActivity.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
+        assertThat(testActivity.isAbsence()).isEqualTo(DEFAULT_ABSENCE);
     }
 
     @Test
@@ -184,7 +190,8 @@ public class ActivityResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(activity.getId().intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())));
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
+            .andExpect(jsonPath("$.[*].absence").value(hasItem(DEFAULT_ABSENCE.booleanValue())));
     }
     
     @Test
@@ -199,7 +206,8 @@ public class ActivityResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(activity.getId().intValue()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
-            .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION.toString()));
+            .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION.toString()))
+            .andExpect(jsonPath("$.absence").value(DEFAULT_ABSENCE.booleanValue()));
     }
 
     @Test
@@ -282,6 +290,45 @@ public class ActivityResourceIT {
 
     @Test
     @Transactional
+    public void getAllActivitiesByAbsenceIsEqualToSomething() throws Exception {
+        // Initialize the database
+        activityRepository.saveAndFlush(activity);
+
+        // Get all the activityList where absence equals to DEFAULT_ABSENCE
+        defaultActivityShouldBeFound("absence.equals=" + DEFAULT_ABSENCE);
+
+        // Get all the activityList where absence equals to UPDATED_ABSENCE
+        defaultActivityShouldNotBeFound("absence.equals=" + UPDATED_ABSENCE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllActivitiesByAbsenceIsInShouldWork() throws Exception {
+        // Initialize the database
+        activityRepository.saveAndFlush(activity);
+
+        // Get all the activityList where absence in DEFAULT_ABSENCE or UPDATED_ABSENCE
+        defaultActivityShouldBeFound("absence.in=" + DEFAULT_ABSENCE + "," + UPDATED_ABSENCE);
+
+        // Get all the activityList where absence equals to UPDATED_ABSENCE
+        defaultActivityShouldNotBeFound("absence.in=" + UPDATED_ABSENCE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllActivitiesByAbsenceIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        activityRepository.saveAndFlush(activity);
+
+        // Get all the activityList where absence is not null
+        defaultActivityShouldBeFound("absence.specified=true");
+
+        // Get all the activityList where absence is null
+        defaultActivityShouldNotBeFound("absence.specified=false");
+    }
+
+    @Test
+    @Transactional
     public void getAllActivitiesByWorkingEntryIsEqualToSomething() throws Exception {
         // Initialize the database
         WorkingEntry workingEntry = WorkingEntryResourceIT.createEntity(em);
@@ -326,7 +373,8 @@ public class ActivityResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(activity.getId().intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
-            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)));
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
+            .andExpect(jsonPath("$.[*].absence").value(hasItem(DEFAULT_ABSENCE.booleanValue())));
 
         // Check, that the count call also returns 1
         restActivityMockMvc.perform(get("/api/activities/count?sort=id,desc&" + filter))
@@ -375,7 +423,8 @@ public class ActivityResourceIT {
         em.detach(updatedActivity);
         updatedActivity
             .name(UPDATED_NAME)
-            .description(UPDATED_DESCRIPTION);
+            .description(UPDATED_DESCRIPTION)
+            .absence(UPDATED_ABSENCE);
 
         restActivityMockMvc.perform(put("/api/activities")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -388,6 +437,7 @@ public class ActivityResourceIT {
         Activity testActivity = activityList.get(activityList.size() - 1);
         assertThat(testActivity.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testActivity.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
+        assertThat(testActivity.isAbsence()).isEqualTo(UPDATED_ABSENCE);
     }
 
     @Test
