@@ -52,12 +52,25 @@ public class WorkDay implements Serializable {
     @JsonProperty("totalWorkingMinutes")
     public long getTotalWorkingMinutes() {
     	long seconds = 0;
+    	boolean fillDay = false; // TODO fillDay
     	for (WorkingEntry workingEntry: workingEntries) {
     		if(workingEntry.isValid()) {
-    			seconds += workingEntry.getWorkingTimeInSeconds();
+    			if(workingEntry.getActivity() == null || !workingEntry.getActivity().isFillDay()) {
+        			seconds += workingEntry.getWorkingTimeInSeconds();
+    			} else {
+    				fillDay = true;
+    			} 
     		}
     	}
+    	if(fillDay && seconds / 60 < getTargetWorkminutes()) {
+    		return getTargetWorkminutes();
+    	}
     	return seconds / 60;
+    }
+    
+    @JsonProperty("targetWorkingMinutes")
+    public int getTargetWorkminutes() {
+    	return this.employee.getActiveWeeklyWorkingHours().getHours() / 5 * 60;
     }
     
     @JsonProperty("startTime")

@@ -66,4 +66,8 @@ export class JhiMainComponent implements OnInit, OnDestroy {
       this.router.navigateByUrl(previousUrl);
     }
   }
+
+  isAuthenticated() {
+    return this.accountService.isAuthenticated();
+  }
 }

@@ -27,6 +27,14 @@
         {
             "fieldName": "description",
             "fieldType": "String"
+        },
+        {
+            "fieldName": "absence",
+            "fieldType": "Boolean"
+        },
+        {
+            "fieldName": "fillDay",
+            "fieldType": "Boolean"
         }
     ],
     "changelogDate": "20190726193529",
