@@ -19,7 +19,6 @@ import { TimesheetEntityModule } from './entities/entity.module';
 import * as moment from 'moment';
 // jhipster-needle-angular-add-module-import JHipster will add new module here
 import { JhiMainComponent, NavbarComponent, FooterComponent, PageRibbonComponent, ActiveMenuDirective, ErrorComponent } from './layouts';
-import { MatDatepickerModule, MatFormFieldModule } from '@angular/material';
 import { AsLayoutsModule } from './as-layouts/as-layouts.module';
 
 @NgModule({
@@ -40,9 +39,7 @@ import { AsLayoutsModule } from './as-layouts/as-layouts.module';
     // jhipster-needle-angular-add-module JHipster will add new module here
     TimesheetEntityModule,
     TimesheetAppRoutingModule,
-    BrowserAnimationsModule,
-    MatDatepickerModule,
-    MatFormFieldModule
+    BrowserAnimationsModule
   ],
   declarations: [JhiMainComponent, NavbarComponent, ErrorComponent, PageRibbonComponent, ActiveMenuDirective, FooterComponent],
   providers: [

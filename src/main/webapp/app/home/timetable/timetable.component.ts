@@ -16,6 +16,7 @@ export class TimetableComponent implements OnInit {
 
   workingEntriesUnfiltered: IWorkingEntryTimesheet[];
   workingEntries: IWorkingEntryTimesheet[];
+  displayedColumns: string[] = ['Date', 'Total Worktime', 'Break Time', 'start', 'end', 'Sum', 'Activity', 'Location'];
 
   targetTime: string = '00:00';
   actualTime: string = '00:00';
