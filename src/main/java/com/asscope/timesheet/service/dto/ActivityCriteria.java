@@ -32,6 +32,8 @@ public class ActivityCriteria implements Serializable, Criteria {
 
     private BooleanFilter absence;
 
+    private BooleanFilter fillDay;
+
     private LongFilter workingEntryId;
 
     private LongFilter roleId;
@@ -44,6 +46,7 @@ public class ActivityCriteria implements Serializable, Criteria {
         this.name = other.name == null ? null : other.name.copy();
         this.description = other.description == null ? null : other.description.copy();
         this.absence = other.absence == null ? null : other.absence.copy();
+        this.fillDay = other.fillDay == null ? null : other.fillDay.copy();
         this.workingEntryId = other.workingEntryId == null ? null : other.workingEntryId.copy();
         this.roleId = other.roleId == null ? null : other.roleId.copy();
     }
@@ -85,6 +88,14 @@ public class ActivityCriteria implements Serializable, Criteria {
         this.absence = absence;
     }
 
+    public BooleanFilter getFillDay() {
+        return fillDay;
+    }
+
+    public void setFillDay(BooleanFilter fillDay) {
+        this.fillDay = fillDay;
+    }
+
     public LongFilter getWorkingEntryId() {
         return workingEntryId;
     }
@@ -116,6 +127,7 @@ public class ActivityCriteria implements Serializable, Criteria {
             Objects.equals(name, that.name) &&
             Objects.equals(description, that.description) &&
             Objects.equals(absence, that.absence) &&
+            Objects.equals(fillDay, that.fillDay) &&
             Objects.equals(workingEntryId, that.workingEntryId) &&
             Objects.equals(roleId, that.roleId);
     }
@@ -127,6 +139,7 @@ public class ActivityCriteria implements Serializable, Criteria {
         name,
         description,
         absence,
+        fillDay,
         workingEntryId,
         roleId
         );
@@ -139,6 +152,7 @@ public class ActivityCriteria implements Serializable, Criteria {
                 (name != null ? "name=" + name + ", " : "") +
                 (description != null ? "description=" + description + ", " : "") +
                 (absence != null ? "absence=" + absence + ", " : "") +
+                (fillDay != null ? "fillDay=" + fillDay + ", " : "") +
                 (workingEntryId != null ? "workingEntryId=" + workingEntryId + ", " : "") +
                 (roleId != null ? "roleId=" + roleId + ", " : "") +
             "}";

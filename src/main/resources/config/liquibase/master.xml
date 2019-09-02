@@ -42,4 +42,5 @@
     <include file="config/liquibase/changelog/20190815102945_many_to_many_role_activity.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190815144348_renamed_column_delete_flag_to_deleted_flag.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190902100708_added_field_absence_activity.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190902102517_added_field_fill_day_activity.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>

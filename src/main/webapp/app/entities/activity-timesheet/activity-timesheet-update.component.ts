@@ -23,7 +23,8 @@ export class ActivityTimesheetUpdateComponent implements OnInit {
     id: [],
     name: [null, [Validators.required]],
     description: [],
-    absence: []
+    absence: [],
+    fillDay: []
   });
 
   constructor(
@@ -53,7 +54,8 @@ export class ActivityTimesheetUpdateComponent implements OnInit {
       id: activity.id,
       name: activity.name,
       description: activity.description,
-      absence: activity.absence
+      absence: activity.absence,
+      fillDay: activity.fillDay
     });
   }
 
@@ -77,7 +79,8 @@ export class ActivityTimesheetUpdateComponent implements OnInit {
       id: this.editForm.get(['id']).value,
       name: this.editForm.get(['name']).value,
       description: this.editForm.get(['description']).value,
-      absence: this.editForm.get(['absence']).value
+      absence: this.editForm.get(['absence']).value,
+      fillDay: this.editForm.get(['fillDay']).value
     };
   }
 

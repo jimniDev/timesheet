@@ -23,7 +23,7 @@ describe('Service Tests', () => {
       service = injector.get(ActivityTimesheetService);
       httpMock = injector.get(HttpTestingController);
 
-      elemDefault = new ActivityTimesheet(0, 'AAAAAAA', 'AAAAAAA', false);
+      elemDefault = new ActivityTimesheet(0, 'AAAAAAA', 'AAAAAAA', false, false);
     });
 
     describe('Service methods', () => {
@@ -61,7 +61,8 @@ describe('Service Tests', () => {
           {
             name: 'BBBBBB',
             description: 'BBBBBB',
-            absence: true
+            absence: true,
+            fillDay: true
           },
           elemDefault
         );
@@ -81,7 +82,8 @@ describe('Service Tests', () => {
           {
             name: 'BBBBBB',
             description: 'BBBBBB',
-            absence: true
+            absence: true,
+            fillDay: true
           },
           elemDefault
         );

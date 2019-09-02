@@ -35,6 +35,9 @@ public class Activity implements Serializable {
     @Column(name = "absence")
     private Boolean absence;
 
+    @Column(name = "fill_day")
+    private Boolean fillDay;
+
     @OneToMany(mappedBy = "activity")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<WorkingEntry> workingEntries = new HashSet<>();
@@ -90,6 +93,19 @@ public class Activity implements Serializable {
 
     public void setAbsence(Boolean absence) {
         this.absence = absence;
+    }
+
+    public Boolean isFillDay() {
+        return fillDay;
+    }
+
+    public Activity fillDay(Boolean fillDay) {
+        this.fillDay = fillDay;
+        return this;
+    }
+
+    public void setFillDay(Boolean fillDay) {
+        this.fillDay = fillDay;
     }
 
     public Set<WorkingEntry> getWorkingEntries() {
@@ -166,6 +182,7 @@ public class Activity implements Serializable {
             ", name='" + getName() + "'" +
             ", description='" + getDescription() + "'" +
             ", absence='" + isAbsence() + "'" +
+            ", fillDay='" + isFillDay() + "'" +
             "}";
     }
 }
