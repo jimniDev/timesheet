@@ -15,10 +15,7 @@
               </button>
               <button mat-icon-button class="Close Message" aria-label="Example icon-button with a heart icon" (click)="deleteMessage(messageIndex)">
                   <mat-icon>clear</mat-icon>
-                </button>
-
-  
-
+              </button>
     </ng-container>
     <!-- <ng-template #secondshow> -->
       <ng-container *ngIf="messagesClearedShow">
@@ -36,7 +33,7 @@
     </mat-toolbar-row>
 </mat-toolbar>
 
-  <mat-sidenav-container>
+  <mat-sidenav-container autosize>
     <mat-sidenav #sidenav [mode]="'side'">
       <mat-nav-list>
         <ng-content select="a [mat-list-item]"></ng-content>
