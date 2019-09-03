@@ -9,7 +9,8 @@ import {
   MatButtonModule,
   MatCardModule,
   MatGridListModule,
-  MatButton
+  MatButton,
+  MatTableModule
 } from '@angular/material';
 // import { AppRoutingModule } from '../../app-routing.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
@@ -32,9 +33,11 @@ import { MattimetableComponent } from './mattimetable/mattimetable.component';
     MatButtonModule,
     MatIconModule,
     MatCardModule,
-    MatGridListModule
+    MatGridListModule,
+    MatTableModule
   ],
   exports: [
+    FlexLayoutModule,
     AsNavbarComponent,
     AsMainCardComponent,
     AsGridComponent,
@@ -45,7 +48,8 @@ import { MattimetableComponent } from './mattimetable/mattimetable.component';
     MatIconModule,
     MatCardModule,
     MatButtonModule,
-    MatGridListModule
+    MatGridListModule,
+    MatTableModule
   ],
   providers: [AsNavbarMessagesService]
 })
