@@ -5,7 +5,8 @@ import { IEmployeeTimesheet } from 'app/shared/model/employee-timesheet.model';
 
 @Component({
   selector: 'jhi-employee-timesheet-detail',
-  templateUrl: './employee-timesheet-detail.component.html'
+  templateUrl: './employee-timesheet-detail.component.html',
+  styleUrls: ['./employee-timesheet-detail.component.scss']
 })
 export class EmployeeTimesheetDetailComponent implements OnInit {
   employee: IEmployeeTimesheet;

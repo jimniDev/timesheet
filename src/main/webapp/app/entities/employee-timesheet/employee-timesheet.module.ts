@@ -13,11 +13,12 @@ import {
   employeeRoute,
   employeePopupRoute
 } from './';
+import { AsLayoutsModule } from 'app/as-layouts/as-layouts.module';
 
 const ENTITY_STATES = [...employeeRoute, ...employeePopupRoute];
 
 @NgModule({
-  imports: [TimesheetSharedModule, RouterModule.forChild(ENTITY_STATES)],
+  imports: [TimesheetSharedModule, RouterModule.forChild(ENTITY_STATES), AsLayoutsModule],
   declarations: [
     EmployeeTimesheetComponent,
     EmployeeTimesheetDetailComponent,

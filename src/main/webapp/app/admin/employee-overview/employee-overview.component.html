@@ -1,51 +1,25 @@
-<jhi-alert></jhi-alert>
-<br/>
-<div class="alert alert-warning" *ngIf="employees?.length === 0">
-    <span jhiTranslate="timesheetApp.employee.home.notFound">No employees found</span>
-</div>
-<div class="table-responsive" *ngIf="employees?.length > 0">
-    <table class="table table-striped">
-        <thead>
-        <tr>
-        <th><span jhiTranslate="global.field.id">ID</span></th>
-        <th><span jhiTranslate="timesheetApp.employee.isEmployed">Is Employed</span></th>
-        <th>Name</th>
-        <th>Weekly working hours</th>
-        <th>Actual working hours</th>
-        <th></th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr *ngFor="let employee of employees">
-            <td><a [routerLink]="['/employee-timesheet', employee.id, 'view' ]">{{employee.id}}</a></td>
-            <td>{{employee.isEmployed}}</td>
-            <td>{{employee.user.firstName || ''}} {{employee.user.lastName || ''}}</td>
-            <td>{{employee.activeWeeklyWorkingHours.hours}}</td>
-            <td class="text-right">
-                <div class="btn-group">
-                    <button type="submit"
-                            [routerLink]="['/employee-timesheet', employee.id, 'view' ]"
-                            class="btn btn-info btn-sm">
-                        <fa-icon [icon]="'eye'"></fa-icon>
-                        <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
-                    </button>
-                    <button type="submit"
-                            [routerLink]="['/employee-timesheet', employee.id, 'edit']"
-                            class="btn btn-primary btn-sm">
-                        <fa-icon [icon]="'pencil-alt'"></fa-icon>
-                        <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
-                    </button>
-                    <button type="submit"
-                            [routerLink]="['/', 'employee-timesheet', { outlets: { popup: employee.id + '/delete'} }]"
-                            replaceUrl="true"
-                            queryParamsHandling="merge"
-                            class="btn btn-danger btn-sm">
-                        <fa-icon [icon]="'times'"></fa-icon>
-                        <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
-                    </button>
-                </div>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</div>
+<table mat-table [dataSource]="employees" class="mat-elevation-z1">
+        <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef>ID</th>
+            <td mat-cell *matCellDef="let element"><a [routerLink]="['/employee-timesheet', element.id, 'view' ]">{{element.id}}</a> </td>
+        </ng-container>
+    
+        <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>Name</th>
+            <td mat-cell *matCellDef="let element"> {{element.user.firstName + ' ' + element.user.lastName}} </td>
+        </ng-container>
+    
+        <ng-container matColumnDef="isEmployed">
+            <th mat-header-cell *matHeaderCellDef>Is Employed</th>
+            <td mat-cell *matCellDef="let element"> {{element.isEmployed}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="weeklyWorkingHours">
+                <th mat-header-cell *matHeaderCellDef>Weekly Working Hours</th>
+                <td mat-cell *matCellDef="let element"> {{element.activeWeeklyWorkingHours.hours}} </td>
+        </ng-container>
+    
+        <tr mat-header-row *matHeaderRowDef="['id', 'name', 'isEmployed', 'weeklyWorkingHours']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['id', 'name', 'isEmployed', 'weeklyWorkingHours'];"></tr>
+</table>
+

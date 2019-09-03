@@ -23,6 +23,7 @@ import { AsLayoutsModule } from 'app/as-layouts/as-layouts.module';
   imports: [
     AsLayoutsModule,
     TimesheetSharedModule,
+    AsLayoutsModule,
     /* jhipster-needle-add-admin-module - JHipster will add admin modules here */
     RouterModule.forChild(adminState)
   ],
