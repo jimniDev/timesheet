@@ -22,7 +22,9 @@ export class ActivityTimesheetUpdateComponent implements OnInit {
   editForm = this.fb.group({
     id: [],
     name: [null, [Validators.required]],
-    description: []
+    description: [],
+    absence: [],
+    fillDay: []
   });
 
   constructor(
@@ -51,7 +53,9 @@ export class ActivityTimesheetUpdateComponent implements OnInit {
     this.editForm.patchValue({
       id: activity.id,
       name: activity.name,
-      description: activity.description
+      description: activity.description,
+      absence: activity.absence,
+      fillDay: activity.fillDay
     });
   }
 
@@ -74,7 +78,9 @@ export class ActivityTimesheetUpdateComponent implements OnInit {
       ...new ActivityTimesheet(),
       id: this.editForm.get(['id']).value,
       name: this.editForm.get(['name']).value,
-      description: this.editForm.get(['description']).value
+      description: this.editForm.get(['description']).value,
+      absence: this.editForm.get(['absence']).value,
+      fillDay: this.editForm.get(['fillDay']).value
     };
   }
 

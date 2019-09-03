@@ -23,7 +23,7 @@ describe('Service Tests', () => {
       service = injector.get(ActivityTimesheetService);
       httpMock = injector.get(HttpTestingController);
 
-      elemDefault = new ActivityTimesheet(0, 'AAAAAAA', 'AAAAAAA');
+      elemDefault = new ActivityTimesheet(0, 'AAAAAAA', 'AAAAAAA', false, false);
     });
 
     describe('Service methods', () => {
@@ -60,7 +60,9 @@ describe('Service Tests', () => {
         const returnedFromService = Object.assign(
           {
             name: 'BBBBBB',
-            description: 'BBBBBB'
+            description: 'BBBBBB',
+            absence: true,
+            fillDay: true
           },
           elemDefault
         );
@@ -79,7 +81,9 @@ describe('Service Tests', () => {
         const returnedFromService = Object.assign(
           {
             name: 'BBBBBB',
-            description: 'BBBBBB'
+            description: 'BBBBBB',
+            absence: true,
+            fillDay: true
           },
           elemDefault
         );

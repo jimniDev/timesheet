@@ -13,8 +13,8 @@
     <!-- <a button (onclick)="login()">Login</button> -->
     <!--  -->
     <!-- <button  (click)="login()" id="login">LOgin</button> -->
-    <a mat-list-item (click)='login()'> Login </a>
-    <content>
-        <router-outlet></router-outlet>
-    </content>
+    <a mat-list-item (click)='login()' *ngIf="!isAuthenticated()"><mat-icon mat-list-icon>note</mat-icon> Login </a>
+    <a mat-list-item routerLink="/" *ngIf="isAuthenticated()"><mat-icon mat-list-icon>home</mat-icon> Home </a>
+    <a *jhiHasAnyAuthority="'ROLE_ADMIN'" routerLink="admin/employee-overview" mat-list-item><mat-icon mat-list-icon>people</mat-icon> Employee Overview </a>
+    <router-outlet></router-outlet>
 </as-navbar>

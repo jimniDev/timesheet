@@ -18,6 +18,8 @@
       },
       "name": "Name",
       "description": "Description",
+      "absence": "Absence",
+      "fillDay": "Fill Day",
       "workingEntry": "Working Entry",
       "role": "Role"
     }

@@ -16,10 +16,12 @@ import {
   JhiDocsComponent
 } from './';
 import { EmployeeOverviewComponent } from './employee-overview/employee-overview.component';
+import { AsLayoutsModule } from 'app/as-layouts/as-layouts.module';
 
 @NgModule({
   imports: [
     TimesheetSharedModule,
+    AsLayoutsModule,
     /* jhipster-needle-add-admin-module - JHipster will add admin modules here */
     RouterModule.forChild(adminState)
   ],

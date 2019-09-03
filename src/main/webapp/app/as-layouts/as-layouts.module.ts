@@ -9,7 +9,6 @@ import {
   MatButtonModule,
   MatCardModule,
   MatGridListModule,
-  MatButton,
   MatTableModule,
   MatAutocompleteModule,
   MatBadgeModule,
@@ -39,24 +38,20 @@ import {
   MatTooltipModule,
   MatTreeModule
 } from '@angular/material';
-// import { AppRoutingModule } from '../../app-routing.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { AsNavbarMessagesService } from './as-navbar/as-navbar-messages.service';
 import { AsMainCardComponent } from './as-main-card/as-main-card.component';
 import { AsGridComponent } from './as-grid/as-grid.component';
-import { AsMainComponent } from './as-main/as-main.component';
-import { MattimetableComponent } from './mattimetable/mattimetable.component';
-import { CdkTableModule } from '@angular/cdk/table';
 import { CdkStepperModule } from '@angular/cdk/stepper';
+import { CdkTableModule } from '@angular/cdk/table';
 import { CdkTreeModule } from '@angular/cdk/tree';
 import { PortalModule } from '@angular/cdk/portal';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 
 @NgModule({
-  declarations: [AsNavbarComponent, AsMainCardComponent, AsMainComponent, AsGridComponent, MattimetableComponent],
+  declarations: [AsNavbarComponent, AsMainCardComponent, AsGridComponent],
   imports: [
     CommonModule,
-    // AppRoutingModule,
     FlexLayoutModule,
     MatToolbarModule,
     MatSidenavModule,
@@ -73,9 +68,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
     MatAutocompleteModule,
     MatBadgeModule,
     MatBottomSheetModule,
-    MatButtonModule,
     MatButtonToggleModule,
-    MatCardModule,
     MatCheckboxModule,
     MatChipsModule,
     MatStepperModule,
@@ -83,10 +76,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
     MatDialogModule,
     MatDividerModule,
     MatExpansionModule,
-    MatGridListModule,
-    MatIconModule,
     MatInputModule,
-    MatListModule,
     MatMenuModule,
     MatNativeDateModule,
     MatPaginatorModule,
@@ -95,14 +85,12 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
     MatRadioModule,
     MatRippleModule,
     MatSelectModule,
-    MatSidenavModule,
     MatSliderModule,
     MatSlideToggleModule,
     MatSnackBarModule,
     MatSortModule,
     MatTableModule,
     MatTabsModule,
-    MatToolbarModule,
     MatTooltipModule,
     MatTreeModule,
     PortalModule,
@@ -128,9 +116,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
     MatAutocompleteModule,
     MatBadgeModule,
     MatBottomSheetModule,
-    MatButtonModule,
     MatButtonToggleModule,
-    MatCardModule,
     MatCheckboxModule,
     MatChipsModule,
     MatStepperModule,
@@ -138,10 +124,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
     MatDialogModule,
     MatDividerModule,
     MatExpansionModule,
-    MatGridListModule,
-    MatIconModule,
     MatInputModule,
-    MatListModule,
     MatMenuModule,
     MatNativeDateModule,
     MatPaginatorModule,
@@ -150,14 +133,12 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
     MatRadioModule,
     MatRippleModule,
     MatSelectModule,
-    MatSidenavModule,
     MatSliderModule,
     MatSlideToggleModule,
     MatSnackBarModule,
     MatSortModule,
     MatTableModule,
     MatTabsModule,
-    MatToolbarModule,
     MatTooltipModule,
     MatTreeModule,
     PortalModule,
