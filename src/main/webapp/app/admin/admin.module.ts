@@ -16,9 +16,12 @@ import {
   JhiDocsComponent
 } from './';
 import { EmployeeOverviewComponent } from './employee-overview/employee-overview.component';
+import { ActivityConfigComponent } from './activity-config/activity-config.component';
+import { AsLayoutsModule } from 'app/as-layouts/as-layouts.module';
 
 @NgModule({
   imports: [
+    AsLayoutsModule,
     TimesheetSharedModule,
     /* jhipster-needle-add-admin-module - JHipster will add admin modules here */
     RouterModule.forChild(adminState)
@@ -31,7 +34,10 @@ import { EmployeeOverviewComponent } from './employee-overview/employee-overview
     JhiHealthModalComponent,
     JhiDocsComponent,
     JhiMetricsMonitoringComponent,
-    EmployeeOverviewComponent
+    EmployeeOverviewComponent,
+    ActivityConfigComponent
+    //R/olesComponent,
+    //ActivityComponent
   ],
   providers: [{ provide: JhiLanguageService, useClass: JhiLanguageService }],
   entryComponents: [JhiHealthModalComponent],

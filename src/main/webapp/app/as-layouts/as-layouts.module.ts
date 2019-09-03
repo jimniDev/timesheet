@@ -9,7 +9,8 @@ import {
   MatButtonModule,
   MatCardModule,
   MatGridListModule,
-  MatButton
+  MatButton,
+  MatTableModule
 } from '@angular/material';
 // import { AppRoutingModule } from '../../app-routing.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
@@ -18,6 +19,7 @@ import { AsMainCardComponent } from './as-main-card/as-main-card.component';
 import { AsGridComponent } from './as-grid/as-grid.component';
 import { AsMainComponent } from './as-main/as-main.component';
 import { MattimetableComponent } from './mattimetable/mattimetable.component';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 @NgModule({
   declarations: [AsNavbarComponent, AsMainCardComponent, AsMainComponent, AsGridComponent, MattimetableComponent],
@@ -29,23 +31,25 @@ import { MattimetableComponent } from './mattimetable/mattimetable.component';
     MatSidenavModule,
     MatButtonModule,
     MatListModule,
-    MatButtonModule,
     MatIconModule,
     MatCardModule,
+    MatExpansionModule,
     MatGridListModule
   ],
   exports: [
     AsNavbarComponent,
     AsMainCardComponent,
     AsGridComponent,
+    FlexLayoutModule,
     MatToolbarModule,
     MatSidenavModule,
     MatListModule,
-    MatButtonModule,
     MatIconModule,
     MatCardModule,
+    MatExpansionModule,
     MatButtonModule,
-    MatGridListModule
+    MatGridListModule,
+    MatTableModule
   ],
   providers: [AsNavbarMessagesService]
 })

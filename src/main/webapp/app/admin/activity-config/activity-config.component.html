@@ -1,0 +1,60 @@
+<div fxLayout="row" fxLayoutAlign="center stretch" fxLayout.xs="column" fxLayoutGap="8px" class="container">
+  <mat-card>
+      <!-- <mat-expansion-panel >
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Display Roles
+            </mat-panel-title>
+            <mat-panel-description>
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          ADDING DATA TABLE HERE -->
+          <table mat-table [dataSource]="roles">
+       
+            <ng-container matColumnDef="id">
+              <th mat-header-cell *matHeaderCellDef> id </th>
+              <td mat-cell *matCellDef="let role "> {{role.id}} </td>
+            </ng-container>
+      
+            <!-- Name Column -->
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef> name </th>
+              <td mat-cell *matCellDef="let role"> {{role.name}} </td>
+            </ng-container>
+      
+            <!-- Weight Column -->
+            <ng-container matColumnDef="description">
+              <th mat-header-cell *matHeaderCellDef> description </th>
+              <td mat-cell *matCellDef="let role"> {{role.description}} </td>
+            </ng-container>
+      
+            <!-- Symbol Column -->
+            <ng-container matColumnDef="activities">
+              <th mat-header-cell *matHeaderCellDef> activities </th>
+              <td mat-cell *matCellDef="let role"> {{role.activities}} </td>
+            </ng-container>
+      
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+      
+        <!-- </mat-expansion-panel> -->
+  </mat-card>
+  
+  <mat-card>
+    Hallo Test
+      <!-- <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Self aware panel
+            </mat-panel-title>
+            <mat-panel-description>
+              Currently I am {{panelOpenState ? 'open' : 'closed'}}
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <p>I'm visible because I am open</p>
+        </mat-expansion-panel> -->
+
+  </mat-card>
+
+</div>
