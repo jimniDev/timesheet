@@ -1,0 +1,92 @@
+.container {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  background-color: rgb(248, 245, 245);
+  height: 25%;
+  overflow-y: auto;
+}
+
+.form-group {
+  margin-bottom: 10px;
+  padding: 0px 5px;
+  text-align: center;
+}
+
+.form-row {
+  margin: 0px 0px;
+  //padding: 0px 5px;
+}
+
+#btnArea {
+  padding: 0px 5px;
+}
+
+label,
+mat-label {
+  //padding-left: 5px;
+  margin-top: 5px;
+  margin-left: 0px;
+  margin-right: 0px;
+  margin-bottom: 5px;
+  display: block;
+}
+
+select {
+  margin-top: 8px 0px;
+}
+
+.btn-primary {
+  margin: 10px 0px;
+  width: 100%;
+}
+
+label {
+  display: block;
+}
+
+.col-1 {
+  margin: 0px;
+  text-align: center;
+  padding: 5px;
+}
+
+.col-6 {
+  text-align: center;
+}
+
+input.form-control.col:nth-of-type(1),
+input.form-control.col:nth-of-type(3) {
+  text-align: right;
+}
+
+form > div:nth-child(1) > div > div > input {
+  text-align: center;
+}
+
+ng-content {
+  width: 100%;
+}
+
+#btnArea > div:nth-child(1) {
+  padding-right: 5px;
+}
+
+#btnArea > div:nth-child(2) {
+  padding-left: 5px;
+}
+
+button.calendar,
+button.calendar:active {
+  width: 2.75rem;
+  background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACIAAAAcCAYAAAAEN20fAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAOxAAADsQBlSsOGwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAEUSURBVEiJ7ZQxToVAEIY/YCHGxN6XGOIpnpaEsBSeQC9ArZbm9TZ6ADyBNzAhQGGl8Riv4BLAWAgmkpBYkH1b8FWT2WK/zJ8ZJ4qiI6XUI3ANnGKWBnht2/ZBDRK3hgVGNsCd7/ui+JkEIrKtqurLpEWaphd933+IyI3LEIdpCYCiKD6HcuOa/nwOa0ScJEnk0BJg0UTUWJRl6RxCYEzEmomsIlPU3IPW+grIAbquy+q6fluy/28RIBeRMwDXdXMgXLj/B2uimRXpui4D9sBeRLKl+1N+L+t6RwbWrZliTTTr1oxYtzVWiTQAcRxvTX+eJMnlUDaO1vpZRO5NS0x48sIwfPc87xg4B04MCzQi8hIEwe4bl1DnFMCN2zsAAAAASUVORK5CYII=') !important;
+  background-repeat: no-repeat;
+  background-size: 23px;
+  background-position: center;
+}
+
+.today {
+  margin-left: 10px;
+}
