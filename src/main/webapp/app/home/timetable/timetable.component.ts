@@ -86,7 +86,9 @@ export class TimetableComponent implements OnInit {
 
   addNewandSort(workingEntry: WorkingEntryTimesheet) {
     this.workingEntries.push(workingEntry);
+    this.workingEntriesUnfiltered.push(workingEntry);
     this.workingEntries = this.sortData(this.workingEntries);
+    this.workingEntriesUnfiltered = this.sortData(this.workingEntriesUnfiltered);
     this.loadWorktimeInformation();
   }
 

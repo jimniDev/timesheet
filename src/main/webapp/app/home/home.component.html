@@ -10,6 +10,7 @@
                 <button [className]="btnColors" id="startBtn" type="button"
                     [disabled]="disableButton ? 'disabled': null" (click)="startStop(content)">{{startBtnName}}</button>
             </jhi-date-form>
+
             <ng-template #content let-modal>
                 <div class="modal-header">
                     <h4 class="modal-title">Choose your Role and Activity</h4>
