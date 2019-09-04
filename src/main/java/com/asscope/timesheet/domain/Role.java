@@ -31,7 +31,7 @@ public class Role implements Serializable {
     @Column(name = "description")
     private String description;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JoinTable(name = "role_activity",
                joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"),

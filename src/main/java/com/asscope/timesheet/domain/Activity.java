@@ -42,7 +42,7 @@ public class Activity implements Serializable {
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<WorkingEntry> workingEntries = new HashSet<>();
 
-    @ManyToMany(mappedBy = "activities")
+    @ManyToMany(mappedBy = "activities", fetch = FetchType.EAGER)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JsonIgnore
     private Set<Role> roles = new HashSet<>();
