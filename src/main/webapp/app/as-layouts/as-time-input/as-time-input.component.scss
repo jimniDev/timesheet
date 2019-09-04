@@ -1,6 +1,8 @@
 div {
   display: flex;
+  // width: fit-content;
 }
+
 input {
   border: none;
   background: none;
@@ -8,11 +10,15 @@ input {
   outline: none;
   font: inherit;
   text-align: center;
+  width: 100%;
 }
-span {
+span,
+input {
+  display: block;
   opacity: 0;
   transition: opacity 200ms;
 }
-:host.floating span {
+:host.floating span,
+:host.floating input {
   opacity: 1;
 }

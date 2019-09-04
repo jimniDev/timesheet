@@ -76,7 +76,7 @@ export class TimetableComponent implements OnInit {
   }
 
   onError(message: string) {
-    throw new Error('Method not implemented.');
+    throw new Error(message);
   }
 
   sortData(workingEntries: IWorkingEntryTimesheet[]): IWorkingEntryTimesheet[] {

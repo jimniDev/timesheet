@@ -32,8 +32,8 @@ export class AsTimeInputComponent implements OnInit, OnDestroy, ControlValueAcce
 
   parts: FormGroup;
 
-  public hour: string;
-  public minutes: string;
+  // public hours: string;
+  // public minutes: string;
 
   focused = false;
   errorState = false;
@@ -92,17 +92,17 @@ export class AsTimeInputComponent implements OnInit, OnDestroy, ControlValueAcce
 
   @Input()
   get value(): string | null {
-    if (this.hour && this.minutes) {
-      return this.hour + ':' + this.minutes;
+    if (this.parts.value.hours && this.parts.value.minutes) {
+      return this.parts.value.hours + ':' + this.parts.value.minutes;
     }
   }
   set value(value: string | null) {
     let res = value.split(':');
     if (res.length == 2) {
-      this.hour = res[0];
-      this.minutes = res[1];
+      this.parts.setValue({ hours: res[0], minutes: res[1] });
+    } else {
+      this.parts.setValue({ hours: '', minutes: '' });
     }
-    this.parts.setValue({ hours: this.hour, minutes: this.minutes });
     this.stateChanges.next();
   }
 
@@ -194,35 +194,15 @@ export class AsTimeInputComponent implements OnInit, OnDestroy, ControlValueAcce
     this.disabled = isDisabled;
   }
 
-  // hourChange(value: string) {
-  //   // if(this.hour!=value){
-  //   this.hour = value;
-  //   this.fireValueChanged();
-  //   // }
-  // }
-
-  // minuteChange(value: string) {
-  //   //  if(this.minutes!=value){
-  //   this.minutes = value;
-  //   this.fireValueChanged();
-  //   //  }
-  // }
-
-  // fireValueChanged() {
-  //   if (this.hour && this.minutes) {
-  //     let hourMinute: string = this.hour + ':' + this.minutes;
-  //     this.valueChanged.emit(this.value);
-  //     if (this.onChange) {
-  //       this.onChange();
-  //     }
-  //   }
-  // }
-
   onKeyPress(_event: any) {
     this.counthour++;
     if (this.counthour == 2) {
       this.minuteInput.nativeElement.focus();
       this.counthour = 0;
     }
+  }
+
+  _handleInput(): void {
+    this.onChange(this.value);
   }
 }

@@ -6,18 +6,18 @@
     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
     <mat-datepicker #picker></mat-datepicker>
   </mat-form-field>
-  <button mat-button (click)="datepic = today">Select Today</button>
+  <button mat-button type="button" (click)="datepic = today">Select Today</button>
 
-  <mat-form-field>
+  <mat-form-field class="time">
     <mat-label>Start Time</mat-label>
-    <as-time-input></as-time-input>
-    <mat-icon matSuffix>phone</mat-icon>
+    <as-time-input formControlName="startTime" required></as-time-input>
+    <mat-icon matSuffix >access_time</mat-icon>
   </mat-form-field>
 
-  <mat-form-field>
+  <mat-form-field class="time">
     <mat-label>End Time</mat-label>
-    <as-time-input></as-time-input>
-    <mat-icon matSuffix>phone</mat-icon>
+    <as-time-input formControlName="endTime" required></as-time-input>
+    <mat-icon matSuffix>access_time</mat-icon>
   </mat-form-field>
 
   <mat-form-field>
