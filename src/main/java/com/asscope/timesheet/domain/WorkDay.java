@@ -68,13 +68,24 @@ public class WorkDay implements Serializable {
     
     @JsonProperty("targetWorkingMinutes")
     public Optional<Integer> getTargetWorkminutes() {
-    	Optional<WeeklyWorkingHours> wwh = this.employee.getActiveWeeklyWorkingHours();
+    	Optional<WeeklyWorkingHours> wwh = this.getWeeklyWorkingHours();
     	if(wwh.isPresent()) {
     		return Optional.of(wwh.get().getHours() / 5 * 60);
     	} else {
     		return Optional.empty();
     	}
     }
+    
+    public Optional<WeeklyWorkingHours> getWeeklyWorkingHours() {
+    	return this.employee
+    			.getWeeklyWorkingHours()
+    			.stream()
+    			.filter(wwH -> {
+    				return (wwH.getStartDate().isBefore(this.date) || wwH.getStartDate().isEqual(this.date)) 
+    						&& (wwH.getEndDate() == null || wwH.getEndDate().isAfter(this.date));
+    			}).findFirst();
+    }
+    
     
     @JsonProperty("startTime")
     public Instant getStartTime() {
