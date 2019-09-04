@@ -15,15 +15,13 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 export class ActivityConfigComponent implements OnInit {
   roles: RoleTimesheet[];
   roleForm: FormGroup;
-  rolemappingForm: FormGroup;
+
   activities: ActivityTimesheet[];
   panelOpenState = false;
   datasource = this.roles;
   displayedColumns: string[] = ['id', 'name', 'description', 'activities'];
 
-  constructor(public dialog: MatDialog, private roleService: RoleTimesheetService, private activityService: ActivityTimesheetService) {}
-
-  openroleDialog(): void {}
+  constructor(private activityService: ActivityTimesheetService, public dialog: MatDialog, private roleService: RoleTimesheetService) {}
 
   ngOnInit() {
     this.roleForm = new FormGroup({
@@ -42,6 +40,17 @@ export class ActivityConfigComponent implements OnInit {
       }
     });
   }
+  openroleDialog(): void {
+    const dialogRef = this.dialog.open(Dialogrolecreation, {
+      width: '50%'
+      //  height: '50%',
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+      //this.animal = result;
+    });
+  }
 
   onsubmit(): void {
     let role: IRoleTimesheet = <IRoleTimesheet>this.roleForm.value;
@@ -55,10 +64,45 @@ export class ActivityConfigComponent implements OnInit {
     });
   }
 }
-
+@Component({
+  selector: 'dialog-rolecreation-dialog',
+  templateUrl: 'Dialogrolecreation.html'
+})
 export class Dialogrolecreation {
-  constructor(public dialogRef: MatDialogRef<Dialogrolecreation>, @Inject(MAT_DIALOG_DATA) public data: IRoleTimesheet) {}
+  constructor(
+    private roleService: RoleTimesheetService,
+    private activityService: ActivityTimesheetService,
+    public dialogRef: MatDialogRef<Dialogrolecreation>,
+    @Inject(MAT_DIALOG_DATA) public data: IRoleTimesheet
+  ) {}
+  activities: ActivityTimesheet[];
+  rolemappingForm: FormGroup;
+  roles: RoleTimesheet[];
+  roleForm: FormGroup;
 
+  ngOnInit() {
+    this.rolemappingForm = new FormGroup({
+      name: new FormControl(''),
+      description: new FormControl(''),
+      activities: new FormControl['']()
+    });
+    this.activityService.query().subscribe((res: HttpResponse<IActivityTimesheet[]>) => {
+      if (res.ok) {
+        this.activities = res.body;
+      }
+    });
+  }
+  onsubmit(): void {
+    let role: IRoleTimesheet = <IRoleTimesheet>this.roleForm.value;
+    role.name = this.roleForm.value.name;
+    role.description = this.roleForm.value.description;
+    role.activities = this.rolemappingForm.value.activities;
+    this.roleService.create(role).subscribe(res => {
+      if (res.ok) {
+        // TODO add res.body to the table
+      }
+    });
+  }
   onNoClick(): void {
     this.dialogRef.close();
   }
