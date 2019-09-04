@@ -56,10 +56,16 @@ public class WorkingEntry extends AbstractAuditingEntity implements Serializable
     private Location location;
     
     public Long getWorkingTimeInSeconds() {
-    	if(this.isCompleted()) {
+    	if(this.isCompleted() && (this.activity == null  || !this.activity.isFillDay())) {
         	return end.getEpochSecond() - start.getEpochSecond();
     	}
-    	else {
+    	else if(this.isCompleted() && this.activity.isFillDay()) {
+    		return workDay.getWorkingEntries()
+    				.stream()
+    				.filter(we -> we.isValid() && we.id != this.id)
+    				.map(we -> we.getWorkingTimeInSeconds())
+    				.reduce(0L, Long::sum);
+    	} else {
     		return 0L;
     	}
     }

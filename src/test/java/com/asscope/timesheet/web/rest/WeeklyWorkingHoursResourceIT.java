@@ -8,7 +8,6 @@ import com.asscope.timesheet.repository.WeeklyWorkingHoursRepository;
 import com.asscope.timesheet.service.WeeklyWorkingHoursService;
 import com.asscope.timesheet.web.rest.errors.ExceptionTranslator;
 import com.asscope.timesheet.service.dto.WeeklyWorkingHoursCriteria;
-import com.asscope.timesheet.service.WeeklyWorkingHoursQueryService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,6 +24,7 @@ import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -43,20 +43,17 @@ public class WeeklyWorkingHoursResourceIT {
     private static final Integer DEFAULT_HOURS = 1;
     private static final Integer UPDATED_HOURS = 2;
 
-    private static final Instant DEFAULT_START_DATE = Instant.ofEpochMilli(0L);
-    private static final Instant UPDATED_START_DATE = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+    private static final LocalDate DEFAULT_START_DATE = LocalDate.ofEpochDay(0L);
+    private static final LocalDate UPDATED_START_DATE = LocalDate.now();
 
-    private static final Instant DEFAULT_END_DATE = Instant.ofEpochMilli(0L);
-    private static final Instant UPDATED_END_DATE = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+    private static final LocalDate DEFAULT_END_DATE = LocalDate.ofEpochDay(0L);
+    private static final LocalDate UPDATED_END_DATE = LocalDate.now();
 
     @Autowired
     private WeeklyWorkingHoursRepository weeklyWorkingHoursRepository;
 
     @Autowired
     private WeeklyWorkingHoursService weeklyWorkingHoursService;
-
-    @Autowired
-    private WeeklyWorkingHoursQueryService weeklyWorkingHoursQueryService;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -80,7 +77,7 @@ public class WeeklyWorkingHoursResourceIT {
     @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final WeeklyWorkingHoursResource weeklyWorkingHoursResource = new WeeklyWorkingHoursResource(weeklyWorkingHoursService, weeklyWorkingHoursQueryService);
+        final WeeklyWorkingHoursResource weeklyWorkingHoursResource = new WeeklyWorkingHoursResource(weeklyWorkingHoursService);
         this.restWeeklyWorkingHoursMockMvc = MockMvcBuilders.standaloneSetup(weeklyWorkingHoursResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)

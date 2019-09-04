@@ -7,6 +7,7 @@ import javax.persistence.*;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.time.LocalDate;
 
 /**
  * A WeeklyWorkingHours.
@@ -27,10 +28,10 @@ public class WeeklyWorkingHours implements Serializable {
     private Integer hours;
 
     @Column(name = "start_date")
-    private Instant startDate;
+    private LocalDate startDate;
 
     @Column(name = "end_date")
-    private Instant endDate;
+    private LocalDate endDate;
 
     @ManyToOne
     @JsonIgnoreProperties("weeklyWorkingHours")
@@ -58,29 +59,29 @@ public class WeeklyWorkingHours implements Serializable {
         this.hours = hours;
     }
 
-    public Instant getStartDate() {
+    public LocalDate getStartDate() {
         return startDate;
     }
 
-    public WeeklyWorkingHours startDate(Instant startDate) {
+    public WeeklyWorkingHours startDate(LocalDate startDate) {
         this.startDate = startDate;
         return this;
     }
 
-    public void setStartDate(Instant startDate) {
+    public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
     }
 
-    public Instant getEndDate() {
+    public LocalDate getEndDate() {
         return endDate;
     }
 
-    public WeeklyWorkingHours endDate(Instant endDate) {
+    public WeeklyWorkingHours endDate(LocalDate endDate) {
         this.endDate = endDate;
         return this;
     }
 
-    public void setEndDate(Instant endDate) {
+    public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
     }
 
