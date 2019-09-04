@@ -4,7 +4,6 @@ import com.asscope.timesheet.domain.WeeklyWorkingHours;
 import com.asscope.timesheet.service.WeeklyWorkingHoursService;
 import com.asscope.timesheet.web.rest.errors.BadRequestAlertException;
 import com.asscope.timesheet.service.dto.WeeklyWorkingHoursCriteria;
-import com.asscope.timesheet.service.WeeklyWorkingHoursQueryService;
 
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -36,11 +35,8 @@ public class WeeklyWorkingHoursResource {
 
     private final WeeklyWorkingHoursService weeklyWorkingHoursService;
 
-    private final WeeklyWorkingHoursQueryService weeklyWorkingHoursQueryService;
-
-    public WeeklyWorkingHoursResource(WeeklyWorkingHoursService weeklyWorkingHoursService, WeeklyWorkingHoursQueryService weeklyWorkingHoursQueryService) {
+    public WeeklyWorkingHoursResource(WeeklyWorkingHoursService weeklyWorkingHoursService) {
         this.weeklyWorkingHoursService = weeklyWorkingHoursService;
-        this.weeklyWorkingHoursQueryService = weeklyWorkingHoursQueryService;
     }
 
     /**
@@ -92,21 +88,21 @@ public class WeeklyWorkingHoursResource {
     @GetMapping("/weekly-working-hours")
     public ResponseEntity<List<WeeklyWorkingHours>> getAllWeeklyWorkingHours(WeeklyWorkingHoursCriteria criteria) {
         log.debug("REST request to get WeeklyWorkingHours by criteria: {}", criteria);
-        List<WeeklyWorkingHours> entityList = weeklyWorkingHoursQueryService.findByCriteria(criteria);
+        List<WeeklyWorkingHours> entityList = weeklyWorkingHoursService.findAll();
         return ResponseEntity.ok().body(entityList);
     }
 
-    /**
-    * {@code GET  /weekly-working-hours/count} : count all the weeklyWorkingHours.
-    *
-    * @param criteria the criteria which the requested entities should match.
-    * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
-    */
-    @GetMapping("/weekly-working-hours/count")
-    public ResponseEntity<Long> countWeeklyWorkingHours(WeeklyWorkingHoursCriteria criteria) {
-        log.debug("REST request to count WeeklyWorkingHours by criteria: {}", criteria);
-        return ResponseEntity.ok().body(weeklyWorkingHoursQueryService.countByCriteria(criteria));
-    }
+//    /**
+//    * {@code GET  /weekly-working-hours/count} : count all the weeklyWorkingHours.
+//    *
+//    * @param criteria the criteria which the requested entities should match.
+//    * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
+//    */
+//    @GetMapping("/weekly-working-hours/count")
+//    public ResponseEntity<Long> countWeeklyWorkingHours(WeeklyWorkingHoursCriteria criteria) {
+//        log.debug("REST request to count WeeklyWorkingHours by criteria: {}", criteria);
+//        return ResponseEntity.ok().body(weeklyWorkingHoursService.count());
+//    }
 
     /**
      * {@code GET  /weekly-working-hours/:id} : get the "id" weeklyWorkingHours.
