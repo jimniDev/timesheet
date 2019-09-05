@@ -8,8 +8,6 @@ import com.asscope.timesheet.domain.WorkDay;
 import com.asscope.timesheet.repository.WorkBreakRepository;
 import com.asscope.timesheet.service.WorkBreakService;
 import com.asscope.timesheet.web.rest.errors.ExceptionTranslator;
-import com.asscope.timesheet.service.dto.WorkBreakCriteria;
-import com.asscope.timesheet.service.WorkBreakQueryService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -49,9 +47,6 @@ public class WorkBreakResourceIT {
     private WorkBreakService workBreakService;
 
     @Autowired
-    private WorkBreakQueryService workBreakQueryService;
-
-    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Autowired
@@ -73,7 +68,7 @@ public class WorkBreakResourceIT {
     @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final WorkBreakResource workBreakResource = new WorkBreakResource(workBreakService, workBreakQueryService);
+        final WorkBreakResource workBreakResource = new WorkBreakResource(workBreakService);
         this.restWorkBreakMockMvc = MockMvcBuilders.standaloneSetup(workBreakResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)

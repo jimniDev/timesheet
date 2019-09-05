@@ -8,9 +8,6 @@ import com.asscope.timesheet.domain.Role;
 import com.asscope.timesheet.repository.ActivityRepository;
 import com.asscope.timesheet.service.ActivityService;
 import com.asscope.timesheet.web.rest.errors.ExceptionTranslator;
-import com.asscope.timesheet.service.dto.ActivityCriteria;
-import com.asscope.timesheet.service.ActivityQueryService;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
@@ -58,9 +55,6 @@ public class ActivityResourceIT {
     private ActivityService activityService;
 
     @Autowired
-    private ActivityQueryService activityQueryService;
-
-    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Autowired
@@ -82,7 +76,7 @@ public class ActivityResourceIT {
     @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final ActivityResource activityResource = new ActivityResource(activityService, activityQueryService);
+        final ActivityResource activityResource = new ActivityResource(activityService);
         this.restActivityMockMvc = MockMvcBuilders.standaloneSetup(activityResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)

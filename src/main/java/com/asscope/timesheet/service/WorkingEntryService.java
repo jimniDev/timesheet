@@ -3,7 +3,6 @@ package com.asscope.timesheet.service;
 import com.asscope.timesheet.domain.Employee;
 import com.asscope.timesheet.domain.WorkDay;
 import com.asscope.timesheet.domain.WorkingEntry;
-import com.asscope.timesheet.repository.WorkDayRepository;
 import com.asscope.timesheet.repository.WorkingEntryRepository;
 import com.asscope.timesheet.service.erros.OverlappingWorkingTimesException;
 import org.slf4j.Logger;
@@ -19,7 +18,6 @@ import java.time.temporal.ChronoField;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
