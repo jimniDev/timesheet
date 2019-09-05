@@ -11,6 +11,7 @@ export interface IWorkDayTimesheet {
   employee?: IEmployeeTimesheet;
   totalBreakMinutes?: number;
   totalWorkingMinutes?: number;
+  targetWorkingMinutes?: number;
 }
 
 export class WorkDayTimesheet implements IWorkDayTimesheet {
@@ -21,6 +22,7 @@ export class WorkDayTimesheet implements IWorkDayTimesheet {
     public workBreaks?: IWorkBreakTimesheet[],
     public employee?: IEmployeeTimesheet,
     public totalBreakMinutes?: number,
-    public totalWorkingMinutes?: number
+    public totalWorkingMinutes?: number,
+    public targetWorkingMinutes?: number
   ) {}
 }
