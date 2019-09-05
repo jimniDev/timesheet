@@ -1,10 +1,13 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { WorkingEntryTimesheetService } from 'app/entities/working-entry-timesheet';
 import { IWorkingEntryTimesheet, WorkingEntryTimesheet } from 'app/shared/model/working-entry-timesheet.model';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { filter, map } from 'rxjs/operators';
 import { EmployeeTimesheetService } from 'app/entities/employee-timesheet';
 import { Moment } from 'moment';
+import { MatPaginator } from '@angular/material';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'jhi-timetable',
@@ -16,7 +19,9 @@ export class TimetableComponent implements OnInit {
 
   workingEntriesUnfiltered: IWorkingEntryTimesheet[];
   workingEntries: IWorkingEntryTimesheet[];
-  displayedColumns: string[] = ['Date', 'Total Worktime', 'Break Time', 'start', 'end', 'Sum', 'Activity', 'Location'];
+  DSworkingEntries: MatTableDataSource<IWorkingEntryTimesheet>;
+
+  displayedColumns: string[] = ['Date', 'Total Worktime', 'Break Time', 'start', 'end', 'Sum', 'Activity'];
 
   targetTime: string = '00:00';
   actualTime: string = '00:00';
@@ -24,8 +29,14 @@ export class TimetableComponent implements OnInit {
   todayTime: string = '00:00';
 
   @Output() initialized = new EventEmitter<boolean>();
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
 
-  constructor(private workingEntryService: WorkingEntryTimesheetService, private employeeService: EmployeeTimesheetService) {}
+  constructor(
+    private workingEntryService: WorkingEntryTimesheetService,
+    private employeeService: EmployeeTimesheetService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit() {
     this.loadAllandSort();
@@ -59,6 +70,13 @@ export class TimetableComponent implements OnInit {
     } else {
       this.workingEntries = this.workingEntriesUnfiltered;
     }
+    this.DSworkingEntries = new MatTableDataSource(this.workingEntries);
+    this.DSworkingEntries.paginator = this.paginator;
+    this.DSworkingEntries.sort = this.sort;
+
+    if (this.DSworkingEntries.paginator) {
+      this.DSworkingEntries.paginator.firstPage(); //go to the first page if filter changed
+    }
   }
 
   loadAllandSort() {
@@ -73,6 +91,11 @@ export class TimetableComponent implements OnInit {
           this.workingEntries = res;
           this.workingEntries = this.sortData(this.workingEntries);
           this.workingEntriesUnfiltered = this.workingEntries;
+          this.DSworkingEntries = new MatTableDataSource(this.workingEntries);
+
+          this.cdr.detectChanges(); //necessary fot pagination & sort -wait until initialization
+          this.DSworkingEntries.paginator = this.paginator;
+          this.DSworkingEntries.sort = this.sort;
           this.initialized.emit(true);
         },
         (res: HttpErrorResponse) => this.onError(res.message)
@@ -90,9 +113,12 @@ export class TimetableComponent implements OnInit {
 
   addNewandSort(workingEntry: WorkingEntryTimesheet) {
     this.workingEntries.push(workingEntry);
-    this.workingEntriesUnfiltered.push(workingEntry);
     this.workingEntries = this.sortData(this.workingEntries);
+    this.DSworkingEntries = new MatTableDataSource(this.workingEntries);
+
+    this.workingEntriesUnfiltered.push(workingEntry);
     this.workingEntriesUnfiltered = this.sortData(this.workingEntriesUnfiltered);
+
     this.loadWorktimeInformation();
   }
 
