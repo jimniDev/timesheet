@@ -76,6 +76,7 @@ public class WorkDay implements Serializable {
     	}
     }
     
+    @JsonProperty("activeWeeklyWorkingHours")
     public Optional<WeeklyWorkingHours> getWeeklyWorkingHours() {
     	return this.employee
     			.getWeeklyWorkingHours()
