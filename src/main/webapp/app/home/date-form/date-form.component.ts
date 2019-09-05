@@ -25,17 +25,10 @@ export class DateFormComponent implements OnInit {
   @Output() newWorkingEntry = new EventEmitter<WorkingEntryTimesheet>();
   @Output() saved = new EventEmitter<boolean>();
 
-  startHour = { hour: 13 };
-  startMin = { minute: 30 };
-  endHour = { hour: 13 };
-  endMin = { minute: 30 };
-
   timeForm = new FormGroup({
     date: new FormControl('', Validators.required),
-    startHour: new FormControl('', Validators.required),
-    startMin: new FormControl('', Validators.required),
-    endHour: new FormControl('', Validators.required),
-    endMin: new FormControl('', Validators.required),
+    startTime: new FormControl(''),
+    endTime: new FormControl(''),
     roleControl: new FormControl(''),
     activityControl: new FormControl('')
   });
@@ -52,13 +45,13 @@ export class DateFormComponent implements OnInit {
     this.timeForm.value;
     let startTimeString: string;
     let endTimeString: string;
-    let workDay: WorkDayTimesheet = new WorkDayTimesheet();
+    const workDay: WorkDayTimesheet = new WorkDayTimesheet();
 
     const formDate = moment(this.timeForm.value.date);
     workDay.date = formDate;
 
-    startTimeString = formDate.format('YYYY-MM-DD') + ' ' + this.timeForm.value.startHour + ':' + this.timeForm.value.startMin;
-    endTimeString = formDate.format('YYYY-MM-DD') + ' ' + this.timeForm.value.endHour + ':' + this.timeForm.value.endMin;
+    startTimeString = formDate.format('YYYY-MM-DD') + ' ' + this.timeForm.value.startTime;
+    endTimeString = formDate.format('YYYY-MM-DD') + ' ' + this.timeForm.value.endTime;
     let startMoment = moment(startTimeString);
     let endMoment = moment(endTimeString);
 

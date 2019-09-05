@@ -2,22 +2,21 @@
     <p>Please Login</p>
 </div>
 <div *ngIf="isAuthenticated()">
-    <div class="conatainer-fluid row">
-        <div class="col-xl-5 col-lg-9 col-md-9 col-sm-9" style="float: none; margin: 0 auto;">
-            <jhi-timetable (initialized)="enableButton($event)"></jhi-timetable>  
-        </div>
-    </div>
-    <div class="row" id="formArea">
-        <div class="col-xl-5 col-lg-9 col-md-9 col-sm-9" style="float: none; margin: 0 auto;">
+    <jhi-timetable (initialized)="enableButton($event)"></jhi-timetable>
+
+    <div fxLayout="row" fxLayoutAlign="center stretch" fxLayout.xs="column" fxLayoutGap="8px" class="container">
+        <mat-card>
             <jhi-date-form (newWorkingEntry)="addnewEntry($event)">
-                <button [className]="btnColors" id="startBtn" type="button" [disabled]="disableButton ? 'disabled': null" (click)="startStop(content)">{{startBtnName}}</button>
+                <button [className]="btnColors" id="startBtn" type="button"
+                    [disabled]="disableButton ? 'disabled': null" (click)="startStop(content)">{{startBtnName}}</button>
             </jhi-date-form>
+
             <ng-template #content let-modal>
                 <div class="modal-header">
-                <h4 class="modal-title">Choose your Role and Activity</h4>
-                <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                    <h4 class="modal-title">Choose your Role and Activity</h4>
+                    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
@@ -46,10 +45,9 @@
 
                 </div>
                 <div class="modal-footer">
-                <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Save</button>
+                    <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Save</button>
                 </div>
             </ng-template>
-        </div>
+        </mat-card>
     </div>
-
 </div>

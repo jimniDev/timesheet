@@ -16,6 +16,7 @@ export class TimetableComponent implements OnInit {
 
   workingEntriesUnfiltered: IWorkingEntryTimesheet[];
   workingEntries: IWorkingEntryTimesheet[];
+  displayedColumns: string[] = ['Date', 'Total Worktime', 'Break Time', 'start', 'end', 'Sum', 'Activity', 'Location'];
 
   targetTime: string = '00:00';
   actualTime: string = '00:00';
@@ -75,7 +76,7 @@ export class TimetableComponent implements OnInit {
   }
 
   onError(message: string) {
-    throw new Error('Method not implemented.');
+    throw new Error(message);
   }
 
   sortData(workingEntries: IWorkingEntryTimesheet[]): IWorkingEntryTimesheet[] {
@@ -85,7 +86,9 @@ export class TimetableComponent implements OnInit {
 
   addNewandSort(workingEntry: WorkingEntryTimesheet) {
     this.workingEntries.push(workingEntry);
+    this.workingEntriesUnfiltered.push(workingEntry);
     this.workingEntries = this.sortData(this.workingEntries);
+    this.workingEntriesUnfiltered = this.sortData(this.workingEntriesUnfiltered);
     this.loadWorktimeInformation();
   }
 

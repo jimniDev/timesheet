@@ -33,6 +33,9 @@ export class YearMonthSelectComponent implements OnInit, OnChanges {
   }
 
   getDistinctYears(): string[] {
+    if (!this.dates) {
+      return;
+    }
     let years: string[] = new Array<string>();
     this.dates.forEach(date => {
       let yearContained: boolean = false;
@@ -49,6 +52,9 @@ export class YearMonthSelectComponent implements OnInit, OnChanges {
   }
 
   getDistinctMonthsFromYear() {
+    if (!this.dates) {
+      return;
+    }
     let months: string[] = new Array<string>();
     this.dates
       .filter(date => date.format('YYYY') === this.selectedYear)
