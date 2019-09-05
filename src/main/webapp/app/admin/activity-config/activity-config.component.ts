@@ -34,17 +34,17 @@ export class ActivityConfigComponent implements OnInit {
   }
   openroleDialog(): void {
     const dialogRef = this.dialog.open(activityroledialog, {
-      width: '50%'
+      width: '25%'
     });
   }
   openactivityDialog(): void {
     const dialogRef = this.dialog.open(activityCreationdialog, {
-      width: '50%'
+      width: '25%'
     });
   }
   openmappingDialog(): void {
     const dialogRef = this.dialog.open(roleactivitymappingDialog, {
-      width: '50%'
+      width: '25%'
     });
   }
 }
@@ -102,9 +102,13 @@ export class roleactivitymappingDialog {
 })
 export class activityCreationdialog {
   activities: ActivityTimesheet[];
+  checked = false;
+  checkedfillday = false;
   activityForm = new FormGroup({
     name: new FormControl(''),
-    description: new FormControl('')
+    description: new FormControl(''),
+    absence: new FormControl(null),
+    fillday: new FormControl(null)
   });
   constructor(
     private activityService: ActivityTimesheetService,
@@ -118,6 +122,7 @@ export class activityCreationdialog {
     activityEntry = new ActivityTimesheet();
     activityEntry.name = this.activityForm.value.name;
     activityEntry.description = this.activityForm.value.description;
+
     //  roleEntry.activities = this.rolemappingForm.value.activitiesform;
     console.log(this.activityForm.value);
     this.dialogRef.close();
