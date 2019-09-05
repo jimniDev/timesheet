@@ -1,5 +1,5 @@
 <div fxLayout="row" fxLayoutAlign="center stretch" fxLayout.xs="column" fxLayoutGap="8px" class="container">
-    <mat-form-field fxFlex="50">
+    <mat-form-field fxFlex="45">
         <mat-label>Year</mat-label>
         <mat-select [ngModel]="selectedYear" (ngModelChange)="onChangeYear($event)">
             <mat-option *ngFor="let year of getDistinctYears()" [value]="year">
@@ -8,7 +8,7 @@
         </mat-select>
     </mat-form-field>
 
-    <mat-form-field fxFlex="50">
+    <mat-form-field fxFlex="45">
         <mat-label>Month</mat-label>
         <mat-select [ngModel]="selectedMonth" (ngModelChange)="onChangeMonth($event)">
             <mat-option *ngFor="let month of getDistinctMonthsFromYear()" [value]="month">
@@ -16,4 +16,6 @@
             </mat-option>
         </mat-select>
     </mat-form-field>
+
+    <button mat-button type="button" color="primary" (click)="resetFilter()" [disabled]="resetButtonDisabled? true : null">Reset</button>
 </div>
