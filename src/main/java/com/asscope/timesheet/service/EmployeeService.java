@@ -2,6 +2,7 @@ package com.asscope.timesheet.service;
 
 import com.asscope.timesheet.domain.Employee;
 import com.asscope.timesheet.domain.User;
+import com.asscope.timesheet.domain.WeeklyWorkingHours;
 import com.asscope.timesheet.domain.WorkDay;
 import com.asscope.timesheet.domain.monthlyInformation.WorktimeInformation;
 import com.asscope.timesheet.repository.EmployeeRepository;
@@ -14,6 +15,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Principal;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -122,5 +126,22 @@ public class EmployeeService {
     public void delete(Long id) {
         log.debug("Request to delete Employee : {}", id);
         employeeRepository.deleteById(id);
+    }
+    
+    public int getTargetWorkMinutesForDate(Employee employee, LocalDate date) {
+    	Optional<WeeklyWorkingHours> oWwh = employee.getWeeklyWorkingHours().stream().filter(wwh -> (wwh.getStartDate().isBefore(date) || wwh.getStartDate().equals(date)) && (wwh.getEndDate() == null || wwh.getEndDate().isAfter(date))).findFirst();
+    	if (oWwh.isPresent()) {
+    		return (oWwh.get().getHours() * 60) / 5;
+    	} else {
+    		return 0;
+    	}
+    }
+    
+    public int targetWorkTime(Principal principal, int year, int month) {
+    	Employee employee = this.findOneByUsername(principal.getName()).get();
+    	YearMonth yearMonth = YearMonth.of(year, month);
+    	return yearMonth.atDay(1).datesUntil(yearMonth.atEndOfMonth())
+    	.filter(date -> !date.getDayOfWeek().equals(DayOfWeek.SATURDAY) && !date.getDayOfWeek().equals(DayOfWeek.SUNDAY))
+    	.map(workDay -> getTargetWorkMinutesForDate(employee, workDay)).reduce(0, Integer::sum);
     }
 }

@@ -142,4 +142,10 @@ public class EmployeeResource {
     	Optional<WorktimeInformation> wtInfo = employeeService.getWorkTimeInformation(principal, year);
     	return ResponseUtil.wrapOrNotFound(wtInfo);
     }
+    
+    @GetMapping({"/employees/me/target-work-time/{year}/{month}"})
+    public ResponseEntity<Integer> getWorktimeInformation(Principal principal, @PathVariable("year") Integer year, @PathVariable("month") Integer month) {
+    	log.debug("REST request to get worktimeInformation for Employee : {}", principal.getName());
+    	return ResponseEntity.ok().body(employeeService.targetWorkTime(principal, year, month));
+    }
 }
