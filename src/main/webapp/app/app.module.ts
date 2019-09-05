@@ -20,6 +20,8 @@ import * as moment from 'moment';
 // jhipster-needle-angular-add-module-import JHipster will add new module here
 import { JhiMainComponent, NavbarComponent, FooterComponent, PageRibbonComponent, ActiveMenuDirective, ErrorComponent } from './layouts';
 import { AsLayoutsModule } from './as-layouts/as-layouts.module';
+import { MatPaginatorModule } from '@angular/material';
+import { MatSortModule } from '@angular/material/sort';
 
 @NgModule({
   imports: [
@@ -39,7 +41,9 @@ import { AsLayoutsModule } from './as-layouts/as-layouts.module';
     // jhipster-needle-angular-add-module JHipster will add new module here
     TimesheetEntityModule,
     TimesheetAppRoutingModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    MatPaginatorModule,
+    MatSortModule
   ],
   declarations: [JhiMainComponent, NavbarComponent, ErrorComponent, PageRibbonComponent, ActiveMenuDirective, FooterComponent],
   providers: [
