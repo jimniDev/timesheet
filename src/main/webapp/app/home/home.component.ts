@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, Input, Inject } from '@angular/core';
 
 import { LoginService, AccountService, Account } from 'app/core';
 import { IWorkingEntryTimesheet, WorkingEntryTimesheet } from 'app/shared/model/working-entry-timesheet.model';
@@ -9,6 +9,13 @@ import { TimetableComponent } from './timetable/timetable.component';
 import { faThumbsDown } from '@fortawesome/free-solid-svg-icons';
 import { DateFormComponent } from './date-form/date-form.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+
+export interface DialogData {
+  role: string;
+  activity: string;
+  totalbreakMinutes: number;
+}
 
 @Component({
   selector: 'jhi-home',
@@ -20,9 +27,12 @@ export class HomeComponent implements OnInit {
   startBtnName: string;
   started: boolean;
   disableButton: boolean = true;
+
+  role: string;
+  activity: string;
   totalBreakMinutes: number;
 
-  @Input() btnColors = 'btn btn-success';
+  @Input() btnColors = 'primary';
   @ViewChild(TimetableComponent, { static: false })
   timetableComponent: TimetableComponent;
 
@@ -30,7 +40,8 @@ export class HomeComponent implements OnInit {
     private accountService: AccountService,
     private loginService: LoginService,
     private workingEntryService: WorkingEntryTimesheetService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    public dialog: MatDialog
   ) {}
 
   ngOnInit() {
@@ -74,29 +85,53 @@ export class HomeComponent implements OnInit {
       this.workingEntryService.end().subscribe(res => {
         if (res.ok) {
           let workingEntry = <IWorkingEntryTimesheet>res.body;
-          let indexToUpdate = this.timetableComponent.workingEntries.findIndex(we => we.id == workingEntry.id);
-          this.timetableComponent.workingEntries[indexToUpdate] = workingEntry;
+          let indexToUpdate = this.timetableComponent.DSworkingEntries.data.findIndex(we => we.id == workingEntry.id);
+          this.timetableComponent.DSworkingEntries.data[indexToUpdate] = workingEntry;
+          this.timetableComponent.DSworkingEntries._updateChangeSubscription();
           this.totalBreakMinutes = workingEntry.workDay.totalBreakMinutes;
-          this.openVerticallyCentered(content);
+          this.openDialog();
           this.startBtnName = 'Start';
           this.started = false;
-          this.btnColors = 'btn btn-success';
+          this.btnColors = 'primary';
         }
       });
     } else {
       this.workingEntryService.start().subscribe(res => {
         if (res.ok) {
           let workingEntry = <IWorkingEntryTimesheet>res.body;
-          this.timetableComponent.workingEntries.unshift(workingEntry);
+          //this.timetableComponent.workingEntries.unshift(workingEntry);
+          //this.timetableComponent.DSworkingEntries.data.unshift(workingEntry);
+          //this.timetableComponent.DSworkingEntries._updateChangeSubscription();
+          this.timetableComponent.addNewandSort(workingEntry);
           this.startBtnName = 'Stop';
           this.started = true;
-          this.btnColors = 'btn btn-danger';
+          this.btnColors = 'warn';
         }
       });
     }
   }
 
-  openVerticallyCentered(content) {
-    this.modalService.open(content, { centered: true });
+  openDialog(): void {
+    const dialogRef = this.dialog.open(HomeDialog, {
+      width: '250px',
+      data: { role: this.role, animal: this.activity }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+      //this.animal = result;
+    });
+  }
+}
+
+@Component({
+  selector: 'home-dialog',
+  templateUrl: 'home-dialog.html'
+})
+export class HomeDialog {
+  constructor(public dialogRef: MatDialogRef<HomeDialog>, @Inject(MAT_DIALOG_DATA) public data: DialogData) {}
+
+  onNoClick(): void {
+    this.dialogRef.close();
   }
 }

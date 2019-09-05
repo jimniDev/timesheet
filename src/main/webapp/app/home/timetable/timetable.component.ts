@@ -19,7 +19,7 @@ export class TimetableComponent implements OnInit {
 
   workingEntriesUnfiltered: IWorkingEntryTimesheet[];
   workingEntries: IWorkingEntryTimesheet[];
-  DSworkingEntries: MatTableDataSource<IWorkingEntryTimesheet>;
+  DSworkingEntries = new MatTableDataSource<IWorkingEntryTimesheet>(this.workingEntries);
 
   displayedColumns: string[] = ['Date', 'Total Worktime', 'Break Time', 'start', 'end', 'Sum', 'Activity'];
 
@@ -114,10 +114,11 @@ export class TimetableComponent implements OnInit {
   addNewandSort(workingEntry: WorkingEntryTimesheet) {
     this.workingEntries.push(workingEntry);
     this.workingEntries = this.sortData(this.workingEntries);
+    this.workingEntriesUnfiltered = this.workingEntries;
     this.DSworkingEntries = new MatTableDataSource(this.workingEntries);
-
-    this.workingEntriesUnfiltered.push(workingEntry);
-    this.workingEntriesUnfiltered = this.sortData(this.workingEntriesUnfiltered);
+    this.cdr.detectChanges(); //necessary fot pagination & sort -wait until initialization
+    this.DSworkingEntries.paginator = this.paginator;
+    this.DSworkingEntries.sort = this.sort;
 
     this.loadWorktimeInformation();
   }
