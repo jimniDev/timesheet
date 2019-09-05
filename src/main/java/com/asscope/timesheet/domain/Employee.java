@@ -2,7 +2,6 @@ package com.asscope.timesheet.domain;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import com.asscope.timesheet.domain.monthlyInformation.WorktimeInformation;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 

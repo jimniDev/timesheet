@@ -3,7 +3,6 @@ package com.asscope.timesheet.web.rest;
 import com.asscope.timesheet.domain.WeeklyWorkingHours;
 import com.asscope.timesheet.service.WeeklyWorkingHoursService;
 import com.asscope.timesheet.web.rest.errors.BadRequestAlertException;
-import com.asscope.timesheet.service.dto.WeeklyWorkingHoursCriteria;
 
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -86,8 +85,8 @@ public class WeeklyWorkingHoursResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of weeklyWorkingHours in body.
      */
     @GetMapping("/weekly-working-hours")
-    public ResponseEntity<List<WeeklyWorkingHours>> getAllWeeklyWorkingHours(WeeklyWorkingHoursCriteria criteria) {
-        log.debug("REST request to get WeeklyWorkingHours by criteria: {}", criteria);
+    public ResponseEntity<List<WeeklyWorkingHours>> getAllWeeklyWorkingHours() {
+        log.debug("REST request to get all WeeklyWorkingHours");
         List<WeeklyWorkingHours> entityList = weeklyWorkingHoursService.findAll();
         return ResponseEntity.ok().body(entityList);
     }

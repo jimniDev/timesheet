@@ -3,8 +3,6 @@ package com.asscope.timesheet.web.rest;
 import com.asscope.timesheet.domain.WorkDay;
 import com.asscope.timesheet.service.WorkDayService;
 import com.asscope.timesheet.web.rest.errors.BadRequestAlertException;
-import com.asscope.timesheet.service.dto.WorkDayCriteria;
-import com.asscope.timesheet.service.WorkDayQueryService;
 
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -37,11 +35,8 @@ public class WorkDayResource {
 
     private final WorkDayService workDayService;
 
-    private final WorkDayQueryService workDayQueryService;
-
-    public WorkDayResource(WorkDayService workDayService, WorkDayQueryService workDayQueryService) {
+    public WorkDayResource(WorkDayService workDayService) {
         this.workDayService = workDayService;
-        this.workDayQueryService = workDayQueryService;
     }
 
     /**
@@ -91,9 +86,9 @@ public class WorkDayResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of workDays in body.
      */
     @GetMapping("/work-days")
-    public ResponseEntity<List<WorkDay>> getAllWorkDays(WorkDayCriteria criteria) {
-        log.debug("REST request to get WorkDays by criteria: {}", criteria);
-        List<WorkDay> entityList = workDayQueryService.findByCriteria(criteria);
+    public ResponseEntity<List<WorkDay>> getAllWorkDays() {
+        log.debug("REST request to get all WorkDays");
+        List<WorkDay> entityList = workDayService.findAll();
         return ResponseEntity.ok().body(entityList);
     }
 
@@ -103,11 +98,11 @@ public class WorkDayResource {
     * @param criteria the criteria which the requested entities should match.
     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
     */
-    @GetMapping("/work-days/count")
-    public ResponseEntity<Long> countWorkDays(WorkDayCriteria criteria) {
-        log.debug("REST request to count WorkDays by criteria: {}", criteria);
-        return ResponseEntity.ok().body(workDayQueryService.countByCriteria(criteria));
-    }
+//    @GetMapping("/work-days/count")
+//    public ResponseEntity<Long> countWorkDays(WorkDayCriteria criteria) {
+//        log.debug("REST request to count WorkDays by criteria: {}", criteria);
+//        return ResponseEntity.ok().body(workDayQueryService.countByCriteria(criteria));
+//    }
 
     /**
      * {@code GET  /work-days/:id} : get the "id" workDay.

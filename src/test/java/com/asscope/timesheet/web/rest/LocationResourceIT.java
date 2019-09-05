@@ -8,8 +8,6 @@ import com.asscope.timesheet.domain.Country;
 import com.asscope.timesheet.repository.LocationRepository;
 import com.asscope.timesheet.service.LocationService;
 import com.asscope.timesheet.web.rest.errors.ExceptionTranslator;
-import com.asscope.timesheet.service.dto.LocationCriteria;
-import com.asscope.timesheet.service.LocationQueryService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -58,9 +56,6 @@ public class LocationResourceIT {
     private LocationService locationService;
 
     @Autowired
-    private LocationQueryService locationQueryService;
-
-    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Autowired
@@ -82,7 +77,7 @@ public class LocationResourceIT {
     @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final LocationResource locationResource = new LocationResource(locationService, locationQueryService);
+        final LocationResource locationResource = new LocationResource(locationService);
         this.restLocationMockMvc = MockMvcBuilders.standaloneSetup(locationResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)

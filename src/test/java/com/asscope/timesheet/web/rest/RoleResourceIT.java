@@ -7,8 +7,6 @@ import com.asscope.timesheet.domain.Activity;
 import com.asscope.timesheet.repository.RoleRepository;
 import com.asscope.timesheet.service.RoleService;
 import com.asscope.timesheet.web.rest.errors.ExceptionTranslator;
-import com.asscope.timesheet.service.dto.RoleCriteria;
-import com.asscope.timesheet.service.RoleQueryService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,7 +15,6 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -62,9 +59,6 @@ public class RoleResourceIT {
     private RoleService roleService;
 
     @Autowired
-    private RoleQueryService roleQueryService;
-
-    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Autowired
@@ -86,7 +80,7 @@ public class RoleResourceIT {
     @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final RoleResource roleResource = new RoleResource(roleService, roleQueryService);
+        final RoleResource roleResource = new RoleResource(roleService);
         this.restRoleMockMvc = MockMvcBuilders.standaloneSetup(roleResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -199,7 +193,7 @@ public class RoleResourceIT {
     
     @SuppressWarnings({"unchecked"})
     public void getAllRolesWithEagerRelationshipsIsEnabled() throws Exception {
-        RoleResource roleResource = new RoleResource(roleServiceMock, roleQueryService);
+        RoleResource roleResource = new RoleResource(roleServiceMock);
         when(roleServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
 
         MockMvc restRoleMockMvc = MockMvcBuilders.standaloneSetup(roleResource)
@@ -216,7 +210,7 @@ public class RoleResourceIT {
 
     @SuppressWarnings({"unchecked"})
     public void getAllRolesWithEagerRelationshipsIsNotEnabled() throws Exception {
-        RoleResource roleResource = new RoleResource(roleServiceMock, roleQueryService);
+        RoleResource roleResource = new RoleResource(roleServiceMock);
             when(roleServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
             MockMvc restRoleMockMvc = MockMvcBuilders.standaloneSetup(roleResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)

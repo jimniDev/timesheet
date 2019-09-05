@@ -3,8 +3,6 @@ package com.asscope.timesheet.web.rest;
 import com.asscope.timesheet.domain.Country;
 import com.asscope.timesheet.service.CountryService;
 import com.asscope.timesheet.web.rest.errors.BadRequestAlertException;
-import com.asscope.timesheet.service.dto.CountryCriteria;
-import com.asscope.timesheet.service.CountryQueryService;
 
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -36,11 +34,8 @@ public class CountryResource {
 
     private final CountryService countryService;
 
-    private final CountryQueryService countryQueryService;
-
-    public CountryResource(CountryService countryService, CountryQueryService countryQueryService) {
+    public CountryResource(CountryService countryService) {
         this.countryService = countryService;
-        this.countryQueryService = countryQueryService;
     }
 
     /**
@@ -90,9 +85,9 @@ public class CountryResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of countries in body.
      */
     @GetMapping("/countries")
-    public ResponseEntity<List<Country>> getAllCountries(CountryCriteria criteria) {
-        log.debug("REST request to get Countries by criteria: {}", criteria);
-        List<Country> entityList = countryQueryService.findByCriteria(criteria);
+    public ResponseEntity<List<Country>> getAllCountries() {
+        log.debug("REST request to get all Countries");
+        List<Country> entityList = countryService.findAll();
         return ResponseEntity.ok().body(entityList);
     }
 
@@ -102,11 +97,11 @@ public class CountryResource {
     * @param criteria the criteria which the requested entities should match.
     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
     */
-    @GetMapping("/countries/count")
-    public ResponseEntity<Long> countCountries(CountryCriteria criteria) {
-        log.debug("REST request to count Countries by criteria: {}", criteria);
-        return ResponseEntity.ok().body(countryQueryService.countByCriteria(criteria));
-    }
+//    @GetMapping("/countries/count")
+//    public ResponseEntity<Long> countCountries(CountryCriteria criteria) {
+//        log.debug("REST request to count Countries by criteria: {}", criteria);
+//        return ResponseEntity.ok().body(countryQueryService.countByCriteria(criteria));
+//    }
 
     /**
      * {@code GET  /countries/:id} : get the "id" country.

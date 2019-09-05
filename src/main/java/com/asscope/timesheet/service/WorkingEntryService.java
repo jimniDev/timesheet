@@ -3,7 +3,6 @@ package com.asscope.timesheet.service;
 import com.asscope.timesheet.domain.Employee;
 import com.asscope.timesheet.domain.WorkDay;
 import com.asscope.timesheet.domain.WorkingEntry;
-import com.asscope.timesheet.repository.WorkDayRepository;
 import com.asscope.timesheet.repository.WorkingEntryRepository;
 import com.asscope.timesheet.service.erros.OverlappingWorkingTimesException;
 import org.slf4j.Logger;
@@ -19,7 +18,6 @@ import java.time.temporal.ChronoField;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
@@ -72,10 +70,9 @@ public class WorkingEntryService {
         	workingEntryToSave.setDeleted(false);
         }
         workingEntryToSave.setWorkDay(workDay);
-    	// TODO Not Working
-        //if (validateOverlappingTime(workingEntryToSave, workDay.getWorkingEntries())) {
-    	//	throw new OverlappingWorkingTimesException();
-    	//}
+        if (validateOverlappingTime(workingEntryToSave, workDay.getWorkingEntries())) {
+    		throw new OverlappingWorkingTimesException();
+    	}
         return workingEntryRepository.save(workingEntryToSave);
     }
 
@@ -205,16 +202,8 @@ public class WorkingEntryService {
     private static boolean validateOverlappingTime(WorkingEntry workingEntryToValidate, Collection<WorkingEntry> workingEntries) {
     	 for (WorkingEntry wEntry: workingEntries) {
          	if (wEntry.isValid()) {
-         		long workingEntryToValidateStartSeconds = workingEntryToValidate.getStart().getLong(ChronoField.SECOND_OF_DAY);
-         		long workingEntryToValidateEndSeconds = workingEntryToValidate.getEnd().getLong(ChronoField.SECOND_OF_DAY);
-         		long wEntryStartSeconds = wEntry.getStart().getLong(ChronoField.SECOND_OF_DAY);
-         		long wEntryEndSeconds = wEntry.getEnd().getLong(ChronoField.SECOND_OF_DAY);
-         		if (workingEntryToValidateStartSeconds >= wEntryStartSeconds && workingEntryToValidateStartSeconds <= wEntryEndSeconds) {
-         			//throw new OverlappingWorkingTimesException();
-         			return true;
-         		}
-         		if (workingEntryToValidateEndSeconds >= wEntryStartSeconds && workingEntryToValidateEndSeconds <= wEntryEndSeconds) {
-         			//throw new OverlappingWorkingTimesException();
+         		if ((workingEntryToValidate.getStart().isBefore(wEntry.getEnd()) || workingEntryToValidate.getStart().equals(wEntry.getEnd())) 
+         				&& (workingEntryToValidate.getEnd().isAfter(wEntry.getStart()) || workingEntryToValidate.getEnd().equals(wEntry.getStart()))) {
          			return true;
          		}
          	}

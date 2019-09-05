@@ -3,8 +3,6 @@ package com.asscope.timesheet.web.rest;
 import com.asscope.timesheet.domain.WorkBreak;
 import com.asscope.timesheet.service.WorkBreakService;
 import com.asscope.timesheet.web.rest.errors.BadRequestAlertException;
-import com.asscope.timesheet.service.dto.WorkBreakCriteria;
-import com.asscope.timesheet.service.WorkBreakQueryService;
 
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -37,11 +35,8 @@ public class WorkBreakResource {
 
     private final WorkBreakService workBreakService;
 
-    private final WorkBreakQueryService workBreakQueryService;
-
-    public WorkBreakResource(WorkBreakService workBreakService, WorkBreakQueryService workBreakQueryService) {
+    public WorkBreakResource(WorkBreakService workBreakService) {
         this.workBreakService = workBreakService;
-        this.workBreakQueryService = workBreakQueryService;
     }
 
     /**
@@ -91,9 +86,9 @@ public class WorkBreakResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of workBreaks in body.
      */
     @GetMapping("/work-breaks")
-    public ResponseEntity<List<WorkBreak>> getAllWorkBreaks(WorkBreakCriteria criteria) {
-        log.debug("REST request to get WorkBreaks by criteria: {}", criteria);
-        List<WorkBreak> entityList = workBreakQueryService.findByCriteria(criteria);
+    public ResponseEntity<List<WorkBreak>> getAllWorkBreaks() {
+        log.debug("REST request to get all WorkBreaks");
+        List<WorkBreak> entityList = workBreakService.findAll();
         return ResponseEntity.ok().body(entityList);
     }
 
@@ -103,11 +98,11 @@ public class WorkBreakResource {
     * @param criteria the criteria which the requested entities should match.
     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
     */
-    @GetMapping("/work-breaks/count")
-    public ResponseEntity<Long> countWorkBreaks(WorkBreakCriteria criteria) {
-        log.debug("REST request to count WorkBreaks by criteria: {}", criteria);
-        return ResponseEntity.ok().body(workBreakQueryService.countByCriteria(criteria));
-    }
+//    @GetMapping("/work-breaks/count")
+//    public ResponseEntity<Long> countWorkBreaks(WorkBreakCriteria criteria) {
+//        log.debug("REST request to count WorkBreaks by criteria: {}", criteria);
+//        return ResponseEntity.ok().body(workBreakQueryService.countByCriteria(criteria));
+//    }
 
     /**
      * {@code GET  /work-breaks/:id} : get the "id" workBreak.

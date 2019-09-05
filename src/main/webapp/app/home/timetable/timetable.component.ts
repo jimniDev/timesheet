@@ -63,9 +63,13 @@ export class TimetableComponent implements OnInit {
   }
 
   filterTimeTable(date: Moment) {
-    this.workingEntries = this.workingEntriesUnfiltered.filter(
-      we => we.workDay.date.year() === date.year() && we.workDay.date.month() === date.month()
-    );
+    if (date) {
+      this.workingEntries = this.workingEntriesUnfiltered.filter(
+        we => we.workDay.date.year() === date.year() && we.workDay.date.month() === date.month()
+      );
+    } else {
+      this.workingEntries = this.workingEntriesUnfiltered;
+    }
     this.DSworkingEntries = new MatTableDataSource(this.workingEntries);
     this.DSworkingEntries.paginator = this.paginator;
     this.DSworkingEntries.sort = this.sort;

@@ -7,8 +7,6 @@ import com.asscope.timesheet.domain.Employee;
 import com.asscope.timesheet.repository.WeeklyWorkingHoursRepository;
 import com.asscope.timesheet.service.WeeklyWorkingHoursService;
 import com.asscope.timesheet.web.rest.errors.ExceptionTranslator;
-import com.asscope.timesheet.service.dto.WeeklyWorkingHoursCriteria;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
@@ -23,9 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static com.asscope.timesheet.web.rest.TestUtil.createFormattingConversionService;
