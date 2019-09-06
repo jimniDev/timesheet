@@ -1,11 +1,11 @@
-import { IWorkingDayTimesheet } from 'app/shared/model/working-day-timesheet.model';
+import { IWorkDayTimesheet } from './work-day-timesheet.model';
 
 export interface IDayTimesheet {
   id?: number;
   name?: string;
-  workingDays?: IWorkingDayTimesheet[];
+  workDays?: IWorkDayTimesheet[];
 }
 
 export class DayTimesheet implements IDayTimesheet {
-  constructor(public id?: number, public name?: string, public workingDays?: IWorkingDayTimesheet[]) {}
+  constructor(public id?: number, public name?: string, public workDays?: IWorkDayTimesheet[]) {}
 }

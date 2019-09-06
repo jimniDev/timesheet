@@ -16,5 +16,6 @@
     <a mat-list-item (click)='login()' *ngIf="!isAuthenticated()"><mat-icon mat-list-icon>note</mat-icon> Login </a>
     <a mat-list-item routerLink="/" *ngIf="isAuthenticated()"><mat-icon mat-list-icon>home</mat-icon> Home </a>
     <a *jhiHasAnyAuthority="'ROLE_ADMIN'" routerLink="admin/employee-overview" mat-list-item><mat-icon mat-list-icon>people</mat-icon> Employee Overview </a>
+    <a *jhiHasAnyAuthority="'ROLE_ADMIN'" routerLink="admin/activity-config" mat-list-item><mat-icon mat-list-icon>device_hub</mat-icon> Activity Configuration </a>
     <router-outlet></router-outlet>
 </as-navbar>

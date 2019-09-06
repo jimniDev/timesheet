@@ -44,4 +44,8 @@ export class EmployeeTimesheetService {
   currentWorktimeInformation(year: number): Observable<HttpResponse<IWorktimeInformationTimesheet>> {
     return this.http.get<IWorktimeInformationTimesheet>(this.resourceUrl + '/me/worktime/' + year, { observe: 'response' });
   }
+
+  targetWorkTime(year: number, month: number) {
+    return this.http.get<number>(this.resourceUrl + '/me/target-work-time/' + year + '/' + month, { observe: 'response' });
+  }
 }

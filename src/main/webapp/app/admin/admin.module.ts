@@ -3,8 +3,10 @@ import { RouterModule } from '@angular/router';
 import { JhiLanguageService } from 'ng-jhipster';
 import { JhiLanguageHelper } from 'app/core';
 import { TimesheetSharedModule } from 'app/shared';
+import { EmployeeOverviewComponent } from './employee-overview/employee-overview.component';
+import { ActivityConfigComponent } from './activity-config/activity-config.component';
+import { AsLayoutsModule } from 'app/as-layouts/as-layouts.module';
 /* jhipster-needle-add-admin-module-import - JHipster will add admin modules imports here */
-
 import {
   adminState,
   AuditsComponent,
@@ -15,16 +17,13 @@ import {
   JhiConfigurationComponent,
   JhiDocsComponent
 } from './';
-import { EmployeeOverviewComponent } from './employee-overview/employee-overview.component';
-import { AsLayoutsModule } from 'app/as-layouts/as-layouts.module';
-
+import { ActivityCreationDialogComponent } from './activity-config/activity-creation-dialog/activity-creation-dialog.component';
+import { ActivityRoleDialogComponent } from './activity-config/activity-role-dialog/activity-role-dialog.component';
+import { ActivityRoleMappingDialogComponent } from './activity-config/activity-role-mapping-dialog/activity-role-mapping-dialog.component';
+import { ActivityTableComponent } from './activity-config/activity-table/activity-table.component';
+import { RoleTableComponent } from './activity-config/role-table/role-table.component';
 @NgModule({
-  imports: [
-    TimesheetSharedModule,
-    AsLayoutsModule,
-    /* jhipster-needle-add-admin-module - JHipster will add admin modules here */
-    RouterModule.forChild(adminState)
-  ],
+  imports: [AsLayoutsModule, TimesheetSharedModule, AsLayoutsModule, RouterModule.forChild(adminState)],
   declarations: [
     AuditsComponent,
     LogsComponent,
@@ -33,10 +32,22 @@ import { AsLayoutsModule } from 'app/as-layouts/as-layouts.module';
     JhiHealthModalComponent,
     JhiDocsComponent,
     JhiMetricsMonitoringComponent,
-    EmployeeOverviewComponent
+    EmployeeOverviewComponent,
+    ActivityConfigComponent,
+    ActivityConfigComponent,
+    ActivityCreationDialogComponent,
+    ActivityRoleDialogComponent,
+    ActivityRoleMappingDialogComponent,
+    ActivityTableComponent,
+    RoleTableComponent
   ],
   providers: [{ provide: JhiLanguageService, useClass: JhiLanguageService }],
-  entryComponents: [JhiHealthModalComponent],
+  entryComponents: [
+    JhiHealthModalComponent,
+    ActivityCreationDialogComponent,
+    ActivityRoleDialogComponent,
+    ActivityRoleMappingDialogComponent
+  ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class TimesheetAdminModule {
