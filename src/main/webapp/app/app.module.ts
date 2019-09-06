@@ -6,7 +6,7 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgbDatepickerConfig } from '@ng-bootstrap/ng-bootstrap';
 import { NgxWebstorageModule } from 'ngx-webstorage';
 import { NgJhipsterModule } from 'ng-jhipster';
-
+import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AuthExpiredInterceptor } from './blocks/interceptor/auth-expired.interceptor';
 import { ErrorHandlerInterceptor } from './blocks/interceptor/errorhandler.interceptor';
@@ -24,6 +24,7 @@ import { AsLayoutsModule } from './as-layouts/as-layouts.module';
 @NgModule({
   imports: [
     BrowserModule,
+    ReactiveFormsModule,
     AsLayoutsModule,
     NgxWebstorageModule.forRoot({ prefix: 'jhi', separator: '-' }),
     NgJhipsterModule.forRoot({
