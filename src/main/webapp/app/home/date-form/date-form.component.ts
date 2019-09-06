@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { Validators } from '@angular/forms';
 import { NgbDateStruct, NgbCalendar, NgbDateAdapter, NgbDateNativeAdapter } from '@ng-bootstrap/ng-bootstrap';
 import { WorkingEntryTimesheet } from 'app/shared/model/working-entry-timesheet.model';
-import { ActivityTimesheet } from 'app/shared/model/activity-timesheet.model';
+import { ActivityTimesheet, IActivityTimesheet } from 'app/shared/model/activity-timesheet.model';
 import { WorkDayTimesheet } from 'app/shared/model/work-day-timesheet.model';
 import { LocationTimesheet } from 'app/shared/model/location-timesheet.model';
 import { stringLiteral } from '@babel/types';
@@ -11,6 +11,10 @@ import { Moment } from 'moment';
 import * as moment from 'moment';
 import { WorkingEntryTimesheetService } from 'app/entities/working-entry-timesheet';
 import { faThumbsDown } from '@fortawesome/free-solid-svg-icons';
+import { ActivityTimesheetService } from 'app/entities/activity-timesheet';
+import { RoleTimesheetService } from 'app/entities/role-timesheet';
+import { HttpResponse } from '@angular/common/http';
+import { IRoleTimesheet } from 'app/shared/model/role-timesheet.model';
 
 @Component({
   selector: 'jhi-date-form',
@@ -29,13 +33,32 @@ export class DateFormComponent implements OnInit {
     date: new FormControl('', Validators.required),
     startTime: new FormControl(''),
     endTime: new FormControl(''),
-    roleControl: new FormControl(''),
-    activityControl: new FormControl('')
+    roleControl: new FormControl('', Validators.required),
+    activityControl: new FormControl('', Validators.required)
   });
 
-  constructor(private calendar: NgbCalendar, private workingEntryService: WorkingEntryTimesheetService) {}
+  activities: IActivityTimesheet[];
+  roles: IRoleTimesheet[];
 
-  ngOnInit() {}
+  constructor(
+    private calendar: NgbCalendar,
+    private workingEntryService: WorkingEntryTimesheetService,
+    private activityService: ActivityTimesheetService,
+    private roleService: RoleTimesheetService
+  ) {}
+
+  ngOnInit() {
+    this.roleService.query().subscribe((res: HttpResponse<IRoleTimesheet[]>) => {
+      if (res.ok) {
+        this.roles = res.body;
+      }
+    });
+    this.activityService.query().subscribe((res: HttpResponse<IActivityTimesheet[]>) => {
+      if (res.ok) {
+        this.activities = res.body;
+      }
+    });
+  }
 
   get today() {
     return new Date();
