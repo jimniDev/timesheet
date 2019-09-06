@@ -9,12 +9,13 @@ import { TimetableComponent } from './timetable/timetable.component';
 import { faThumbsDown } from '@fortawesome/free-solid-svg-icons';
 import { DateFormComponent } from './date-form/date-form.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig } from '@angular/material';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 export interface DialogData {
-  role: string;
-  activity: string;
-  totalbreakMinutes: number;
+  // role: string;
+  // activity: string;
+  totalBreakMinutes: number;
 }
 
 @Component({
@@ -40,7 +41,6 @@ export class HomeComponent implements OnInit {
     private accountService: AccountService,
     private loginService: LoginService,
     private workingEntryService: WorkingEntryTimesheetService,
-    private modalService: NgbModal,
     public dialog: MatDialog
   ) {}
 
@@ -80,7 +80,7 @@ export class HomeComponent implements OnInit {
     this.timetableComponent.addNewandSort(workingEntry);
   }
 
-  startStop(content) {
+  startStop() {
     if (this.started) {
       this.workingEntryService.end().subscribe(res => {
         if (res.ok) {
@@ -99,9 +99,6 @@ export class HomeComponent implements OnInit {
       this.workingEntryService.start().subscribe(res => {
         if (res.ok) {
           let workingEntry = <IWorkingEntryTimesheet>res.body;
-          //this.timetableComponent.workingEntries.unshift(workingEntry);
-          //this.timetableComponent.DSworkingEntries.data.unshift(workingEntry);
-          //this.timetableComponent.DSworkingEntries._updateChangeSubscription();
           this.timetableComponent.addNewandSort(workingEntry);
           this.startBtnName = 'Stop';
           this.started = true;
@@ -112,14 +109,22 @@ export class HomeComponent implements OnInit {
   }
 
   openDialog(): void {
-    const dialogRef = this.dialog.open(HomeDialog, {
-      width: '250px',
-      data: { role: this.role, animal: this.activity }
-    });
+    const dialogConfig = new MatDialogConfig(); //configure the dialog with a set of default behaviors
+
+    dialogConfig.disableClose = true; //user will not be able to close the dialog just by clicking outside of it
+    dialogConfig.autoFocus = true; //ocus will be set automatically on the first form field of the dialog
+    dialogConfig.data = {
+      role: this.role,
+      activity: this.activity,
+      totalBreakMinute: this.totalBreakMinutes
+    };
+
+    this.dialog.open(HomeDialog, dialogConfig);
+    const dialogRef = this.dialog.open(HomeDialog, dialogConfig);
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
-      //this.animal = result;
+      console.log('The dialog was closed', result);
+      this.totalBreakMinutes += result.addBreakControl.value;
     });
   }
 }
@@ -129,9 +134,25 @@ export class HomeComponent implements OnInit {
   templateUrl: 'home-dialog.html'
 })
 export class HomeDialog {
+  modalForm = new FormGroup({
+    roleControl: new FormControl('', Validators.required),
+    activityControl: new FormControl('', Validators.required),
+    addBreakControl: new FormControl('')
+  });
+
+  openform: boolean = false;
+
   constructor(public dialogRef: MatDialogRef<HomeDialog>, @Inject(MAT_DIALOG_DATA) public data: DialogData) {}
+
+  save() {
+    this.dialogRef.close(this.modalForm.value);
+  }
 
   onNoClick(): void {
     this.dialogRef.close();
+  }
+
+  onClickAddBreak() {
+    this.openform = true;
   }
 }

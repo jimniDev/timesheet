@@ -8,10 +8,12 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { TwoDigitsDirective } from './two-digits.directive';
 import { YearMonthSelectComponent } from './year-month-select/year-month-select.component';
 import { AsLayoutsModule } from 'app/as-layouts/as-layouts.module';
+import { HomeDialog } from './home.component';
 
 @NgModule({
   imports: [TimesheetSharedModule, RouterModule.forChild([HOME_ROUTE]), ReactiveFormsModule, AsLayoutsModule],
-  declarations: [HomeComponent, TimetableComponent, DateFormComponent, TwoDigitsDirective, YearMonthSelectComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  declarations: [HomeComponent, TimetableComponent, DateFormComponent, TwoDigitsDirective, YearMonthSelectComponent, HomeDialog],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  entryComponents: [HomeDialog]
 })
 export class TimesheetHomeModule {}

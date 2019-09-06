@@ -115,7 +115,8 @@ export class TimetableComponent implements OnInit {
     this.workingEntries.push(workingEntry);
     this.workingEntries = this.sortData(this.workingEntries);
     this.workingEntriesUnfiltered = this.workingEntries;
-    this.DSworkingEntries = new MatTableDataSource(this.workingEntries);
+    //this.DSworkingEntries = new MatTableDataSource(this.workingEntries);
+    this.DSworkingEntries.connect().next(this.workingEntries);
     this.cdr.detectChanges(); //necessary fot pagination & sort -wait until initialization
     this.DSworkingEntries.paginator = this.paginator;
     this.DSworkingEntries.sort = this.sort;
