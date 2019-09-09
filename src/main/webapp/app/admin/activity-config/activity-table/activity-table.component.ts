@@ -16,7 +16,7 @@ export class ActivityTableComponent implements OnInit {
 
   datasource: MatTableDataSource<IActivityTimesheet>;
 
-  displayedColumns = ['id', 'name', 'description', 'absence', 'fillDay', 'reduce', 'edit', 'actions'];
+  displayedColumns = ['id', 'name', 'description', 'absence', 'fillDay', 'reduce', 'actions'];
 
   @ViewChild(MatTable, { static: false }) table: MatTable<any>;
 

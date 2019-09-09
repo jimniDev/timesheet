@@ -15,7 +15,7 @@ export class RoleTableComponent implements OnInit {
   [x: string]: any;
   roles: IRoleTimesheet[];
   datasource: MatTableDataSource<IRoleTimesheet>; // = new MatTableDataSource<IRoleTimesheet>();
-  displayedColumns: string[] = ['id', 'name', 'description', 'activities', 'action_edit', 'actions'];
+  displayedColumns: string[] = ['id', 'name', 'description', 'activities', 'actions'];
 
   @ViewChild(MatTable, { static: false }) table: MatTable<any>;
 
