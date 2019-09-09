@@ -13,12 +13,20 @@
   </ng-container>
   <ng-container matColumnDef="activities">
     <th mat-header-cell *matHeaderCellDef>Activities</th>
-    <td mat-cell *matCellDef="let role">{{role.activities.join(', ')}}</td>
+    <td mat-cell *matCellDef="let role"><mat-list-item *ngFor="let activity of role.activities">
+         {{activity.name}}
+   </mat-list-item></td>
+    <!-- <td mat-cell *matCellDef="let role">{{role.activities.join(', ')}}</td> -->
+  </ng-container>
+  <ng-container matColumnDef="action_edit">
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let role"><button mat-button color="primary" (click)="editRoleDialog(role)">Edit</button></td> 
   </ng-container>
   <ng-container matColumnDef="actions">
     <th mat-header-cell *matHeaderCellDef>Actions</th>
-    <td mat-cell *matCellDef="let role"><button mat-button color="warn" (click)="deleteRole(role)">Delete</button></td>
+    <td mat-cell *matCellDef="let role"><button mat-button color="warn" (click)="deleteRole(role)">Delete</button></td> 
   </ng-container>
+  
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 </table>
