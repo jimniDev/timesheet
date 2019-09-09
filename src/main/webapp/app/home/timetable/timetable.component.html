@@ -3,6 +3,10 @@
         <jhi-year-month-select [dates]="getDatesFromWorkingEntries()" (selectedDate)="filterTimeTable($event)"></jhi-year-month-select>
     </mat-card>
     <mat-card>
+            <mat-card-subtitle>Export PDF</mat-card-subtitle>
+            <mat-card-content><button type="button" mat-flat-button color="primary" (click)="createPDF()">Export PDF</button></mat-card-content>
+        </mat-card>
+    <mat-card>
         <mat-card-subtitle>Target Time</mat-card-subtitle>
         <mat-card-content>{{targetTime}}</mat-card-content>
     </mat-card>

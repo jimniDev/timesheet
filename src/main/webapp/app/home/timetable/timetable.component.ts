@@ -8,6 +8,7 @@ import { Moment } from 'moment';
 import { MatPaginator } from '@angular/material';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { PdfService } from 'app/shared/pdf/pdf.service';
 
 @Component({
   selector: 'jhi-timetable',
@@ -35,7 +36,8 @@ export class TimetableComponent implements OnInit {
   constructor(
     private workingEntryService: WorkingEntryTimesheetService,
     private employeeService: EmployeeTimesheetService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private pdfSerice: PdfService
   ) {}
 
   ngOnInit() {
@@ -62,6 +64,10 @@ export class TimetableComponent implements OnInit {
   //     }
   //   });
   // }
+
+  createPDF(): void {
+    this.pdfSerice.createPDF(this.workingEntries);
+  }
 
   loadTargetWorkTime(year: number, month: number) {
     this.employeeService.targetWorkTime(year, month).subscribe(res => {

@@ -29,6 +29,8 @@
     "bootswatch": "4.3.1",
     "core-js": "3.1.3",
     "hammerjs": "^2.0.8",
+    "jspdf": "^1.5.3",
+    "jspdf-autotable": "^3.2.4",
     "moment": "2.24.0",
     "ng-jhipster": "0.10.1",
     "ngx-cookie": "4.0.2",
