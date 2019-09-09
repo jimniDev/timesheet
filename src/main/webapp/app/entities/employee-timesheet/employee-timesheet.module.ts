@@ -14,6 +14,7 @@ import {
   employeePopupRoute
 } from './';
 import { AsLayoutsModule } from 'app/as-layouts/as-layouts.module';
+import { EmployeeTimeSheetWeeklyDialogComponent } from './employee-time-sheet-weekly-dialog-component';
 
 const ENTITY_STATES = [...employeeRoute, ...employeePopupRoute];
 
@@ -24,13 +25,15 @@ const ENTITY_STATES = [...employeeRoute, ...employeePopupRoute];
     EmployeeTimesheetDetailComponent,
     EmployeeTimesheetUpdateComponent,
     EmployeeTimesheetDeleteDialogComponent,
-    EmployeeTimesheetDeletePopupComponent
+    EmployeeTimesheetDeletePopupComponent,
+    EmployeeTimeSheetWeeklyDialogComponent
   ],
   entryComponents: [
     EmployeeTimesheetComponent,
     EmployeeTimesheetUpdateComponent,
     EmployeeTimesheetDeleteDialogComponent,
-    EmployeeTimesheetDeletePopupComponent
+    EmployeeTimesheetDeletePopupComponent,
+    EmployeeTimeSheetWeeklyDialogComponent
   ],
   providers: [{ provide: JhiLanguageService, useClass: JhiLanguageService }],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
