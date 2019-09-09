@@ -28,8 +28,9 @@ export class ActivityEditDialogComponent implements OnInit {
     this.data.activity.name = this.activityeditForm.value.name;
     this.data.activity.description = this.activityeditForm.value.description;
     this.data.activity.absence = this.activityeditForm.value.absence;
-    this.data.activity.fillday = this.activityeditForm.value.fillday;
+    this.data.activity.fillDay = this.activityeditForm.value.fillday;
     this.data.activity.reduce = this.activityeditForm.value.reduce;
+
     // this.roleService.update(this.data.role);
     this.activityService.update(this.data.activity).subscribe(res => {
       if (res.ok) {
