@@ -18,6 +18,7 @@ import { ActivityTimesheetService } from 'app/entities/activity-timesheet';
 
 export interface DialogData {
   totalBreakMinutes: number;
+  newWorkingEntry: IWorkingEntryTimesheet;
 }
 
 @Component({
@@ -34,6 +35,8 @@ export class HomeComponent implements OnInit {
   role: string;
   activity: string;
   totalBreakMinutes: number;
+  activities: IActivityTimesheet[];
+  newWorkingEntry: IWorkingEntryTimesheet;
 
   @Input() btnColors = 'primary';
   @ViewChild(TimetableComponent, { static: false })
@@ -43,6 +46,7 @@ export class HomeComponent implements OnInit {
     private accountService: AccountService,
     private loginService: LoginService,
     private workingEntryService: WorkingEntryTimesheetService,
+    private activityService: ActivityTimesheetService,
     public dialog: MatDialog
   ) {}
 
@@ -84,14 +88,14 @@ export class HomeComponent implements OnInit {
 
   startStop() {
     if (this.started) {
+      this.openDialog();
       this.workingEntryService.end().subscribe(res => {
         if (res.ok) {
           let workingEntry = <IWorkingEntryTimesheet>res.body;
-          this.openDialog(workingEntry);
+          this.totalBreakMinutes = workingEntry.workDay.totalBreakMinutes;
           let indexToUpdate = this.timetableComponent.DSworkingEntries.data.findIndex(we => we.id == workingEntry.id);
           this.timetableComponent.DSworkingEntries.data[indexToUpdate] = workingEntry;
           this.timetableComponent.DSworkingEntries._updateChangeSubscription();
-          this.totalBreakMinutes = workingEntry.workDay.totalBreakMinutes;
 
           this.startBtnName = 'Start';
           this.started = false;
@@ -103,6 +107,7 @@ export class HomeComponent implements OnInit {
         if (res.ok) {
           let workingEntry = <IWorkingEntryTimesheet>res.body;
           this.timetableComponent.addNewandSort(workingEntry);
+          this.newWorkingEntry = workingEntry;
           this.startBtnName = 'Stop';
           this.started = true;
           this.btnColors = 'warn';
@@ -111,24 +116,22 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  openDialog(workingEntry: IWorkingEntryTimesheet): void {
+  openDialog(): void {
     const dialogConfig = new MatDialogConfig(); //configure the dialog with a set of default behaviors
 
     dialogConfig.disableClose = true; //user will not be able to close the dialog just by clicking outside of it
     dialogConfig.autoFocus = true; //ocus will be set automatically on the first form field of the dialog
     dialogConfig.data = {
+      newWorkingEntry: this.newWorkingEntry,
       totalBreakMinutes: this.totalBreakMinutes
     };
 
-    this.dialog.open(HomeDialog, dialogConfig);
+    //this.dialog.open(HomeDialog, dialogConfig);
     const dialogRef = this.dialog.open(HomeDialog, dialogConfig);
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed', result);
-      workingEntry.workDay.totalBreakMinutes += result.addBreakControl;
-
-      let activity: ActivityTimesheet = new ActivityTimesheet();
-      //workingEntry.activity = result.activityControl
+      if (result) {
+      }
     });
   }
 }
@@ -153,7 +156,8 @@ export class HomeDialog {
     public dialogRef: MatDialogRef<HomeDialog>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private activityService: ActivityTimesheetService,
-    private roleService: RoleTimesheetService
+    private roleService: RoleTimesheetService,
+    private workingEntryService: WorkingEntryTimesheetService
   ) {}
 
   ngOnInit() {
@@ -171,7 +175,24 @@ export class HomeDialog {
   }
 
   save() {
-    this.dialogRef.close(this.modalForm.value);
+    this.workingEntryService.active().subscribe(res => {
+      if (res.ok) {
+        let finishEntry = <IWorkingEntryTimesheet>res.body;
+        finishEntry.workDay.totalBreakMinutes += this.modalForm.value.addBreakControl;
+        let activity: ActivityTimesheet = new ActivityTimesheet();
+        this.activities.forEach(a => {
+          if (a.id == this.modalForm.value.activityControl.id) {
+            activity = a;
+          }
+        });
+        finishEntry.activity = activity;
+        this.workingEntryService.update(finishEntry).subscribe(res => {
+          if (res.ok) {
+            this.dialogRef.close();
+          }
+        });
+      }
+    });
   }
 
   onNoClick(): void {
