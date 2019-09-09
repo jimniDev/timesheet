@@ -137,11 +137,26 @@ public class EmployeeService {
     	}
     }
     
+    @Transactional(readOnly = true)
     public int targetWorkTime(Principal principal, int year, int month) {
     	Employee employee = this.findOneByUsername(principal.getName()).get();
     	YearMonth yearMonth = YearMonth.of(year, month);
     	return yearMonth.atDay(1).datesUntil(yearMonth.atEndOfMonth())
     	.filter(date -> !date.getDayOfWeek().equals(DayOfWeek.SATURDAY) && !date.getDayOfWeek().equals(DayOfWeek.SUNDAY))
-    	.map(workDay -> getTargetWorkMinutesForDate(employee, workDay)).reduce(0, Integer::sum);
+    	.map(workDay -> getTargetWorkMinutesForDate(employee, workDay))
+    	.reduce(0, Integer::sum);
+    }
+    
+    @Transactional(readOnly = true)
+    public long getWorkTimeMinutes(Principal principal, int year, int month) {
+    	Optional<Employee> employee = this.findOneByUsername(principal.getName());
+    	if (employee.isPresent()) {
+    		return employee.get().getWorkDays().stream()
+    				.filter(wd -> wd.getDate().getYear() == year && wd.getDate().getMonthValue() == month)
+    				.map(wd -> wd.getTotalWorkingMinutes())
+    				.reduce(0L, Long::sum);
+    	} else {
+    		return 0L;
+    	}
     }
 }

@@ -48,4 +48,8 @@ export class EmployeeTimesheetService {
   targetWorkTime(year: number, month: number) {
     return this.http.get<number>(this.resourceUrl + '/me/target-work-time/' + year + '/' + month, { observe: 'response' });
   }
+
+  actualWorkTime(year: number, month: number) {
+    return this.http.get<number>(this.resourceUrl + '/me/work-time/' + year + '/' + month, { observe: 'response' });
+  }
 }

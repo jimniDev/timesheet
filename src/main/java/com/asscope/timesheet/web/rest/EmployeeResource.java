@@ -144,8 +144,15 @@ public class EmployeeResource {
     }
     
     @GetMapping({"/employees/me/target-work-time/{year}/{month}"})
-    public ResponseEntity<Integer> getWorktimeInformation(Principal principal, @PathVariable("year") Integer year, @PathVariable("month") Integer month) {
+    public ResponseEntity<Integer> getTargetWorktimeInformation(Principal principal, @PathVariable("year") Integer year, @PathVariable("month") Integer month) {
     	log.debug("REST request to get worktimeInformation for Employee : {}", principal.getName());
     	return ResponseEntity.ok().body(employeeService.targetWorkTime(principal, year, month));
     }
+    
+    @GetMapping({"/employees/me/work-time/{year}/{month}"})
+    public ResponseEntity<Long> getWorktimeInformation(Principal principal, @PathVariable("year") Integer year, @PathVariable("month") Integer month) {
+    	log.debug("REST request to get worktime in minutes for Employee : {}", principal.getName());
+    	return ResponseEntity.ok().body(employeeService.getWorkTimeMinutes(principal, year, month));
+    }
+    
 }
