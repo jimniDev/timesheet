@@ -40,24 +40,23 @@
     <form [formGroup]="modalForm">
         <mat-form-field>
         <mat-label>Role</mat-label>
-        <select matNativeControl class="form-control" formControlName="roleControl">
-            <option label="--select role-"></option>
-            <option value="role1">role1</option>
-            <option value="role">role2</option>
-            <option value="role3">role3</option>
-        </select>
+        <mat-select matNativeControl formControlName="roleControl" required
+            (ngModelChange)="onChangeRole($event)">
+            <mat-option *ngFor="let role of roles" [value]="role">
+                {{role.name}}
+            </mat-option>
+        </mat-select>
         </mat-form-field>
-
+    
         <mat-form-field>
         <mat-label>Activity</mat-label>
-        <select matNativeControl class="form-control" formControlName="activityControl">
-            <option label="--select activity--"></option>
-            <option value="activity1">activity1</option>
-            <option value="ativity2">activity2</option>
-            <option value="ativity3">activity3</option>
-        </select>
+        <mat-select matNativeControl formControlName="activityControl" required>
+            <mat-option *ngFor="let activity of selectableActivities" [value]="activity">
+                {{activity.name}}
+            </mat-option>
+        </mat-select>
         </mat-form-field>
-        
+
         <mat-label>Break Minutes : </mat-label>
         <mat-label>{{data.totalBreakMinutes}}</mat-label>
         <button mat-stroked-button color="primary" type="button" (click)="onClickAddBreak()">add Break Minutes</button>

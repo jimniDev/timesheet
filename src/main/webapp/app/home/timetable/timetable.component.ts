@@ -8,6 +8,7 @@ import { Moment } from 'moment';
 import { MatPaginator } from '@angular/material';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { ActivityTimesheet } from 'app/shared/model/activity-timesheet.model';
 
 @Component({
   selector: 'jhi-timetable',
@@ -145,7 +146,7 @@ export class TimetableComponent implements OnInit {
       const sum = Math.abs((date1 - date2) / 1000);
       const hour = Math.round(sum / 3600);
       const min = Math.round((sum % 3600) / 60);
-      return this.pad(hour, 2) + ' : ' + this.pad(min, 2);
+      return this.pad(hour, 2) + 'h ' + this.pad(min, 2) + 'm';
     } else {
       return null;
     }
@@ -179,5 +180,13 @@ export class TimetableComponent implements OnInit {
       return this.workingEntriesUnfiltered.map(we => we.workDay.date);
     }
     return null;
+  }
+
+  loadActivity(activity: ActivityTimesheet): string {
+    if (activity) {
+      return activity.name;
+    } else {
+      return null;
+    }
   }
 }

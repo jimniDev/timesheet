@@ -11,10 +11,12 @@ import { DateFormComponent } from './date-form/date-form.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig } from '@angular/material';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { IActivityTimesheet, ActivityTimesheet } from 'app/shared/model/activity-timesheet.model';
+import { IRoleTimesheet } from 'app/shared/model/role-timesheet.model';
+import { RoleTimesheetService } from 'app/entities/role-timesheet';
+import { ActivityTimesheetService } from 'app/entities/activity-timesheet';
 
 export interface DialogData {
-  // role: string;
-  // activity: string;
   totalBreakMinutes: number;
 }
 
@@ -85,11 +87,12 @@ export class HomeComponent implements OnInit {
       this.workingEntryService.end().subscribe(res => {
         if (res.ok) {
           let workingEntry = <IWorkingEntryTimesheet>res.body;
+          this.openDialog(workingEntry);
           let indexToUpdate = this.timetableComponent.DSworkingEntries.data.findIndex(we => we.id == workingEntry.id);
           this.timetableComponent.DSworkingEntries.data[indexToUpdate] = workingEntry;
           this.timetableComponent.DSworkingEntries._updateChangeSubscription();
           this.totalBreakMinutes = workingEntry.workDay.totalBreakMinutes;
-          this.openDialog();
+
           this.startBtnName = 'Start';
           this.started = false;
           this.btnColors = 'primary';
@@ -108,15 +111,13 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  openDialog(): void {
+  openDialog(workingEntry: IWorkingEntryTimesheet): void {
     const dialogConfig = new MatDialogConfig(); //configure the dialog with a set of default behaviors
 
     dialogConfig.disableClose = true; //user will not be able to close the dialog just by clicking outside of it
     dialogConfig.autoFocus = true; //ocus will be set automatically on the first form field of the dialog
     dialogConfig.data = {
-      role: this.role,
-      activity: this.activity,
-      totalBreakMinute: this.totalBreakMinutes
+      totalBreakMinutes: this.totalBreakMinutes
     };
 
     this.dialog.open(HomeDialog, dialogConfig);
@@ -124,7 +125,10 @@ export class HomeComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed', result);
-      this.totalBreakMinutes += result.addBreakControl.value;
+      workingEntry.workDay.totalBreakMinutes += result.addBreakControl;
+
+      let activity: ActivityTimesheet = new ActivityTimesheet();
+      //workingEntry.activity = result.activityControl
     });
   }
 }
@@ -141,8 +145,30 @@ export class HomeDialog {
   });
 
   openform: boolean = false;
+  activities: IActivityTimesheet[];
+  roles: IRoleTimesheet[];
+  selectableActivities: IActivityTimesheet[];
 
-  constructor(public dialogRef: MatDialogRef<HomeDialog>, @Inject(MAT_DIALOG_DATA) public data: DialogData) {}
+  constructor(
+    public dialogRef: MatDialogRef<HomeDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    private activityService: ActivityTimesheetService,
+    private roleService: RoleTimesheetService
+  ) {}
+
+  ngOnInit() {
+    this.roleService.query().subscribe((res: HttpResponse<IRoleTimesheet[]>) => {
+      if (res.ok) {
+        this.roles = res.body;
+      }
+    });
+    this.activityService.query().subscribe((res: HttpResponse<IActivityTimesheet[]>) => {
+      if (res.ok) {
+        this.activities = res.body;
+        this.selectableActivities = this.activities;
+      }
+    });
+  }
 
   save() {
     this.dialogRef.close(this.modalForm.value);
@@ -154,5 +180,11 @@ export class HomeDialog {
 
   onClickAddBreak() {
     this.openform = true;
+  }
+
+  onChangeRole(role: IRoleTimesheet) {
+    if (role) {
+      this.selectableActivities = role.activities;
+    }
   }
 }
