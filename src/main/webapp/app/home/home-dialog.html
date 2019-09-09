@@ -1,0 +1,78 @@
+<!-- <div class="modal-header">
+    <h4 class="modal-title">Choose your Role and Activity</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <div class="form-group">
+        <mat-label>Role</mat-label>
+        <select matNativeControl class="form-control">
+            <option label="--select activity--"></option>
+            <option value="activity1">activity1</option>
+            <option value="ativity2">activity2</option>
+            <option value="ativity3">activity3</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <mat-label>Activity</mat-label>
+        <select matNativeControl class="form-control">
+            <option label="--select activity--"></option>
+            <option value="activity1">activity1</option>
+            <option value="ativity2">activity2</option>
+            <option value="ativity3">activity3</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <mat-label>Break Minutes : </mat-label>
+        <mat-label>{{totalBreakMinutes}}</mat-label>
+        <button class="btn btn-light">add Break Minutes</button>
+    </div>
+
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Save</button>
+</div> -->
+
+<h4 mat-dialog-title>Choose your Role and Activity</h4>
+
+<div mat-dialog-content>
+    <form [formGroup]="modalForm">
+        <mat-form-field>
+        <mat-label>Role</mat-label>
+        <mat-select matNativeControl formControlName="roleControl" required
+            (ngModelChange)="onChangeRole($event)">
+            <mat-option *ngFor="let role of roles" [value]="role">
+                {{role.name}}
+            </mat-option>
+        </mat-select>
+        </mat-form-field>
+    
+        <mat-form-field>
+        <mat-label>Activity</mat-label>
+        <mat-select matNativeControl formControlName="activityControl" required>
+            <mat-option *ngFor="let activity of selectableActivities" [value]="activity">
+                {{activity.name}}
+            </mat-option>
+        </mat-select>
+        </mat-form-field>
+
+        <mat-label>Break Minutes : </mat-label>
+        <mat-label>{{data.totalBreakMinutes}}</mat-label>
+        <button mat-stroked-button color="primary" type="button" (click)="onClickAddBreak()">add Break Minutes</button>
+        <div [hidden]="!openform">
+            <mat-form-field>
+                <mat-label>add Break Minutes</mat-label>
+                <input matInput placeholder="MM" class="form-control" formControlName="addBreakControl">
+                <mat-icon matSuffix>alarm</mat-icon>
+            </mat-form-field>
+        </div>
+        <!-- </mat-form-field> -->
+
+    </form>
+</div>
+
+<div mat-dialog-actions>
+  <button mat-button type="button" (click)="onNoClick()">No Thanks</button>
+  <button mat-button color="primary" type="button" (click)="save()">Ok</button>
+</div> 
