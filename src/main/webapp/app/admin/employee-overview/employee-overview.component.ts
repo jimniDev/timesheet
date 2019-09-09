@@ -22,7 +22,7 @@ export class EmployeeOverviewComponent implements OnInit {
     });
   }
 
-  getActualWeeklyWorkingHours(employee: IEmployeeTimesheet): number {
+  getActualWeeklyWorkingHours(employee: IEmployeeTimesheet): string {
     let workingHours: WeeklyWorkingHoursTimesheet = null;
     for (let wwH of employee.weeklyWorkingHours) {
       if (workingHours === null) {
@@ -34,7 +34,7 @@ export class EmployeeOverviewComponent implements OnInit {
     if (workingHours.hours) {
       return workingHours.hours;
     } else {
-      return 0;
+      return '0';
     }
   }
 }
