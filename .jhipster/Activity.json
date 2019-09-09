@@ -35,6 +35,11 @@
         {
             "fieldName": "fillDay",
             "fieldType": "Boolean"
+        },
+        {
+            "fieldName": "reduce",
+            "fieldType": "Boolean",
+            "fieldValidateRules": []
         }
     ],
     "changelogDate": "20190726193529",

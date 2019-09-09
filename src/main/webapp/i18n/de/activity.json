@@ -20,6 +20,7 @@
       "description": "Description",
       "absence": "Absence",
       "fillDay": "Fill Day",
+      "reduce": "Reduce",
       "workingEntry": "Working Entry",
       "role": "Role"
     }

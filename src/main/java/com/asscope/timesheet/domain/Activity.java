@@ -38,11 +38,14 @@ public class Activity implements Serializable {
     @Column(name = "fill_day")
     private Boolean fillDay;
 
+    @Column(name = "reduce")
+    private Boolean reduce;
+
     @OneToMany(mappedBy = "activity")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<WorkingEntry> workingEntries = new HashSet<>();
 
-    @ManyToMany(mappedBy = "activities", fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "activities")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JsonIgnore
     private Set<Role> roles = new HashSet<>();
@@ -106,6 +109,19 @@ public class Activity implements Serializable {
 
     public void setFillDay(Boolean fillDay) {
         this.fillDay = fillDay;
+    }
+
+    public Boolean isReduce() {
+        return reduce;
+    }
+
+    public Activity reduce(Boolean reduce) {
+        this.reduce = reduce;
+        return this;
+    }
+
+    public void setReduce(Boolean reduce) {
+        this.reduce = reduce;
     }
 
     public Set<WorkingEntry> getWorkingEntries() {
@@ -183,6 +199,7 @@ public class Activity implements Serializable {
             ", description='" + getDescription() + "'" +
             ", absence='" + isAbsence() + "'" +
             ", fillDay='" + isFillDay() + "'" +
+            ", reduce='" + isReduce() + "'" +
             "}";
     }
 }
