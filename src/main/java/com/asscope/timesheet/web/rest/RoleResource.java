@@ -3,8 +3,6 @@ package com.asscope.timesheet.web.rest;
 import com.asscope.timesheet.domain.Role;
 import com.asscope.timesheet.service.RoleService;
 import com.asscope.timesheet.web.rest.errors.BadRequestAlertException;
-import com.asscope.timesheet.service.dto.RoleCriteria;
-import com.asscope.timesheet.service.RoleQueryService;
 
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -37,11 +35,8 @@ public class RoleResource {
 
     private final RoleService roleService;
 
-    private final RoleQueryService roleQueryService;
-
-    public RoleResource(RoleService roleService, RoleQueryService roleQueryService) {
+    public RoleResource(RoleService roleService) {
         this.roleService = roleService;
-        this.roleQueryService = roleQueryService;
     }
 
     /**
@@ -91,9 +86,9 @@ public class RoleResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of roles in body.
      */
     @GetMapping("/roles")
-    public ResponseEntity<List<Role>> getAllRoles(RoleCriteria criteria) {
-        log.debug("REST request to get Roles by criteria: {}", criteria);
-        List<Role> entityList = roleQueryService.findByCriteria(criteria);
+    public ResponseEntity<List<Role>> getAllRoles() {
+        log.debug("REST request to get Roles by criteria: {}");
+        List<Role> entityList = roleService.findAll();
         return ResponseEntity.ok().body(entityList);
     }
 
@@ -103,11 +98,11 @@ public class RoleResource {
     * @param criteria the criteria which the requested entities should match.
     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
     */
-    @GetMapping("/roles/count")
-    public ResponseEntity<Long> countRoles(RoleCriteria criteria) {
-        log.debug("REST request to count Roles by criteria: {}", criteria);
-        return ResponseEntity.ok().body(roleQueryService.countByCriteria(criteria));
-    }
+//    @GetMapping("/roles/count")
+//    public ResponseEntity<Long> countRoles(RoleCriteria criteria) {
+//        log.debug("REST request to count Roles by criteria: {}", criteria);
+//        return ResponseEntity.ok().body(roleQueryService.countByCriteria(criteria));
+//    }
 
     /**
      * {@code GET  /roles/:id} : get the "id" role.

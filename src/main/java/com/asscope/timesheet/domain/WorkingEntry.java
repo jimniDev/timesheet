@@ -1,6 +1,8 @@
 package com.asscope.timesheet.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -9,6 +11,7 @@ import javax.validation.constraints.*;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.Optional;
 
 /**
  * A WorkingEntry.
@@ -55,11 +58,22 @@ public class WorkingEntry extends AbstractAuditingEntity implements Serializable
     @JsonIgnoreProperties("workingEntries")
     private Location location;
     
+    @JsonProperty("workingTimeInSeconds")
     public Long getWorkingTimeInSeconds() {
-    	if(this.isCompleted()) {
+    	if(this.isCompleted() && (this.activity == null  || !this.activity.isFillDay())) {
         	return end.getEpochSecond() - start.getEpochSecond();
-    	}
-    	else {
+    	} else if(this.isCompleted() && this.activity.isFillDay()) {
+    		long targetWorkMinutes = 0L;
+    		Optional<Integer> oTargetWorkMinutes = this.workDay.getTargetWorkminutes();
+    		if(oTargetWorkMinutes.isPresent()) {
+    			targetWorkMinutes = oTargetWorkMinutes.get();
+    		}
+    		return targetWorkMinutes * 60 - workDay.getWorkingEntries()
+    				.stream()
+    				.filter(we -> we.isValid() && we.id != this.id)
+    				.map(we -> we.getWorkingTimeInSeconds())
+    				.reduce(0L, Long::sum);
+    	} else {
     		return 0L;
     	}
     }

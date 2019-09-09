@@ -7,8 +7,6 @@ import com.asscope.timesheet.domain.Location;
 import com.asscope.timesheet.repository.CountryRepository;
 import com.asscope.timesheet.service.CountryService;
 import com.asscope.timesheet.web.rest.errors.ExceptionTranslator;
-import com.asscope.timesheet.service.dto.CountryCriteria;
-import com.asscope.timesheet.service.CountryQueryService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,9 +46,6 @@ public class CountryResourceIT {
     private CountryService countryService;
 
     @Autowired
-    private CountryQueryService countryQueryService;
-
-    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Autowired
@@ -72,7 +67,7 @@ public class CountryResourceIT {
     @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final CountryResource countryResource = new CountryResource(countryService, countryQueryService);
+        final CountryResource countryResource = new CountryResource(countryService);
         this.restCountryMockMvc = MockMvcBuilders.standaloneSetup(countryResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)

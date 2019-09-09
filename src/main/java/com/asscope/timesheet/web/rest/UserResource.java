@@ -5,7 +5,6 @@ import com.asscope.timesheet.security.AuthoritiesConstants;
 import com.asscope.timesheet.service.UserService;
 import com.asscope.timesheet.service.dto.UserDTO;
 
-import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 

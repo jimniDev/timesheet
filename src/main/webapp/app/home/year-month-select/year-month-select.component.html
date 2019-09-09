@@ -1,14 +1,21 @@
-<div class="row">
-  <div class="col-2"></div>
-  <div class="col-4">
-      <select class="form-control" [ngModel]="selectedYear" (ngModelChange)="onChangeYear($event)" >
-          <option [value]="year" *ngFor="let year of getDistinctYears()">{{year}}</option>
-      </select>
-  </div>
-  <div class="col-4">
-      <select class="form-control"  [ngModel]="selectedMonth" (ngModelChange)="onChangeMonth($event)" >
-          <option [value]="month" *ngFor="let month of getDistinctMonthsFromYear()">{{month}}</option>
-      </select>
-  </div>
-  <div class="col-2"></div>
+<div fxLayout="row" fxLayoutAlign="center stretch" fxLayout.xs="column" fxLayoutGap="8px" class="container">
+    <mat-form-field fxFlex="45">
+        <mat-label>Year</mat-label>
+        <mat-select [ngModel]="selectedYear" (ngModelChange)="onChangeYear($event)">
+            <mat-option *ngFor="let year of getDistinctYears()" [value]="year">
+                {{year}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field fxFlex="45">
+        <mat-label>Month</mat-label>
+        <mat-select [ngModel]="selectedMonth" (ngModelChange)="onChangeMonth($event)">
+            <mat-option *ngFor="let month of getDistinctMonthsFromYear()" [value]="month">
+                {{month}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <button mat-button type="button" color="primary" (click)="resetFilter()" [disabled]="resetButtonDisabled? true : null">Reset</button>
 </div>

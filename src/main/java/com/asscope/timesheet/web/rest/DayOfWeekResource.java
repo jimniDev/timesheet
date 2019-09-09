@@ -3,8 +3,6 @@ package com.asscope.timesheet.web.rest;
 import com.asscope.timesheet.domain.DayOfWeek;
 import com.asscope.timesheet.service.DayOfWeekService;
 import com.asscope.timesheet.web.rest.errors.BadRequestAlertException;
-import com.asscope.timesheet.service.dto.DayOfWeekCriteria;
-import com.asscope.timesheet.service.DayOfWeekQueryService;
 
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -37,11 +35,8 @@ public class DayOfWeekResource {
 
     private final DayOfWeekService dayOfWeekService;
 
-    private final DayOfWeekQueryService dayOfWeekQueryService;
-
-    public DayOfWeekResource(DayOfWeekService dayOfWeekService, DayOfWeekQueryService dayOfWeekQueryService) {
+    public DayOfWeekResource(DayOfWeekService dayOfWeekService) {
         this.dayOfWeekService = dayOfWeekService;
-        this.dayOfWeekQueryService = dayOfWeekQueryService;
     }
 
     /**
@@ -91,9 +86,9 @@ public class DayOfWeekResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of dayOfWeeks in body.
      */
     @GetMapping("/day-of-weeks")
-    public ResponseEntity<List<DayOfWeek>> getAllDayOfWeeks(DayOfWeekCriteria criteria) {
-        log.debug("REST request to get DayOfWeeks by criteria: {}", criteria);
-        List<DayOfWeek> entityList = dayOfWeekQueryService.findByCriteria(criteria);
+    public ResponseEntity<List<DayOfWeek>> getAllDayOfWeeks() {
+        log.debug("REST request to get all DayOfWeeks");
+        List<DayOfWeek> entityList = dayOfWeekService.findAll();
         return ResponseEntity.ok().body(entityList);
     }
 
@@ -103,11 +98,11 @@ public class DayOfWeekResource {
     * @param criteria the criteria which the requested entities should match.
     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
     */
-    @GetMapping("/day-of-weeks/count")
-    public ResponseEntity<Long> countDayOfWeeks(DayOfWeekCriteria criteria) {
-        log.debug("REST request to count DayOfWeeks by criteria: {}", criteria);
-        return ResponseEntity.ok().body(dayOfWeekQueryService.countByCriteria(criteria));
-    }
+//    @GetMapping("/day-of-weeks/count")
+//    public ResponseEntity<Long> countDayOfWeeks(DayOfWeekCriteria criteria) {
+//        log.debug("REST request to count DayOfWeeks by criteria: {}", criteria);
+//        return ResponseEntity.ok().body(dayOfWeekQueryService.countByCriteria(criteria));
+//    }
 
     /**
      * {@code GET  /day-of-weeks/:id} : get the "id" dayOfWeek.

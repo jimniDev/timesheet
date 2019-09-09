@@ -3,9 +3,6 @@ package com.asscope.timesheet.web.rest;
 import com.asscope.timesheet.domain.TargetWorkingDay;
 import com.asscope.timesheet.service.TargetWorkingDayService;
 import com.asscope.timesheet.web.rest.errors.BadRequestAlertException;
-import com.asscope.timesheet.service.dto.TargetWorkingDayCriteria;
-import com.asscope.timesheet.service.TargetWorkingDayQueryService;
-
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
@@ -37,11 +34,8 @@ public class TargetWorkingDayResource {
 
     private final TargetWorkingDayService targetWorkingDayService;
 
-    private final TargetWorkingDayQueryService targetWorkingDayQueryService;
-
-    public TargetWorkingDayResource(TargetWorkingDayService targetWorkingDayService, TargetWorkingDayQueryService targetWorkingDayQueryService) {
+    public TargetWorkingDayResource(TargetWorkingDayService targetWorkingDayService) {
         this.targetWorkingDayService = targetWorkingDayService;
-        this.targetWorkingDayQueryService = targetWorkingDayQueryService;
     }
 
     /**
@@ -91,9 +85,9 @@ public class TargetWorkingDayResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of targetWorkingDays in body.
      */
     @GetMapping("/target-working-days")
-    public ResponseEntity<List<TargetWorkingDay>> getAllTargetWorkingDays(TargetWorkingDayCriteria criteria) {
-        log.debug("REST request to get TargetWorkingDays by criteria: {}", criteria);
-        List<TargetWorkingDay> entityList = targetWorkingDayQueryService.findByCriteria(criteria);
+    public ResponseEntity<List<TargetWorkingDay>> getAllTargetWorkingDays() {
+        log.debug("REST request to get all TargetWorkingDays.");
+        List<TargetWorkingDay> entityList = targetWorkingDayService.findAll();
         return ResponseEntity.ok().body(entityList);
     }
 
@@ -103,11 +97,11 @@ public class TargetWorkingDayResource {
     * @param criteria the criteria which the requested entities should match.
     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
     */
-    @GetMapping("/target-working-days/count")
-    public ResponseEntity<Long> countTargetWorkingDays(TargetWorkingDayCriteria criteria) {
-        log.debug("REST request to count TargetWorkingDays by criteria: {}", criteria);
-        return ResponseEntity.ok().body(targetWorkingDayQueryService.countByCriteria(criteria));
-    }
+//    @GetMapping("/target-working-days/count")
+//    public ResponseEntity<Long> countTargetWorkingDays(TargetWorkingDayCriteria criteria) {
+//        log.debug("REST request to count TargetWorkingDays by criteria: {}", criteria);
+//        return ResponseEntity.ok().body(targetWorkingDayQueryService.countByCriteria(criteria));
+//    }
 
     /**
      * {@code GET  /target-working-days/:id} : get the "id" targetWorkingDay.

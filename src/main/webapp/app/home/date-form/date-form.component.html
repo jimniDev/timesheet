@@ -1,67 +1,43 @@
-
 <form [formGroup]="timeForm" (ngSubmit)="onSubmit()">
-  <div class="form-row">
-          <div class="form-group" style="float: none; margin: 0 auto;">
-            <mat-label>Date</mat-label>
-            <div class="input-group">
-              <input class="form-control" placeholder="yyyy-mm-dd" formControlName="date"
-                     name="dp" [(ngModel)]="datepic" value="date" ngbDatepicker #d="ngbDatepicker" required>
-              <div class="input-group-append">
-                <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button"></button>
-              </div>
-              <button class="btn btn-sm btn-outline-primary today" (click)="datepic = today">Select Today</button>
-            </div>
-          </div>
-        <!-- <pre>Model: {{datepic | date:'yyyy-MM-dd'}}</pre>
-        <pre>Model: {{startString}}</pre> -->
-  </div>
- 
-  <div class="form-row">
-    <mat-label class="col-6">Start Time</mat-label>
-    <mat-label class="col-6">End Time</mat-label>
-    <div class="form-row col-6">
-      <input jhiTwoDigits class="form-control col" placeholder="HH" min="00" max="23" formControlName="startHour" required>
-      <p class="col-1">:</p>
-      <input jhiTwoDigits class="form-control col" placeholder="MM" min="00" max="59" formControlName="startMin" required>
-    </div>
-      <div class="form-row col-6">
-          <input jhiTwoDigits class="form-control col" placeholder="HH" min="0" max="23" formControlName="endHour" required>
-          <p class="col-1">:</p>
-          <input jhiTwoDigits class="form-control col" placeholder="MM" min="00" max="59" formControlName="endMin" required>
-      </div>
-  </div>
-  <div class="form-row">
-    <div class="form-group col-6">
-        <mat-label>Role</mat-label>
-        <select matNativeControl class="form-control" formControlName="roleControl">
-          <!-- <option label="--select role--"></option>
-          <mat-option [value]="roles">
-            {{roles}}
-          </mat-option> -->
-          <option label="--select activity--"></option>
-          <option value="activity1">activity1</option>
-          <option value="ativity2">activity2</option>
-          <option value="ativity3">activity3</option>
-        </select>
-    </div>
-    <div class="form-group col-6">
-        <mat-label>Activity</mat-label>
-        <select matNativeControl class="form-control" formControlName="activityControl">
-          <option label="--select activity--"></option>
-          <option value="activity1">activity1</option>
-          <option value="ativity2">activity2</option>
-          <option value="ativity3">activity3</option>
-        </select>
-    </div>
-  </div>
-  <div class="row" id="btnArea">
-    <div class="col-6">
-      <button class="btn btn-primary" style="float: none; margin: 0 auto;" type="submit" [disabled]="!timeForm.valid">Save</button>
-    </div>
-    <div class="col-6">
-      <ng-content #name select="button"></ng-content>
-    </div>
-  </div> 
+  <mat-form-field>
+    <mat-label>Date</mat-label>
+    <input matInput [matDatepicker]="picker" placeholder="Choose a date" formControlName="date" name="dp"
+      [(ngModel)]="datepic" value="date" required>
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+  <button mat-button type="button" (click)="datepic = today">Select Today</button>
+
+  <mat-form-field class="time">
+    <mat-label>Start Time</mat-label>
+    <as-time-input formControlName="startTime" required></as-time-input>
+    <mat-icon matSuffix >access_time</mat-icon>
+  </mat-form-field>
+
+  <mat-form-field class="time">
+    <mat-label>End Time</mat-label>
+    <as-time-input formControlName="endTime" required></as-time-input>
+    <mat-icon matSuffix>access_time</mat-icon>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Role</mat-label>
+    <select matNativeControl class="form-control" formControlName="roleControl">
+      <option label="--select activity--"></option>
+      <option value="activity1">activity1</option>
+      <option value="ativity2">activity2</option>
+      <option value="ativity3">activity3</option>
+    </select>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Activity</mat-label>
+    <select matNativeControl class="form-control" formControlName="activityControl">
+      <option label="--select activity--"></option>
+      <option value="activity1">activity1</option>
+      <option value="ativity2">activity2</option>
+      <option value="ativity3">activity3</option>
+    </select>
+  </mat-form-field>
+  <button mat-button type="submit" [disabled]="!timeForm.valid">Save</button>
+  <ng-content #name select="button"></ng-content>
 </form>
-
-

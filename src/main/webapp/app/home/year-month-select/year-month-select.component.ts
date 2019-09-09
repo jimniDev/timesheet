@@ -14,6 +14,7 @@ export class YearMonthSelectComponent implements OnInit, OnChanges {
   distinctMonthsOfYear: string[] = new Array<string>();
   selectedYear: string;
   selectedMonth: string;
+  resetButtonDisabled: boolean = true;
 
   constructor() {}
 
@@ -22,17 +23,30 @@ export class YearMonthSelectComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {}
 
   onChangeYear(year: string) {
-    this.selectedYear = year;
-    this.selectedMonth = this.getDistinctMonthsFromYear()[0];
-    this.selectedDate.emit(moment(this.selectedYear + '-' + this.selectedMonth + '-01'));
+    if (year) {
+      this.resetButtonDisabled = false;
+      this.selectedYear = year;
+      this.selectedMonth = this.getDistinctMonthsFromYear()[0];
+      this.selectedDate.emit(moment(this.selectedYear + '-' + this.selectedMonth + '-01'));
+    } else {
+      this.selectedDate.emit(null);
+    }
   }
 
   onChangeMonth(month: string) {
-    this.selectedMonth = month;
-    this.selectedDate.emit(moment(this.selectedYear + '-' + this.selectedMonth + '-01'));
+    if (month) {
+      this.resetButtonDisabled = false;
+      this.selectedMonth = month;
+      this.selectedDate.emit(moment(this.selectedYear + '-' + this.selectedMonth + '-01'));
+    } else {
+      this.selectedDate.emit(null);
+    }
   }
 
   getDistinctYears(): string[] {
+    if (!this.dates) {
+      return;
+    }
     let years: string[] = new Array<string>();
     this.dates.forEach(date => {
       let yearContained: boolean = false;
@@ -49,6 +63,9 @@ export class YearMonthSelectComponent implements OnInit, OnChanges {
   }
 
   getDistinctMonthsFromYear() {
+    if (!this.dates) {
+      return;
+    }
     let months: string[] = new Array<string>();
     this.dates
       .filter(date => date.format('YYYY') === this.selectedYear)
@@ -64,5 +81,12 @@ export class YearMonthSelectComponent implements OnInit, OnChanges {
         }
       });
     return months;
+  }
+
+  resetFilter(): void {
+    this.resetButtonDisabled = true;
+    this.selectedYear = null;
+    this.selectedMonth = null;
+    this.selectedDate.emit(null);
   }
 }

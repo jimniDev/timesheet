@@ -12,6 +12,7 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -62,16 +63,30 @@ public class WorkDay implements Serializable {
     			} 
     		}
     	}
-    	if(fillDay && seconds / 60 < getTargetWorkminutes()) {
-    		return getTargetWorkminutes();
-    	}
     	return seconds / 60;
     }
     
     @JsonProperty("targetWorkingMinutes")
-    public int getTargetWorkminutes() {
-    	return this.employee.getActiveWeeklyWorkingHours().getHours() / 5 * 60;
+    public Optional<Integer> getTargetWorkminutes() {
+    	Optional<WeeklyWorkingHours> wwh = this.getWeeklyWorkingHours();
+    	if(wwh.isPresent()) {
+    		return Optional.of(wwh.get().getHours() / 5 * 60);
+    	} else {
+    		return Optional.empty();
+    	}
     }
+    
+    @JsonProperty("activeWeeklyWorkingHours")
+    public Optional<WeeklyWorkingHours> getWeeklyWorkingHours() {
+    	return this.employee
+    			.getWeeklyWorkingHours()
+    			.stream()
+    			.filter(wwH -> {
+    				return (wwH.getStartDate().isBefore(this.date) || wwH.getStartDate().isEqual(this.date)) 
+    						&& (wwH.getEndDate() == null || wwH.getEndDate().isAfter(this.date));
+    			}).findFirst();
+    }
+    
     
     @JsonProperty("startTime")
     public Instant getStartTime() {

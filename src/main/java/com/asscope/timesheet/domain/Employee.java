@@ -2,7 +2,6 @@ package com.asscope.timesheet.domain;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import com.asscope.timesheet.domain.monthlyInformation.WorktimeInformation;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -63,14 +62,15 @@ public class Employee implements Serializable {
     
     @JsonIgnoreProperties("employee")
     @JsonProperty("activeWeeklyWorkingHours")
-    public WeeklyWorkingHours getActiveWeeklyWorkingHours() {
-    	Optional<WeeklyWorkingHours> maxWWH = this.weeklyWorkingHours.stream().max((wwH1, wwH2) -> wwH1.getStartDate().compareTo(wwH2.getStartDate()));
-    	if (maxWWH.isPresent()) {
-    		return maxWWH.get();
-    	} else {
-    		return null;
-    	}
+    public Optional<WeeklyWorkingHours> getActiveWeeklyWorkingHours() {
+    	return this.weeklyWorkingHours.stream().max((wwH1, wwH2) -> wwH1.getStartDate().compareTo(wwH2.getStartDate()));
     }
+    
+//    public WeeklyWorkingHours getWeeklyWorkingHoursForWorkDay(WorkDay wd) {
+//    	return this.weeklyWorkingHours.stream().filter(wwh -> {
+//    		wwh.getStartDate()..isBefore(wd.getDate().)
+//    	})
+//    }
     
 //    @JsonProperty("workTimeInformation")
 //    public WorktimeInformation getWorkTimeInformation() {

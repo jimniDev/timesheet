@@ -8,8 +8,6 @@ import com.asscope.timesheet.domain.DayOfWeek;
 import com.asscope.timesheet.repository.TargetWorkingDayRepository;
 import com.asscope.timesheet.service.TargetWorkingDayService;
 import com.asscope.timesheet.web.rest.errors.ExceptionTranslator;
-import com.asscope.timesheet.service.dto.TargetWorkingDayCriteria;
-import com.asscope.timesheet.service.TargetWorkingDayQueryService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -49,9 +47,6 @@ public class TargetWorkingDayResourceIT {
     private TargetWorkingDayService targetWorkingDayService;
 
     @Autowired
-    private TargetWorkingDayQueryService targetWorkingDayQueryService;
-
-    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Autowired
@@ -73,7 +68,7 @@ public class TargetWorkingDayResourceIT {
     @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final TargetWorkingDayResource targetWorkingDayResource = new TargetWorkingDayResource(targetWorkingDayService, targetWorkingDayQueryService);
+        final TargetWorkingDayResource targetWorkingDayResource = new TargetWorkingDayResource(targetWorkingDayService);
         this.restTargetWorkingDayMockMvc = MockMvcBuilders.standaloneSetup(targetWorkingDayResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)

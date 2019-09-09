@@ -3,8 +3,6 @@ package com.asscope.timesheet.web.rest;
 import com.asscope.timesheet.domain.Activity;
 import com.asscope.timesheet.service.ActivityService;
 import com.asscope.timesheet.web.rest.errors.BadRequestAlertException;
-import com.asscope.timesheet.service.dto.ActivityCriteria;
-import com.asscope.timesheet.service.ActivityQueryService;
 
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -37,11 +35,8 @@ public class ActivityResource {
 
     private final ActivityService activityService;
 
-    private final ActivityQueryService activityQueryService;
-
-    public ActivityResource(ActivityService activityService, ActivityQueryService activityQueryService) {
+    public ActivityResource(ActivityService activityService) {
         this.activityService = activityService;
-        this.activityQueryService = activityQueryService;
     }
 
     /**
@@ -91,9 +86,9 @@ public class ActivityResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of activities in body.
      */
     @GetMapping("/activities")
-    public ResponseEntity<List<Activity>> getAllActivities(ActivityCriteria criteria) {
-        log.debug("REST request to get Activities by criteria: {}", criteria);
-        List<Activity> entityList = activityQueryService.findByCriteria(criteria);
+    public ResponseEntity<List<Activity>> getAllActivities() {
+        log.debug("REST request to get all Activities");
+        List<Activity> entityList = activityService.findAll();
         return ResponseEntity.ok().body(entityList);
     }
 
@@ -103,11 +98,11 @@ public class ActivityResource {
     * @param criteria the criteria which the requested entities should match.
     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
     */
-    @GetMapping("/activities/count")
-    public ResponseEntity<Long> countActivities(ActivityCriteria criteria) {
-        log.debug("REST request to count Activities by criteria: {}", criteria);
-        return ResponseEntity.ok().body(activityQueryService.countByCriteria(criteria));
-    }
+//    @GetMapping("/activities/count")
+//    public ResponseEntity<Long> countActivities(ActivityCriteria criteria) {
+//        log.debug("REST request to count Activities by criteria: {}", criteria);
+//        return ResponseEntity.ok().body(activityQueryService.countByCriteria(criteria));
+//    }
 
     /**
      * {@code GET  /activities/:id} : get the "id" activity.

@@ -7,6 +7,7 @@ export interface IActivityTimesheet {
   description?: string;
   absence?: boolean;
   fillDay?: boolean;
+  reduce?: boolean;
   workingEntries?: IWorkingEntryTimesheet[];
   roles?: IRoleTimesheet[];
 }
@@ -18,10 +19,12 @@ export class ActivityTimesheet implements IActivityTimesheet {
     public description?: string,
     public absence?: boolean,
     public fillDay?: boolean,
+    public reduce?: boolean,
     public workingEntries?: IWorkingEntryTimesheet[],
     public roles?: IRoleTimesheet[]
   ) {
     this.absence = this.absence || false;
     this.fillDay = this.fillDay || false;
+    this.reduce = this.reduce || false;
   }
 }

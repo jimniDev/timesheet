@@ -10,9 +10,7 @@ import com.asscope.timesheet.domain.Location;
 import com.asscope.timesheet.repository.WorkingEntryRepository;
 import com.asscope.timesheet.service.WorkingEntryService;
 import com.asscope.timesheet.web.rest.errors.ExceptionTranslator;
-import com.asscope.timesheet.service.dto.WorkingEntryCriteria;
 import com.asscope.timesheet.service.EmployeeService;
-import com.asscope.timesheet.service.WorkingEntryQueryService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -64,9 +62,6 @@ public class WorkingEntryResourceIT {
 
     @Autowired
     private WorkingEntryService workingEntryService;
-
-    @Autowired
-    private WorkingEntryQueryService workingEntryQueryService;
     
     @Autowired
     private EmployeeService employeeService;
@@ -93,7 +88,7 @@ public class WorkingEntryResourceIT {
     @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final WorkingEntryResource workingEntryResource = new WorkingEntryResource(workingEntryService, workingEntryQueryService, employeeService);
+        final WorkingEntryResource workingEntryResource = new WorkingEntryResource(workingEntryService, employeeService);
         this.restWorkingEntryMockMvc = MockMvcBuilders.standaloneSetup(workingEntryResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)

@@ -1,3 +1,14 @@
+.container {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  background-color: rgb(248, 245, 245);
+  height: 25%;
+  overflow-y: auto;
+}
+
 .form-group {
   margin-bottom: 10px;
   padding: 0px 5px;
@@ -27,8 +38,23 @@ select {
   margin-top: 8px 0px;
 }
 
+.btn-primary {
+  margin: 10px 0px;
+  width: 100%;
+}
+
 label {
   display: block;
+}
+
+.col-1 {
+  margin: 0px;
+  text-align: center;
+  padding: 5px;
+}
+
+.col-6 {
+  text-align: center;
 }
 
 input.form-control.col:nth-of-type(1),

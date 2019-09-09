@@ -4,8 +4,6 @@ import com.asscope.timesheet.domain.Employee;
 import com.asscope.timesheet.domain.monthlyInformation.WorktimeInformation;
 import com.asscope.timesheet.service.EmployeeService;
 import com.asscope.timesheet.web.rest.errors.BadRequestAlertException;
-import com.asscope.timesheet.service.dto.EmployeeCriteria;
-import com.asscope.timesheet.service.EmployeeQueryService;
 
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -15,7 +13,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.Principal;
 import java.util.List;
@@ -37,11 +34,8 @@ public class EmployeeResource {
 
     private final EmployeeService employeeService;
 
-    private final EmployeeQueryService employeeQueryService;
-
-    public EmployeeResource(EmployeeService employeeService, EmployeeQueryService employeeQueryService) {
+    public EmployeeResource(EmployeeService employeeService) {
         this.employeeService = employeeService;
-        this.employeeQueryService = employeeQueryService;
     }
 
     /**
@@ -91,9 +85,9 @@ public class EmployeeResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of employees in body.
      */
     @GetMapping("/employees")
-    public ResponseEntity<List<Employee>> getAllEmployees(EmployeeCriteria criteria) {
-        log.debug("REST request to get Employees by criteria: {}", criteria);
-        List<Employee> entityList = employeeQueryService.findByCriteria(criteria);
+    public ResponseEntity<List<Employee>> getAllEmployees() {
+        log.debug("REST request to get all Employees");
+        List<Employee> entityList = employeeService.findAll();
         return ResponseEntity.ok().body(entityList);
     }
 
@@ -103,11 +97,11 @@ public class EmployeeResource {
     * @param criteria the criteria which the requested entities should match.
     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
     */
-    @GetMapping("/employees/count")
-    public ResponseEntity<Long> countEmployees(EmployeeCriteria criteria) {
-        log.debug("REST request to count Employees by criteria: {}", criteria);
-        return ResponseEntity.ok().body(employeeQueryService.countByCriteria(criteria));
-    }
+//    @GetMapping("/employees/count")
+//    public ResponseEntity<Long> countEmployees(EmployeeCriteria criteria) {
+//        log.debug("REST request to count Employees by criteria: {}", criteria);
+//        return ResponseEntity.ok().body(employeeQueryService.countByCriteria(criteria));
+//    }
 
     /**
      * {@code GET  /employees/:id} : get the "id" employee.
@@ -147,5 +141,11 @@ public class EmployeeResource {
     	log.debug("REST request to get worktimeInformation for Employee : {}", principal.getName());
     	Optional<WorktimeInformation> wtInfo = employeeService.getWorkTimeInformation(principal, year);
     	return ResponseUtil.wrapOrNotFound(wtInfo);
+    }
+    
+    @GetMapping({"/employees/me/target-work-time/{year}/{month}"})
+    public ResponseEntity<Integer> getWorktimeInformation(Principal principal, @PathVariable("year") Integer year, @PathVariable("month") Integer month) {
+    	log.debug("REST request to get worktimeInformation for Employee : {}", principal.getName());
+    	return ResponseEntity.ok().body(employeeService.targetWorkTime(principal, year, month));
     }
 }

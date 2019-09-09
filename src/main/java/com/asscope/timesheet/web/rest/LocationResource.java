@@ -3,8 +3,6 @@ package com.asscope.timesheet.web.rest;
 import com.asscope.timesheet.domain.Location;
 import com.asscope.timesheet.service.LocationService;
 import com.asscope.timesheet.web.rest.errors.BadRequestAlertException;
-import com.asscope.timesheet.service.dto.LocationCriteria;
-import com.asscope.timesheet.service.LocationQueryService;
 
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -36,11 +34,8 @@ public class LocationResource {
 
     private final LocationService locationService;
 
-    private final LocationQueryService locationQueryService;
-
-    public LocationResource(LocationService locationService, LocationQueryService locationQueryService) {
+    public LocationResource(LocationService locationService) {
         this.locationService = locationService;
-        this.locationQueryService = locationQueryService;
     }
 
     /**
@@ -90,9 +85,9 @@ public class LocationResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of locations in body.
      */
     @GetMapping("/locations")
-    public ResponseEntity<List<Location>> getAllLocations(LocationCriteria criteria) {
-        log.debug("REST request to get Locations by criteria: {}", criteria);
-        List<Location> entityList = locationQueryService.findByCriteria(criteria);
+    public ResponseEntity<List<Location>> getAllLocations() {
+        log.debug("REST request to get all Locations");
+        List<Location> entityList = locationService.findAll();
         return ResponseEntity.ok().body(entityList);
     }
 
@@ -102,11 +97,11 @@ public class LocationResource {
     * @param criteria the criteria which the requested entities should match.
     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
     */
-    @GetMapping("/locations/count")
-    public ResponseEntity<Long> countLocations(LocationCriteria criteria) {
-        log.debug("REST request to count Locations by criteria: {}", criteria);
-        return ResponseEntity.ok().body(locationQueryService.countByCriteria(criteria));
-    }
+//    @GetMapping("/locations/count")
+//    public ResponseEntity<Long> countLocations(LocationCriteria criteria) {
+//        log.debug("REST request to count Locations by criteria: {}", criteria);
+//        return ResponseEntity.ok().body(locationQueryService.countByCriteria(criteria));
+//    }
 
     /**
      * {@code GET  /locations/:id} : get the "id" location.

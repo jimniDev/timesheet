@@ -47,11 +47,15 @@ import { CdkTableModule } from '@angular/cdk/table';
 import { CdkTreeModule } from '@angular/cdk/tree';
 import { PortalModule } from '@angular/cdk/portal';
 import { ScrollingModule } from '@angular/cdk/scrolling';
+import { AsTimeInputComponent } from './as-time-input/as-time-input.component';
+import { AsInteractiveComponent } from './as-interactive/as-interactive.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
-  declarations: [AsNavbarComponent, AsMainCardComponent, AsGridComponent],
+  declarations: [AsNavbarComponent, AsMainCardComponent, AsGridComponent, AsTimeInputComponent, AsInteractiveComponent],
   imports: [
     CommonModule,
+    ReactiveFormsModule,
     FlexLayoutModule,
     MatToolbarModule,
     MatSidenavModule,
@@ -99,6 +103,8 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
     AsNavbarComponent,
     AsMainCardComponent,
     AsGridComponent,
+    AsTimeInputComponent,
+    AsInteractiveComponent,
     FlexLayoutModule,
     MatToolbarModule,
     MatSidenavModule,
