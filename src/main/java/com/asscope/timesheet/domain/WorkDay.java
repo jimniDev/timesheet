@@ -53,14 +53,9 @@ public class WorkDay implements Serializable {
     @JsonProperty("totalWorkingMinutes")
     public long getTotalWorkingMinutes() {
     	long seconds = 0;
-    	boolean fillDay = false; // TODO fillDay
     	for (WorkingEntry workingEntry: workingEntries) {
     		if(workingEntry.isValid()) {
-    			if(workingEntry.getActivity() == null || !workingEntry.getActivity().isFillDay()) {
-        			seconds += workingEntry.getWorkingTimeInSeconds();
-    			} else {
-    				fillDay = true;
-    			} 
+        		seconds += workingEntry.getWorkingTimeInSeconds();
     		}
     	}
     	return seconds / 60;
