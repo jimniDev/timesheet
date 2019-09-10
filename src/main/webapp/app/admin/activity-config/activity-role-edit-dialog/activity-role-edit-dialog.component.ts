@@ -37,7 +37,7 @@ export class ActivityRoleEditDialogComponent implements OnInit {
     this.roleService.update(this.data.role).subscribe(res => {
       if (res.ok) {
         // TODO add res.body to the table
-        this.dialogRef.close();
+        this.dialogRef.close(res.body);
       }
     });
   }

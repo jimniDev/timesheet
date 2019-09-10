@@ -221,15 +221,16 @@ export class TimetableComponent implements OnInit {
 
   edittimetableDialog(workingentry: IWorkingEntryTimesheet) {
     const dialogRef = this.dialog.open(TimetableEditDialogComponent, {
-      width: '25%',
-      data: { entry: workingentry }
+      data: workingentry
+    });
+    dialogRef.afterClosed().subscribe((result: IWorkingEntryTimesheet) => {
+      let idx = this.workingEntries.findIndex(we => we.id === result.id);
+      this.workingEntries[idx] = result;
     });
   }
   public deleteEntry(workingentry: IWorkingEntryTimesheet) {
     this.workingEntryService.delete(workingentry.id).subscribe(res => {
       if (res.ok) {
-        this.workingEntries.splice(this.workingEntries.indexOf(workingentry), 1);
-        this.table.renderRows();
       }
     });
   }

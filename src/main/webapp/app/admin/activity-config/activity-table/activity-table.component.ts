@@ -46,7 +46,6 @@ export class ActivityTableComponent implements OnInit {
   }
   editActivityDialog(activity: IActivityTimesheet): void {
     const dialogRef = this.dialog.open(ActivityEditDialogComponent, {
-      width: '25%',
       data: {
         name: activity.name,
         description: activity.description,
@@ -60,6 +59,8 @@ export class ActivityTableComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         //   this.roleTable.update(<IRoleTimesheet>result);
+        let idx = this.activities.findIndex(we => we.id === result.id);
+        this.activities[idx] = result;
       }
     });
   }

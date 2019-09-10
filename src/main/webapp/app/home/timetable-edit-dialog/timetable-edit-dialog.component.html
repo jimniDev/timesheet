@@ -1,32 +1,33 @@
 <form [formGroup]="workingeditForm" (ngSubmit)="updateEntry()">
-  <mat-form-field>
-    <mat-label>Date</mat-label>
-    <input matInput [matDatepicker]="picker" placeholder="Choose a date" formControlName="date" name="dp"
-       required>
-    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-    <mat-datepicker #picker></mat-datepicker>
-  </mat-form-field>
-  <button mat-button type="button" (click)="datepic = today">Select Today</button>
+  <div fxLayout="column" fxLayoutAlign="center stretch" fxLayout.xs="column" fxLayoutGap="8px" class="container">
+    <mat-form-field>
+      <mat-label>Date</mat-label>
+      <input matInput [matDatepicker]="picker" placeholder="Choose a date" formControlName="date" name="dp" required>
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
 
-  <mat-form-field class="time">
-    <mat-label>Start Time</mat-label>
-    <as-time-input formControlName="starttime" required></as-time-input>
-    <mat-icon matSuffix >access_time</mat-icon>
-  </mat-form-field>
 
-  <mat-form-field class="time">
-    <mat-label>End Time</mat-label>
-    <as-time-input formControlName="endtime" required></as-time-input>
-    <mat-icon matSuffix>access_time</mat-icon>
-  </mat-form-field>
-  <mat-form-field>
-    <mat-label>Activity</mat-label>
-    <mat-select matNativeControl formControlName="activity" required>
+    <mat-form-field class="time">
+      <mat-label>Start Time</mat-label>
+      <as-time-input formControlName="starttime" required></as-time-input>
+      <mat-icon matSuffix>access_time</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field class="time">
+      <mat-label>End Time</mat-label>
+      <as-time-input formControlName="endtime" required></as-time-input>
+      <mat-icon matSuffix>access_time</mat-icon>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Activity</mat-label>
+      <mat-select matNativeControl formControlName="activity" required>
         <mat-option *ngFor="let activity of this.activities" [value]="activity">
-            {{activity.name}}
+          {{activity.name}}
         </mat-option>
-    </mat-select>
-  </mat-form-field>
-  <button mat-button type="submit" [disabled]="">Save</button>
-  <button mat-button type="button" (click)="onNoClick()">Cancel</button>
+      </mat-select>
+    </mat-form-field>
+    <button mat-button type="submit" [disabled]="">Save</button>
+    <button mat-button type="button" (click)="onNoClick()">Cancel</button>
+  </div>
 </form>
