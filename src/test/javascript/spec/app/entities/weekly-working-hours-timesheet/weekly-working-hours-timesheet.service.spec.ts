@@ -27,7 +27,7 @@ describe('Service Tests', () => {
       httpMock = injector.get(HttpTestingController);
       currentDate = moment();
 
-      elemDefault = new WeeklyWorkingHoursTimesheet(0, 0, currentDate, currentDate);
+      elemDefault = new WeeklyWorkingHoursTimesheet(0, '0', currentDate, currentDate);
     });
 
     describe('Service methods', () => {

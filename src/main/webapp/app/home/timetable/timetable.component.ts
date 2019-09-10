@@ -24,10 +24,13 @@ export class TimetableComponent implements OnInit {
 
   displayedColumns: string[] = ['Date', 'Total Worktime', 'Break Time', 'start', 'end', 'Sum', 'Activity'];
 
-  targetTime: string = '00:00';
-  actualTime: string = '00:00';
-  diffTime: string = '00:00';
-  todayTime: string = '00:00';
+  targetTime: string = '00h 00m';
+  actualTime: string = '00h 00m';
+  diffTime: string = '00h 00m';
+  todayTime: string = '00h 00m';
+
+  targetMinutes: number;
+  actualMinutes: number;
 
   @Output() initialized = new EventEmitter<boolean>();
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
@@ -43,6 +46,7 @@ export class TimetableComponent implements OnInit {
     const date = new Date();
     this.loadAllandSort();
     this.loadTargetWorkTime(date.getFullYear(), date.getMonth() + 1);
+    this.loadActualWorkTime(date.getFullYear(), date.getMonth() + 1);
   }
 
   loadWorktimeInformation() {
@@ -67,7 +71,19 @@ export class TimetableComponent implements OnInit {
   loadTargetWorkTime(year: number, month: number) {
     this.employeeService.targetWorkTime(year, month).subscribe(res => {
       if (res.ok) {
+        this.targetMinutes = res.body;
         this.targetTime = this.secondsToHHMM(res.body * 60);
+        this.calcDiffTargetActual();
+      }
+    });
+  }
+
+  loadActualWorkTime(year: number, month: number) {
+    this.employeeService.actualWorkTime(year, month).subscribe(res => {
+      if (res.ok) {
+        this.actualMinutes = res.body;
+        this.actualTime = this.secondsToHHMM(res.body * 60);
+        this.calcDiffTargetActual();
       }
     });
   }
@@ -75,11 +91,15 @@ export class TimetableComponent implements OnInit {
   filterTimeTable(date: Moment) {
     if (date) {
       this.loadTargetWorkTime(date.year(), date.month() + 1);
+      this.loadActualWorkTime(date.year(), date.month() + 1);
       this.workingEntries = this.workingEntriesUnfiltered.filter(
         we => we.workDay.date.year() === date.year() && we.workDay.date.month() === date.month()
       );
     } else {
+      const date = new Date();
       this.workingEntries = this.workingEntriesUnfiltered;
+      this.loadTargetWorkTime(date.getFullYear(), date.getMonth() + 1);
+      this.loadActualWorkTime(date.getFullYear(), date.getMonth() + 1);
     }
     this.DSworkingEntries = new MatTableDataSource(this.workingEntries);
     this.DSworkingEntries.paginator = this.paginator;
@@ -187,6 +207,12 @@ export class TimetableComponent implements OnInit {
       return activity.name;
     } else {
       return null;
+    }
+  }
+
+  calcDiffTargetActual() {
+    if (this.actualMinutes && this.targetMinutes) {
+      this.diffTime = this.secondsToHHMM(this.targetMinutes * 60 - this.actualMinutes * 60);
     }
   }
 }

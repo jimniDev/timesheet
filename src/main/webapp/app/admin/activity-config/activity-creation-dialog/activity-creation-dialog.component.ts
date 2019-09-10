@@ -19,7 +19,8 @@ export class ActivityCreationDialogComponent {
     name: new FormControl('', Validators.required),
     description: new FormControl(''),
     absence: new FormControl(''),
-    fillday: new FormControl('')
+    fillday: new FormControl(''),
+    reduce: new FormControl('')
   });
 
   constructor(
