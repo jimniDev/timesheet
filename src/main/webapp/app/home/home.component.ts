@@ -91,7 +91,7 @@ export class HomeComponent implements OnInit {
           let indexToUpdate = this.timetableComponent.DSworkingEntries.data.findIndex(we => we.id == workingEntry.id);
           this.timetableComponent.DSworkingEntries.data[indexToUpdate] = workingEntry;
           this.timetableComponent.DSworkingEntries._updateChangeSubscription();
-          this.totalBreakMinutes = workingEntry.workDay.totalBreakMinutes;
+          this.totalBreakMinutes = workingEntry.workDay.calculatedBreakMinutes + workingEntry.workDay.additionalBreakMinutes;
 
           this.startBtnName = 'Start';
           this.started = false;
@@ -125,7 +125,7 @@ export class HomeComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed', result);
-      workingEntry.workDay.totalBreakMinutes += result.addBreakControl;
+      // workingEntry.workDay.totalBreakMinutes += result.addBreakControl;
 
       let activity: ActivityTimesheet = new ActivityTimesheet();
       //workingEntry.activity = result.activityControl

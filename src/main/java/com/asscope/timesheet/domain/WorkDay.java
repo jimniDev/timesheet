@@ -40,10 +40,10 @@ public class WorkDay implements Serializable {
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<WorkingEntry> workingEntries = new HashSet<>();
 
-    @JsonIgnoreProperties("workDay")
-    @OneToMany(mappedBy = "workDay", fetch = FetchType.EAGER)
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<WorkBreak> workBreaks = new HashSet<>();
+
+
+    @Column(name = "additional_break_minutes")
+    private int additionalBreakMinutes;
 
     @ManyToOne
     @JoinColumn(name = "employee_id")
@@ -109,18 +109,15 @@ public class WorkDay implements Serializable {
     	return end;
     }
     
-    @JsonProperty("totalBreakMinutes")
-    public int getTotalBreakMinutes() {
+    @JsonProperty("calculatedBreakMinutes")
+    public int getCalculatedBreakMinutes() {
     	int minutes = 0;
     	Instant firstStart = Instant.MAX;
     	Instant lastEnd = Instant.MIN;
     	long totalWorkingSeconds = 0;
-    	for(WorkBreak workBreak: this.workBreaks) {
-    		minutes += workBreak.getMinutes();
-    	}
     	for(WorkingEntry workingEntry: this.workingEntries) {
-    		if(workingEntry.isValid()) {
-        		totalWorkingSeconds += workingEntry.getWorkingTimeInSeconds();
+        		if(workingEntry.isValid() && (workingEntry.getActivity() == null || !workingEntry.getActivity().isFillDay())) {
+        			totalWorkingSeconds += workingEntry.getWorkingTimeInSeconds();
         		if(workingEntry.getStart().isBefore(firstStart)) {
         			firstStart = workingEntry.getStart();
         		}
@@ -132,6 +129,11 @@ public class WorkDay implements Serializable {
     	long totalSeconds = lastEnd.getEpochSecond() - firstStart.getEpochSecond();
     	minutes += (int) (totalSeconds - totalWorkingSeconds) / 60;
     	return minutes;
+    }
+    
+    @JsonProperty("totalBreakMinutes")
+    public int getTotalBreakMinutes() {
+    	return this.getCalculatedBreakMinutes() + this.additionalBreakMinutes;
     }
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
@@ -181,32 +183,15 @@ public class WorkDay implements Serializable {
         this.workingEntries = workingEntries;
     }
 
-    public Set<WorkBreak> getWorkBreaks() {
-        return workBreaks;
-    }
+    public int getAdditionalBreakMinutes() {
+		return additionalBreakMinutes;
+	}
 
-    public WorkDay workBreaks(Set<WorkBreak> workBreaks) {
-        this.workBreaks = workBreaks;
-        return this;
-    }
+	public void setAdditionalBreakMinutes(int additionalBreakMinutes) {
+		this.additionalBreakMinutes = additionalBreakMinutes;
+	}
 
-    public WorkDay addWorkBreak(WorkBreak workBreak) {
-        this.workBreaks.add(workBreak);
-        workBreak.setWorkDay(this);
-        return this;
-    }
-
-    public WorkDay removeWorkBreak(WorkBreak workBreak) {
-        this.workBreaks.remove(workBreak);
-        workBreak.setWorkDay(null);
-        return this;
-    }
-
-    public void setWorkBreaks(Set<WorkBreak> workBreaks) {
-        this.workBreaks = workBreaks;
-    }
-
-    public Employee getEmployee() {
+	public Employee getEmployee() {
         return employee;
     }
 
