@@ -176,10 +176,10 @@ export class TimetableComponent implements OnInit {
   }
 
   sumDate(date1: any, date2: any): String {
-    if (date2 != null) {
+    if (date2 > date1) {
       const sum = Math.abs((date1 - date2) / 1000);
-      const hour = Math.round(sum / 3600);
-      const min = Math.round((sum % 3600) / 60);
+      const hour = Math.floor(sum / 3600);
+      const min = Math.floor((sum % 3600) / 60);
       return this.pad(hour, 2) + 'h ' + this.pad(min, 2) + 'm';
     } else {
       return null;
@@ -193,8 +193,8 @@ export class TimetableComponent implements OnInit {
   }
 
   secondsToHHMM(seconds: number): string {
-    const hour = Math.round(seconds / 3600);
-    const min = Math.round((seconds % 3600) / 60);
+    const hour = Math.floor(seconds / 3600);
+    const min = Math.floor((seconds % 3600) / 60);
     return this.pad(hour, 2) + 'h ' + this.pad(min, 2) + 'm';
   }
 
