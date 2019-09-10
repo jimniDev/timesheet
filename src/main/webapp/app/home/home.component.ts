@@ -17,7 +17,6 @@ import { RoleTimesheetService } from 'app/entities/role-timesheet';
 import { ActivityTimesheetService } from 'app/entities/activity-timesheet';
 
 export interface DialogData {
-  totalBreakMinutes: number;
   newWorkingEntry: IWorkingEntryTimesheet;
 }
 
@@ -36,7 +35,7 @@ export class HomeComponent implements OnInit {
   activity: string;
   totalBreakMinutes: number;
   activities: IActivityTimesheet[];
-  //newWorkingEntry: IWorkingEntryTimesheet;
+  newWorkingEntry: IWorkingEntryTimesheet;
 
   @Input() btnColors = 'primary';
   @ViewChild(TimetableComponent, { static: false })
@@ -61,9 +60,11 @@ export class HomeComponent implements OnInit {
       if (res.status == 200) {
         this.startBtnName = 'Stop';
         this.started = true;
+        this.btnColors = 'warn';
       } else {
         this.startBtnName = 'Start';
         this.started = false;
+        this.btnColors = 'primary';
       }
     });
   }
@@ -91,12 +92,6 @@ export class HomeComponent implements OnInit {
       this.workingEntryService.end().subscribe(res => {
         if (res.ok) {
           this.openDialog(res.body);
-          //let workingEntry = <IWorkingEntryTimesheet>res.body;
-          // this.totalBreakMinutes = workingEntry.workDay.totalBreakMinutes;
-          // let indexToUpdate = this.timetableComponent.DSworkingEntries.data.findIndex(we => we.id == workingEntry.id);
-          // this.timetableComponent.DSworkingEntries.data[indexToUpdate] = workingEntry;
-          // this.timetableComponent.DSworkingEntries._updateChangeSubscription();
-
           this.startBtnName = 'Start';
           this.started = false;
           this.btnColors = 'primary';
@@ -107,7 +102,6 @@ export class HomeComponent implements OnInit {
         if (res.ok) {
           let workingEntry = <IWorkingEntryTimesheet>res.body;
           this.timetableComponent.addNewandSort(workingEntry);
-          //this.newWorkingEntry = workingEntry;
           this.startBtnName = 'Stop';
           this.started = true;
           this.btnColors = 'warn';
@@ -121,22 +115,14 @@ export class HomeComponent implements OnInit {
 
     dialogConfig.disableClose = true; //user will not be able to close the dialog just by clicking outside of it
     dialogConfig.autoFocus = true; //ocus will be set automatically on the first form field of the dialog
-    dialogConfig.data = {
-      newWorkingEntry: newWorkingEntry,
-      totalBreakMinutes: this.totalBreakMinutes
-    };
+    dialogConfig.data = { newWorkingEntry: newWorkingEntry };
 
-    //this.dialog.open(HomeDialog, dialogConfig);
     const dialogRef = this.dialog.open(HomeDialog, dialogConfig);
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        let workingEntry = <IWorkingEntryTimesheet>result.body;
-        this.totalBreakMinutes = workingEntry.workDay.totalBreakMinutes;
-        let indexToUpdate = this.timetableComponent.DSworkingEntries.data.findIndex(we => we.id == workingEntry.id);
-        this.timetableComponent.DSworkingEntries.data[indexToUpdate] = workingEntry;
-        this.timetableComponent.DSworkingEntries._updateChangeSubscription();
-      }
+    dialogRef.afterClosed().subscribe((workingEntry: IWorkingEntryTimesheet) => {
+      let indexToUpdate = this.timetableComponent.DSworkingEntries.data.findIndex(we => we.id == workingEntry.id);
+      this.timetableComponent.DSworkingEntries.data[indexToUpdate] = workingEntry;
+      this.timetableComponent.DSworkingEntries._updateChangeSubscription();
     });
   }
 }
@@ -156,6 +142,7 @@ export class HomeDialog {
   activities: IActivityTimesheet[];
   roles: IRoleTimesheet[];
   selectableActivities: IActivityTimesheet[];
+  breaktime: number;
 
   constructor(
     public dialogRef: MatDialogRef<HomeDialog>,
@@ -180,13 +167,9 @@ export class HomeDialog {
   }
 
   save() {
-    this.data.newWorkingEntry.workDay.totalBreakMinutes += this.modalForm.value.addBreakControl;
-    //let activity: ActivityTimesheet = new ActivityTimesheet();
-    // this.activities.forEach(a => {
-    //   if (a.id == this.modalForm.value.activityControl.id) {
-    //     activity = a;
-    //   }wwweeew
-    // });
+    this.breaktime = this.data.newWorkingEntry.workDay.totalBreakMinutes;
+    this.breaktime += +this.modalForm.value.addBreakControl;
+    this.data.newWorkingEntry.workDay.totalBreakMinutes = this.breaktime;
     this.data.newWorkingEntry.activity = this.modalForm.value.activityControl;
     this.workingEntryService.update(this.data.newWorkingEntry).subscribe(res => {
       console.log(res);
@@ -196,9 +179,9 @@ export class HomeDialog {
     });
   }
 
-  onNoClick(): void {
-    this.dialogRef.close();
-  }
+  // onNoClick(): void {
+  //   this.dialogRef.close();
+  // }
 
   onClickAddBreak() {
     this.openform = true;

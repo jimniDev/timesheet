@@ -73,7 +73,10 @@ export class DateFormComponent implements OnInit {
     const workDay: WorkDayTimesheet = new WorkDayTimesheet();
     let activity: ActivityTimesheet = new ActivityTimesheet();
 
-    const formDate = moment(this.timeForm.value.date);
+    //const formDate = moment.utc(this.timeForm.value.date);
+    //const formDate = moment(moment.utc(this.timeForm.value.date).startOf('day').format('LL')).startOf('day').toDate();
+    const formDate = moment(this.timeForm.value.date).add(2, 'hours');
+
     workDay.date = formDate;
 
     startTimeString = formDate.format('YYYY-MM-DD') + ' ' + this.timeForm.value.startTime;
@@ -95,12 +98,20 @@ export class DateFormComponent implements OnInit {
     workingEntry.deleted = false;
     workingEntry.activity = activity;
 
-    this.workingEntryService.create(workingEntry).subscribe(res => {
-      if (res.ok) {
-        this.newWorkingEntry.emit(res.body);
-        this.saved.emit(true);
+    this.workingEntryService.create(workingEntry).subscribe(
+      res => {
+        if (res.ok) {
+          this.newWorkingEntry.emit(res.body);
+          this.saved.emit(true);
+          //400 else error
+        }
+      },
+      err => {
+        if (err.error.errorKey === 'overlappingtime') {
+          // then show the snackbar.
+        }
       }
-    });
+    );
   }
 
   onChangeRole(role: IRoleTimesheet) {
