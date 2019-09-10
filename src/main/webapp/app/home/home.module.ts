@@ -9,11 +9,20 @@ import { TwoDigitsDirective } from './two-digits.directive';
 import { YearMonthSelectComponent } from './year-month-select/year-month-select.component';
 import { AsLayoutsModule } from 'app/as-layouts/as-layouts.module';
 import { HomeDialog } from './home.component';
+import { TimetableEditDialogComponent } from './timetable-edit-dialog/timetable-edit-dialog.component';
 
 @NgModule({
   imports: [TimesheetSharedModule, RouterModule.forChild([HOME_ROUTE]), ReactiveFormsModule, AsLayoutsModule],
-  declarations: [HomeComponent, TimetableComponent, DateFormComponent, TwoDigitsDirective, YearMonthSelectComponent, HomeDialog],
+  declarations: [
+    HomeComponent,
+    TimetableComponent,
+    DateFormComponent,
+    TwoDigitsDirective,
+    YearMonthSelectComponent,
+    HomeDialog,
+    TimetableEditDialogComponent
+  ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  entryComponents: [HomeDialog]
+  entryComponents: [HomeDialog, TimetableComponent, TimetableEditDialogComponent]
 })
 export class TimesheetHomeModule {}

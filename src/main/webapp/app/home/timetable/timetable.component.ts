@@ -7,8 +7,10 @@ import { EmployeeTimesheetService } from 'app/entities/employee-timesheet';
 import { Moment } from 'moment';
 import { MatPaginator } from '@angular/material';
 import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatTableDataSource, MatTable } from '@angular/material/table';
 import { ActivityTimesheet } from 'app/shared/model/activity-timesheet.model';
+import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { TimetableEditDialogComponent } from '../timetable-edit-dialog/timetable-edit-dialog.component';
 
 @Component({
   selector: 'jhi-timetable',
@@ -22,7 +24,7 @@ export class TimetableComponent implements OnInit {
   workingEntries: IWorkingEntryTimesheet[];
   DSworkingEntries = new MatTableDataSource<IWorkingEntryTimesheet>(this.workingEntries);
 
-  displayedColumns: string[] = ['Date', 'Total Worktime', 'Break Time', 'start', 'end', 'Sum', 'Activity'];
+  displayedColumns: string[] = ['Date', 'Total Worktime', 'Break Time', 'start', 'end', 'Sum', 'Activity', 'Edit', 'Delete'];
 
   targetTime: string = '00h 00m';
   actualTime: string = '00h 00m';
@@ -35,11 +37,12 @@ export class TimetableComponent implements OnInit {
   @Output() initialized = new EventEmitter<boolean>();
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
-
+  @ViewChild(MatTable, { static: false }) table: MatTable<any>;
   constructor(
     private workingEntryService: WorkingEntryTimesheetService,
     private employeeService: EmployeeTimesheetService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    public dialog: MatDialog
   ) {}
 
   ngOnInit() {
@@ -214,5 +217,20 @@ export class TimetableComponent implements OnInit {
     if (this.actualMinutes && this.targetMinutes) {
       this.diffTime = this.secondsToHHMM(this.targetMinutes * 60 - this.actualMinutes * 60);
     }
+  }
+
+  edittimetableDialog(workingentry: IWorkingEntryTimesheet) {
+    const dialogRef = this.dialog.open(TimetableEditDialogComponent, {
+      width: '25%',
+      data: { entry: workingentry }
+    });
+  }
+  public deleteEntry(workingentry: IWorkingEntryTimesheet) {
+    this.workingEntryService.delete(workingentry.id).subscribe(res => {
+      if (res.ok) {
+        this.workingEntries.splice(this.workingEntries.indexOf(workingentry), 1);
+        this.table.renderRows();
+      }
+    });
   }
 }
