@@ -167,9 +167,7 @@ export class HomeDialog {
   }
 
   save() {
-    this.breaktime = this.data.newWorkingEntry.workDay.totalBreakMinutes;
-    this.breaktime += +this.modalForm.value.addBreakControl;
-    this.data.newWorkingEntry.workDay.totalBreakMinutes = this.breaktime;
+    this.data.newWorkingEntry.workDay.additionalBreakMinutes = this.modalForm.value.addBreakControl;
     this.data.newWorkingEntry.activity = this.modalForm.value.activityControl;
     this.workingEntryService.update(this.data.newWorkingEntry).subscribe(res => {
       console.log(res);
