@@ -2,7 +2,6 @@ import { IWorkingEntryTimesheet } from 'app/shared/model/working-entry-timesheet
 import { ITargetWorkingDayTimesheet } from 'app/shared/model/target-working-day-timesheet.model';
 import { IWeeklyWorkingHoursTimesheet } from 'app/shared/model/weekly-working-hours-timesheet.model';
 import { IWorkDayTimesheet } from 'app/shared/model/work-day-timesheet.model';
-import { IWorkBreakTimesheet } from 'app/shared/model/work-break-timesheet.model';
 import { IUser } from 'app/core';
 
 export interface IEmployeeTimesheet {
@@ -13,7 +12,6 @@ export interface IEmployeeTimesheet {
   targetWorkingDays?: ITargetWorkingDayTimesheet[];
   weeklyWorkingHours?: IWeeklyWorkingHoursTimesheet[];
   workDays?: IWorkDayTimesheet[];
-  workBreaks?: IWorkBreakTimesheet[];
   activeWeeklyWorkingHours?: IWeeklyWorkingHoursTimesheet;
 }
 
@@ -26,7 +24,6 @@ export class EmployeeTimesheet implements IEmployeeTimesheet {
     public targetWorkingDays?: ITargetWorkingDayTimesheet[],
     public weeklyWorkingHours?: IWeeklyWorkingHoursTimesheet[],
     public workDays?: IWorkDayTimesheet[],
-    public workBreaks?: IWorkBreakTimesheet[],
     public activeWeeklyWorkingHours?: IWeeklyWorkingHoursTimesheet
   ) {
     this.isEmployed = this.isEmployed || false;

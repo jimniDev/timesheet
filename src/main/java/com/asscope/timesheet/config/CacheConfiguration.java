@@ -64,7 +64,6 @@ public class CacheConfiguration {
             createCache(cm, com.asscope.timesheet.domain.WorkDay.class.getName());
             createCache(cm, com.asscope.timesheet.domain.WorkDay.class.getName() + ".workingEntries");
             createCache(cm, com.asscope.timesheet.domain.WorkDay.class.getName() + ".workBreaks");
-            createCache(cm, com.asscope.timesheet.domain.WorkBreak.class.getName());
             createCache(cm, com.asscope.timesheet.domain.Role.class.getName());
             createCache(cm, com.asscope.timesheet.domain.Role.class.getName() + ".activities");
             createCache(cm, com.asscope.timesheet.domain.Activity.class.getName() + ".roles");

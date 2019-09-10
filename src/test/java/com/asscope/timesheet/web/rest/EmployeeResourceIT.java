@@ -7,7 +7,6 @@ import com.asscope.timesheet.domain.WorkingEntry;
 import com.asscope.timesheet.domain.TargetWorkingDay;
 import com.asscope.timesheet.domain.WeeklyWorkingHours;
 import com.asscope.timesheet.domain.WorkDay;
-import com.asscope.timesheet.domain.WorkBreak;
 import com.asscope.timesheet.repository.EmployeeRepository;
 import com.asscope.timesheet.service.EmployeeService;
 import com.asscope.timesheet.web.rest.errors.ExceptionTranslator;
@@ -288,24 +287,6 @@ public class EmployeeResourceIT {
         defaultEmployeeShouldNotBeFound("workDayId.equals=" + (workDayId + 1));
     }
 
-
-    @Test
-    @Transactional
-    public void getAllEmployeesByWorkBreakIsEqualToSomething() throws Exception {
-        // Initialize the database
-        WorkBreak workBreak = WorkBreakResourceIT.createEntity(em);
-        em.persist(workBreak);
-        em.flush();
-        employee.addWorkBreak(workBreak);
-        employeeRepository.saveAndFlush(employee);
-        Long workBreakId = workBreak.getId();
-
-        // Get all the employeeList where workBreak equals to workBreakId
-        defaultEmployeeShouldBeFound("workBreakId.equals=" + workBreakId);
-
-        // Get all the employeeList where workBreak equals to workBreakId + 1
-        defaultEmployeeShouldNotBeFound("workBreakId.equals=" + (workBreakId + 1));
-    }
 
     /**
      * Executes the search, and checks that the default entity is returned.

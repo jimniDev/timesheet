@@ -70,9 +70,14 @@ public class WorkingEntryService {
         	workingEntryToSave.setDeleted(false);
         }
         workingEntryToSave.setWorkDay(workDay);
-        if (validateOverlappingTime(workingEntryToSave, workDay.getWorkingEntries())) {
-    		throw new OverlappingWorkingTimesException();
-    	}
+        if(workingEntryToSave.getActivity() != null && workingEntryToSave.getActivity().isFillDay()) {
+        	workingEntryToSave.setStart(Instant.EPOCH);
+        	workingEntryToSave.setEnd(Instant.EPOCH);
+        } else {
+            if(validateOverlappingTime(workingEntryToSave, workDay.getWorkingEntries())) {
+        		throw new OverlappingWorkingTimesException();
+        	}
+        }
         return workingEntryRepository.save(workingEntryToSave);
     }
 
