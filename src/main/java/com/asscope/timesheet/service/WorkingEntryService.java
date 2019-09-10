@@ -66,6 +66,9 @@ public class WorkingEntryService {
         		workDay = workDayService.save(workDay);
         	}
         }
+        if(workDay.getEmployee() == null) {
+        	workDay.setEmployee(employee);
+        }
         if (workingEntryToSave.isDeleted() == null) {
         	workingEntryToSave.setDeleted(false);
         }
@@ -78,7 +81,9 @@ public class WorkingEntryService {
         		throw new OverlappingWorkingTimesException();
         	}
         }
-        return workingEntryRepository.save(workingEntryToSave);
+        WorkingEntry savedWE = workingEntryRepository.save(workingEntryToSave);
+        workDay.addWorkingEntry(savedWE);
+        return savedWE;
     }
 
     /**

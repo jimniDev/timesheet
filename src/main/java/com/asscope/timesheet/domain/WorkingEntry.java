@@ -17,7 +17,7 @@ import java.util.Optional;
  * A WorkingEntry.
  */
 @Entity
-@Table(name = "working_entry")
+@Table(name = "working_entry", uniqueConstraints = @UniqueConstraint(columnNames={"start", "work_day_id"}))
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class WorkingEntry extends AbstractAuditingEntity implements Serializable {
 
