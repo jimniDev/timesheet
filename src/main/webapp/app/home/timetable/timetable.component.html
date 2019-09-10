@@ -19,9 +19,9 @@
 <div fxLayout="row" fxLayoutAlign="center stretch" fxLayout.xs="column" fxLayoutGap="8px" class="container">
         <mat-card>
             <table #MatTable mat-table [dataSource]="DSworkingEntries" matSort>      
-                    <ng-container matColumnDef="Date">
+                    <ng-container matColumnDef="workDay.date">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header> Date </th>
-                    <td mat-cell *matCellDef="let element"> {{element.workDay.date | date:'dd.MM.yy'}} </td>
+                    <td mat-cell *matCellDef="let element">{{element.workDay.date | date:'MM.dd.yy'}} </td>
                     </ng-container>
                 
                     <ng-container matColumnDef="Total Worktime">
@@ -54,7 +54,7 @@
                         <td mat-cell *matCellDef="let element"> {{loadActivity(element.activity)}} </td>
                     </ng-container>
         
-                    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
             </table>
             <mat-paginator  [pageSize] = "5"
