@@ -7,10 +7,11 @@ import { EmployeeTimesheetService } from 'app/entities/employee-timesheet';
 import { Moment } from 'moment';
 import { MatPaginator } from '@angular/material';
 import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatTableDataSource, MatTable } from '@angular/material/table';
 import { ActivityTimesheet } from 'app/shared/model/activity-timesheet.model';
-// import { uniqWith } from 'lodash/uniqWith';
-// import { get } from 'lodash/get';
+import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { TimetableEditDialogComponent } from '../timetable-edit-dialog/timetable-edit-dialog.component';
+import moment = require('moment');
 
 @Component({
   selector: 'jhi-timetable',
@@ -19,12 +20,12 @@ import { ActivityTimesheet } from 'app/shared/model/activity-timesheet.model';
 })
 export class TimetableComponent implements OnInit {
   monthNames = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER'];
-
+  buttonDisable = false;
   workingEntriesUnfiltered: IWorkingEntryTimesheet[];
   workingEntries: IWorkingEntryTimesheet[];
   DSworkingEntries = new MatTableDataSource<IWorkingEntryTimesheet>(this.workingEntries);
 
-  displayedColumns: string[] = ['workDay.date', 'Total Worktime', 'Break Time', 'start', 'end', 'Sum', 'Activity'];
+  displayedColumns: string[] = ['workDay.date', 'Total Worktime', 'Break Time', 'start', 'end', 'Sum', 'Activity', 'Edit', 'Delete'];
 
   targetTime: string = '00h 00m';
   actualTime: string = '00h 00m';
@@ -37,13 +38,12 @@ export class TimetableComponent implements OnInit {
   @Output() initialized = new EventEmitter<boolean>();
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
-
-  spans = {};
-
+  @ViewChild(MatTable, { static: false }) table: MatTable<any>;
   constructor(
     private workingEntryService: WorkingEntryTimesheetService,
     private employeeService: EmployeeTimesheetService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    public dialog: MatDialog
   ) {}
 
   ngOnInit() {
@@ -228,5 +228,29 @@ export class TimetableComponent implements OnInit {
     if (this.actualMinutes && this.targetMinutes) {
       this.diffTime = this.secondsToHHMM(this.targetMinutes * 60 - this.actualMinutes * 60);
     }
+  }
+
+  edittimetableDialog(workingentry: IWorkingEntryTimesheet) {
+    const dialogRef = this.dialog.open(TimetableEditDialogComponent, {
+      data: workingentry
+    });
+    dialogRef.afterClosed().subscribe((result: IWorkingEntryTimesheet) => {
+      let idx = this.workingEntries.findIndex(we => we.id === result.id);
+      this.workingEntries[idx] = result;
+    });
+  }
+  public deleteEntry(workingentry: IWorkingEntryTimesheet) {
+    this.workingEntryService.delete(workingentry.id).subscribe(res => {
+      if (res.ok) {
+      }
+    });
+  }
+
+  checkDate(workingentry: IWorkingEntryTimesheet): boolean {
+    if (moment().diff(workingentry.workDay.date, 'days') >= 30) {
+      //this.buttonDisable = true;
+      return true;
+    }
+    return false;
   }
 }

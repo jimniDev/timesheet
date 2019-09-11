@@ -1,6 +1,7 @@
 <div fxLayout="row" fxLayoutAlign="center stretch" fxLayout.xs="column" fxLayoutGap="8px" class="container">
     <mat-card>
-        <jhi-year-month-select [dates]="getDatesFromWorkingEntries()" (selectedDate)="filterTimeTable($event)"></jhi-year-month-select>
+        <jhi-year-month-select [dates]="getDatesFromWorkingEntries()" (selectedDate)="filterTimeTable($event)">
+        </jhi-year-month-select>
     </mat-card>
     <mat-card>
         <mat-card-subtitle>Target Time</mat-card-subtitle>
@@ -17,51 +18,63 @@
 </div>
 
 <div fxLayout="row" fxLayoutAlign="center stretch" fxLayout.xs="column" fxLayoutGap="8px" class="container">
-        <mat-card>
-            <table #MatTable mat-table [dataSource]="DSworkingEntries" matSort>      
-                    <ng-container matColumnDef="workDay.date">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Date </th>
-                    <td mat-cell *matCellDef="let element">{{element.workDay.date | date:'MM.dd.yy'}} </td>
-                    </ng-container>
-                
-                    <ng-container matColumnDef="Total Worktime">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Total Worktime </th>
-                    <td mat-cell *matCellDef="let element"> {{secondsToHHMM(element.workDay.totalWorkingMinutes * 60)}} </td>
-                    </ng-container>
-                
-                    <ng-container matColumnDef="Break Time">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Break Time </th>
-                    <td mat-cell *matCellDef="let element"> {{secondsToHHMM(element.workDay.totalBreakMinutes * 60)}} </td>
-                    </ng-container>
-                
-                    <ng-container matColumnDef="start">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Start </th>
-                    <td mat-cell *matCellDef="let element"> {{element.start | date:'HH:mm'}} </td>
-                    </ng-container>
-        
-                    <ng-container matColumnDef="end">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header> End </th>
-                        <td mat-cell *matCellDef="let element"> {{element.end | date:'HH:mm'}} </td>
-                    </ng-container>
-        
-                    <ng-container matColumnDef="Sum">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Difference </th>
-                        <td mat-cell *matCellDef="let element"> {{sumDate(element.start, element.end)}} </td>
-                    </ng-container>
-        
-                    <ng-container matColumnDef="Activity">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Activity </th>
-                        <td mat-cell *matCellDef="let element"> {{loadActivity(element.activity)}} </td>
-                    </ng-container>
-        
-                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-            </table>
-            <mat-paginator  [pageSize] = "5"
-                            [pageSizeOptions]="[5, 10, 20]"
-                            showFirstLastButtons>
-            </mat-paginator>
-        </mat-card>
+    <mat-card>
+        <table #MatTable mat-table [dataSource]="DSworkingEntries" matSort>
+            <ng-container matColumnDef="workDay.date">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Date </th>
+                <td mat-cell *matCellDef="let element">{{element.workDay.date | date:'MM.dd.yy'}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="Total Worktime">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Total Worktime </th>
+                <td mat-cell *matCellDef="let element"> {{secondsToHHMM(element.workDay.totalWorkingMinutes * 60)}}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="Break Time">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Break Time </th>
+                <td mat-cell *matCellDef="let element"> {{secondsToHHMM(element.workDay.totalBreakMinutes * 60)}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="start">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Start </th>
+                <td mat-cell *matCellDef="let element"> {{element.start | date:'HH:mm'}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="end">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> End </th>
+                <td mat-cell *matCellDef="let element"> {{element.end | date:'HH:mm'}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="Sum">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Difference </th>
+                <td mat-cell *matCellDef="let element"> {{sumDate(element.start, element.end)}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="Activity">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Activity </th>
+                <td mat-cell *matCellDef="let element"> {{loadActivity(element.activity)}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="Edit">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
+                <td mat-cell *matCellDef="let element"> <button mat-button color="primary"
+                        [disabled]="checkDate(element)" (click)="edittimetableDialog(element)">Edit</button>
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="Delete">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> </th>
+                <td mat-cell *matCellDef="let element"> <button mat-button color="warn" [disabled]="checkDate(element)"
+                        (click)="deleteEntry(element)">Delete</button> </td>
+            </ng-container>
+
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+        <mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons>
+        </mat-paginator>
+    </mat-card>
 </div>
 
 
