@@ -32,7 +32,9 @@ export class ActivityTableComponent implements OnInit {
       }
     });
   }
-
+  applyFilter(filterValue: string) {
+    this.datasource.filter = filterValue.trim().toLowerCase();
+  }
   public addActivity(activity: IActivityTimesheet) {
     this.activities.push(activity);
     this.table.renderRows();

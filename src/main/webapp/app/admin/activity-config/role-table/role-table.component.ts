@@ -34,6 +34,9 @@ export class RoleTableComponent implements OnInit {
     });
   }
 
+  applyFilter(filterValue: string) {
+    this.datasource.filter = filterValue.trim().toLowerCase();
+  }
   editRoleDialog(role: IRoleTimesheet): void {
     const dialogRef = this.dialog.open(ActivityRoleEditDialogComponent, {
       data: { name: role.name, description: role.description, activities: role.activities, role: role }
