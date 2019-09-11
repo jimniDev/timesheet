@@ -15,6 +15,7 @@ import { ActivityTimesheetService } from 'app/entities/activity-timesheet';
 import { RoleTimesheetService } from 'app/entities/role-timesheet';
 import { HttpResponse } from '@angular/common/http';
 import { IRoleTimesheet } from 'app/shared/model/role-timesheet.model';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'jhi-date-form',
@@ -45,7 +46,8 @@ export class DateFormComponent implements OnInit {
     private calendar: NgbCalendar,
     private workingEntryService: WorkingEntryTimesheetService,
     private activityService: ActivityTimesheetService,
-    private roleService: RoleTimesheetService
+    private roleService: RoleTimesheetService,
+    private _snackBar: MatSnackBar
   ) {}
 
   ngOnInit() {
@@ -109,6 +111,9 @@ export class DateFormComponent implements OnInit {
       err => {
         if (err.error.errorKey === 'overlappingtime') {
           // then show the snackbar.
+          this._snackBar.open('Time Entry is overlapped', 'Undo', {
+            duration: 5000
+          });
         }
       }
     );
