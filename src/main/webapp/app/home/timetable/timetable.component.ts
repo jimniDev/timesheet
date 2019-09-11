@@ -11,6 +11,7 @@ import { MatTableDataSource, MatTable } from '@angular/material/table';
 import { ActivityTimesheet } from 'app/shared/model/activity-timesheet.model';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { TimetableEditDialogComponent } from '../timetable-edit-dialog/timetable-edit-dialog.component';
+import moment = require('moment');
 
 @Component({
   selector: 'jhi-timetable',
@@ -19,7 +20,7 @@ import { TimetableEditDialogComponent } from '../timetable-edit-dialog/timetable
 })
 export class TimetableComponent implements OnInit {
   monthNames = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER'];
-
+  buttonDisable = false;
   workingEntriesUnfiltered: IWorkingEntryTimesheet[];
   workingEntries: IWorkingEntryTimesheet[];
   DSworkingEntries = new MatTableDataSource<IWorkingEntryTimesheet>(this.workingEntries);
@@ -233,5 +234,13 @@ export class TimetableComponent implements OnInit {
       if (res.ok) {
       }
     });
+  }
+
+  checkDate(workingentry: IWorkingEntryTimesheet): boolean {
+    if (moment().diff(workingentry.workDay.date, 'days') >= 30) {
+      //this.buttonDisable = true;
+      return true;
+    }
+    return false;
   }
 }
