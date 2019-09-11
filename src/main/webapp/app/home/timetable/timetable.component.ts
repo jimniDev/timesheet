@@ -25,7 +25,7 @@ export class TimetableComponent implements OnInit {
   workingEntries: IWorkingEntryTimesheet[];
   DSworkingEntries = new MatTableDataSource<IWorkingEntryTimesheet>(this.workingEntries);
 
-  displayedColumns: string[] = ['Date', 'Total Worktime', 'Break Time', 'start', 'end', 'Sum', 'Activity', 'Edit', 'Delete'];
+  displayedColumns: string[] = ['workDay.date', 'Total Worktime', 'Break Time', 'start', 'end', 'Sum', 'Activity', 'Edit', 'Delete'];
 
   targetTime: string = '00h 00m';
   actualTime: string = '00h 00m';
@@ -51,6 +51,13 @@ export class TimetableComponent implements OnInit {
     this.loadAllandSort();
     this.loadTargetWorkTime(date.getFullYear(), date.getMonth() + 1);
     this.loadActualWorkTime(date.getFullYear(), date.getMonth() + 1);
+  }
+
+  sortingDataAccessor(item, property) {
+    if (property.includes('.')) {
+      return property.split('.').reduce((object, key) => object[key], item);
+    }
+    return item[property];
   }
 
   loadWorktimeInformation() {
@@ -106,6 +113,7 @@ export class TimetableComponent implements OnInit {
       this.loadActualWorkTime(date.getFullYear(), date.getMonth() + 1);
     }
     this.DSworkingEntries = new MatTableDataSource(this.workingEntries);
+    this.DSworkingEntries.sortingDataAccessor = this.sortingDataAccessor;
     this.DSworkingEntries.paginator = this.paginator;
     this.DSworkingEntries.sort = this.sort;
 
@@ -135,6 +143,7 @@ export class TimetableComponent implements OnInit {
           this.DSworkingEntries = new MatTableDataSource(this.workingEntries);
 
           this.cdr.detectChanges(); //necessary fot pagination & sort -wait until initialization
+          this.DSworkingEntries.sortingDataAccessor = this.sortingDataAccessor;
           this.DSworkingEntries.paginator = this.paginator;
           this.DSworkingEntries.sort = this.sort;
           this.initialized.emit(true);
@@ -159,6 +168,7 @@ export class TimetableComponent implements OnInit {
     //this.DSworkingEntries = new MatTableDataSource(this.workingEntries);
     this.DSworkingEntries.connect().next(this.workingEntries);
     this.cdr.detectChanges(); //necessary fot pagination & sort -wait until initialization
+    this.DSworkingEntries.sortingDataAccessor = this.sortingDataAccessor;
     this.DSworkingEntries.paginator = this.paginator;
     this.DSworkingEntries.sort = this.sort;
 

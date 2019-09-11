@@ -17,10 +17,11 @@ import { runInThisContext } from 'vm';
 export class EmployeeTimeSheetWeeklyDialogComponent {
   public myStartDate: Date;
   public myEndDate: Date;
-  public myHour: string;
-  employee: IEmployeeTimesheet;
+  public myHour: number;
 
-  hourValueChange(hrValue: string) {
+  public employee: IEmployeeTimesheet;
+
+  hourValueChange(hrValue: number) {
     this.myHour = hrValue;
   }
 
@@ -31,21 +32,22 @@ export class EmployeeTimeSheetWeeklyDialogComponent {
   pickEndDate(event: MatDatepickerInputEvent<Date>): void {
     this.myEndDate = event.value;
   }
+
   constructor(
     public employeeDialogRef: MatDialogRef<EmployeeTimeSheetWeeklyDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private weeklyWorkingHoursService: WeeklyWorkingHoursTimesheetService
   ) {
     this.employee = data.employee;
-    this.myHour = '0';
+    this.myHour = 0;
   }
 
   onSubmit() {
     let weeklyHours: WeeklyWorkingHoursTimesheet;
     weeklyHours = new WeeklyWorkingHoursTimesheet();
 
-    weeklyHours.startDate = moment(this.myStartDate);
-    weeklyHours.endDate = moment(this.myEndDate);
+    weeklyHours.startDate = moment(this.myStartDate).add(2, 'hours');
+    weeklyHours.endDate = moment(this.myEndDate).add(2, 'hours');
     weeklyHours.hours = this.myHour;
     weeklyHours.employee = this.employee;
 

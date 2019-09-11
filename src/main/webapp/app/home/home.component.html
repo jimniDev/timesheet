@@ -7,8 +7,6 @@
     <div fxLayout="row" fxLayoutAlign="center stretch" fxLayout.xs="column" fxLayoutGap="8px" class="container">
         <mat-card>
             <jhi-date-form (newWorkingEntry)="addnewEntry($event)"></jhi-date-form>
-        </mat-card>
-        <mat-card>
             <button mat-fab  [color]="btnColors" id="startBtn" type="button"
             [disabled]="disableButton ? 'disabled': null" (click)="startStop()">
             {{startBtnName}}

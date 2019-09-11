@@ -148,17 +148,6 @@ public class WorkingEntryResource {
         return ResponseEntity.ok().body(entityList);
     }
     
-    /**
-    * {@code GET  /working-entries/count} : count all the workingEntries.
-    *
-    * @param criteria the criteria which the requested entities should match.
-    * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
-    */
-//    @GetMapping("/working-entries/count")
-//    public ResponseEntity<Long> countWorkingEntries(WorkingEntryCriteria criteria) {
-//        log.debug("REST request to count WorkingEntries by criteria: {}", criteria);
-//        return ResponseEntity.ok().body(workingEntryQueryService.countByCriteria(criteria));
-//    }
 
     /**
      * {@code GET  /working-entries/:id} : get the "id" workingEntry.

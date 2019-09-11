@@ -37,7 +37,7 @@
 <h4 mat-dialog-title>Choose your Role and Activity</h4>
 
 <div mat-dialog-content>
-    <form [formGroup]="modalForm">
+    <form [formGroup]="modalForm" (ngSubmit)="save()"> 
         <mat-form-field>
         <mat-label>Role</mat-label>
         <mat-select matNativeControl formControlName="roleControl" required
@@ -58,21 +58,19 @@
         </mat-form-field>
 
         <mat-label>Break Minutes : </mat-label>
-        <mat-label>{{data.totalBreakMinutes}}</mat-label>
+        <mat-label>{{data.newWorkingEntry.workDay.totalBreakMinutes}}</mat-label>
         <button mat-stroked-button color="primary" type="button" (click)="onClickAddBreak()">add Break Minutes</button>
         <div [hidden]="!openform">
             <mat-form-field>
                 <mat-label>add Break Minutes</mat-label>
-                <input matInput placeholder="MM" class="form-control" formControlName="addBreakControl">
+                <input matInput placeholder="MM" formControlName="addBreakControl">
                 <mat-icon matSuffix>alarm</mat-icon>
             </mat-form-field>
         </div>
-        <!-- </mat-form-field> -->
-
+        
+        <div mat-dialog-actions>
+            <button mat-button color="primary" type="submit" [disabled]="!modalForm.valid">Ok</button>
+        </div> 
     </form>
 </div>
 
-<div mat-dialog-actions>
-  <button mat-button type="button" (click)="onNoClick()">No Thanks</button>
-  <button mat-button color="primary" type="button" (click)="save()">Ok</button>
-</div> 

@@ -66,14 +66,24 @@ public class WorkingEntryService {
         		workDay = workDayService.save(workDay);
         	}
         }
+        if(workDay.getEmployee() == null) {
+        	workDay.setEmployee(employee);
+        }
         if (workingEntryToSave.isDeleted() == null) {
         	workingEntryToSave.setDeleted(false);
         }
         workingEntryToSave.setWorkDay(workDay);
-        if (validateOverlappingTime(workingEntryToSave, workDay.getWorkingEntries())) {
-    		throw new OverlappingWorkingTimesException();
-    	}
-        return workingEntryRepository.save(workingEntryToSave);
+        if(workingEntryToSave.getActivity() != null && workingEntryToSave.getActivity().isFillDay()) {
+        	workingEntryToSave.setStart(Instant.EPOCH);
+        	workingEntryToSave.setEnd(Instant.EPOCH);
+        } else {
+            if(validateOverlappingTime(workingEntryToSave, workDay.getWorkingEntries())) {
+        		throw new OverlappingWorkingTimesException();
+        	}
+        }
+        WorkingEntry savedWE = workingEntryRepository.save(workingEntryToSave);
+        workDay.addWorkingEntry(savedWE);
+        return savedWE;
     }
 
     /**
@@ -201,7 +211,7 @@ public class WorkingEntryService {
        
     private static boolean validateOverlappingTime(WorkingEntry workingEntryToValidate, Collection<WorkingEntry> workingEntries) {
     	 for (WorkingEntry wEntry: workingEntries) {
-         	if (wEntry.isValid()) {
+         	if (wEntry.isValid() && wEntry.getId() != workingEntryToValidate.getId()) {
          		if ((workingEntryToValidate.getStart().isBefore(wEntry.getEnd()) || workingEntryToValidate.getStart().equals(wEntry.getEnd())) 
          				&& (workingEntryToValidate.getEnd().isAfter(wEntry.getStart()) || workingEntryToValidate.getEnd().equals(wEntry.getStart()))) {
          			return true;

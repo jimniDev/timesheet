@@ -1,0 +1,17 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+    <changeSet author="PhilippRingele (generated)" id="1568132845849-5">
+        <addColumn tableName="work_day">
+            <column name="additional_break_minutes" type="int"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="PhilippRingele (generated)" id="1568132845849-6">
+        <dropForeignKeyConstraint baseTableName="work_break" constraintName="fk_work_break_employee_id"/>
+    </changeSet>
+    <changeSet author="PhilippRingele (generated)" id="1568132845849-7">
+        <dropForeignKeyConstraint baseTableName="work_break" constraintName="fk_work_break_work_day_id"/>
+    </changeSet>
+    <changeSet author="PhilippRingele (generated)" id="1568132845849-8">
+        <dropTable tableName="work_break"/>
+    </changeSet>
+</databaseChangeLog>

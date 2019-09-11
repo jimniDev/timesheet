@@ -51,11 +51,6 @@ public class Employee implements Serializable {
     @OneToMany(mappedBy = "employee")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<WorkDay> workDays = new HashSet<>();
-
-    @JsonIgnoreProperties("employee")
-    @OneToMany(mappedBy = "employee")
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<WorkBreak> workBreaks = new HashSet<>();
     
     @OneToOne
     private User user;
@@ -208,30 +203,6 @@ public class Employee implements Serializable {
         this.workDays = workDays;
     }
 
-    public Set<WorkBreak> getWorkBreaks() {
-        return workBreaks;
-    }
-
-    public Employee workBreaks(Set<WorkBreak> workBreaks) {
-        this.workBreaks = workBreaks;
-        return this;
-    }
-
-    public Employee addWorkBreak(WorkBreak workBreak) {
-        this.workBreaks.add(workBreak);
-        workBreak.setEmployee(this);
-        return this;
-    }
-
-    public Employee removeWorkBreak(WorkBreak workBreak) {
-        this.workBreaks.remove(workBreak);
-        workBreak.setEmployee(null);
-        return this;
-    }
-
-    public void setWorkBreaks(Set<WorkBreak> workBreaks) {
-        this.workBreaks = workBreaks;
-    }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override

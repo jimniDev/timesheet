@@ -17,7 +17,7 @@ import java.util.Optional;
  * A WorkingEntry.
  */
 @Entity
-@Table(name = "working_entry")
+@Table(name = "working_entry", uniqueConstraints = @UniqueConstraint(columnNames={"start", "work_day_id"}))
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class WorkingEntry extends AbstractAuditingEntity implements Serializable {
 
@@ -60,19 +60,20 @@ public class WorkingEntry extends AbstractAuditingEntity implements Serializable
     
     @JsonProperty("workingTimeInSeconds")
     public Long getWorkingTimeInSeconds() {
-    	if(this.isCompleted() && (this.activity == null  || !this.activity.isFillDay())) {
+    	if(this.activity != null && this.activity.isReduce()) {
+    		return 0L;
+    	} else if(this.isCompleted() && (this.activity == null  || !this.activity.isFillDay())) {
         	return end.getEpochSecond() - start.getEpochSecond();
     	} else if(this.isCompleted() && this.activity.isFillDay()) {
-    		long targetWorkMinutes = 0L;
     		Optional<Integer> oTargetWorkMinutes = this.workDay.getTargetWorkminutes();
     		if(oTargetWorkMinutes.isPresent()) {
-    			targetWorkMinutes = oTargetWorkMinutes.get();
+    			return oTargetWorkMinutes.get() * 60 - workDay.getWorkingEntries()
+				.stream()
+				.filter(we -> we.isValid() && we.id != this.id)
+				.map(we -> we.getWorkingTimeInSeconds())
+				.reduce(0L, Long::sum);
     		}
-    		return targetWorkMinutes * 60 - workDay.getWorkingEntries()
-    				.stream()
-    				.filter(we -> we.isValid() && we.id != this.id)
-    				.map(we -> we.getWorkingTimeInSeconds())
-    				.reduce(0L, Long::sum);
+    		return 0l;
     	} else {
     		return 0L;
     	}
