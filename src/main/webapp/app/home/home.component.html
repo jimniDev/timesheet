@@ -4,7 +4,7 @@
 <div *ngIf="isAuthenticated()">
     <jhi-timetable (initialized)="enableButton($event)" [started]="started"></jhi-timetable>
 
-    <div fxLayout="row" fxLayoutAlign="center stretch" fxLayout.xs="column" fxLayoutGap="8px" class="container">
+    <div fxLayout="row" fxLayoutAlign="center stretch" fxLayout.lt-md="column" fxLayoutGap="8px" class="container">
         <mat-card>
             <jhi-date-form (newWorkingEntry)="addnewEntry($event)"></jhi-date-form>
             <button mat-fab  [color]="btnColors" id="startBtn" type="button"

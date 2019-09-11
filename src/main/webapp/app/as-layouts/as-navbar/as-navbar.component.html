@@ -33,20 +33,20 @@
     </mat-toolbar-row>
 </mat-toolbar>
 
-  <mat-sidenav-container autosize>
-    <mat-sidenav #sidenav [mode]="'side'">
-      <mat-nav-list>
-        <ng-content select="a [mat-list-item]"></ng-content>
-        <div fxShow="true" fxHide.gt-sm="true"> 
-          <!-- <a mat-list-item (click)="sidenav.toggle()" [routerLink]="" mat-list-item>Close</a> -->
-          <a mat-list-item (click)="sidenav.toggle()"  mat-list-item>Close</a>
-        </div>
-      </mat-nav-list>
-    </mat-sidenav>
-    <mat-sidenav-content>
-      <div style="height: 100vh; margin: 8px">
-          <ng-content></ng-content>
+<mat-sidenav-container class="sidenav-container" autosize>
+  <mat-sidenav #sidenav [mode]="'side'">
+    <mat-nav-list>
+      <ng-content select="a [mat-list-item]"></ng-content>
+      <div fxShow="true" fxHide.gt-sm="true"> 
+        <!-- <a mat-list-item (click)="sidenav.toggle()" [routerLink]="" mat-list-item>Close</a> -->
+        <a mat-list-item (click)="sidenav.toggle()"  mat-list-item>Close</a>
       </div>
-    </mat-sidenav-content>
-  </mat-sidenav-container>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <div style="margin: 8px; height: 95vh;">
+        <ng-content></ng-content>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
   

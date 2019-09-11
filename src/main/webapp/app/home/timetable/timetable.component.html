@@ -1,4 +1,4 @@
-<div fxLayout="row" fxLayoutAlign="center stretch" fxLayout.xs="column" fxLayoutGap="8px" class="container">
+<div fxLayout="row" fxLayoutAlign="center stretch" fxLayout.lt-md="column" fxLayoutGap="8px" class="container">
     <mat-card>
         <jhi-year-month-select [dates]="getDatesFromWorkingEntries()" (selectedDate)="filterTimeTable($event)"></jhi-year-month-select>
     </mat-card>
@@ -16,7 +16,7 @@
     </mat-card>
 </div>
 
-<div fxLayout="row" fxLayoutAlign="center stretch" fxLayout.xs="column" fxLayoutGap="8px" class="container">
+<div fxLayout="row" fxLayoutAlign="center stretch" fxLayout.lt-md="column" fxLayoutGap="8px" class="container">
         <mat-card>
             <table #MatTable mat-table [dataSource]="DSworkingEntries" matSort>      
                     <ng-container matColumnDef="workDay.date">
