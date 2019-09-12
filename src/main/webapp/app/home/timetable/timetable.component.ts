@@ -12,6 +12,7 @@ import { ActivityTimesheet } from 'app/shared/model/activity-timesheet.model';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { TimetableEditDialogComponent } from '../timetable-edit-dialog/timetable-edit-dialog.component';
 import moment = require('moment');
+import { AsRowSpanService } from 'app/as-layouts/as-table/as-row-span.service';
 
 @Component({
   selector: 'jhi-timetable',
@@ -35,6 +36,8 @@ export class TimetableComponent implements OnInit {
   targetMinutes: number;
   actualMinutes: number;
 
+  dateAccessor = d => d.WorkDay.date.format('YYYY-MM-DD');
+
   @Output() initialized = new EventEmitter<boolean>();
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
@@ -43,7 +46,8 @@ export class TimetableComponent implements OnInit {
     private workingEntryService: WorkingEntryTimesheetService,
     private employeeService: EmployeeTimesheetService,
     private cdr: ChangeDetectorRef,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    public asRowSpan: AsRowSpanService
   ) {}
 
   ngOnInit() {
@@ -146,6 +150,10 @@ export class TimetableComponent implements OnInit {
           this.DSworkingEntries.sortingDataAccessor = this.sortingDataAccessor;
           this.DSworkingEntries.paginator = this.paginator;
           this.DSworkingEntries.sort = this.sort;
+          this.asRowSpan.setData(this.workingEntries);
+          this.asRowSpan.cacheSpan('Date', d => d.workDay.date.format('YYYY-MM-DD'));
+          this.asRowSpan.cacheSpan('Time', d => d.workDay.totalWorkingMinutes);
+          this.asRowSpan.cacheSpan('Break', d => d.workDay.totalBreakMinutes);
           this.initialized.emit(true);
         },
         (res: HttpErrorResponse) => this.onError(res.message)
