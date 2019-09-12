@@ -1,4 +1,7 @@
-<table mat-table [dataSource]="employees" class="mat-elevation-z1">
+<mat-form-field>
+    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+</mat-form-field>
+<table mat-table [dataSource]="datasource" class="mat-elevation-z1">
     <ng-container matColumnDef="id">
         <th mat-header-cell *matHeaderCellDef>ID</th>
         <td mat-cell *matCellDef="let element"><a
@@ -23,3 +26,5 @@
     <tr mat-header-row *matHeaderRowDef="['id', 'name', 'isEmployed', 'weeklyWorkingHours']"></tr>
     <tr mat-row *matRowDef="let row; columns: ['id', 'name', 'isEmployed', 'weeklyWorkingHours'];"></tr>
 </table>
+<mat-paginator [length]="employees?employees.length:0" [pageSize]="5" [pageSizeOptions]="[5, 10, 15, 20]">
+</mat-paginator>
