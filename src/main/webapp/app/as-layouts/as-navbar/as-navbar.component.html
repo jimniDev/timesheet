@@ -34,7 +34,7 @@
 </mat-toolbar>
 
 <mat-sidenav-container class="sidenav-container" autosize>
-  <mat-sidenav #sidenav [mode]="'side'">
+  <mat-sidenav #sidenav [mode]="sideNavMode">
     <mat-nav-list>
       <ng-content select="a [mat-list-item]"></ng-content>
       <div fxShow="true" fxHide.gt-sm="true"> 
@@ -44,7 +44,7 @@
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>
-    <div style="margin: 8px; height: 95vh;">
+    <div class="sidenav-container-contents">
         <ng-content></ng-content>
     </div>
   </mat-sidenav-content>
