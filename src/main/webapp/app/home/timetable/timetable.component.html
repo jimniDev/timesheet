@@ -62,16 +62,11 @@
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Activity </th>
                 <td mat-cell *matCellDef="let element"> {{loadActivity(element.activity)}} </td>
             </ng-container>
-
-            <ng-container matColumnDef="Edit">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
-                <td mat-cell *matCellDef="let element"> <button mat-button color="primary"
-                        [disabled]="checkDate(element)" (click)="edittimetableDialog(element)">Edit</button>
-                </td>
-            </ng-container>
-            <ng-container matColumnDef="Delete">
+            <ng-container matColumnDef="Actions">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> </th>
-                <td mat-cell *matCellDef="let element"> <button mat-button color="warn" [disabled]="checkDate(element)"
+                <td mat-cell *matCellDef="let element"> <button mat-button color="primary"
+                        [disabled]="checkDate(element)" (click)="edittimetableDialog(element)">Edit</button><button
+                        mat-button color="warn" [disabled]="checkDate(element)"
                         (click)="deleteEntry(element)">Delete</button> </td>
             </ng-container>
 
