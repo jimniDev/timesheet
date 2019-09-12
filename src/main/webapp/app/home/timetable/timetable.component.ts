@@ -17,7 +17,8 @@ import { AsRowSpanService } from 'app/as-layouts/as-table/as-row-span.service';
 @Component({
   selector: 'jhi-timetable',
   templateUrl: './timetable.component.html',
-  styleUrls: ['./timetable.component.scss']
+  styleUrls: ['./timetable.component.scss'],
+  providers: [AsRowSpanService]
 })
 export class TimetableComponent implements OnInit {
   monthNames = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER'];
@@ -171,6 +172,7 @@ export class TimetableComponent implements OnInit {
 
   addNewandSort(workingEntry: WorkingEntryTimesheet) {
     this.workingEntries.push(workingEntry);
+    this.asRowSpan.updateCache(this.workingEntries);
     this.workingEntries = this.sortData(this.workingEntries);
     this.workingEntriesUnfiltered = this.workingEntries;
     //this.DSworkingEntries = new MatTableDataSource(this.workingEntries);

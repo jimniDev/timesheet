@@ -5,17 +5,33 @@ import { AsLayoutsModule } from '../as-layouts.module';
   providedIn: AsLayoutsModule
 })
 export class AsRowSpanService {
-  private DATA = [];
-  private spans = [];
+  private DATA: Array<any>;
+  private spans: Array<any>;
+  private accessors: Map<string, Function>;
 
-  constructor() {}
+  constructor() {
+    // this.DATA = new Array();
+    this.spans = new Array();
+    this.accessors = new Map();
+  }
 
-  setData(data) {
+  public setData(data): void {
     this.DATA = data;
   }
 
-  deleteCache() {
+  public deleteCache(): void {
+    this.spans = new Array();
+    this.accessors = new Map();
+  }
+
+  public updateCache(data?: Array<any>): void {
+    if (data) {
+      this.setData(data);
+    }
     this.spans = [];
+    this.accessors.forEach((value, key) => {
+      this.cacheSpan(key, value);
+    });
   }
 
   /**
@@ -23,7 +39,8 @@ export class AsRowSpanService {
    * The key determines the column it affects, and the accessor determines the
    * value that should be checked for spanning.
    */
-  cacheSpan(key, accessor) {
+  public cacheSpan(key: string, accessor: Function): void {
+    this.accessors.set(key, accessor);
     for (let i = 0; i < this.DATA.length; ) {
       let currentValue = accessor(this.DATA[i]);
       let count = 1;
@@ -49,7 +66,7 @@ export class AsRowSpanService {
     }
   }
 
-  getRowSpan(col, index) {
+  public getRowSpan(col: string, index: number): number {
     return this.spans[index] && this.spans[index][col];
   }
 }

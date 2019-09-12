@@ -46,4 +46,5 @@
     <include file="config/liquibase/changelog/20190909091417_added_field_reduce_activity.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190910162641_added_field_additional_break_minutes_work_day_dropped_breaks.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190910175113_added_unique_constraint_working_entry.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190912133747_dropped_unique_constraint_working_entry_added_boolean_not_null.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>
