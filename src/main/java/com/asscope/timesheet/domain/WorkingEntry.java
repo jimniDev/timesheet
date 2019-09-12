@@ -17,7 +17,7 @@ import java.util.Optional;
  * A WorkingEntry.
  */
 @Entity
-@Table(name = "working_entry", uniqueConstraints = @UniqueConstraint(columnNames={"start", "work_day_id"}))
+@Table(name = "working_entry")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class WorkingEntry extends AbstractAuditingEntity implements Serializable {
 
@@ -35,7 +35,7 @@ public class WorkingEntry extends AbstractAuditingEntity implements Serializable
     @Column(name = "jhi_end")
     private Instant end;
 
-    @Column(name = "deleted_flag")
+    @Column(name = "deleted_flag", nullable = false)
     @JsonIgnore
     private Boolean deleted;
 

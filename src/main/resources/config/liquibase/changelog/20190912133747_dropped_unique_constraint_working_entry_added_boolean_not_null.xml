@@ -1,0 +1,18 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+    <changeSet author="PhilippRingele (generated)" id="1568295515053-9">
+        <dropUniqueConstraint constraintName="UK70i4gjumckd7gvv72lrwq4ja0" tableName="working_entry"/>
+    </changeSet>
+    <changeSet author="PhilippRingele (generated)" id="1568295515053-2">
+        <addNotNullConstraint columnDataType="boolean" columnName="absence" tableName="activity"/>
+    </changeSet>
+    <changeSet author="PhilippRingele (generated)" id="1568295515053-3">
+        <addNotNullConstraint columnDataType="boolean" columnName="deleted_flag" tableName="working_entry"/>
+    </changeSet>
+    <changeSet author="PhilippRingele (generated)" id="1568295515053-4">
+        <addNotNullConstraint columnDataType="boolean" columnName="fill_day" tableName="activity"/>
+    </changeSet>
+    <changeSet author="PhilippRingele (generated)" id="1568295515053-5">
+        <addNotNullConstraint columnDataType="boolean" columnName="reduce" tableName="activity"/>
+    </changeSet>
+</databaseChangeLog>
