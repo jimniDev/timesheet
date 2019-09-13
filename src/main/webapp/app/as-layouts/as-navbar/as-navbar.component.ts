@@ -15,7 +15,7 @@ export class AsNavbarComponent implements OnInit {
 
   messagesClearedShow = false;
 
-  sideNavMode: string = 'side';
+  sideNavMode = 'side';
 
   @ViewChild('sidenav', { static: true }) sidenav: MatSidenav;
 
