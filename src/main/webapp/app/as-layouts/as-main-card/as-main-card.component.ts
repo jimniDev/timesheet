@@ -8,9 +8,9 @@ import { ICON_REGISTRY_PROVIDER } from '@angular/material';
   styleUrls: ['./as-main-card.component.scss']
 })
 export class AsMainCardComponent implements OnInit {
-  @Input() name: string = '';
-  @Input() icon: string = '';
-  small: boolean = false;
+  @Input() name = '';
+  @Input() icon = '';
+  small = false;
 
   constructor(private breakpointObserver: BreakpointObserver) {}
 

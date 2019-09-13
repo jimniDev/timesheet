@@ -5,7 +5,7 @@ import { Directive, HostListener, OnInit, Renderer2, ElementRef } from '@angular
 })
 export class TwoDigitsDirective implements OnInit {
   constructor(private el: ElementRef, private renderer: Renderer2) {
-    //this.renderer.setElementAttribute(this.el, 'maxLength', '2');
+    // this.renderer.setElementAttribute(this.el, 'maxLength', '2');
   }
 
   ngOnInit(): void {
@@ -13,7 +13,7 @@ export class TwoDigitsDirective implements OnInit {
   }
 
   @HostListener('keydown', ['$event']) onKeyDown(event) {
-    let e = <KeyboardEvent>event;
+    const e = <KeyboardEvent>event;
     if (
       [46, 8, 9, 27, 13, 110, 190].indexOf(e.keyCode) !== -1 ||
       // Allow: Ctrl+A

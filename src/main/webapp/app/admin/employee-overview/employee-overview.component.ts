@@ -16,11 +16,11 @@ export class EmployeeOverviewComponent implements OnInit {
   public totalWorkingHours: number;
   datasource = new MatTableDataSource<EmployeeTimesheet>();
 
+  @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
+
   constructor(private employeeService: EmployeeTimesheetService) {
     this.totalWorkingHours = 0;
   }
-
-  @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
 
   ngOnInit() {
     this.employeeService.query().subscribe((res: HttpResponse<IEmployeeTimesheet[]>) => {

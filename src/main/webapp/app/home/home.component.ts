@@ -29,7 +29,7 @@ export class HomeComponent implements OnInit {
   account: Account;
   startBtnName: string;
   started: boolean;
-  disableButton: boolean = true;
+  disableButton = true;
 
   role: string;
   activity: string;
@@ -55,9 +55,9 @@ export class HomeComponent implements OnInit {
     });
     this.loadAll();
     this.workingEntryService.active().subscribe(res => {
-      //check the response from server
-      //check header
-      if (res.status == 200) {
+      // check the response from server
+      // check header
+      if (res.status === 200) {
         this.startBtnName = 'Stop';
         this.started = true;
         this.btnColors = 'warn';
@@ -100,7 +100,7 @@ export class HomeComponent implements OnInit {
     } else {
       this.workingEntryService.start().subscribe(res => {
         if (res.ok) {
-          let workingEntry = <IWorkingEntryTimesheet>res.body;
+          const workingEntry = <IWorkingEntryTimesheet>res.body;
           this.timetableComponent.addNewandSort(workingEntry);
           this.startBtnName = 'Stop';
           this.started = true;
@@ -111,16 +111,16 @@ export class HomeComponent implements OnInit {
   }
 
   openDialog(newWorkingEntry: IWorkingEntryTimesheet): void {
-    const dialogConfig = new MatDialogConfig(); //configure the dialog with a set of default behaviors
+    const dialogConfig = new MatDialogConfig(); // configure the dialog with a set of default behaviors
 
-    dialogConfig.disableClose = true; //user will not be able to close the dialog just by clicking outside of it
-    dialogConfig.autoFocus = true; //ocus will be set automatically on the first form field of the dialog
-    dialogConfig.data = { newWorkingEntry: newWorkingEntry };
+    dialogConfig.disableClose = true; // user will not be able to close the dialog just by clicking outside of it
+    dialogConfig.autoFocus = true; // ocus will be set automatically on the first form field of the dialog
+    dialogConfig.data = { newWorkingEntry };
 
-    const dialogRef = this.dialog.open(HomeDialog, dialogConfig);
+    const dialogRef = this.dialog.open(HomeDialogComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe((workingEntry: IWorkingEntryTimesheet) => {
-      let indexToUpdate = this.timetableComponent.DSworkingEntries.data.findIndex(we => we.id == workingEntry.id);
+      const indexToUpdate = this.timetableComponent.DSworkingEntries.data.findIndex(we => we.id === workingEntry.id);
       this.timetableComponent.DSworkingEntries.data[indexToUpdate] = workingEntry;
       this.timetableComponent.DSworkingEntries._updateChangeSubscription();
     });
@@ -131,21 +131,21 @@ export class HomeComponent implements OnInit {
   selector: 'home-dialog',
   templateUrl: 'home-dialog.html'
 })
-export class HomeDialog {
+export class HomeDialogComponent implements OnInit {
   modalForm = new FormGroup({
     roleControl: new FormControl('', Validators.required),
     activityControl: new FormControl('', Validators.required),
     addBreakControl: new FormControl('')
   });
 
-  openform: boolean = false;
+  openform = false;
   activities: IActivityTimesheet[];
   roles: IRoleTimesheet[];
   selectableActivities: IActivityTimesheet[];
   breaktime: number;
 
   constructor(
-    public dialogRef: MatDialogRef<HomeDialog>,
+    public dialogRef: MatDialogRef<HomeDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private activityService: ActivityTimesheetService,
     private roleService: RoleTimesheetService,

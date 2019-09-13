@@ -31,10 +31,8 @@ export class ActivityCreationDialogComponent {
     this.activityForm.patchValue({ absence: false, fillday: false });
   }
 
-  ngOnInit() {}
-
   onsubmit(): void {
-    let activityEntry: ActivityTimesheet = new ActivityTimesheet();
+    const activityEntry: ActivityTimesheet = new ActivityTimesheet();
     activityEntry.name = this.activityForm.value.name;
     activityEntry.description = this.activityForm.value.description;
     activityEntry.absence = this.activityForm.value.absence;

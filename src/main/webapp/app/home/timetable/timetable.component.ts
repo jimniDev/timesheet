@@ -1,18 +1,18 @@
-import { Component, OnInit, Output, EventEmitter, ViewChild, ChangeDetectorRef } from '@angular/core';
-import { WorkingEntryTimesheetService } from 'app/entities/working-entry-timesheet';
-import { IWorkingEntryTimesheet, WorkingEntryTimesheet } from 'app/shared/model/working-entry-timesheet.model';
-import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
-import { filter, map } from 'rxjs/operators';
-import { EmployeeTimesheetService } from 'app/entities/employee-timesheet';
-import { Moment } from 'moment';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { ChangeDetectorRef, Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource, MatTable } from '@angular/material/table';
-import { ActivityTimesheet } from 'app/shared/model/activity-timesheet.model';
-import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { TimetableEditDialogComponent } from '../timetable-edit-dialog/timetable-edit-dialog.component';
-import moment = require('moment');
+import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { AsRowSpanService } from 'app/as-layouts/as-table/as-row-span.service';
+import { EmployeeTimesheetService } from 'app/entities/employee-timesheet';
+import { WorkingEntryTimesheetService } from 'app/entities/working-entry-timesheet';
+import { ActivityTimesheet } from 'app/shared/model/activity-timesheet.model';
+import { IWorkingEntryTimesheet, WorkingEntryTimesheet } from 'app/shared/model/working-entry-timesheet.model';
+import * as moment from 'moment';
+import { Moment } from 'moment';
+import { filter, map } from 'rxjs/operators';
+import { TimetableEditDialogComponent } from '../timetable-edit-dialog/timetable-edit-dialog.component';
 
 @Component({
   selector: 'jhi-timetable',
@@ -29,20 +29,20 @@ export class TimetableComponent implements OnInit {
 
   displayedColumns: string[] = ['workDay.date', 'Total Worktime', 'Break Time', 'start', 'end', 'Sum', 'Activity', 'Actions'];
 
-  targetTime: string = '00h 00m';
-  actualTime: string = '00h 00m';
-  diffTime: string = '00h 00m';
-  todayTime: string = '00h 00m';
+  targetTime = '00h 00m';
+  actualTime = '00h 00m';
+  diffTime = '00h 00m';
+  todayTime = '00h 00m';
 
   targetMinutes: number;
   actualMinutes: number;
-
-  dateAccessor = d => d.WorkDay.date.format('YYYY-MM-DD');
 
   @Output() initialized = new EventEmitter<boolean>();
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   @ViewChild(MatTable, { static: false }) table: MatTable<any>;
+
+  dateAccessor = d => d.WorkDay.date.format('YYYY-MM-DD');
   constructor(
     private workingEntryService: WorkingEntryTimesheetService,
     private employeeService: EmployeeTimesheetService,
@@ -69,7 +69,7 @@ export class TimetableComponent implements OnInit {
     const date = new Date();
     this.employeeService.currentWorktimeInformation(date.getFullYear()).subscribe(res => {
       if (res.ok) {
-        for (let month of res.body.years[0].months) {
+        for (const month of res.body.years[0].months) {
           if (month.name === this.monthNames[date.getMonth()]) {
             this.targetTime = this.secondsToHHMM(month.targetWorkingMinutes * 60);
             this.actualTime = this.secondsToHHMM(month.actualWorkingMinutes * 60);
@@ -112,10 +112,10 @@ export class TimetableComponent implements OnInit {
         we => we.workDay.date.year() === date.year() && we.workDay.date.month() === date.month()
       );
     } else {
-      const date = new Date();
+      date = moment();
       this.workingEntries = this.workingEntriesUnfiltered;
-      this.loadTargetWorkTime(date.getFullYear(), date.getMonth() + 1);
-      this.loadActualWorkTime(date.getFullYear(), date.getMonth() + 1);
+      this.loadTargetWorkTime(date.year(), date.month() + 1);
+      this.loadActualWorkTime(date.year(), date.month() + 1);
     }
     this.DSworkingEntries = new MatTableDataSource(this.workingEntries);
     this.DSworkingEntries.sortingDataAccessor = this.sortingDataAccessor;
@@ -123,7 +123,7 @@ export class TimetableComponent implements OnInit {
     this.DSworkingEntries.sort = this.sort;
 
     if (this.DSworkingEntries.paginator) {
-      this.DSworkingEntries.paginator.firstPage(); //go to the first page if filter changed
+      this.DSworkingEntries.paginator.firstPage(); // go to the first page if filter changed
     }
   }
 
@@ -147,7 +147,7 @@ export class TimetableComponent implements OnInit {
           //   .toString();
           this.DSworkingEntries = new MatTableDataSource(this.workingEntries);
 
-          this.cdr.detectChanges(); //necessary fot pagination & sort -wait until initialization
+          this.cdr.detectChanges(); // necessary fot pagination & sort -wait until initialization
           this.DSworkingEntries.sortingDataAccessor = this.sortingDataAccessor;
           this.DSworkingEntries.paginator = this.paginator;
           this.DSworkingEntries.sort = this.sort;
@@ -166,7 +166,7 @@ export class TimetableComponent implements OnInit {
   }
 
   sortData(workingEntries: IWorkingEntryTimesheet[]): IWorkingEntryTimesheet[] {
-    let sortarray = workingEntries.sort((a, b) => b.start.valueOf() - a.start.valueOf());
+    const sortarray = workingEntries.sort((a, b) => b.start.valueOf() - a.start.valueOf());
     return sortarray;
   }
 
@@ -175,9 +175,9 @@ export class TimetableComponent implements OnInit {
     this.asRowSpan.updateCache(this.workingEntries);
     this.workingEntries = this.sortData(this.workingEntries);
     this.workingEntriesUnfiltered = this.workingEntries;
-    //this.DSworkingEntries = new MatTableDataSource(this.workingEntries);
+    // this.DSworkingEntries = new MatTableDataSource(this.workingEntries);
     this.DSworkingEntries.connect().next(this.workingEntries);
-    this.cdr.detectChanges(); //necessary fot pagination & sort -wait until initialization
+    this.cdr.detectChanges(); // necessary fot pagination & sort -wait until initialization
     this.DSworkingEntries.sortingDataAccessor = this.sortingDataAccessor;
     this.DSworkingEntries.paginator = this.paginator;
     this.DSworkingEntries.sort = this.sort;
@@ -198,7 +198,9 @@ export class TimetableComponent implements OnInit {
 
   pad(num: number, size: number): string {
     let s = num + '';
-    while (s.length < size) s = '0' + s;
+    while (s.length < size) {
+      s = '0' + s;
+    }
     return s;
   }
 
@@ -245,7 +247,7 @@ export class TimetableComponent implements OnInit {
       data: workingentry
     });
     dialogRef.afterClosed().subscribe((result: IWorkingEntryTimesheet) => {
-      let idx = this.workingEntries.findIndex(we => we.id === result.id);
+      const idx = this.workingEntries.findIndex(we => we.id === result.id);
       this.workingEntries[idx] = result;
     });
   }
@@ -258,7 +260,7 @@ export class TimetableComponent implements OnInit {
 
   checkDate(workingentry: IWorkingEntryTimesheet): boolean {
     if (moment().diff(workingentry.workDay.date, 'days') >= 30) {
-      //this.buttonDisable = true;
+      // this.buttonDisable = true;
       return true;
     }
     return false;

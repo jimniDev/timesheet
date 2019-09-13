@@ -39,11 +39,11 @@ export class RoleTableComponent implements OnInit {
   }
   editRoleDialog(role: IRoleTimesheet): void {
     const dialogRef = this.dialog.open(ActivityRoleEditDialogComponent, {
-      data: { name: role.name, description: role.description, activities: role.activities, role: role }
+      data: { name: role.name, description: role.description, activities: role.activities, role }
     });
 
     dialogRef.afterClosed().subscribe((result: IRoleTimesheet) => {
-      let idx = this.roles.findIndex(we => we.id === result.id);
+      const idx = this.roles.findIndex(we => we.id === result.id);
       this.roles[idx] = result;
     });
   }

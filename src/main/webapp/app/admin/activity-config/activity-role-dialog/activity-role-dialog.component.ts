@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { ActivityTimesheet, IActivityTimesheet } from 'app/shared/model/activity-timesheet.model';
 import { RoleTimesheet, IRoleTimesheet } from 'app/shared/model/role-timesheet.model';
 import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
@@ -11,7 +11,7 @@ import { HttpResponse } from '@angular/common/http';
   selector: 'dialog-rolecreation',
   templateUrl: 'activity-role-dialog.component.html'
 })
-export class ActivityRoleDialogComponent {
+export class ActivityRoleDialogComponent implements OnInit {
   activities: ActivityTimesheet[];
 
   roles: RoleTimesheet[];

@@ -51,9 +51,20 @@ import { AsTimeInputComponent } from './as-time-input/as-time-input.component';
 import { AsInteractiveComponent } from './as-interactive/as-interactive.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AsRowSpanDirective } from './as-table/as-row-span.directive';
+import { AsMainComponent } from './as-main/as-main.component';
+import { InteractiveDirective } from './as-interactive/as-interactiveDirective';
 
 @NgModule({
-  declarations: [AsNavbarComponent, AsMainCardComponent, AsGridComponent, AsTimeInputComponent, AsInteractiveComponent, AsRowSpanDirective],
+  declarations: [
+    AsNavbarComponent,
+    AsMainCardComponent,
+    AsGridComponent,
+    AsTimeInputComponent,
+    AsInteractiveComponent,
+    AsRowSpanDirective,
+    AsMainComponent,
+    InteractiveDirective
+  ],
   imports: [
     CommonModule,
     ReactiveFormsModule,

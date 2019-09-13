@@ -16,7 +16,7 @@ export class AsNavbarMessagesService {
     return this.messages.pop();
   }
 
-  public close(): void {
-    this.messages;
-  }
+  // public close(): void {
+  //   this.messages;
+  // }
 }

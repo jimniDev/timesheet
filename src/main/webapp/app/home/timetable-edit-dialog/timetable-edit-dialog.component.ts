@@ -1,10 +1,8 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { IWorkingEntryTimesheet, WorkingEntryTimesheet } from 'app/shared/model/working-entry-timesheet.model';
+import { IWorkingEntryTimesheet } from 'app/shared/model/working-entry-timesheet.model';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { MatDialog, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { WorkingEntryTimesheetService } from 'app/entities/working-entry-timesheet';
-import { TimetableComponent } from 'app/home/timetable/timetable.component';
-import { NgbDateStruct, NgbCalendar, NgbDateAdapter, NgbDateNativeAdapter } from '@ng-bootstrap/ng-bootstrap';
 import { IActivityTimesheet, ActivityTimesheet } from 'app/shared/model/activity-timesheet.model';
 import { ActivityTimesheetService } from 'app/entities/activity-timesheet/activity-timesheet.service';
 import { HttpResponse } from '@angular/common/http';
@@ -17,8 +15,8 @@ import { WorkDayTimesheet } from 'app/shared/model/work-day-timesheet.model';
   styleUrls: ['./timetable-edit-dialog.component.scss']
 })
 export class TimetableEditDialogComponent implements OnInit {
-  datepic: NgbDateStruct;
   activities: IActivityTimesheet[];
+
   workingEntry: IWorkingEntryTimesheet;
 
   workingeditForm = new FormGroup({
@@ -27,7 +25,9 @@ export class TimetableEditDialogComponent implements OnInit {
     endtime: new FormControl(this.data.end.format('HH:mm')),
     activity: new FormControl(this.data.activity, Validators.required)
   });
+
   selectableActivities: IActivityTimesheet[];
+
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: IWorkingEntryTimesheet,
     public dialogRef: MatDialogRef<TimetableEditDialogComponent>,
@@ -36,7 +36,6 @@ export class TimetableEditDialogComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    const date = new Date();
     this.activityService.query().subscribe((res: HttpResponse<IActivityTimesheet[]>) => {
       if (res.ok) {
         this.activities = res.body;
@@ -44,6 +43,7 @@ export class TimetableEditDialogComponent implements OnInit {
       }
     });
   }
+
   today() {
     return new Date();
   }
@@ -53,19 +53,18 @@ export class TimetableEditDialogComponent implements OnInit {
   }
 
   updateEntry(): void {
-    this.workingeditForm.value;
     let startTimeString: string;
     let endTimeString: string;
     const workDay: WorkDayTimesheet = new WorkDayTimesheet();
-    let activity: ActivityTimesheet = new ActivityTimesheet();
+    // const activity: ActivityTimesheet = new ActivityTimesheet();
     const formDate = moment(this.workingeditForm.value.date);
     workDay.date = formDate;
-    let start_time = this.workingeditForm.value.starttime;
-    let end_time = this.workingeditForm.value.endtime;
+    const start_time = this.workingeditForm.value.starttime;
+    const end_time = this.workingeditForm.value.endtime;
     startTimeString = formDate.format('YYYY-MM-DD') + ' ' + start_time;
     endTimeString = formDate.format('YYYY-MM-DD') + ' ' + end_time;
-    let startMoment = moment(startTimeString);
-    let endMoment = moment(endTimeString);
+    const startMoment = moment(startTimeString);
+    const endMoment = moment(endTimeString);
 
     this.data.start = startMoment;
     this.data.end = endMoment;
