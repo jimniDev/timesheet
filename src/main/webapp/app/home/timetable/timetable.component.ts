@@ -29,10 +29,10 @@ export class TimetableComponent implements OnInit {
 
   displayedColumns: string[] = ['workDay.date', 'Total Worktime', 'Break Time', 'start', 'end', 'Sum', 'Activity', 'Actions'];
 
-  targetTime: string = '00h 00m';
-  actualTime: string = '00h 00m';
-  diffTime: string = '00h 00m';
-  todayTime: string = '00h 00m';
+  targetTime = '00h 00m';
+  actualTime = '00h 00m';
+  diffTime = '00h 00m';
+  todayTime = '00h 00m';
 
   targetMinutes: number;
   actualMinutes: number;
@@ -69,7 +69,7 @@ export class TimetableComponent implements OnInit {
     const date = new Date();
     this.employeeService.currentWorktimeInformation(date.getFullYear()).subscribe(res => {
       if (res.ok) {
-        for (let month of res.body.years[0].months) {
+        for (const month of res.body.years[0].months) {
           if (month.name === this.monthNames[date.getMonth()]) {
             this.targetTime = this.secondsToHHMM(month.targetWorkingMinutes * 60);
             this.actualTime = this.secondsToHHMM(month.actualWorkingMinutes * 60);
