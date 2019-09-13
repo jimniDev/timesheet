@@ -1,5 +1,5 @@
 <div [formGroup]="parts">
     <input minlength="0" maxLength="2" placeholder="HH" formControlName="hours" (input)="_handleInput()" (keydown)="onKeyDown($event)" (keypress)="onKeyPress($event)" required>
     <span>&#58;</span>
-    <input minlength="0" maxLength="2" placeholder="MM" (input)="_handleInput()" (keydown)="onKeyDown($event)" formControlName="minutes" #minutes required>
+    <input minlength="0" maxLength="2" placeholder="MM" formControlName="minutes" (input)="_handleInput()" (keydown)="onKeyDown($event)" formControlName="minutes" #minutes required>
 </div>
