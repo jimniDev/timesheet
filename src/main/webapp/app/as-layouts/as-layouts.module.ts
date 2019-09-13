@@ -50,9 +50,10 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 import { AsTimeInputComponent } from './as-time-input/as-time-input.component';
 import { AsInteractiveComponent } from './as-interactive/as-interactive.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { AsRowSpanDirective } from './as-table/as-row-span.directive';
 
 @NgModule({
-  declarations: [AsNavbarComponent, AsMainCardComponent, AsGridComponent, AsTimeInputComponent, AsInteractiveComponent],
+  declarations: [AsNavbarComponent, AsMainCardComponent, AsGridComponent, AsTimeInputComponent, AsInteractiveComponent, AsRowSpanDirective],
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -105,6 +106,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     AsGridComponent,
     AsTimeInputComponent,
     AsInteractiveComponent,
+    AsRowSpanDirective,
     FlexLayoutModule,
     MatToolbarModule,
     MatSidenavModule,

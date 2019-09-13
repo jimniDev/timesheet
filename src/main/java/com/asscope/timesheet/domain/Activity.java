@@ -32,13 +32,13 @@ public class Activity implements Serializable {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "absence")
+    @Column(name = "absence", nullable = false)
     private Boolean absence;
 
-    @Column(name = "fill_day")
+    @Column(name = "fill_day", nullable = false)
     private Boolean fillDay;
 
-    @Column(name = "reduce")
+    @Column(name = "reduce", nullable = false)
     private Boolean reduce;
 
     @OneToMany(mappedBy = "activity")

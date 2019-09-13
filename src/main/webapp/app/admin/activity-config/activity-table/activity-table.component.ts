@@ -1,8 +1,8 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { IActivityTimesheet } from 'app/shared/model/activity-timesheet.model';
 import { ActivityTimesheetService } from 'app/entities/activity-timesheet';
 import { HttpResponse } from '@angular/common/http';
-import { MatTableDataSource, MatTable } from '@angular/material';
+import { MatTableDataSource, MatTable, MatPaginator } from '@angular/material';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ActivityEditDialogComponent } from '../activity-edit-dialog/activity-edit-dialog.component';
 
@@ -12,25 +12,29 @@ import { ActivityEditDialogComponent } from '../activity-edit-dialog/activity-ed
   styleUrls: ['./activity-table.component.scss']
 })
 export class ActivityTableComponent implements OnInit {
+  [x: string]: any;
   activities: IActivityTimesheet[];
-
-  datasource: MatTableDataSource<IActivityTimesheet>;
-
+  datasource = new MatTableDataSource<IActivityTimesheet>();
   displayedColumns = ['id', 'name', 'description', 'absence', 'fillDay', 'reduce', 'actions'];
 
   @ViewChild(MatTable, { static: false }) table: MatTable<any>;
+  @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
 
-  constructor(private activityService: ActivityTimesheetService, public dialog: MatDialog) {}
+  constructor(private cdr: ChangeDetectorRef, private activityService: ActivityTimesheetService, public dialog: MatDialog) {}
 
   ngOnInit() {
     this.activityService.query().subscribe((res: HttpResponse<IActivityTimesheet[]>) => {
       if (res.ok) {
         this.activities = res.body;
         this.datasource = new MatTableDataSource(this.activities);
+        this.datasource.sort = this.sort;
+        this.datasource.paginator = this.paginator;
       }
     });
   }
-
+  applyFilter(filterValue: string) {
+    this.datasource.filter = filterValue.trim().toLowerCase();
+  }
   public addActivity(activity: IActivityTimesheet) {
     this.activities.push(activity);
     this.table.renderRows();
@@ -46,7 +50,6 @@ export class ActivityTableComponent implements OnInit {
   }
   editActivityDialog(activity: IActivityTimesheet): void {
     const dialogRef = this.dialog.open(ActivityEditDialogComponent, {
-      width: '25%',
       data: {
         name: activity.name,
         description: activity.description,
@@ -60,6 +63,8 @@ export class ActivityTableComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         //   this.roleTable.update(<IRoleTimesheet>result);
+        let idx = this.activities.findIndex(we => we.id === result.id);
+        this.activities[idx] = result;
       }
     });
   }

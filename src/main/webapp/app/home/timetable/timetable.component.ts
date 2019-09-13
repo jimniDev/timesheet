@@ -7,24 +7,27 @@ import { EmployeeTimesheetService } from 'app/entities/employee-timesheet';
 import { Moment } from 'moment';
 import { MatPaginator } from '@angular/material';
 import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatTableDataSource, MatTable } from '@angular/material/table';
 import { ActivityTimesheet } from 'app/shared/model/activity-timesheet.model';
-// import { uniqWith } from 'lodash/uniqWith';
-// import { get } from 'lodash/get';
+import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { TimetableEditDialogComponent } from '../timetable-edit-dialog/timetable-edit-dialog.component';
+import moment = require('moment');
+import { AsRowSpanService } from 'app/as-layouts/as-table/as-row-span.service';
 
 @Component({
   selector: 'jhi-timetable',
   templateUrl: './timetable.component.html',
-  styleUrls: ['./timetable.component.scss']
+  styleUrls: ['./timetable.component.scss'],
+  providers: [AsRowSpanService]
 })
 export class TimetableComponent implements OnInit {
   monthNames = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER'];
-
+  buttonDisable = false;
   workingEntriesUnfiltered: IWorkingEntryTimesheet[];
   workingEntries: IWorkingEntryTimesheet[];
   DSworkingEntries = new MatTableDataSource<IWorkingEntryTimesheet>(this.workingEntries);
 
-  displayedColumns: string[] = ['workDay.date', 'Total Worktime', 'Break Time', 'start', 'end', 'Sum', 'Activity'];
+  displayedColumns: string[] = ['workDay.date', 'Total Worktime', 'Break Time', 'start', 'end', 'Sum', 'Activity', 'Actions'];
 
   targetTime = '00h 00m';
   actualTime = '00h 00m';
@@ -34,16 +37,18 @@ export class TimetableComponent implements OnInit {
   targetMinutes: number;
   actualMinutes: number;
 
+  dateAccessor = d => d.WorkDay.date.format('YYYY-MM-DD');
+
   @Output() initialized = new EventEmitter<boolean>();
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
-
-  spans = {};
-
+  @ViewChild(MatTable, { static: false }) table: MatTable<any>;
   constructor(
     private workingEntryService: WorkingEntryTimesheetService,
     private employeeService: EmployeeTimesheetService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    public dialog: MatDialog,
+    public asRowSpan: AsRowSpanService
   ) {}
 
   ngOnInit() {
@@ -146,6 +151,10 @@ export class TimetableComponent implements OnInit {
           this.DSworkingEntries.sortingDataAccessor = this.sortingDataAccessor;
           this.DSworkingEntries.paginator = this.paginator;
           this.DSworkingEntries.sort = this.sort;
+          this.asRowSpan.setData(this.workingEntries);
+          this.asRowSpan.cacheSpan('Date', d => d.workDay.date.format('YYYY-MM-DD'));
+          this.asRowSpan.cacheSpan('Time', d => d.workDay.totalWorkingMinutes);
+          this.asRowSpan.cacheSpan('Break', d => d.workDay.totalBreakMinutes);
           this.initialized.emit(true);
         },
         (res: HttpErrorResponse) => this.onError(res.message)
@@ -163,6 +172,7 @@ export class TimetableComponent implements OnInit {
 
   addNewandSort(workingEntry: WorkingEntryTimesheet) {
     this.workingEntries.push(workingEntry);
+    this.asRowSpan.updateCache(this.workingEntries);
     this.workingEntries = this.sortData(this.workingEntries);
     this.workingEntriesUnfiltered = this.workingEntries;
     //this.DSworkingEntries = new MatTableDataSource(this.workingEntries);
@@ -228,5 +238,29 @@ export class TimetableComponent implements OnInit {
     if (this.actualMinutes && this.targetMinutes) {
       this.diffTime = this.secondsToHHMM(this.targetMinutes * 60 - this.actualMinutes * 60);
     }
+  }
+
+  edittimetableDialog(workingentry: IWorkingEntryTimesheet) {
+    const dialogRef = this.dialog.open(TimetableEditDialogComponent, {
+      data: workingentry
+    });
+    dialogRef.afterClosed().subscribe((result: IWorkingEntryTimesheet) => {
+      let idx = this.workingEntries.findIndex(we => we.id === result.id);
+      this.workingEntries[idx] = result;
+    });
+  }
+  public deleteEntry(workingentry: IWorkingEntryTimesheet) {
+    this.workingEntryService.delete(workingentry.id).subscribe(res => {
+      if (res.ok) {
+      }
+    });
+  }
+
+  checkDate(workingentry: IWorkingEntryTimesheet): boolean {
+    if (moment().diff(workingentry.workDay.date, 'days') >= 30) {
+      //this.buttonDisable = true;
+      return true;
+    }
+    return false;
   }
 }
