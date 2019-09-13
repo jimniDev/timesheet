@@ -20,8 +20,12 @@
       <mat-icon matSuffix>access_time</mat-icon>
     </mat-form-field>
     <mat-form-field>
+      <mat-label>Role</mat-label>
+      <input matInput placeholder="role" value="">
+    </mat-form-field>
+    <mat-form-field>
       <mat-label>Activity</mat-label>
-      <mat-select matNativeControl formControlName="activity" required>
+      <mat-select formControlName="activity" [compareWith]="compareObjects" required>
         <mat-option *ngFor="let activity of this.activities" [value]="activity">
           {{activity.name}}
         </mat-option>

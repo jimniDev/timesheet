@@ -69,6 +69,7 @@ export class RoleTableComponent implements OnInit {
       if (res.ok) {
         this.roles.splice(this.roles.indexOf(role), 1);
         this.table.renderRows();
+        this.ngOnInit();
       }
     });
   }

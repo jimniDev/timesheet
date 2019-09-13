@@ -21,13 +21,18 @@ import { AsRowSpanService } from 'app/as-layouts/as-table/as-row-span.service';
   providers: [AsRowSpanService]
 })
 export class TimetableComponent implements OnInit {
+  @Output() initialized = new EventEmitter<boolean>();
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
+  @ViewChild(MatTable, { static: false }) table: MatTable<any>;
+
   monthNames = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER'];
   buttonDisable = false;
   workingEntriesUnfiltered: IWorkingEntryTimesheet[];
   workingEntries: IWorkingEntryTimesheet[];
   DSworkingEntries = new MatTableDataSource<IWorkingEntryTimesheet>(this.workingEntries);
 
-  displayedColumns: string[] = ['workDay.date', 'Total Worktime', 'Break Time', 'start', 'end', 'Sum', 'Activity', 'Actions'];
+  displayedColumns: string[] = ['workDay.date', 'Total Worktime', 'Break Time', 'start', 'end', 'Sum', 'Roles', 'Activity', 'Actions'];
 
   targetTime: string = '00h 00m';
   actualTime: string = '00h 00m';
@@ -39,10 +44,6 @@ export class TimetableComponent implements OnInit {
 
   dateAccessor = d => d.WorkDay.date.format('YYYY-MM-DD');
 
-  @Output() initialized = new EventEmitter<boolean>();
-  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-  @ViewChild(MatSort, { static: true }) sort: MatSort;
-  @ViewChild(MatTable, { static: false }) table: MatTable<any>;
   constructor(
     private workingEntryService: WorkingEntryTimesheetService,
     private employeeService: EmployeeTimesheetService,
@@ -123,7 +124,7 @@ export class TimetableComponent implements OnInit {
     this.DSworkingEntries.sort = this.sort;
 
     if (this.DSworkingEntries.paginator) {
-      this.DSworkingEntries.paginator.firstPage(); //go to the first page if filter changed
+      this.DSworkingEntries.paginator.firstPage(); // go to the first page if filter changed
     }
   }
 
@@ -147,7 +148,7 @@ export class TimetableComponent implements OnInit {
           //   .toString();
           this.DSworkingEntries = new MatTableDataSource(this.workingEntries);
 
-          this.cdr.detectChanges(); //necessary fot pagination & sort -wait until initialization
+          this.cdr.detectChanges(); // necessary fot pagination & sort -wait until initialization
           this.DSworkingEntries.sortingDataAccessor = this.sortingDataAccessor;
           this.DSworkingEntries.paginator = this.paginator;
           this.DSworkingEntries.sort = this.sort;
@@ -166,7 +167,7 @@ export class TimetableComponent implements OnInit {
   }
 
   sortData(workingEntries: IWorkingEntryTimesheet[]): IWorkingEntryTimesheet[] {
-    let sortarray = workingEntries.sort((a, b) => b.start.valueOf() - a.start.valueOf());
+    const sortarray = workingEntries.sort((a, b) => b.start.valueOf() - a.start.valueOf());
     return sortarray;
   }
 
@@ -175,9 +176,9 @@ export class TimetableComponent implements OnInit {
     this.asRowSpan.updateCache(this.workingEntries);
     this.workingEntries = this.sortData(this.workingEntries);
     this.workingEntriesUnfiltered = this.workingEntries;
-    //this.DSworkingEntries = new MatTableDataSource(this.workingEntries);
+    // this.DSworkingEntries = new MatTableDataSource(this.workingEntries);
     this.DSworkingEntries.connect().next(this.workingEntries);
-    this.cdr.detectChanges(); //necessary fot pagination & sort -wait until initialization
+    this.cdr.detectChanges(); // necessary fot pagination & sort -wait until initialization
     this.DSworkingEntries.sortingDataAccessor = this.sortingDataAccessor;
     this.DSworkingEntries.paginator = this.paginator;
     this.DSworkingEntries.sort = this.sort;
@@ -245,20 +246,23 @@ export class TimetableComponent implements OnInit {
       data: workingentry
     });
     dialogRef.afterClosed().subscribe((result: IWorkingEntryTimesheet) => {
-      let idx = this.workingEntries.findIndex(we => we.id === result.id);
-      this.workingEntries[idx] = result;
+      if (result) {
+        const idx = this.workingEntries.findIndex(we => we.id === result.id);
+        this.workingEntries[idx] = result;
+      }
     });
   }
   public deleteEntry(workingentry: IWorkingEntryTimesheet) {
     this.workingEntryService.delete(workingentry.id).subscribe(res => {
       if (res.ok) {
+        this.ngOnInit();
       }
     });
   }
 
   checkDate(workingentry: IWorkingEntryTimesheet): boolean {
     if (moment().diff(workingentry.workDay.date, 'days') >= 30) {
-      //this.buttonDisable = true;
+      // this.buttonDisable = true;
       return true;
     }
     return false;
