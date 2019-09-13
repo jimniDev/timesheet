@@ -15,6 +15,8 @@ export class AsNavbarComponent implements OnInit {
 
   messagesClearedShow: boolean = false;
 
+  sideNavMode: string = 'side';
+
   @ViewChild('sidenav', { static: true }) sidenav: MatSidenav;
 
   constructor(public messagesService: AsNavbarMessagesService, private breakpointObserver: BreakpointObserver) {}
@@ -23,9 +25,11 @@ export class AsNavbarComponent implements OnInit {
     this.breakpointObserver.observe([Breakpoints.Small, Breakpoints.XSmall]).subscribe(result => {
       if (result.matches) {
         this.sidenav.disableClose = false;
+        this.sideNavMode = 'over';
         this.sidenav.close();
       } else {
         this.sidenav.disableClose = true;
+        this.sideNavMode = 'side';
         this.sidenav.open();
       }
     });

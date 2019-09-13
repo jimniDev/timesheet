@@ -9,4 +9,12 @@
 
 .sidenav-container {
   flex: 1;
+  height: calc(100% - 64px); // 10px is height of your first div...
+  //width: 100%;
+}
+
+.sidenav-container-contents {
+  padding-left: 8px;
+  padding-right: 8px;
+  padding-bottom: 8px;
 }

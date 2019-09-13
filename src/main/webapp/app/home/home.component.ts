@@ -179,14 +179,6 @@ export class HomeDialog {
     });
   }
 
-  onNoClick(): void {
-    this.dialogRef.close();
-  }
-
-  onClickAddBreak() {
-    this.openform = true;
-  }
-
   onChangeRole(role: IRoleTimesheet) {
     if (role) {
       this.selectableActivities = role.activities;

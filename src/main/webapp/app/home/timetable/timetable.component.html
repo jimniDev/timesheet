@@ -1,17 +1,16 @@
-<div fxLayout="row" fxLayoutAlign="center stretch" fxLayout.xs="column" fxLayoutGap="8px" class="container">
-    <mat-card>
-        <jhi-year-month-select [dates]="getDatesFromWorkingEntries()" (selectedDate)="filterTimeTable($event)">
-        </jhi-year-month-select>
+<div fxLayout="row" fxLayoutAlign="space-between" fxLayout.lt-md="column" fxLayoutGap="8px" class="container">
+    <mat-card fxFlex="auto">
+        <jhi-year-month-select [dates]="getDatesFromWorkingEntries()" (selectedDate)="filterTimeTable($event)"></jhi-year-month-select>
     </mat-card>
-    <mat-card>
+    <mat-card fxFlex="auto">
         <mat-card-subtitle>Target Time</mat-card-subtitle>
         <mat-card-content>{{targetTime}}</mat-card-content>
     </mat-card>
-    <mat-card>
+    <mat-card fxFlex="auto">
         <mat-card-subtitle>Actual Time</mat-card-subtitle>
         <mat-card-content>{{actualTime}}</mat-card-content>
     </mat-card>
-    <mat-card>
+    <mat-card fxFlex="auto">
         <mat-card-subtitle>Difference</mat-card-subtitle>
         <mat-card-content>{{diffTime}}</mat-card-content>
     </mat-card>
@@ -37,9 +36,9 @@
             </ng-container>
 
             <ng-container matColumnDef="Break Time">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Break Time </th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header fxHide.lt-md="true" > Break Time </th>
                 <td mat-cell *matCellDef="let element; let i = index" [asRowSpan]="asRowSpan" [rowIndex]="i"
-                    colName="Break">
+                    colName="Break"  fxHide.lt-md="true">
                     {{secondsToHHMM(element.workDay.totalBreakMinutes * 60)}} </td>
             </ng-container>
 
@@ -54,12 +53,12 @@
             </ng-container>
 
             <ng-container matColumnDef="Sum">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Difference </th>
-                <td mat-cell *matCellDef="let element"> {{sumDate(element.start, element.end)}} </td>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header fxHide.lt-md="true"> Difference </th>
+                <td mat-cell *matCellDef="let element" fxHide.lt-md="true"> {{sumDate(element.start, element.end)}} </td>
             </ng-container>
             <ng-container matColumnDef="Activity">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Activity </th>
-                <td mat-cell *matCellDef="let element"> {{loadActivity(element.activity)}} </td>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header fxHide.lt-md="true"> Activity </th>
+                <td mat-cell *matCellDef="let element" fxHide.lt-md="true"> {{loadActivity(element.activity)}} </td>
             </ng-container>
             <ng-container matColumnDef="Actions">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> </th>
