@@ -8,8 +8,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { TwoDigitsDirective } from './two-digits.directive';
 import { YearMonthSelectComponent } from './year-month-select/year-month-select.component';
 import { AsLayoutsModule } from 'app/as-layouts/as-layouts.module';
-import { HomeDialog } from './home.component';
 import { TimetableEditDialogComponent } from './timetable-edit-dialog/timetable-edit-dialog.component';
+import { HomeDialog } from './home-dialog';
 
 @NgModule({
   imports: [TimesheetSharedModule, RouterModule.forChild([HOME_ROUTE]), ReactiveFormsModule, AsLayoutsModule],

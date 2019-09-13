@@ -1,76 +1,41 @@
-<!-- <div class="modal-header">
-    <h4 class="modal-title">Choose your Role and Activity</h4>
-    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-        <span aria-hidden="true">&times;</span>
-    </button>
-</div>
-<div class="modal-body">
-    <div class="form-group">
-        <mat-label>Role</mat-label>
-        <select matNativeControl class="form-control">
-            <option label="--select activity--"></option>
-            <option value="activity1">activity1</option>
-            <option value="ativity2">activity2</option>
-            <option value="ativity3">activity3</option>
-        </select>
-    </div>
-    <div class="form-group">
-        <mat-label>Activity</mat-label>
-        <select matNativeControl class="form-control">
-            <option label="--select activity--"></option>
-            <option value="activity1">activity1</option>
-            <option value="ativity2">activity2</option>
-            <option value="ativity3">activity3</option>
-        </select>
-    </div>
-    <div class="form-group">
-        <mat-label>Break Minutes : </mat-label>
-        <mat-label>{{totalBreakMinutes}}</mat-label>
-        <button class="btn btn-light">add Break Minutes</button>
-    </div>
 
-</div>
-<div class="modal-footer">
-    <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Save</button>
-</div> -->
-
-<h4 mat-dialog-title>Choose your Role and Activity</h4>
-
-<form [formGroup]="modalForm" (ngSubmit)="save()"> 
-    <mat-dialog-content>
-        <div>
-            <mat-form-field>
-            <mat-label>Role</mat-label>
-            <mat-select matNativeControl formControlName="roleControl" required
-                (ngModelChange)="onChangeRole($event)">
-                <mat-option *ngFor="let role of roles" [value]="role">
-                    {{role.name}}
-                </mat-option>
-            </mat-select>
-            </mat-form-field>
-        
-            <mat-form-field>
-            <mat-label>Activity</mat-label>
-            <mat-select matNativeControl formControlName="activityControl" required>
-                <mat-option *ngFor="let activity of selectableActivities" [value]="activity">
-                    {{activity.name}}
-                </mat-option>
-            </mat-select>
-            </mat-form-field>
-        </div>
-        <div>
-            <mat-label>Break Minutes : </mat-label>
-            <mat-label>{{data.newWorkingEntry.workDay.calculatedBreakMinutes}}</mat-label>
-            <mat-form-field>
-                <mat-label>add Break Minutes</mat-label>
-                <input matInput placeholder="MM" formControlName="addBreakControl">
-                <mat-icon matSuffix>alarm</mat-icon>
-            </mat-form-field>
-        </div>
-    </mat-dialog-content>
-    <mat-dialog-actions>
-        <button mat-button color="primary" type="submit" [disabled]="!modalForm.valid">Ok</button>
-    </mat-dialog-actions> 
-</form>
-
+<h6 mat-dialog-title align="center">Choose your Role and Activity</h6>
+    <form [formGroup]="modalForm" (ngSubmit)="save()"> 
+        <mat-dialog-content align="center">
+            <div>
+                <mat-form-field>
+                <mat-label>Role</mat-label>
+                <mat-select matNativeControl formControlName="roleControl" required
+                    (ngModelChange)="onChangeRole($event)">
+                    <mat-option *ngFor="let role of roles" [value]="role">
+                        {{role.name}}
+                    </mat-option>
+                </mat-select>
+                </mat-form-field>
+            
+                <mat-form-field>
+                <mat-label>Activity</mat-label>
+                <mat-select matNativeControl formControlName="activityControl" required>
+                    <mat-option *ngFor="let activity of selectableActivities" [value]="activity">
+                        {{activity.name}}
+                    </mat-option>
+                </mat-select>
+                </mat-form-field>
+            </div>
+            <div>
+                <span class="mat-h3">Break Minutes : </span>
+                <span class="mat-h3">{{data.newWorkingEntry.workDay.calculatedBreakMinutes}}</span>
+            </div>
+            <div>
+                <mat-form-field>
+                    <mat-label>add Break</mat-label>
+                    <input matInput placeholder="MM" formControlName="addBreakControl">
+                    <mat-icon matSuffix>schedule</mat-icon>
+                </mat-form-field>
+            </div> 
+        </mat-dialog-content>
+        <mat-dialog-actions align="center">
+            <button mat-button color="primary" type="submit" [disabled]="!modalForm.valid">Ok</button>
+        </mat-dialog-actions> 
+    </form>
 
