@@ -38,6 +38,7 @@ import {
   MatTooltipModule,
   MatTreeModule
 } from '@angular/material';
+import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { AsNavbarMessagesService } from './as-navbar/as-navbar-messages.service';
 import { AsMainCardComponent } from './as-main-card/as-main-card.component';
@@ -83,6 +84,7 @@ import { AsRowSpanDirective } from './as-table/as-row-span.directive';
     MatInputModule,
     MatMenuModule,
     MatNativeDateModule,
+    MatMomentDateModule,
     MatPaginatorModule,
     MatProgressBarModule,
     MatProgressSpinnerModule,
@@ -133,6 +135,7 @@ import { AsRowSpanDirective } from './as-table/as-row-span.directive';
     MatInputModule,
     MatMenuModule,
     MatNativeDateModule,
+    MatMomentDateModule,
     MatPaginatorModule,
     MatProgressBarModule,
     MatProgressSpinnerModule,

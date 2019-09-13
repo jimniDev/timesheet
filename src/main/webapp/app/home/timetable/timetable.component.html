@@ -56,7 +56,6 @@
                 <th mat-header-cell *matHeaderCellDef mat-sort-header fxHide.lt-md="true"> Difference </th>
                 <td mat-cell *matCellDef="let element" fxHide.lt-md="true"> {{sumDate(element.start, element.end)}} </td>
             </ng-container>
-
             <ng-container matColumnDef="Activity">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header fxHide.lt-md="true"> Activity </th>
                 <td mat-cell *matCellDef="let element" fxHide.lt-md="true"> {{loadActivity(element.activity)}} </td>

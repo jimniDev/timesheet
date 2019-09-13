@@ -120,9 +120,11 @@ export class HomeComponent implements OnInit {
     const dialogRef = this.dialog.open(HomeDialog, dialogConfig);
 
     dialogRef.afterClosed().subscribe((workingEntry: IWorkingEntryTimesheet) => {
-      let indexToUpdate = this.timetableComponent.DSworkingEntries.data.findIndex(we => we.id == workingEntry.id);
-      this.timetableComponent.DSworkingEntries.data[indexToUpdate] = workingEntry;
-      this.timetableComponent.DSworkingEntries._updateChangeSubscription();
+      if (workingEntry) {
+        let indexToUpdate = this.timetableComponent.DSworkingEntries.data.findIndex(we => we.id == workingEntry.id);
+        this.timetableComponent.DSworkingEntries.data[indexToUpdate] = workingEntry;
+        this.timetableComponent.DSworkingEntries._updateChangeSubscription();
+      }
     });
   }
 }
