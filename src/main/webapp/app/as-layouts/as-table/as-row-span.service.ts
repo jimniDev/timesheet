@@ -42,13 +42,13 @@ export class AsRowSpanService {
   public cacheSpan(key: string, accessor: Function): void {
     this.accessors.set(key, accessor);
     for (let i = 0; i < this.DATA.length; ) {
-      let currentValue = accessor(this.DATA[i]);
+      const currentValue = accessor(this.DATA[i]);
       let count = 1;
 
       // Iterate through the remaining rows to see how many match
       // the current value as retrieved through the accessor.
       for (let j = i + 1; j < this.DATA.length; j++) {
-        if (currentValue != accessor(this.DATA[j])) {
+        if (currentValue !== accessor(this.DATA[j])) {
           break;
         }
 

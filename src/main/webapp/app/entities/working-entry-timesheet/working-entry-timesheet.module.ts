@@ -4,33 +4,11 @@ import { JhiLanguageService } from 'ng-jhipster';
 import { JhiLanguageHelper } from 'app/core';
 
 import { TimesheetSharedModule } from 'app/shared';
-import {
-  WorkingEntryTimesheetComponent,
-  WorkingEntryTimesheetDetailComponent,
-  WorkingEntryTimesheetUpdateComponent,
-  WorkingEntryTimesheetDeletePopupComponent,
-  WorkingEntryTimesheetDeleteDialogComponent,
-  workingEntryRoute,
-  workingEntryPopupRoute
-} from './';
-
-const ENTITY_STATES = [...workingEntryRoute, ...workingEntryPopupRoute];
 
 @NgModule({
-  imports: [TimesheetSharedModule, RouterModule.forChild(ENTITY_STATES)],
-  declarations: [
-    WorkingEntryTimesheetComponent,
-    WorkingEntryTimesheetDetailComponent,
-    WorkingEntryTimesheetUpdateComponent,
-    WorkingEntryTimesheetDeleteDialogComponent,
-    WorkingEntryTimesheetDeletePopupComponent
-  ],
-  entryComponents: [
-    WorkingEntryTimesheetComponent,
-    WorkingEntryTimesheetUpdateComponent,
-    WorkingEntryTimesheetDeleteDialogComponent,
-    WorkingEntryTimesheetDeletePopupComponent
-  ],
+  imports: [TimesheetSharedModule],
+  declarations: [],
+  entryComponents: [],
   providers: [{ provide: JhiLanguageService, useClass: JhiLanguageService }],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

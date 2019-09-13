@@ -9,28 +9,8 @@ import { RouterModule } from '@angular/router';
         loadChildren: './employee-timesheet/employee-timesheet.module#TimesheetEmployeeTimesheetModule'
       },
       {
-        path: 'working-entry-timesheet',
-        loadChildren: './working-entry-timesheet/working-entry-timesheet.module#TimesheetWorkingEntryTimesheetModule'
-      },
-      {
         path: 'activity-timesheet',
         loadChildren: './activity-timesheet/activity-timesheet.module#TimesheetActivityTimesheetModule'
-      },
-      {
-        path: 'location-timesheet',
-        loadChildren: './location-timesheet/location-timesheet.module#TimesheetLocationTimesheetModule'
-      },
-      {
-        path: 'country-timesheet',
-        loadChildren: './country-timesheet/country-timesheet.module#TimesheetCountryTimesheetModule'
-      },
-      {
-        path: 'target-working-day-timesheet',
-        loadChildren: './target-working-day-timesheet/target-working-day-timesheet.module#TimesheetTargetWorkingDayTimesheetModule'
-      },
-      {
-        path: 'day-of-week-timesheet',
-        loadChildren: './day-of-week-timesheet/day-of-week-timesheet.module#TimesheetDayOfWeekTimesheetModule'
       },
       {
         path: 'weekly-working-hours-timesheet',

@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { ActivityTimesheet, IActivityTimesheet } from 'app/shared/model/activity-timesheet.model';
 import { RoleTimesheet, IRoleTimesheet } from 'app/shared/model/role-timesheet.model';
 import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
@@ -11,7 +11,7 @@ import { HttpResponse } from '@angular/common/http';
   selector: 'dialog-mapping',
   templateUrl: 'activity-role-mapping-dialog.component.html'
 })
-export class ActivityRoleMappingDialogComponent {
+export class ActivityRoleMappingDialogComponent implements OnInit {
   activities: ActivityTimesheet[];
 
   roles: RoleTimesheet[];
@@ -43,8 +43,8 @@ export class ActivityRoleMappingDialogComponent {
   }
 
   onsubmit(): void {
-    let rolesub = <IRoleTimesheet>this.mappingForm.value.role;
-    let activities = <IActivityTimesheet[]>this.mappingForm.value.activities;
+    const rolesub = <IRoleTimesheet>this.mappingForm.value.role;
+    const activities = <IActivityTimesheet[]>this.mappingForm.value.activities;
     activities.forEach(element => {
       rolesub.activities.push(element);
     });

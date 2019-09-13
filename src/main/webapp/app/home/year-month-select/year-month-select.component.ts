@@ -14,7 +14,7 @@ export class YearMonthSelectComponent implements OnInit, OnChanges {
   distinctMonthsOfYear: string[] = new Array<string>();
   selectedYear: string;
   selectedMonth: string;
-  resetButtonDisabled: boolean = true;
+  resetButtonDisabled = true;
 
   constructor() {}
 
@@ -47,9 +47,9 @@ export class YearMonthSelectComponent implements OnInit, OnChanges {
     if (!this.dates) {
       return;
     }
-    let years: string[] = new Array<string>();
+    const years: string[] = new Array<string>();
     this.dates.forEach(date => {
-      let yearContained: boolean = false;
+      let yearContained = false;
       years.forEach(year => {
         if (year === date.format('YYYY')) {
           yearContained = true;
@@ -70,7 +70,7 @@ export class YearMonthSelectComponent implements OnInit, OnChanges {
     this.dates
       .filter(date => date.format('YYYY') === this.selectedYear)
       .forEach(date => {
-        let monthContained: boolean = false;
+        let monthContained = false;
         months.forEach(month => {
           if (month === date.format('MM')) {
             monthContained = true;

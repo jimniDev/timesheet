@@ -1,16 +1,11 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Validators } from '@angular/forms';
-import { NgbDateStruct, NgbCalendar, NgbDateAdapter, NgbDateNativeAdapter } from '@ng-bootstrap/ng-bootstrap';
 import { WorkingEntryTimesheet } from 'app/shared/model/working-entry-timesheet.model';
 import { ActivityTimesheet, IActivityTimesheet } from 'app/shared/model/activity-timesheet.model';
 import { WorkDayTimesheet } from 'app/shared/model/work-day-timesheet.model';
-import { LocationTimesheet } from 'app/shared/model/location-timesheet.model';
-import { stringLiteral, thisTypeAnnotation } from '@babel/types';
-import { Moment } from 'moment';
 import * as moment from 'moment';
 import { WorkingEntryTimesheetService } from 'app/entities/working-entry-timesheet';
-import { faThumbsDown } from '@fortawesome/free-solid-svg-icons';
 import { ActivityTimesheetService } from 'app/entities/activity-timesheet';
 import { RoleTimesheetService } from 'app/entities/role-timesheet';
 import { HttpResponse } from '@angular/common/http';
@@ -20,12 +15,10 @@ import { MatSnackBar } from '@angular/material';
 @Component({
   selector: 'jhi-date-form',
   templateUrl: './date-form.component.html',
-  styleUrls: ['./date-form.component.scss'],
-  providers: [{ provide: NgbDateAdapter, useClass: NgbDateNativeAdapter }]
+  styleUrls: ['./date-form.component.scss']
 })
 export class DateFormComponent implements OnInit {
-  //roles: string[];
-  datepic: NgbDateStruct;
+  // roles: string[];
 
   @Output() newWorkingEntry = new EventEmitter<WorkingEntryTimesheet>();
   @Output() saved = new EventEmitter<boolean>();
@@ -43,7 +36,6 @@ export class DateFormComponent implements OnInit {
   selectableActivities: IActivityTimesheet[];
 
   constructor(
-    private calendar: NgbCalendar,
     private workingEntryService: WorkingEntryTimesheetService,
     private activityService: ActivityTimesheetService,
     private roleService: RoleTimesheetService,
@@ -69,25 +61,24 @@ export class DateFormComponent implements OnInit {
   }
 
   onSubmit() {
-    this.timeForm.value;
     let startTimeString: string;
     let endTimeString: string;
     const workDay: WorkDayTimesheet = new WorkDayTimesheet();
     let activity: ActivityTimesheet = new ActivityTimesheet();
 
-    //const formDate = moment.utc(this.timeForm.value.date);
-    //const formDate = moment(moment.utc(this.timeForm.value.date).startOf('day').format('LL')).startOf('day').toDate();
+    // const formDate = moment.utc(this.timeForm.value.date);
+    // const formDate = moment(moment.utc(this.timeForm.value.date).startOf('day').format('LL')).startOf('day').toDate();
     const formDate = moment(this.timeForm.value.date).add(2, 'hours');
 
     workDay.date = formDate;
 
     startTimeString = formDate.format('YYYY-MM-DD') + ' ' + this.timeForm.value.startTime;
     endTimeString = formDate.format('YYYY-MM-DD') + ' ' + this.timeForm.value.endTime;
-    let startMoment = moment(startTimeString);
-    let endMoment = moment(endTimeString);
+    const startMoment = moment(startTimeString);
+    const endMoment = moment(endTimeString);
 
     this.activities.forEach(a => {
-      if (a.id == this.timeForm.value.activityControl.id) {
+      if (a.id === this.timeForm.value.activityControl.id) {
         activity = a;
       }
     });
@@ -105,7 +96,7 @@ export class DateFormComponent implements OnInit {
         if (res.ok) {
           this.newWorkingEntry.emit(res.body);
           this.saved.emit(true);
-          //400 else error
+          // 400 else error
         }
       },
       err => {
