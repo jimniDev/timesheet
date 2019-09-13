@@ -25,8 +25,8 @@ export class DateFormComponent implements OnInit {
 
   timeForm = new FormGroup({
     date: new FormControl('', Validators.required),
-    startTime: new FormControl(''),
-    endTime: new FormControl(''),
+    startTime: new FormControl('', Validators.compose([Validators.required, Validators.pattern('^([01][0-9]|2[0-3]):([0-5][0-9])$')])),
+    endTime: new FormControl('', Validators.compose([Validators.required, Validators.pattern('^([01][0-9]|2[0-3]):([0-5][0-9])$')])),
     roleControl: new FormControl('', Validators.required),
     activityControl: new FormControl('', Validators.required)
   });
@@ -77,37 +77,43 @@ export class DateFormComponent implements OnInit {
     const startMoment = moment(startTimeString);
     const endMoment = moment(endTimeString);
 
-    this.activities.forEach(a => {
-      if (a.id === this.timeForm.value.activityControl.id) {
-        activity = a;
-      }
-    });
-
-    let workingEntry: WorkingEntryTimesheet;
-    workingEntry = new WorkingEntryTimesheet();
-    workingEntry.start = startMoment;
-    workingEntry.end = endMoment;
-    workingEntry.workDay = workDay;
-    workingEntry.deleted = false;
-    workingEntry.activity = activity;
-
-    this.workingEntryService.create(workingEntry).subscribe(
-      res => {
-        if (res.ok) {
-          this.newWorkingEntry.emit(res.body);
-          this.saved.emit(true);
-          // 400 else error
+    if (startMoment >= endMoment) {
+      this._snackBar.open('Please check End Time again', 'close', {
+        duration: 5000
+      });
+    } else {
+      this.activities.forEach(a => {
+        if (a.id === this.timeForm.value.activityControl.id) {
+          activity = a;
         }
-      },
-      err => {
-        if (err.error.errorKey === 'overlappingtime') {
-          // then show the snackbar.
-          this._snackBar.open('Time Entry is overlapped', 'Undo', {
-            duration: 5000
-          });
+      });
+
+      let workingEntry: WorkingEntryTimesheet;
+      workingEntry = new WorkingEntryTimesheet();
+      workingEntry.start = startMoment;
+      workingEntry.end = endMoment;
+      workingEntry.workDay = workDay;
+      workingEntry.deleted = false;
+      workingEntry.activity = activity;
+
+      this.workingEntryService.create(workingEntry).subscribe(
+        res => {
+          if (res.ok) {
+            this.newWorkingEntry.emit(res.body);
+            this.saved.emit(true);
+            //400 else error
+          }
+        },
+        err => {
+          if (err.error.errorKey === 'overlappingtime') {
+            // then show the snackbar.
+            this._snackBar.open('Time Entry is overlapped', 'Close', {
+              duration: 5000
+            });
+          }
         }
-      }
-    );
+      );
+    }
   }
 
   onChangeRole(role: IRoleTimesheet) {
