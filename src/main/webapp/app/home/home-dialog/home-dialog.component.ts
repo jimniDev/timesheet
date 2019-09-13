@@ -1,13 +1,10 @@
-import { Component, OnInit, ViewChild, Input, Inject } from '@angular/core';
-import { LoginService, AccountService, Account } from 'app/core';
-import { IWorkingEntryTimesheet, WorkingEntryTimesheet } from 'app/shared/model/working-entry-timesheet.model';
-import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
-import { filter, map } from 'rxjs/operators';
+import { Component, Inject, OnInit } from '@angular/core';
+import { IWorkingEntryTimesheet } from 'app/shared/model/working-entry-timesheet.model';
+import { HttpResponse } from '@angular/common/http';
 import { WorkingEntryTimesheetService } from 'app/entities/working-entry-timesheet';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { IActivityTimesheet, ActivityTimesheet } from 'app/shared/model/activity-timesheet.model';
+import { IActivityTimesheet } from 'app/shared/model/activity-timesheet.model';
 import { IRoleTimesheet } from 'app/shared/model/role-timesheet.model';
 import { RoleTimesheetService } from 'app/entities/role-timesheet';
 import { ActivityTimesheetService } from 'app/entities/activity-timesheet';
@@ -18,23 +15,23 @@ export interface DialogData {
 
 @Component({
   selector: 'home-dialog',
-  templateUrl: 'home-dialog.html'
+  templateUrl: 'home-dialog.component.html'
 })
-export class HomeDialog {
+export class HomeDialogComponent implements OnInit {
   modalForm = new FormGroup({
     roleControl: new FormControl('', Validators.required),
     activityControl: new FormControl('', Validators.required),
     addBreakControl: new FormControl('')
   });
 
-  openform: boolean = false;
+  openform = false;
   activities: IActivityTimesheet[];
   roles: IRoleTimesheet[];
   selectableActivities: IActivityTimesheet[];
   breaktime: number;
 
   constructor(
-    public dialogRef: MatDialogRef<HomeDialog>,
+    public dialogRef: MatDialogRef<HomeDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private activityService: ActivityTimesheetService,
     private roleService: RoleTimesheetService,
