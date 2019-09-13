@@ -32,7 +32,7 @@ export class TimetableComponent implements OnInit {
   workingEntries: IWorkingEntryTimesheet[];
   DSworkingEntries = new MatTableDataSource<IWorkingEntryTimesheet>(this.workingEntries);
 
-  displayedColumns: string[] = ['workDay.date', 'Total Worktime', 'Break Time', 'start', 'end', 'Sum', 'Roles', 'Activity', 'Actions'];
+  displayedColumns: string[] = ['workDay.date', 'Total Worktime', 'Break Time', 'start', 'end', 'Sum', 'Activity', 'Actions'];
 
   targetTime: string = '00h 00m';
   actualTime: string = '00h 00m';
