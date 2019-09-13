@@ -57,14 +57,14 @@ export class ActivityTableComponent implements OnInit {
         absence: activity.absence,
         fillday: activity.fillDay,
         reduced: activity.reduce,
-        activity: activity
+        activity
       }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         //   this.roleTable.update(<IRoleTimesheet>result);
-        let idx = this.activities.findIndex(we => we.id === result.id);
+        const idx = this.activities.findIndex(we => we.id === result.id);
         this.activities[idx] = result;
       }
     });

@@ -1,14 +1,9 @@
 import { MatDialogRef, MAT_DIALOG_DATA, MatDatepickerInputEvent } from '@angular/material';
-import { Inject, Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { EmployeeTimesheetService } from './employee-timesheet.service';
+import { Inject, Component } from '@angular/core';
 import { IEmployeeTimesheet, EmployeeTimesheet } from 'app/shared/model/employee-timesheet.model';
 import { WeeklyWorkingHoursTimesheet, IWeeklyWorkingHoursTimesheet } from 'app/shared/model/weekly-working-hours-timesheet.model';
-import moment = require('moment');
-import { DATE_FORMAT } from 'app/shared/constants/input.constants';
+import * as moment from 'moment';
 import { WeeklyWorkingHoursTimesheetService } from '../weekly-working-hours-timesheet';
-import { runInThisContext } from 'vm';
 
 @Component({
   selector: 'employee-time-sheet-weekly-dialog-component',

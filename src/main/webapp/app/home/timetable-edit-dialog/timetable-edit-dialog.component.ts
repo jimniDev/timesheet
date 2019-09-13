@@ -7,7 +7,6 @@ import { IActivityTimesheet, ActivityTimesheet } from 'app/shared/model/activity
 import { ActivityTimesheetService } from 'app/entities/activity-timesheet/activity-timesheet.service';
 import { HttpResponse } from '@angular/common/http';
 import * as moment from 'moment';
-import { WorkDayTimesheet } from 'app/shared/model/work-day-timesheet.model';
 import { MatSnackBar } from '@angular/material';
 
 @Component({
