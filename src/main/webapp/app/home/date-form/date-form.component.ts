@@ -87,7 +87,7 @@ export class DateFormComponent implements OnInit {
     const endMoment = moment(endTimeString);
 
     if (startMoment >= endMoment) {
-      this._snackBar.open('Please check End Time again', 'Undo', {
+      this._snackBar.open('Please check End Time again', 'close', {
         duration: 5000
       });
     } else {
@@ -116,7 +116,7 @@ export class DateFormComponent implements OnInit {
         err => {
           if (err.error.errorKey === 'overlappingtime') {
             // then show the snackbar.
-            this._snackBar.open('Time Entry is overlapped', 'Undo', {
+            this._snackBar.open('Time Entry is overlapped', 'Close', {
               duration: 5000
             });
           }

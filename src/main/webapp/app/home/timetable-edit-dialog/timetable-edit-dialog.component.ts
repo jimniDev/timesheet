@@ -8,6 +8,7 @@ import { ActivityTimesheetService } from 'app/entities/activity-timesheet/activi
 import { HttpResponse } from '@angular/common/http';
 import * as moment from 'moment';
 import { WorkDayTimesheet } from 'app/shared/model/work-day-timesheet.model';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'jhi-timetable-edit-dialog',
@@ -21,8 +22,14 @@ export class TimetableEditDialogComponent implements OnInit {
 
   workingeditForm = new FormGroup({
     date: new FormControl(this.workingEntryData.workDay.date.format('YYYY-MM-DD'), Validators.required),
-    starttime: new FormControl(this.workingEntryData.start.format('HH:mm')),
-    endtime: new FormControl(this.workingEntryData.end.format('HH:mm')),
+    starttime: new FormControl(
+      this.workingEntryData.start.format('HH:mm'),
+      Validators.compose([Validators.required, Validators.pattern('^([01][0-9]|2[0-3]):([0-5][0-9])$')])
+    ),
+    endtime: new FormControl(
+      this.workingEntryData.end.format('HH:mm'),
+      Validators.compose([Validators.required, Validators.pattern('^([01][0-9]|2[0-3]):([0-5][0-9])$')])
+    ),
     activity: new FormControl(this.workingEntryData.activity)
   });
 
@@ -33,7 +40,8 @@ export class TimetableEditDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public workingEntryData: IWorkingEntryTimesheet,
     public dialogRef: MatDialogRef<TimetableEditDialogComponent>,
     private workingService: WorkingEntryTimesheetService,
-    private activityService: ActivityTimesheetService
+    private activityService: ActivityTimesheetService,
+    private _snackBar: MatSnackBar
   ) {}
 
   ngOnInit() {
@@ -57,15 +65,23 @@ export class TimetableEditDialogComponent implements OnInit {
     this.workingEntryData.end = moment(
       moment(this.workingeditForm.value.date).format('YYYY-MM-DD') + ' ' + this.workingeditForm.value.endtime
     );
-    this.workingEntryData.workDay.date = moment(this.workingeditForm.value.date);
-    this.workingEntryData.deleted = false;
-    this.workingEntryData.activity = this.workingeditForm.value.activity;
-    this.workingService.update(this.workingEntryData).subscribe(res => {
-      if (res.ok) {
-        this.dialogRef.close(res.body);
-      }
-    });
+
+    if (this.workingEntryData.start >= this.workingEntryData.end) {
+      this._snackBar.open('Please check End Time again', 'Close', {
+        duration: 5000
+      });
+    } else {
+      this.workingEntryData.workDay.date = moment(this.workingeditForm.value.date);
+      this.workingEntryData.deleted = false;
+      this.workingEntryData.activity = this.workingeditForm.value.activity;
+      this.workingService.update(this.workingEntryData).subscribe(res => {
+        if (res.ok) {
+          this.dialogRef.close(res.body);
+        }
+      });
+    }
   }
+
   compareObjects(o1: IActivityTimesheet, o2: IActivityTimesheet): boolean {
     return o1.name === o2.name && o1.id === o2.id;
   }
