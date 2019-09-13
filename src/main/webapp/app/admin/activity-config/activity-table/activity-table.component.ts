@@ -45,6 +45,7 @@ export class ActivityTableComponent implements OnInit {
       if (res.ok) {
         this.activities.splice(this.activities.indexOf(activity), 1);
         this.table.renderRows();
+        this.ngOnInit();
       }
     });
   }

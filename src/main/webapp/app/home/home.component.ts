@@ -120,9 +120,11 @@ export class HomeComponent implements OnInit {
     const dialogRef = this.dialog.open(HomeDialogComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe((workingEntry: IWorkingEntryTimesheet) => {
-      const indexToUpdate = this.timetableComponent.DSworkingEntries.data.findIndex(we => we.id === workingEntry.id);
-      this.timetableComponent.DSworkingEntries.data[indexToUpdate] = workingEntry;
-      this.timetableComponent.DSworkingEntries._updateChangeSubscription();
+      if (workingEntry) {
+        const indexToUpdate = this.timetableComponent.DSworkingEntries.data.findIndex(we => we.id === workingEntry.id);
+        this.timetableComponent.DSworkingEntries.data[indexToUpdate] = workingEntry;
+        this.timetableComponent.DSworkingEntries._updateChangeSubscription();
+      }
     });
   }
 }
@@ -175,14 +177,6 @@ export class HomeDialogComponent implements OnInit {
         this.dialogRef.close(res.body);
       }
     });
-  }
-
-  // onNoClick(): void {
-  //   this.dialogRef.close();
-  // }
-
-  onClickAddBreak() {
-    this.openform = true;
   }
 
   onChangeRole(role: IRoleTimesheet) {

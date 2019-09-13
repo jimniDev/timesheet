@@ -21,6 +21,11 @@ import { TimetableEditDialogComponent } from '../timetable-edit-dialog/timetable
   providers: [AsRowSpanService]
 })
 export class TimetableComponent implements OnInit {
+  @Output() initialized = new EventEmitter<boolean>();
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
+  @ViewChild(MatTable, { static: false }) table: MatTable<any>;
+
   monthNames = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER'];
   buttonDisable = false;
   workingEntriesUnfiltered: IWorkingEntryTimesheet[];
@@ -37,12 +42,8 @@ export class TimetableComponent implements OnInit {
   targetMinutes: number;
   actualMinutes: number;
 
-  @Output() initialized = new EventEmitter<boolean>();
-  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-  @ViewChild(MatSort, { static: true }) sort: MatSort;
-  @ViewChild(MatTable, { static: false }) table: MatTable<any>;
-
   dateAccessor = d => d.WorkDay.date.format('YYYY-MM-DD');
+
   constructor(
     private workingEntryService: WorkingEntryTimesheetService,
     private employeeService: EmployeeTimesheetService,
@@ -247,13 +248,16 @@ export class TimetableComponent implements OnInit {
       data: workingentry
     });
     dialogRef.afterClosed().subscribe((result: IWorkingEntryTimesheet) => {
-      const idx = this.workingEntries.findIndex(we => we.id === result.id);
-      this.workingEntries[idx] = result;
+      if (result) {
+        const idx = this.workingEntries.findIndex(we => we.id === result.id);
+        this.workingEntries[idx] = result;
+      }
     });
   }
   public deleteEntry(workingentry: IWorkingEntryTimesheet) {
     this.workingEntryService.delete(workingentry.id).subscribe(res => {
       if (res.ok) {
+        this.ngOnInit();
       }
     });
   }
