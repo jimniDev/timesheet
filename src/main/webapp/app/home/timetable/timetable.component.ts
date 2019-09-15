@@ -154,8 +154,6 @@ export class TimetableComponent implements OnInit {
           this.DSworkingEntries.sort = this.sort;
           this.asRowSpan.setData(this.workingEntries);
           this.asRowSpan.cacheSpan('Date', d => d.workDay.date.format('YYYY-MM-DD'));
-          this.asRowSpan.cacheSpan('Time', d => d.workDay.totalWorkingMinutes);
-          this.asRowSpan.cacheSpan('Break', d => d.workDay.totalBreakMinutes);
           this.initialized.emit(true);
         },
         (res: HttpErrorResponse) => this.onError(res.message)
