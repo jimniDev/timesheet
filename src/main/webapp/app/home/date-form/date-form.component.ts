@@ -101,7 +101,7 @@ export class DateFormComponent implements OnInit {
           if (res.ok) {
             this.newWorkingEntry.emit(res.body);
             this.saved.emit(true);
-            //400 else error
+            // 400 else error
           }
         },
         err => {
