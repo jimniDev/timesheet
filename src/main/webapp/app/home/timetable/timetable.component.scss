@@ -1,9 +1,16 @@
-table {
-  width: 100%;
+div:nth-child(1) > div > mat-card:nth-child(1),
+div:nth-child(1) > div > mat-card:nth-child(2) {
+  margin-right: 8px;
 }
-mat-card {
-  width: 100%;
-}
+
+// table, th {
+//   text-align: center;
+// }
+
+// :host ::ng-deep .mat-sort-header-container {
+//   display: flex;
+//   justify-content: center;
+// }
 
 // .container {
 //   text-align: center;
@@ -53,10 +60,11 @@ mat-card {
 //   margin-left: 20px;
 // }
 
-// @media only screen and (max-width: 600px) {
-//   #matTimetable {
-//       overflow-x: auto !important;
-//   }
+@media only screen and (max-width: 600px) {
+  div:nth-child(2) > mat-card {
+    padding: 8px;
+  }
+}
 
 //   #tableCard {
 //       min-width:600px;
