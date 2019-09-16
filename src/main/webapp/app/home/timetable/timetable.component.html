@@ -1,23 +1,25 @@
 <div fxLayout="row" fxLayoutAlign="space-between" fxLayout.lt-md="column" fxLayoutGap="8px" class="container">
-    <mat-card fxFlex="auto">
+    <mat-card fxFlex="63">
         <jhi-year-month-select [dates]="getDatesFromWorkingEntries()" (selectedDate)="filterTimeTable($event)">
         </jhi-year-month-select>
     </mat-card>
-    <mat-card fxFlex="auto">
-        <mat-card-subtitle>Target Time</mat-card-subtitle>
-        <mat-card-content>{{targetTime}}</mat-card-content>
-    </mat-card>
-    <mat-card fxFlex="auto">
-        <mat-card-subtitle>Actual Time</mat-card-subtitle>
-        <mat-card-content>{{actualTime}}</mat-card-content>
-    </mat-card>
-    <mat-card fxFlex="auto">
-        <mat-card-subtitle>Difference</mat-card-subtitle>
-        <mat-card-content>{{diffTime}}</mat-card-content>
-    </mat-card>
+    <div fxFlex="auto">
+        <mat-card fxFlex="auto">
+            <mat-card-subtitle>Target Time</mat-card-subtitle>
+            <mat-card-content>{{targetTime}}</mat-card-content>
+        </mat-card>
+        <mat-card fxFlex="auto">
+            <mat-card-subtitle>Actual Time</mat-card-subtitle>
+            <mat-card-content>{{actualTime}}</mat-card-content>
+        </mat-card>
+        <mat-card fxFlex="auto">
+            <mat-card-subtitle>Difference</mat-card-subtitle>
+            <mat-card-content>{{diffTime}}</mat-card-content>
+        </mat-card>
+    </div>
 </div>
 
-<div fxLayout="row" fxLayoutAlign="center stretch" fxLayout.xs="column" fxLayoutGap="8px" class="container">
+<div fxLayout="column" fxLayoutAlign="space-between" fxLayout="column" fxLayoutGap="8px" class="container">
     <mat-card>
         <table #MatTable mat-table [dataSource]="DSworkingEntries" matSort>
             <ng-container matColumnDef="workDay.date">
@@ -69,8 +71,6 @@
                         mat-button color="warn" [disabled]="checkDate(element)"
                         (click)="deleteEntry(element)">Delete</button> </td>
             </ng-container>
-
-
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>

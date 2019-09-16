@@ -87,9 +87,9 @@ export class TimetableEditDialogComponent implements OnInit {
     }
   }
 
-  // compareObjects(o1: IActivityTimesheet, o2: IActivityTimesheet): boolean {
-  //   return o1.name === o2.name && o1.id === o2.id;
-  // }
+  compareObjects(o1: IActivityTimesheet, o2: IActivityTimesheet): boolean {
+    return o1.name === o2.name && o1.id === o2.id;
+  }
 
   onChangeRole(role: IRoleTimesheet) {
     if (role) {

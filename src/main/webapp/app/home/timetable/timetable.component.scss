@@ -1,8 +1,6 @@
-table {
-  width: 100%;
-}
-mat-card {
-  width: 100%;
+div:nth-child(1) > div > mat-card:nth-child(1),
+div:nth-child(1) > div > mat-card:nth-child(2) {
+  margin-right: 8px;
 }
 
 // .container {
