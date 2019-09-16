@@ -19,9 +19,9 @@
     </div>
 </div>
 
-<div fxLayout="column" fxLayoutAlign="space-between" fxLayout="column" fxLayoutGap="8px" class="container">
+<div fxLayout="column" fxLayoutAlign="space-between" fxLayoutGap="" class="container">
     <mat-card>
-        <table #MatTable mat-table [dataSource]="DSworkingEntries" matSort>
+        <table mat-table [dataSource]="DSworkingEntries" matSort>
             <ng-container matColumnDef="workDay.date">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Date </th>
                 <td mat-cell *matCellDef="let element; let i = index" [asRowSpan]="asRowSpan" [rowIndex]="i"
@@ -31,7 +31,7 @@
             </ng-container>
 
             <ng-container matColumnDef="Total Worktime">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Total Worktime </th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Total </th>
                 <td mat-cell *matCellDef="let element; let i = index" [asRowSpan]="asRowSpan" [rowIndex]="i"
                     colName="Date">
                     {{secondsToHHMM(element.workDay.totalWorkingMinutes * 60)}}
@@ -66,10 +66,22 @@
             </ng-container>
             <ng-container matColumnDef="Actions">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> </th>
-                <td mat-cell *matCellDef="let element"> <button mat-button color="primary"
-                        [disabled]="checkDate(element)" (click)="edittimetableDialog(element)">Edit</button><button
-                        mat-button color="warn" [disabled]="checkDate(element)"
-                        (click)="deleteEntry(element)">Delete</button> </td>
+                <td mat-cell *matCellDef="let element">
+                    <!-- <button mat-button color="primary" [disabled]="checkDate(element)" (click)="edittimetableDialog(element)">Edit</button> -->
+                    <button type=button mat-icon-button color="primary" fxHide fxShow.lt-sm [disabled]="checkDate(element)" (click)="edittimetableDialog(element)">
+                        <mat-icon>edit</mat-icon>
+                    </button>
+                    <button mat-button type="button" color="primary" fxHide.lt-sm [disabled]="checkDate(element)" (click)="edittimetableDialog(element)">
+                        Edit
+                    </button>
+                    <!-- <button mat-button color="warn" [disabled]="checkDate(element)" (click)="deleteEntry(element)">Delete</button> -->
+                    <button type=button mat-icon-button color="warn" fxHide fxShow.lt-sm [disabled]="checkDate(element)" (click)="deleteEntry(element)">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                    <button mat-button type="button" color="warn" fxHide.lt-sm [disabled]="checkDate(element)" (click)="deleteEntry(element)">
+                        Delete
+                    </button>
+                </td>
             </ng-container>
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
