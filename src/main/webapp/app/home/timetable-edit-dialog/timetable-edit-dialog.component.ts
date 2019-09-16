@@ -8,6 +8,8 @@ import { ActivityTimesheetService } from 'app/entities/activity-timesheet/activi
 import { HttpResponse } from '@angular/common/http';
 import * as moment from 'moment';
 import { MatSnackBar } from '@angular/material';
+import { RoleTimesheetService } from 'app/entities/role-timesheet';
+import { IRoleTimesheet } from 'app/shared/model/role-timesheet.model';
 
 @Component({
   selector: 'jhi-timetable-edit-dialog',
@@ -16,7 +18,8 @@ import { MatSnackBar } from '@angular/material';
 })
 export class TimetableEditDialogComponent implements OnInit {
   activities: IActivityTimesheet[];
-
+  roles: IRoleTimesheet[];
+  selectableActivities: IActivityTimesheet[];
   workingEntry: IWorkingEntryTimesheet;
 
   workingeditForm = new FormGroup({
@@ -29,28 +32,31 @@ export class TimetableEditDialogComponent implements OnInit {
       this.workingEntryData.end.format('HH:mm'),
       Validators.compose([Validators.required, Validators.pattern('^([01][0-9]|2[0-3]):([0-5][0-9])$')])
     ),
+    roleControl: new FormControl('', Validators.required),
     activity: new FormControl(this.workingEntryData.activity)
   });
-
-  selectableActivities: IActivityTimesheet[];
-  selectedActivity: IActivityTimesheet;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public workingEntryData: IWorkingEntryTimesheet,
     public dialogRef: MatDialogRef<TimetableEditDialogComponent>,
     private workingService: WorkingEntryTimesheetService,
     private activityService: ActivityTimesheetService,
+    private roleService: RoleTimesheetService,
     private _snackBar: MatSnackBar
   ) {}
 
   ngOnInit() {
+    this.roleService.query().subscribe((res: HttpResponse<IRoleTimesheet[]>) => {
+      if (res.ok) {
+        this.roles = res.body;
+      }
+    });
     this.activityService.query().subscribe((res: HttpResponse<IActivityTimesheet[]>) => {
       if (res.ok) {
         this.activities = res.body;
         this.selectableActivities = this.activities;
       }
     });
-    this.selectedActivity = this.workingEntryData.activity;
   }
 
   onNoClick(): void {
@@ -81,7 +87,13 @@ export class TimetableEditDialogComponent implements OnInit {
     }
   }
 
-  compareObjects(o1: IActivityTimesheet, o2: IActivityTimesheet): boolean {
-    return o1.name === o2.name && o1.id === o2.id;
+  // compareObjects(o1: IActivityTimesheet, o2: IActivityTimesheet): boolean {
+  //   return o1.name === o2.name && o1.id === o2.id;
+  // }
+
+  onChangeRole(role: IRoleTimesheet) {
+    if (role) {
+      this.selectableActivities = role.activities;
+    }
   }
 }
