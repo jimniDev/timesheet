@@ -3,13 +3,16 @@
 </div>
 <div *ngIf="isAuthenticated()">
     <jhi-timetable (initialized)="enableButton($event)" [started]="started"></jhi-timetable>
-        <mat-card>
+    <mat-card>
         <div fxLayoutAlign="center center" fxLayout="row" fxLayout.lt-xl="column" fxLayoutGap="8px" class="container">
             <jhi-date-form (newWorkingEntry)="addnewEntry($event)"></jhi-date-form>
-            <button mat-fab  [color]="btnColors" id="startBtn" type="button"
-            [disabled]="disableButton ? 'disabled': null" (click)="startStop()">
-            {{startBtnName}}
-            </button>
+            <as-interactive>
+                <button mat-fab [color]="btnColors" id="startBtn" type="button"
+                    [disabled]="disableButton ? 'disabled': null" (click)="startStop()">
+                    {{startBtnName}}
+                </button>
+            </as-interactive>
+
         </div>
-        </mat-card>
+    </mat-card>
 </div>

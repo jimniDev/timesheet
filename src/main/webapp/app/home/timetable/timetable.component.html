@@ -20,7 +20,7 @@
 </div>
 
 <div fxLayout="column" fxLayoutAlign="space-between" fxLayoutGap="" class="container">
-    <mat-card>
+    <mat-card id="timetable">
         <table mat-table [dataSource]="DSworkingEntries" matSort>
             <ng-container matColumnDef="workDay.date">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Date </th>
@@ -39,9 +39,9 @@
             </ng-container>
 
             <ng-container matColumnDef="Break Time">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header fxHide.lt-md="true"> Break Time </th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Break </th>
                 <td mat-cell *matCellDef="let element; let i = index" [asRowSpan]="asRowSpan" [rowIndex]="i"
-                    colName="Date" fxHide.lt-md="true">
+                    colName="Date">
                     {{secondsToHHMM(element.workDay.totalBreakMinutes * 60)}} </td>
             </ng-container>
 
@@ -68,17 +68,21 @@
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> </th>
                 <td mat-cell *matCellDef="let element">
                     <!-- <button mat-button color="primary" [disabled]="checkDate(element)" (click)="edittimetableDialog(element)">Edit</button> -->
-                    <button type=button mat-icon-button color="primary" fxHide fxShow.lt-sm [disabled]="checkDate(element)" (click)="edittimetableDialog(element)">
+                    <button type=button mat-icon-button color="primary" fxHide fxShow.lt-sm
+                        [disabled]="checkDate(element)" (click)="edittimetableDialog(element)">
                         <mat-icon>edit</mat-icon>
                     </button>
-                    <button mat-button type="button" color="primary" fxHide.lt-sm [disabled]="checkDate(element)" (click)="edittimetableDialog(element)">
+                    <button mat-button type="button" color="primary" fxHide.lt-sm [disabled]="checkDate(element)"
+                        (click)="edittimetableDialog(element)">
                         Edit
                     </button>
                     <!-- <button mat-button color="warn" [disabled]="checkDate(element)" (click)="deleteEntry(element)">Delete</button> -->
-                    <button type=button mat-icon-button color="warn" fxHide fxShow.lt-sm [disabled]="checkDate(element)" (click)="deleteEntry(element)">
+                    <button type=button mat-icon-button color="warn" fxHide fxShow.lt-sm [disabled]="checkDate(element)"
+                        (click)="deleteEntry(element)">
                         <mat-icon>delete</mat-icon>
                     </button>
-                    <button mat-button type="button" color="warn" fxHide.lt-sm [disabled]="checkDate(element)" (click)="deleteEntry(element)">
+                    <button mat-button type="button" color="warn" fxHide.lt-sm [disabled]="checkDate(element)"
+                        (click)="deleteEntry(element)">
                         Delete
                     </button>
                 </td>
