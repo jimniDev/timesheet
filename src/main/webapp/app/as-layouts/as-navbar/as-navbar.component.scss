@@ -9,8 +9,13 @@
 
 .sidenav-container {
   flex: 1;
-  height: calc(100% - 64px); // 10px is height of your first div...
-  //width: 100%;
+  height: calc(100% - 64px);
+}
+
+@media (max-width: 599px) {
+  .sidenav-container {
+    height: calc(100% - 56px);
+  }
 }
 
 .sidenav-container-contents {
