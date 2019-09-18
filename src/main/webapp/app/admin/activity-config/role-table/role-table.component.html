@@ -16,7 +16,7 @@
   </ng-container>
   <ng-container matColumnDef="activities">
     <th mat-header-cell *matHeaderCellDef>Activities</th>
-    <td mat-cell *matCellDef="let role">
+    <td mat-cell *matCellDef="let role" id="activityCell">
       <mat-list-item *ngFor="let activity of role.activities">
         {{activity.name}}
       </mat-list-item>
@@ -26,8 +26,18 @@
   <ng-container matColumnDef="actions">
     <th mat-header-cell *matHeaderCellDef></th>
     <td mat-cell *matCellDef="let role">
-      <button mat-button color="primary" (click)="editRoleDialog(role)">Edit</button>
-      <button mat-button color="warn" (click)="deleteRole(role)">Delete</button>
+      <button type=button mat-icon-button color="primary" fxHide fxShow.lt-xl (click)="editRoleDialog(role)">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button mat-button type="button" color="primary" fxHide.lt-xl (click)="editRoleDialog(role)">
+        Edit
+      </button>
+      <button type=button mat-icon-button color="warn" fxHide fxShow.lt-xl (click)="deleteRole(role)">
+        <mat-icon>delete</mat-icon>
+      </button>
+      <button mat-button type="button" color="warn" fxHide.lt-xl (click)="deleteRole(role)">
+        Delete
+      </button>
     </td>
   </ng-container>
 
