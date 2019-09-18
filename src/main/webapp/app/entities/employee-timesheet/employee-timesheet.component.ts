@@ -10,7 +10,8 @@ import { EmployeeTimesheetService } from './employee-timesheet.service';
 
 @Component({
   selector: 'jhi-employee-timesheet',
-  templateUrl: './employee-timesheet.component.html'
+  templateUrl: './employee-timesheet.component.html',
+  styleUrls: ['./employee-timesheet.component.scss']
 })
 export class EmployeeTimesheetComponent implements OnInit, OnDestroy {
   employees: IEmployeeTimesheet[];
