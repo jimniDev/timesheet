@@ -6,7 +6,8 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 @Component({
   selector: 'dialog-activitycreation',
-  templateUrl: 'activity-creation-dialog.component.html'
+  templateUrl: 'activity-creation-dialog.component.html',
+  styleUrls: ['activity-creation-dialog.component.scss']
 })
 export class ActivityCreationDialogComponent {
   activities: ActivityTimesheet[];
