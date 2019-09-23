@@ -1,4 +1,7 @@
-<table mat-table [dataSource]="roles" name="ROLE-Table">
+<mat-form-field>
+  <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+</mat-form-field>
+<table mat-table [dataSource]="datasource" name="ROLE-Table" matSort>
   <ng-container matColumnDef="id">
     <th mat-header-cell *matHeaderCellDef>ID</th>
     <td mat-cell *matCellDef="let role "> {{role.id}} </td>
@@ -13,12 +16,32 @@
   </ng-container>
   <ng-container matColumnDef="activities">
     <th mat-header-cell *matHeaderCellDef>Activities</th>
-    <td mat-cell *matCellDef="let role">{{role.activities.join(', ')}}</td>
+    <td mat-cell *matCellDef="let role" id="activityCell">
+      <mat-list-item *ngFor="let activity of role.activities">
+        {{activity.name}}
+      </mat-list-item>
+    </td>
+    <!-- <td mat-cell *matCellDef="let role">{{role.activities.join(', ')}}</td> -->
   </ng-container>
   <ng-container matColumnDef="actions">
-    <th mat-header-cell *matHeaderCellDef>Actions</th>
-    <td mat-cell *matCellDef="let role"><button mat-button color="warn" (click)="deleteRole(role)">Delete</button></td>
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let role">
+      <button type=button mat-icon-button color="primary" fxHide fxShow.lt-xl (click)="editRoleDialog(role)">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button mat-button type="button" color="primary" fxHide.lt-xl (click)="editRoleDialog(role)">
+        Edit
+      </button>
+      <button type=button mat-icon-button color="warn" fxHide fxShow.lt-xl (click)="deleteRole(role)">
+        <mat-icon>delete</mat-icon>
+      </button>
+      <button mat-button type="button" color="warn" fxHide.lt-xl (click)="deleteRole(role)">
+        Delete
+      </button>
+    </td>
   </ng-container>
+
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 </table>
+<mat-paginator [length]="roles?roles.length:0" [pageSize]="5" [pageSizeOptions]="[5, 10, 15, 20]"></mat-paginator>

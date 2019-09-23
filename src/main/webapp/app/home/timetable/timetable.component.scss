@@ -1,9 +1,16 @@
-table {
-  width: 100%;
+div:nth-child(1) > div > mat-card:nth-child(1),
+div:nth-child(1) > div > mat-card:nth-child(2) {
+  margin-right: 8px;
 }
-mat-card {
-  width: 100%;
-}
+
+// table, th {
+//   text-align: center;
+// }
+
+// :host ::ng-deep .mat-sort-header-container {
+//   display: flex;
+//   justify-content: center;
+// }
 
 // .container {
 //   text-align: center;
@@ -52,10 +59,46 @@ mat-card {
 //   float: left;
 //   margin-left: 20px;
 // }
+td.mat-cell:last-of-type,
+td.mat-footer-cell:last-of-type,
+th.mat-header-cell:last-of-type {
+  padding-right: 0px;
+}
 
-// @media only screen and (max-width: 880px),
-//   (min-width: 1200px) and (max-width: 1760px),
+@media only screen and (max-width: 600px) {
+  #timetable {
+    padding: 0px;
+  }
+
+  table {
+    border-radius: 8px;
+  }
+
+  .mat-row {
+    height: auto;
+  }
+
+  td.mat-cell {
+    padding: 5px 5px;
+  }
+
+  td.mat-cell:first-of-type,
+  td.mat-footer-cell:first-of-type,
+  th.mat-header-cell:first-of-type {
+    padding-left: 20px;
+    padding-right: 15px;
+  }
+}
+
+//   #tableCard {
+//       min-width:600px;
+//   }
+// }
+
+// @media only screen and (max-width: 599px),
 //   (min-device-width: 768px) and (max-device-width: 1024px) {
+
+//   }
 //   div.row > div:nth-child(1) > button,
 //   div.row > div:nth-child(2) > button,
 //   div.row > div:nth-child(3) > button {

@@ -26,6 +26,7 @@ export class WorkingEntryTimesheetService {
   }
 
   update(workingEntry: IWorkingEntryTimesheet): Observable<EntityResponseType> {
+    workingEntry.workDay.employee = null;
     const copy = this.convertDateFromClient(workingEntry);
     return this.http
       .put<IWorkingEntryTimesheet>(this.resourceUrl, copy, { observe: 'response' })

@@ -1,19 +1,5 @@
-import {
-  Component,
-  OnInit,
-  Output,
-  EventEmitter,
-  forwardRef,
-  Input,
-  ViewChild,
-  ElementRef,
-  Renderer,
-  Optional,
-  Self,
-  HostBinding,
-  OnDestroy
-} from '@angular/core';
-import { FormControl, ControlValueAccessor, NG_VALUE_ACCESSOR, FormGroup, Validators, NgControl, FormBuilder } from '@angular/forms';
+import { Component, OnInit, Input, ViewChild, ElementRef, Renderer, Optional, Self, HostBinding, OnDestroy } from '@angular/core';
+import { ControlValueAccessor, FormGroup, NgControl, FormBuilder } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material';
 import { Subject } from 'rxjs';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
@@ -26,6 +12,61 @@ import { FocusMonitor } from '@angular/cdk/a11y';
   styleUrls: ['./as-time-input.component.scss']
 })
 export class AsTimeInputComponent implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<string> {
+  @Input()
+  get value(): string | null {
+    if (this.parts.value.hours && this.parts.value.minutes) {
+      return this.parts.value.hours + ':' + this.parts.value.minutes;
+    }
+  }
+  set value(value: string | null) {
+    const res = value.split(':');
+    if (res.length === 2) {
+      this.parts.setValue({ hours: res[0], minutes: res[1] });
+    } else {
+      this.parts.setValue({ hours: '', minutes: '' });
+    }
+    this.stateChanges.next();
+  }
+
+  @Input()
+  get placeholder() {
+    return this._placeholder;
+  }
+  set placeholder(plh) {
+    this._placeholder = plh;
+    this.stateChanges.next();
+  }
+
+  get empty() {
+    const n = this.parts.value;
+    return !n.hours && !n.minutes;
+  }
+
+  @HostBinding('class.floating')
+  get shouldLabelFloat() {
+    return this.focused || !this.empty;
+  }
+
+  @Input()
+  get required() {
+    return this._required;
+  }
+  set required(req) {
+    this._required = coerceBooleanProperty(req);
+    this.stateChanges.next();
+  }
+
+  @Input()
+  get disabled(): boolean {
+    return this._disabled;
+  }
+  set disabled(value: boolean) {
+    this._disabled = coerceBooleanProperty(value);
+    this._disabled ? this.parts.disable() : this.parts.enable();
+    this.stateChanges.next();
+  }
+
+  static nextId = 0;
   autofilled?: boolean;
 
   stateChanges = new Subject<void>();
@@ -40,8 +81,6 @@ export class AsTimeInputComponent implements OnInit, OnDestroy, ControlValueAcce
 
   controlType = 'as-time-input';
 
-  static nextId = 0;
-
   @HostBinding() id = `as-time-input-${AsTimeInputComponent.nextId++}`;
   @HostBinding('attr.aria-describedby') describedBy = '';
 
@@ -52,7 +91,7 @@ export class AsTimeInputComponent implements OnInit, OnDestroy, ControlValueAcce
   private onChange: Function;
   private onTouched: Function;
 
-  counthour: number = 0;
+  counthour = 0;
 
   // To focus on minute inpute field
   @ViewChild('minutes', { static: false }) private minuteInput: ElementRef;
@@ -90,72 +129,18 @@ export class AsTimeInputComponent implements OnInit, OnDestroy, ControlValueAcce
     this.fm.stopMonitoring(this.elRef.nativeElement);
   }
 
-  @Input()
-  get value(): string | null {
-    if (this.parts.value.hours && this.parts.value.minutes) {
-      return this.parts.value.hours + ':' + this.parts.value.minutes;
-    }
-  }
-  set value(value: string | null) {
-    let res = value.split(':');
-    if (res.length == 2) {
-      this.parts.setValue({ hours: res[0], minutes: res[1] });
-    } else {
-      this.parts.setValue({ hours: '', minutes: '' });
-    }
-    this.stateChanges.next();
-  }
-
-  @Input()
-  get placeholder() {
-    return this._placeholder;
-  }
-  set placeholder(plh) {
-    this._placeholder = plh;
-    this.stateChanges.next();
-  }
-
-  get empty() {
-    let n = this.parts.value;
-    return !n.hours && !n.minutes;
-  }
-
-  @HostBinding('class.floating')
-  get shouldLabelFloat() {
-    return this.focused || !this.empty;
-  }
-
-  @Input()
-  get required() {
-    return this._required;
-  }
-  set required(req) {
-    this._required = coerceBooleanProperty(req);
-    this.stateChanges.next();
-  }
-
-  @Input()
-  get disabled(): boolean {
-    return this._disabled;
-  }
-  set disabled(value: boolean) {
-    this._disabled = coerceBooleanProperty(value);
-    this._disabled ? this.parts.disable() : this.parts.enable();
-    this.stateChanges.next();
-  }
-
   setDescribedByIds(ids: string[]) {
     this.describedBy = ids.join(' ');
   }
 
   onContainerClick(event: MouseEvent) {
-    if ((event.target as Element).tagName.toLowerCase() != 'input') {
+    if ((event.target as Element).tagName.toLowerCase() !== 'input') {
       this.elRef.nativeElement.querySelector('input').focus();
     }
   }
 
   onKeyDown(event) {
-    let e = <KeyboardEvent>event;
+    const e = <KeyboardEvent>event;
     if (
       [46, 8, 9, 27, 13, 110, 190].indexOf(e.keyCode) !== -1 ||
       // Allow: Ctrl+A
@@ -196,7 +181,7 @@ export class AsTimeInputComponent implements OnInit, OnDestroy, ControlValueAcce
 
   onKeyPress(_event: any) {
     this.counthour++;
-    if (this.counthour == 2) {
+    if (this.counthour === 2) {
       this.minuteInput.nativeElement.focus();
       this.counthour = 0;
     }

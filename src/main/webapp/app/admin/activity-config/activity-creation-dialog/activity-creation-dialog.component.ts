@@ -6,7 +6,8 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 @Component({
   selector: 'dialog-activitycreation',
-  templateUrl: 'activity-creation-dialog.component.html'
+  templateUrl: 'activity-creation-dialog.component.html',
+  styleUrls: ['activity-creation-dialog.component.scss']
 })
 export class ActivityCreationDialogComponent {
   activities: ActivityTimesheet[];
@@ -19,7 +20,8 @@ export class ActivityCreationDialogComponent {
     name: new FormControl('', Validators.required),
     description: new FormControl(''),
     absence: new FormControl(''),
-    fillday: new FormControl('')
+    fillday: new FormControl(''),
+    reduce: new FormControl('')
   });
 
   constructor(
@@ -30,10 +32,8 @@ export class ActivityCreationDialogComponent {
     this.activityForm.patchValue({ absence: false, fillday: false });
   }
 
-  ngOnInit() {}
-
   onsubmit(): void {
-    let activityEntry: ActivityTimesheet = new ActivityTimesheet();
+    const activityEntry: ActivityTimesheet = new ActivityTimesheet();
     activityEntry.name = this.activityForm.value.name;
     activityEntry.description = this.activityForm.value.description;
     activityEntry.absence = this.activityForm.value.absence;

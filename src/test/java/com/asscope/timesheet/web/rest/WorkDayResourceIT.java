@@ -4,7 +4,6 @@ import com.asscope.timesheet.TimesheetApp;
 import com.asscope.timesheet.config.TestSecurityConfiguration;
 import com.asscope.timesheet.domain.WorkDay;
 import com.asscope.timesheet.domain.WorkingEntry;
-import com.asscope.timesheet.domain.WorkBreak;
 import com.asscope.timesheet.domain.Employee;
 import com.asscope.timesheet.repository.WorkDayRepository;
 import com.asscope.timesheet.service.WorkDayService;
@@ -247,26 +246,6 @@ public class WorkDayResourceIT {
         // Get all the workDayList where workingEntry equals to workingEntryId + 1
         defaultWorkDayShouldNotBeFound("workingEntryId.equals=" + (workingEntryId + 1));
     }
-
-
-    @Test
-    @Transactional
-    public void getAllWorkDaysByWorkBreakIsEqualToSomething() throws Exception {
-        // Initialize the database
-        WorkBreak workBreak = WorkBreakResourceIT.createEntity(em);
-        em.persist(workBreak);
-        em.flush();
-        workDay.addWorkBreak(workBreak);
-        workDayRepository.saveAndFlush(workDay);
-        Long workBreakId = workBreak.getId();
-
-        // Get all the workDayList where workBreak equals to workBreakId
-        defaultWorkDayShouldBeFound("workBreakId.equals=" + workBreakId);
-
-        // Get all the workDayList where workBreak equals to workBreakId + 1
-        defaultWorkDayShouldNotBeFound("workBreakId.equals=" + (workBreakId + 1));
-    }
-
 
     @Test
     @Transactional

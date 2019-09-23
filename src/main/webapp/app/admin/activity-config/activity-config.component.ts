@@ -14,7 +14,7 @@ import { IActivityTimesheet } from 'app/shared/model/activity-timesheet.model';
   styleUrls: ['./activity-config.component.scss']
 })
 export class ActivityConfigComponent implements OnInit {
-  //panelOpenState = false;
+  // panelOpenState = false;
   @ViewChild(RoleTableComponent, { static: false }) roleTable: RoleTableComponent;
 
   @ViewChild(ActivityTableComponent, { static: false }) activityTable: ActivityTableComponent;
@@ -24,9 +24,7 @@ export class ActivityConfigComponent implements OnInit {
   ngOnInit() {}
 
   openRoleDialog(): void {
-    const dialogRef = this.dialog.open(ActivityRoleDialogComponent, {
-      //width: '25%'
-    });
+    const dialogRef = this.dialog.open(ActivityRoleDialogComponent, {});
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.roleTable.addRole(<IRoleTimesheet>result);
@@ -35,9 +33,7 @@ export class ActivityConfigComponent implements OnInit {
   }
 
   openactivityDialog(): void {
-    const dialogRef = this.dialog.open(ActivityCreationDialogComponent, {
-      //width: '25%'
-    });
+    const dialogRef = this.dialog.open(ActivityCreationDialogComponent, {});
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.activityTable.addActivity(<IActivityTimesheet>result);
@@ -46,8 +42,6 @@ export class ActivityConfigComponent implements OnInit {
   }
 
   openmappingDialog(): void {
-    const dialogRef = this.dialog.open(ActivityRoleMappingDialogComponent, {
-      width: '25%'
-    });
+    const dialogRef = this.dialog.open(ActivityRoleMappingDialogComponent, {});
   }
 }

@@ -35,7 +35,7 @@ public class WorkingEntry extends AbstractAuditingEntity implements Serializable
     @Column(name = "jhi_end")
     private Instant end;
 
-    @Column(name = "deleted_flag")
+    @Column(name = "deleted_flag", nullable = false)
     @JsonIgnore
     private Boolean deleted;
 
@@ -60,19 +60,20 @@ public class WorkingEntry extends AbstractAuditingEntity implements Serializable
     
     @JsonProperty("workingTimeInSeconds")
     public Long getWorkingTimeInSeconds() {
-    	if(this.isCompleted() && (this.activity == null  || !this.activity.isFillDay())) {
+    	if(this.activity != null && this.activity.isReduce()) {
+    		return 0L;
+    	} else if(this.isCompleted() && (this.activity == null  || !this.activity.isFillDay())) {
         	return end.getEpochSecond() - start.getEpochSecond();
     	} else if(this.isCompleted() && this.activity.isFillDay()) {
-    		long targetWorkMinutes = 0L;
     		Optional<Integer> oTargetWorkMinutes = this.workDay.getTargetWorkminutes();
     		if(oTargetWorkMinutes.isPresent()) {
-    			targetWorkMinutes = oTargetWorkMinutes.get();
+    			return oTargetWorkMinutes.get() * 60 - workDay.getWorkingEntries()
+				.stream()
+				.filter(we -> we.isValid() && we.id != this.id)
+				.map(we -> we.getWorkingTimeInSeconds())
+				.reduce(0L, Long::sum);
     		}
-    		return targetWorkMinutes * 60 - workDay.getWorkingEntries()
-    				.stream()
-    				.filter(we -> we.isValid() && we.id != this.id)
-    				.map(we -> we.getWorkingTimeInSeconds())
-    				.reduce(0L, Long::sum);
+    		return 0l;
     	} else {
     		return 0L;
     	}

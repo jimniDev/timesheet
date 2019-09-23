@@ -9,4 +9,17 @@
 
 .sidenav-container {
   flex: 1;
+  height: calc(100% - 64px);
+}
+
+@media (max-width: 599px) {
+  .sidenav-container {
+    height: calc(100% - 56px);
+  }
+}
+
+.sidenav-container-contents {
+  padding-left: 8px;
+  padding-right: 8px;
+  padding-bottom: 8px;
 }

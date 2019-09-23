@@ -38,6 +38,7 @@ import {
   MatTooltipModule,
   MatTreeModule
 } from '@angular/material';
+import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { AsNavbarMessagesService } from './as-navbar/as-navbar-messages.service';
 import { AsMainCardComponent } from './as-main-card/as-main-card.component';
@@ -50,9 +51,21 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 import { AsTimeInputComponent } from './as-time-input/as-time-input.component';
 import { AsInteractiveComponent } from './as-interactive/as-interactive.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { AsRowSpanDirective } from './as-table/as-row-span.directive';
+import { AsMainComponent } from './as-main/as-main.component';
+import { InteractiveDirective } from './as-interactive/as-interactiveDirective';
 
 @NgModule({
-  declarations: [AsNavbarComponent, AsMainCardComponent, AsGridComponent, AsTimeInputComponent, AsInteractiveComponent],
+  declarations: [
+    AsNavbarComponent,
+    AsMainCardComponent,
+    AsGridComponent,
+    AsTimeInputComponent,
+    AsInteractiveComponent,
+    AsRowSpanDirective,
+    AsMainComponent,
+    InteractiveDirective
+  ],
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -82,6 +95,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     MatInputModule,
     MatMenuModule,
     MatNativeDateModule,
+    MatMomentDateModule,
     MatPaginatorModule,
     MatProgressBarModule,
     MatProgressSpinnerModule,
@@ -105,6 +119,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     AsGridComponent,
     AsTimeInputComponent,
     AsInteractiveComponent,
+    AsRowSpanDirective,
     FlexLayoutModule,
     MatToolbarModule,
     MatSidenavModule,
@@ -131,6 +146,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     MatInputModule,
     MatMenuModule,
     MatNativeDateModule,
+    MatMomentDateModule,
     MatPaginatorModule,
     MatProgressBarModule,
     MatProgressSpinnerModule,

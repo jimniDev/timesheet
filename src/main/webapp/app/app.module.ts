@@ -3,7 +3,6 @@ import './vendor.ts';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { NgbDatepickerConfig } from '@ng-bootstrap/ng-bootstrap';
 import { NgxWebstorageModule } from 'ngx-webstorage';
 import { NgJhipsterModule } from 'ng-jhipster';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -16,7 +15,6 @@ import { TimesheetCoreModule } from 'app/core';
 import { TimesheetAppRoutingModule } from './app-routing.module';
 import { TimesheetHomeModule } from './home/home.module';
 import { TimesheetEntityModule } from './entities/entity.module';
-import * as moment from 'moment';
 // jhipster-needle-angular-add-module-import JHipster will add new module here
 import { JhiMainComponent, NavbarComponent, FooterComponent, PageRibbonComponent, ActiveMenuDirective, ErrorComponent } from './layouts';
 import { AsLayoutsModule } from './as-layouts/as-layouts.module';
@@ -63,7 +61,5 @@ import { AsLayoutsModule } from './as-layouts/as-layouts.module';
   bootstrap: [JhiMainComponent]
 })
 export class TimesheetAppModule {
-  constructor(private dpConfig: NgbDatepickerConfig) {
-    this.dpConfig.minDate = { year: moment().year() - 100, month: 1, day: 1 };
-  }
+  constructor() {}
 }

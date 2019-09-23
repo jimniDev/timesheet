@@ -11,9 +11,11 @@ export class AsNavbarComponent implements OnInit {
   @Input() title: String;
   @Input() subtitle: String;
 
-  messageIndex: number = 0;
+  messageIndex = 0;
 
-  messagesClearedShow: boolean = false;
+  messagesClearedShow = false;
+
+  sideNavMode = 'side';
 
   @ViewChild('sidenav', { static: true }) sidenav: MatSidenav;
 
@@ -23,9 +25,11 @@ export class AsNavbarComponent implements OnInit {
     this.breakpointObserver.observe([Breakpoints.Small, Breakpoints.XSmall]).subscribe(result => {
       if (result.matches) {
         this.sidenav.disableClose = false;
+        this.sideNavMode = 'over';
         this.sidenav.close();
       } else {
         this.sidenav.disableClose = true;
+        this.sideNavMode = 'side';
         this.sidenav.open();
       }
     });
@@ -36,7 +40,7 @@ export class AsNavbarComponent implements OnInit {
       this.messageIndex++;
       console.log(this.messageIndex);
     } else {
-      if (this.messageIndex == this.messagesService.messages.length - 1) {
+      if (this.messageIndex === this.messagesService.messages.length - 1) {
         this.messageIndex = 0;
       }
     }
@@ -45,10 +49,10 @@ export class AsNavbarComponent implements OnInit {
   deleteMessage(index: number): void {
     // this.messagesService.messages.splice(index, 1);
     this.messagesService.messages.splice(index, 1);
-    if (!(this.messageIndex == 0 || this.messageIndex == this.messagesService.messages.length - 1)) {
+    if (!(this.messageIndex === 0 || this.messageIndex === this.messagesService.messages.length - 1)) {
       this.messageIndex--;
     }
-    this.messagesClearedShow = this.messagesService.messages.length == 0;
+    this.messagesClearedShow = this.messagesService.messages.length === 0;
     if (this.messagesClearedShow) {
       setTimeout(() => (this.messagesClearedShow = false), 3000);
     }

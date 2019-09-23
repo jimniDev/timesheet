@@ -7,54 +7,6 @@ import { RouterModule } from '@angular/router';
       {
         path: 'employee-timesheet',
         loadChildren: './employee-timesheet/employee-timesheet.module#TimesheetEmployeeTimesheetModule'
-      },
-      // {
-      //   path: 'working-day-timesheet',
-      //   loadChildren: './working-day-timesheet/working-day-timesheet.module#TimesheetWorkingDayTimesheetModule'
-      // },
-      // {
-      //   path: 'day-timesheet',
-      //   loadChildren: './day-timesheet/day-timesheet.module#TimesheetDayTimesheetModule'
-      // },
-      {
-        path: 'working-entry-timesheet',
-        loadChildren: './working-entry-timesheet/working-entry-timesheet.module#TimesheetWorkingEntryTimesheetModule'
-      },
-      {
-        path: 'activity-timesheet',
-        loadChildren: './activity-timesheet/activity-timesheet.module#TimesheetActivityTimesheetModule'
-      },
-      {
-        path: 'location-timesheet',
-        loadChildren: './location-timesheet/location-timesheet.module#TimesheetLocationTimesheetModule'
-      },
-      {
-        path: 'country-timesheet',
-        loadChildren: './country-timesheet/country-timesheet.module#TimesheetCountryTimesheetModule'
-      },
-      {
-        path: 'target-working-day-timesheet',
-        loadChildren: './target-working-day-timesheet/target-working-day-timesheet.module#TimesheetTargetWorkingDayTimesheetModule'
-      },
-      {
-        path: 'day-of-week-timesheet',
-        loadChildren: './day-of-week-timesheet/day-of-week-timesheet.module#TimesheetDayOfWeekTimesheetModule'
-      },
-      {
-        path: 'weekly-working-hours-timesheet',
-        loadChildren: './weekly-working-hours-timesheet/weekly-working-hours-timesheet.module#TimesheetWeeklyWorkingHoursTimesheetModule'
-      },
-      {
-        path: 'work-day-timesheet',
-        loadChildren: './work-day-timesheet/work-day-timesheet.module#TimesheetWorkDayTimesheetModule'
-      },
-      {
-        path: 'work-break-timesheet',
-        loadChildren: './work-break-timesheet/work-break-timesheet.module#TimesheetWorkBreakTimesheetModule'
-      },
-      {
-        path: 'role-timesheet',
-        loadChildren: './role-timesheet/role-timesheet.module#TimesheetRoleTimesheetModule'
       }
       /* jhipster-needle-add-entity-route - JHipster will add entity modules routes here */
     ])
