@@ -1,24 +1,30 @@
-import { Injectable } from '@angular/core';
+import { Injectable, ComponentFactoryResolver, Injector } from '@angular/core';
 import * as jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import { IWorkingEntryTimesheet } from '../model/working-entry-timesheet.model';
-import { Moment } from 'moment';
+import { TableGeneratorComponent } from './table-generator/table-generator.component';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class PdfService {
-  constructor() {}
+  constructor(private resolver: ComponentFactoryResolver, private injector: Injector) {}
 
   public createPDF(workingEntries: IWorkingEntryTimesheet[]): void {
-    let rows = workingEntries.map(we => [
+    // const factory = this.resolver.resolveComponentFactory(TableGeneratorComponent);
+    // const tableComponent = factory.create(this.injector);
+    // tableComponent.instance.workingEntries = workingEntries;
+    // tableComponent.changeDetectorRef.detectChanges();
+    // const doc = new jsPDF();
+    // doc.autoTable({ html: tableComponent.instance.elRef.nativeElement.innerHTML });
+    // doc.save('timesheet.pdf');
+
+    const rows = workingEntries.map(we => [
       we.workDay.date.format('YYYY-MM-DD'),
       we.start.format('HH:mm'),
       we.end.format('HH:mm'),
       this.secondsToHHMM(we.end.diff(we.start, 'seconds', true)),
       we.activity ? we.activity.name : ''
     ]);
-    let doc = new jsPDF();
+    const doc = new jsPDF();
     doc.autoTable({
       head: [['Date', 'From', 'To', 'Worktime', 'Activity']],
       body: rows
@@ -28,7 +34,9 @@ export class PdfService {
 
   pad(num: number, size: number): string {
     let s = num + '';
-    while (s.length < size) s = '0' + s;
+    while (s.length < size) {
+      s = '0' + s;
+    }
     return s;
   }
 

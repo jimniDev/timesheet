@@ -10,9 +10,10 @@ import { YearMonthSelectComponent } from './year-month-select/year-month-select.
 import { AsLayoutsModule } from 'app/as-layouts/as-layouts.module';
 import { HomeDialogComponent } from './home-dialog/home-dialog.component';
 import { TimetableEditDialogComponent } from './timetable-edit-dialog/timetable-edit-dialog.component';
+import { PdfModule } from 'app/shared/pdf/pdf.module';
 
 @NgModule({
-  imports: [TimesheetSharedModule, RouterModule.forChild([HOME_ROUTE]), ReactiveFormsModule, AsLayoutsModule],
+  imports: [TimesheetSharedModule, RouterModule.forChild([HOME_ROUTE]), ReactiveFormsModule, AsLayoutsModule, PdfModule],
   declarations: [
     HomeComponent,
     TimetableComponent,
