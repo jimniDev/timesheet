@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Validators } from '@angular/forms';
 import { WorkingEntryTimesheet } from 'app/shared/model/working-entry-timesheet.model';
@@ -11,11 +11,25 @@ import { RoleTimesheetService } from 'app/entities/role-timesheet';
 import { HttpResponse } from '@angular/common/http';
 import { IRoleTimesheet } from 'app/shared/model/role-timesheet.model';
 import { MatSnackBar } from '@angular/material';
+import { MAT_DATE_FORMATS } from '@angular/material/core';
+
+export const MY_FORMAT = {
+  parse: {
+    dateInput: 'DD.MM.YYYY'
+  },
+  display: {
+    dateInput: 'DD.MM.YYYY',
+    monthYearLabel: 'MM.YYYY',
+    dateA11yLabel: 'DD.MM.YYYY',
+    monthYearA11yLabel: 'MM.YYYY'
+  }
+};
 
 @Component({
   selector: 'jhi-date-form',
   templateUrl: './date-form.component.html',
-  styleUrls: ['./date-form.component.scss']
+  styleUrls: ['./date-form.component.scss'],
+  providers: [{ provide: MAT_DATE_FORMATS, useValue: MY_FORMAT }]
 })
 export class DateFormComponent implements OnInit {
   // roles: string[];
@@ -56,8 +70,12 @@ export class DateFormComponent implements OnInit {
     });
   }
 
-  get today() {
-    return new Date();
+  // get today() {
+  //   return new Date();
+  // }
+
+  selectToday() {
+    this.timeForm.patchValue({ date: moment() });
   }
 
   onSubmit() {

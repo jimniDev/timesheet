@@ -2,14 +2,13 @@
   <div fxLayoutAlign.lt-xl="center stretch" fxLayout.lt-xl="column" fxLayoutGap="8px" class="container">
     <mat-form-field fxFlex="auto">
       <mat-label>Date</mat-label>
-      <input matInput [matDatepicker]="picker" placeholder="Choose a date" formControlName="date" name="dp" value="date"
-        required>
+      <input matInput [matDatepicker]="picker" placeholder="Choose a date" formControlName="date" required>
       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
-    <button mat-button type="button" fxFlex="auto">Select Today</button>
+    <button mat-button color="primary" type="button" (click)="selectToday()">Today</button>
 
-    <div fxLayoutAlign.xs="center stretch" fxLayout.xs="column" fxLayoutGap="8px" class="container">
+    <div fxLayoutAlign.xs="center stretch" fxLayout.xs="column" fxLayoutGap="8px">
       <mat-form-field class="time" fxFlex="auto">
         <mat-label>Start Time</mat-label>
         <as-time-input formControlName="startTime" required></as-time-input>
@@ -23,7 +22,7 @@
       </mat-form-field>
     </div>
 
-    <div fxLayoutAlign="center stretch" fxLayout.xs="column" fxLayoutGap="8px" class="container">
+    <div fxLayoutAlign="center stretch" fxLayout.xs="column" fxLayoutGap="8px">
       <mat-form-field fxFlex="50">
         <mat-label>Role</mat-label>
         <mat-select matNativeControl formControlName="roleControl" required (ngModelChange)="onChangeRole($event)">
@@ -42,7 +41,7 @@
         </mat-select>
       </mat-form-field>
     </div>
-    <button mat-button type="submit" [disabled]="!timeForm.valid" fxFlex="auto">Save</button>
+    <button mat-stroked-button color="primary" type="submit" [disabled]="!timeForm.valid">Save</button>
 
   </div>
 </form>

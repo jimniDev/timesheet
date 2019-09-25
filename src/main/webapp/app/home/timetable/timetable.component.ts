@@ -1,6 +1,6 @@
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { ChangeDetectorRef, Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
-import { MatPaginator } from '@angular/material';
+import { MatPaginator, PageEvent } from '@angular/material';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSort } from '@angular/material/sort';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
@@ -41,6 +41,8 @@ export class TimetableComponent implements OnInit {
 
   targetMinutes: number;
   actualMinutes: number;
+
+  pageIndex = 0;
 
   dateAccessor = d => d.WorkDay.date.format('YYYY-MM-DD');
 
@@ -140,12 +142,6 @@ export class TimetableComponent implements OnInit {
           this.workingEntries = res;
           this.workingEntries = this.sortData(this.workingEntries);
           this.workingEntriesUnfiltered = this.workingEntries;
-          // let workDays = this.workingEntries.map(we => we.workDay);
-          // this.targetTime = Array.from(new Set(workDays.map(a => a.id)))
-          //   .map(id => workDays.find(a => a.id === id))
-          //   .map(wd => wd.targetWorkingMinutes)
-          //   .reduce((x, y) => x + y)
-          //   .toString();
           this.DSworkingEntries = new MatTableDataSource(this.workingEntries);
 
           this.cdr.detectChanges(); // necessary fot pagination & sort -wait until initialization
@@ -171,10 +167,9 @@ export class TimetableComponent implements OnInit {
 
   addNewandSort(workingEntry: WorkingEntryTimesheet) {
     this.workingEntries.push(workingEntry);
-    this.asRowSpan.updateCache(this.workingEntries);
     this.workingEntries = this.sortData(this.workingEntries);
+    this.asRowSpan.updateCache(this.workingEntries); // Must be after this.sortData() !!
     this.workingEntriesUnfiltered = this.workingEntries;
-    // this.DSworkingEntries = new MatTableDataSource(this.workingEntries);
     this.DSworkingEntries.connect().next(this.workingEntries);
     this.cdr.detectChanges(); // necessary fot pagination & sort -wait until initialization
     this.DSworkingEntries.sortingDataAccessor = this.sortingDataAccessor;
@@ -261,10 +256,16 @@ export class TimetableComponent implements OnInit {
   }
 
   checkDate(workingentry: IWorkingEntryTimesheet): boolean {
-    if (moment().diff(workingentry.workDay.date, 'days') >= 30) {
-      // this.buttonDisable = true;
+    if (
+      moment().diff(workingentry.workDay.date, 'days') >= 30 ||
+      (workingentry.workDay.date.isSame(moment(), 'date') && workingentry.end === null)
+    ) {
       return true;
     }
     return false;
+  }
+
+  updatePage(pageEvent: PageEvent) {
+    this.pageIndex = pageEvent.pageIndex * pageEvent.pageSize;
   }
 }

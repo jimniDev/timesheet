@@ -213,8 +213,8 @@ public class WorkingEntryService {
     	 for (WorkingEntry wEntry: workingEntries) {
     		if(!wEntry.isDeleted() && wEntry.getId() != workingEntryToValidate.getId()) {
     			if (wEntry.isValid()) {
-             		if ((workingEntryToValidate.getStart().isBefore(wEntry.getEnd()) || workingEntryToValidate.getStart().equals(wEntry.getEnd())) 
-             				&& (workingEntryToValidate.getEnd().isAfter(wEntry.getStart()) || workingEntryToValidate.getEnd().equals(wEntry.getStart()))) {
+             		if (workingEntryToValidate.getStart().isBefore(wEntry.getEnd()) 
+             				&& workingEntryToValidate.getEnd().isAfter(wEntry.getStart())) {
              			return true;
              		}
     			} else {
@@ -224,16 +224,6 @@ public class WorkingEntryService {
     			}
     			
     		}
-//         	if (wEntry.isValid() && wEntry.getId() != workingEntryToValidate.getId()) {
-//         		if ((workingEntryToValidate.getStart().isBefore(wEntry.getEnd()) || workingEntryToValidate.getStart().equals(wEntry.getEnd())) 
-//         				&& (workingEntryToValidate.getEnd().isAfter(wEntry.getStart()) || workingEntryToValidate.getEnd().equals(wEntry.getStart()))) {
-//         			return true;
-//         		}
-//         	} else if(!wEntry.isDeleted()) {
-//         		if(workingEntryToValidate.getStart().equals(wEntry.getStart())) {
-//         			return true;
-//         		}
-//         	}
          }
     	 return false;
     }
