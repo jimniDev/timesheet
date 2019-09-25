@@ -42,8 +42,6 @@ export class TimetableComponent implements OnInit {
   targetMinutes: number;
   actualMinutes: number;
 
-  pageIndex = 0;
-
   dateAccessor = d => d.WorkDay.date.format('YYYY-MM-DD');
 
   constructor(
@@ -247,6 +245,7 @@ export class TimetableComponent implements OnInit {
       }
     });
   }
+
   public deleteEntry(workingentry: IWorkingEntryTimesheet) {
     this.workingEntryService.delete(workingentry.id).subscribe(res => {
       if (res.ok) {
@@ -266,6 +265,8 @@ export class TimetableComponent implements OnInit {
   }
 
   updatePage(pageEvent: PageEvent) {
-    this.pageIndex = pageEvent.pageIndex * pageEvent.pageSize;
+    this.asRowSpan.updateCache(
+      this.workingEntries.slice(pageEvent.pageSize * pageEvent.pageIndex, pageEvent.length - 1 + pageEvent.pageSize * pageEvent.pageIndex)
+    );
   }
 }
