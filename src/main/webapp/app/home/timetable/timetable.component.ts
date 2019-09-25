@@ -234,10 +234,11 @@ export class TimetableComponent implements OnInit {
     }
   }
 
-  edittimetableDialog(workingentry: IWorkingEntryTimesheet) {
+  edittimetableDialog(workingEntry: IWorkingEntryTimesheet): void {
     const dialogRef = this.dialog.open(TimetableEditDialogComponent, {
-      data: workingentry
+      data: workingEntry
     });
+
     dialogRef.afterClosed().subscribe((result: IWorkingEntryTimesheet) => {
       if (result) {
         const idx = this.workingEntries.findIndex(we => we.id === result.id);

@@ -10,6 +10,7 @@ import * as moment from 'moment';
 import { MatSnackBar } from '@angular/material';
 import { RoleTimesheetService } from 'app/entities/role-timesheet';
 import { IRoleTimesheet } from 'app/shared/model/role-timesheet.model';
+import { timingSafeEqual } from 'crypto';
 
 @Component({
   selector: 'jhi-timetable-edit-dialog',
@@ -21,17 +22,10 @@ export class TimetableEditDialogComponent implements OnInit {
   roles: IRoleTimesheet[];
   selectableActivities: IActivityTimesheet[];
   workingEntry: IWorkingEntryTimesheet;
-
   workingeditForm = new FormGroup({
-    date: new FormControl(this.workingEntryData.workDay.date.format('YYYY-MM-DD'), Validators.required),
-    starttime: new FormControl(
-      this.workingEntryData.start.format('HH:mm'),
-      Validators.compose([Validators.required, Validators.pattern('^([01][0-9]|2[0-3]):([0-5][0-9])$')])
-    ),
-    endtime: new FormControl(
-      this.workingEntryData.end.format('HH:mm'),
-      Validators.compose([Validators.required, Validators.pattern('^([01][0-9]|2[0-3]):([0-5][0-9])$')])
-    ),
+    date: new FormControl('', Validators.required),
+    starttime: new FormControl('', Validators.compose([Validators.required, Validators.pattern('^([01][0-9]|2[0-3]):([0-5][0-9])$')])),
+    endtime: new FormControl('', Validators.compose([Validators.required, Validators.pattern('^([01][0-9]|2[0-3]):([0-5][0-9])$')])),
     roleControl: new FormControl('', Validators.required),
     activity: new FormControl(this.workingEntryData.activity)
   });
@@ -56,6 +50,12 @@ export class TimetableEditDialogComponent implements OnInit {
         this.activities = res.body;
         this.selectableActivities = this.activities;
       }
+    });
+    this.workingeditForm.patchValue({
+      date: this.workingEntryData.workDay.date,
+      starttime: this.workingEntryData.start ? this.workingEntryData.start.format('HH:mm') : '',
+      endtime: this.workingEntryData.end ? this.workingEntryData.end.format('HH:mm') : '',
+      activity: this.workingEntryData.activity
     });
   }
 

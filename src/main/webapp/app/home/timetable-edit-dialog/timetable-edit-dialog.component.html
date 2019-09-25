@@ -7,7 +7,6 @@
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
 
-
     <mat-form-field class="time">
       <mat-label>Start Time</mat-label>
       <as-time-input formControlName="starttime" required></as-time-input>
@@ -28,7 +27,7 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
-    
+
     <mat-form-field>
       <mat-label>Activity</mat-label>
       <mat-select formControlName="activity" [compareWith]="compareObjects">
@@ -37,8 +36,8 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
-   
-    <button mat-button type="submit" [disabled]="">Save</button>
+
+    <button mat-button type="submit" [disabled]="!workingeditForm.valid">Save</button>
     <button mat-button type="button" (click)="onNoClick()">Cancel</button>
   </div>
 </form>
