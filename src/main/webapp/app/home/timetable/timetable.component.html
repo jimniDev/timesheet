@@ -65,7 +65,8 @@
             </ng-container>
             <ng-container matColumnDef="Activity">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header fxHide.lt-md="true"> Activity </th>
-                <td mat-cell *matCellDef="let element" fxHide.lt-md="true"> {{loadActivity(element.activity)}} </td>
+                <td mat-cell *matCellDef="let element" fxHide.lt-md="true">
+                    {{element.activity ? element.activity.name : ''}} </td>
             </ng-container>
             <ng-container matColumnDef="Actions">
                 <th mat-header-cell *matHeaderCellDef> </th>
@@ -91,61 +92,7 @@
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
-        <mat-paginator [pageSize]="10" [pageSizeOptions]="[10, 20, 50]" showFirstLastButtons
-            (page)="updatePage($event)">
+        <mat-paginator [pageSize]="10" [pageSizeOptions]="[10, 20, 50]" showFirstLastButtons>
         </mat-paginator>
     </mat-card>
 </div>
-
-
-
-<!-- <div class = "container scroll scrollbar-primary">
-    <table class="table table-hover table-responisve-sm force-overflow">
-    <thead>
-        <tr>
-            <th>Date</th>
-            <th>Total Worktime</th>
-            <!ith>Break Time</th>
-            <th>Start</th>
-            <th>End</th>
-            <th>Sum</th>
-            <th>Activity</th>
-            <th>Location</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let workingEntry of workingEntries; let i = index" >
-        <td *ngIf="isDifferentWorkingEntryDateBefore(i)">{{workingEntry.workDay.date | date:'dd.MM.yy'}}</td>
-        <td *ngIf="sDifferentWorkingEntryDateBefore(i)" class="border-0"></td>
-        <td *ngIf="isDifferentWorkingEntryDateBefore(i)">{{secondsToHHMM(workingEntry.workDay.totalWorkingMinutes * 60)}}</td>
-        <td *ngIf="!isDifferentWorkingEntryDateBefore(i)" class="border-0"></td>
-        <td *ngIf="isDifferentWorkingEntryDateBefore(i)">{{secondsToHHMM(workingEntry.workDay.totalBreakMinutes * 60)}}</td>
-        <td *ngIf="!isDifferentWorkingEntryDateBefore(i)" class="border-0"></td>  
-        <td>{{workingEntry.start | date:'HH:mm'}}</td>
-        <td>{{workingEntry.end | date: 'HH:mm'}}</td>
-        <td>{{sumDate(workingEntry.start, workingEntry.end)}}</td>
-        <td>working</td>
-        <td>location</td>
-        <td>
-            <div class="btn-group">
-                <button type="submit"
-                        [routerLink]="['/working-entry-timesheet', workingEntry.id, 'edit']"
-                        class="btn btn-primary btn-sm">
-                    <fa-icon [icon]="'pencil-alt'"></fa-icon>
-                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
-                </button>
-                <button type="submit"
-                        [routerLink]="['/', 'working-entry-timesheet', { outlets: { popup: workingEntry.id + '/delete'} }]"
-                        replaceUrl="true"
-                        queryParamsHandling="merge"
-                        class="btn btn-danger btn-sm">
-                    <fa-icon [icon]="'times'"></fa-icon>
-                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
-                </button>
-            </div>
-        </td>
-    </tr>
-    </tbody>
-    </table>
-</div> -->
