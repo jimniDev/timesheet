@@ -180,8 +180,8 @@ export class TimetableComponent implements OnInit {
     this.DSworkingEntries.sortingDataAccessor = this.sortingDataAccessor;
     this.DSworkingEntries.paginator = this.paginator;
     this.DSworkingEntries.sort = this.sort;
+
     this.loadWorktimeInformation();
-    this.loadAllandSort();
   }
 
   sumDate(date1: any, date2: any): String {
