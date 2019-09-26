@@ -40,8 +40,6 @@ export class TimetableComponent implements OnInit, AfterViewInit {
   targetMinutes: number;
   actualMinutes: number;
 
-  // dateAccessor = d => d.WorkDay.date.format('YYYY-MM-DD');
-
   constructor(
     private workingEntryService: WorkingEntryTimesheetService,
     private employeeService: EmployeeTimesheetService,

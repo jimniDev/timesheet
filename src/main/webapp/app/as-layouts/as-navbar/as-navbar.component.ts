@@ -61,4 +61,10 @@ export class AsNavbarComponent implements OnInit {
   clearMessage(): void {
     this.messagesService.messages = [];
   }
+
+  closeOnLtMd() {
+    if (this.breakpointObserver.isMatched([Breakpoints.Small, Breakpoints.XSmall])) {
+      this.sidenav.close();
+    }
+  }
 }
