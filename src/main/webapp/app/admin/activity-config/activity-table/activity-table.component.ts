@@ -32,12 +32,25 @@ export class ActivityTableComponent implements OnInit {
       }
     });
   }
+
+  refresh() {
+    this.datasource.connect().next(this.activities);
+    this.pageAndSort();
+  }
+
+  pageAndSort() {
+    this.cdr.detectChanges();
+    this.datasource.sort = this.sort;
+    this.datasource.paginator = this.paginator;
+  }
   applyFilter(filterValue: string) {
     this.datasource.filter = filterValue.trim().toLowerCase();
+    this.refresh();
   }
   public addActivity(activity: IActivityTimesheet) {
     this.activities.push(activity);
     this.table.renderRows();
+    this.refresh();
   }
 
   public deleteActivity(activity: IActivityTimesheet) {
@@ -45,7 +58,7 @@ export class ActivityTableComponent implements OnInit {
       if (res.ok) {
         this.activities.splice(this.activities.indexOf(activity), 1);
         this.table.renderRows();
-        this.ngOnInit();
+        this.refresh();
       }
     });
   }
@@ -63,9 +76,9 @@ export class ActivityTableComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        //   this.roleTable.update(<IRoleTimesheet>result);
         const idx = this.activities.findIndex(we => we.id === result.id);
         this.activities[idx] = result;
+        this.refresh();
       }
     });
   }
