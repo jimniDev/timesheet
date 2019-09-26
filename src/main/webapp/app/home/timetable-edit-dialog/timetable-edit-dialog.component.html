@@ -21,7 +21,7 @@
 
     <mat-form-field>
       <mat-label>Role</mat-label>
-      <mat-select matNativeControl formControlName="roleControl" required (ngModelChange)="onChangeRole($event)">
+      <mat-select matNativeControl formControlName="roleControl" (ngModelChange)="onChangeRole($event)">
         <mat-option *ngFor="let role of roles" [value]="role">
           {{role.name}}
         </mat-option>
@@ -30,7 +30,7 @@
 
     <mat-form-field>
       <mat-label>Activity</mat-label>
-      <mat-select formControlName="activity" [compareWith]="compareObjects">
+      <mat-select formControlName="activity" [compareWith]="compareObjects" required>
         <mat-option *ngFor="let activity of selectableActivities" [value]="activity">
           {{activity.name}}
         </mat-option>

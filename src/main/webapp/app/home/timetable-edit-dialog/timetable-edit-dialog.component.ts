@@ -7,15 +7,27 @@ import { IActivityTimesheet, ActivityTimesheet } from 'app/shared/model/activity
 import { ActivityTimesheetService } from 'app/entities/activity-timesheet/activity-timesheet.service';
 import { HttpResponse } from '@angular/common/http';
 import * as moment from 'moment';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar, MAT_DATE_FORMATS } from '@angular/material';
 import { RoleTimesheetService } from 'app/entities/role-timesheet';
 import { IRoleTimesheet } from 'app/shared/model/role-timesheet.model';
-import { timingSafeEqual } from 'crypto';
+
+export const MY_FORMAT = {
+  parse: {
+    dateInput: 'DD.MM.YYYY'
+  },
+  display: {
+    dateInput: 'DD.MM.YYYY',
+    monthYearLabel: 'MM.YYYY',
+    dateA11yLabel: 'DD.MM.YYYY',
+    monthYearA11yLabel: 'MM.YYYY'
+  }
+};
 
 @Component({
   selector: 'jhi-timetable-edit-dialog',
   templateUrl: './timetable-edit-dialog.component.html',
-  styleUrls: ['./timetable-edit-dialog.component.scss']
+  styleUrls: ['./timetable-edit-dialog.component.scss'],
+  providers: [{ provide: MAT_DATE_FORMATS, useValue: MY_FORMAT }]
 })
 export class TimetableEditDialogComponent implements OnInit {
   activities: IActivityTimesheet[];
@@ -26,8 +38,8 @@ export class TimetableEditDialogComponent implements OnInit {
     date: new FormControl('', Validators.required),
     starttime: new FormControl('', Validators.compose([Validators.required, Validators.pattern('^([01][0-9]|2[0-3]):([0-5][0-9])$')])),
     endtime: new FormControl('', Validators.compose([Validators.required, Validators.pattern('^([01][0-9]|2[0-3]):([0-5][0-9])$')])),
-    roleControl: new FormControl('', Validators.required),
-    activity: new FormControl(this.workingEntryData.activity)
+    roleControl: new FormControl(''),
+    activity: new FormControl(this.workingEntryData.activity, Validators.required)
   });
 
   constructor(
