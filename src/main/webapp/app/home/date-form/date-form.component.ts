@@ -68,11 +68,12 @@ export class DateFormComponent implements OnInit {
         this.selectableActivities = this.activities;
       }
     });
+    this.timeForm.get('roleControl').valueChanges.subscribe(value => {
+      if (value) {
+        this.selectableActivities = value.activities;
+      }
+    });
   }
-
-  // get today() {
-  //   return new Date();
-  // }
 
   selectToday() {
     this.timeForm.patchValue({ date: moment() });
@@ -131,12 +132,6 @@ export class DateFormComponent implements OnInit {
           }
         }
       );
-    }
-  }
-
-  onChangeRole(role: IRoleTimesheet) {
-    if (role) {
-      this.selectableActivities = role.activities;
     }
   }
 }

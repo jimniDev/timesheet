@@ -34,7 +34,7 @@ export class TimetableEditDialogComponent implements OnInit {
   roles: IRoleTimesheet[];
   selectableActivities: IActivityTimesheet[];
   workingEntry: IWorkingEntryTimesheet;
-  workingeditForm = new FormGroup({
+  entryEditForm = new FormGroup({
     date: new FormControl('', Validators.required),
     starttime: new FormControl('', Validators.compose([Validators.required, Validators.pattern('^([01][0-9]|2[0-3]):([0-5][0-9])$')])),
     endtime: new FormControl('', Validators.compose([Validators.required, Validators.pattern('^([01][0-9]|2[0-3]):([0-5][0-9])$')])),
@@ -63,11 +63,16 @@ export class TimetableEditDialogComponent implements OnInit {
         this.selectableActivities = this.activities;
       }
     });
-    this.workingeditForm.patchValue({
+    this.entryEditForm.patchValue({
       date: this.workingEntryData.workDay.date,
       starttime: this.workingEntryData.start ? this.workingEntryData.start.format('HH:mm') : '',
       endtime: this.workingEntryData.end ? this.workingEntryData.end.format('HH:mm') : '',
       activity: this.workingEntryData.activity
+    });
+    this.entryEditForm.get('roleControl').valueChanges.subscribe(value => {
+      if (value) {
+        this.selectableActivities = value.activities;
+      }
     });
   }
 
@@ -77,20 +82,18 @@ export class TimetableEditDialogComponent implements OnInit {
 
   updateEntry(): void {
     this.workingEntryData.start = moment(
-      moment(this.workingeditForm.value.date).format('YYYY-MM-DD') + ' ' + this.workingeditForm.value.starttime
+      moment(this.entryEditForm.value.date).format('YYYY-MM-DD') + ' ' + this.entryEditForm.value.starttime
     );
-    this.workingEntryData.end = moment(
-      moment(this.workingeditForm.value.date).format('YYYY-MM-DD') + ' ' + this.workingeditForm.value.endtime
-    );
+    this.workingEntryData.end = moment(moment(this.entryEditForm.value.date).format('YYYY-MM-DD') + ' ' + this.entryEditForm.value.endtime);
 
     if (this.workingEntryData.start >= this.workingEntryData.end) {
       this._snackBar.open('Please check End Time again', 'Close', {
         duration: 5000
       });
     } else {
-      this.workingEntryData.workDay.date = moment(this.workingeditForm.value.date);
+      this.workingEntryData.workDay.date = moment(this.entryEditForm.value.date);
       this.workingEntryData.deleted = false;
-      this.workingEntryData.activity = this.workingeditForm.value.activity;
+      this.workingEntryData.activity = this.entryEditForm.value.activity;
       this.workingService.update(this.workingEntryData).subscribe(res => {
         if (res.ok) {
           this.dialogRef.close(res.body);
@@ -101,11 +104,5 @@ export class TimetableEditDialogComponent implements OnInit {
 
   compareObjects(o1: IActivityTimesheet, o2: IActivityTimesheet): boolean {
     return o1.name === o2.name && o1.id === o2.id;
-  }
-
-  onChangeRole(role: IRoleTimesheet) {
-    if (role) {
-      this.selectableActivities = role.activities;
-    }
   }
 }
