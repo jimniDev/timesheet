@@ -50,6 +50,11 @@ export class HomeDialogComponent implements OnInit {
         this.selectableActivities = this.activities;
       }
     });
+    this.modalForm.get('roleControl').valueChanges.subscribe(value => {
+      if (value) {
+        this.selectableActivities = value.activities;
+      }
+    });
   }
 
   save() {
@@ -63,9 +68,7 @@ export class HomeDialogComponent implements OnInit {
     });
   }
 
-  onChangeRole(role: IRoleTimesheet) {
-    if (role) {
-      this.selectableActivities = role.activities;
-    }
+  continue(): void {
+    this.dialogRef.close();
   }
 }

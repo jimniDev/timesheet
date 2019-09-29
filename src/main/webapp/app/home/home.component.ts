@@ -78,12 +78,9 @@ export class HomeComponent implements OnInit {
 
   startStop() {
     if (this.started) {
-      this.workingEntryService.end().subscribe(res => {
+      this.workingEntryService.active().subscribe(res => {
         if (res.ok) {
           this.openDialog(res.body);
-          this.startBtnName = 'Start';
-          this.started = false;
-          this.btnColors = 'primary';
         }
       });
     } else {
@@ -94,6 +91,8 @@ export class HomeComponent implements OnInit {
           this.startBtnName = 'Stop';
           this.started = true;
           this.btnColors = 'warn';
+          this.disableButton = true;
+          setTimeout(() => (this.disableButton = false), 10000);
         }
       });
     }
@@ -110,9 +109,21 @@ export class HomeComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((workingEntry: IWorkingEntryTimesheet) => {
       if (workingEntry) {
-        const indexToUpdate = this.timetableComponent.DSworkingEntries.data.findIndex(we => we.id === workingEntry.id);
-        this.timetableComponent.DSworkingEntries.data[indexToUpdate] = workingEntry;
-        this.timetableComponent.DSworkingEntries._updateChangeSubscription();
+        // const indexToUpdate = this.timetableComponent.DSworkingEntries.data.findIndex(we => we.id === workingEntry.id);
+        // this.timetableComponent.workingEntries[indexToUpdate] = workingEntry;
+        // this.timetableComponent.DSworkingEntries.data = this.timetableComponent.workingEntries;
+        // this.timetableComponent.addNewandSort(workingEntry);
+        // this.timetableComponent.DSworkingEntries._updateChangeSubscription();
+        this.workingEntryService.end().subscribe(res => {
+          if (res.ok) {
+            const indexToUpdate = this.timetableComponent.DSworkingEntries.data.findIndex(we => we.id === res.body.id);
+            this.timetableComponent.workingEntries[indexToUpdate] = res.body;
+            this.timetableComponent.DSworkingEntries.data = this.timetableComponent.workingEntries;
+            this.startBtnName = 'Start';
+            this.started = false;
+            this.btnColors = 'primary';
+          }
+        });
       }
     });
   }
