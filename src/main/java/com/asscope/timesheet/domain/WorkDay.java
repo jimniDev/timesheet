@@ -115,19 +115,21 @@ public class WorkDay implements Serializable {
     	Instant firstStart = Instant.MAX;
     	Instant lastEnd = Instant.MIN;
     	long totalWorkingSeconds = 0;
-    	for(WorkingEntry workingEntry: this.workingEntries) {
-        		if(workingEntry.isValid() && (workingEntry.getActivity() == null || !workingEntry.getActivity().isFillDay())) {
-        			totalWorkingSeconds += workingEntry.getWorkingTimeInSeconds();
-        		if(workingEntry.getStart().isBefore(firstStart)) {
-        			firstStart = workingEntry.getStart();
+    	if(this.workingEntries.stream().filter(we -> we.isValid()).count() > 1) {
+        	for(WorkingEntry workingEntry: this.workingEntries) {
+            	if(workingEntry.isValid()) {
+            		totalWorkingSeconds += workingEntry.getWorkingTimeInSeconds();
+            		if(workingEntry.getStart().isBefore(firstStart)) {
+            			firstStart = workingEntry.getStart();
+            		}
+            		if(workingEntry.getEnd().isAfter(lastEnd)) {
+            			lastEnd = workingEntry.getEnd();
+            		}
         		}
-        		if(workingEntry.getEnd().isAfter(lastEnd)) {
-        			lastEnd = workingEntry.getEnd();
-        		}
-    		}
+        	}
+        	long totalSeconds = lastEnd.getEpochSecond() - firstStart.getEpochSecond();
+        	minutes += (int) (totalSeconds - totalWorkingSeconds) / 60;
     	}
-    	long totalSeconds = lastEnd.getEpochSecond() - firstStart.getEpochSecond();
-    	minutes += (int) (totalSeconds - totalWorkingSeconds) / 60;
     	return minutes;
     }
     
