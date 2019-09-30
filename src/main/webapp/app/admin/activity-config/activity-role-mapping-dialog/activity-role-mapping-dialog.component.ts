@@ -42,19 +42,16 @@ export class ActivityRoleMappingDialogComponent implements OnInit {
     });
   }
 
-  onsubmit(): void {
-    const rolesub = <IRoleTimesheet>this.mappingForm.value.role;
+  onSubmit(): void {
+    const role = <IRoleTimesheet>this.mappingForm.value.role;
     const activities = <IActivityTimesheet[]>this.mappingForm.value.activities;
-    activities.forEach(element => {
-      rolesub.activities.push(element);
-    });
-    this.roleService.update(rolesub).subscribe(res => {
+    role.activities = activities;
+
+    this.roleService.update(role).subscribe(res => {
       if (res.ok) {
-        // TODO add res.body to the table
+        this.dialogRef.close(res.body);
       }
     });
-    console.log(this.mappingForm.value);
-    this.dialogRef.close();
   }
 
   onNoClick(): void {

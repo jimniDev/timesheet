@@ -15,6 +15,7 @@ export class ActivityRoleDialogComponent implements OnInit {
   activities: ActivityTimesheet[];
 
   roles: RoleTimesheet[];
+  idx: number;
 
   rolemappingForm = new FormGroup({
     name: new FormControl(''),
@@ -38,13 +39,26 @@ export class ActivityRoleDialogComponent implements OnInit {
     });
   }
 
-  onsubmit(): void {
+  onSubmit(): void {
     let roleEntry: RoleTimesheet;
     roleEntry = new RoleTimesheet();
     roleEntry.name = this.rolemappingForm.value.name;
     roleEntry.description = this.rolemappingForm.value.description;
-    console.log(this.rolemappingForm.value);
-    this.dialogRef.close();
+
+    this.roleService.query().subscribe((res: HttpResponse<RoleTimesheet[]>) => {
+      if (res.ok) {
+        this.roles = res.body;
+        this.idx = this.roles.findIndex(r => r.name === roleEntry.name);
+        if (this.idx !== -1) {
+          this.dialogRef.close();
+        } else {
+          this.createEntry(roleEntry);
+        }
+      }
+    });
+  }
+
+  createEntry(roleEntry: IRoleTimesheet): void {
     this.roleService.create(roleEntry).subscribe(res => {
       if (res.ok) {
         this.dialogRef.close(<IRoleTimesheet>res.body);
