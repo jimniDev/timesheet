@@ -1,13 +1,14 @@
-import { Component, OnInit, ChangeDetectorRef, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { IEmployeeTimesheet, EmployeeTimesheet } from 'app/shared/model/employee-timesheet.model';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { EmployeeTimesheet } from 'app/shared/model/employee-timesheet.model';
+import { MatDialog } from '@angular/material/dialog';
 import { EmployeeTimeSheetWeeklyDialogComponent } from './employee-time-sheet-weekly-dialog-component';
 import { IWeeklyWorkingHoursTimesheet } from 'app/shared/model/weekly-working-hours-timesheet.model';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
+import { WeeklyWorkingHoursTimesheetService } from '../weekly-working-hours-timesheet';
 
 @Component({
   selector: 'jhi-employee-timesheet-detail',
@@ -22,7 +23,12 @@ export class EmployeeTimesheetDetailComponent implements OnInit {
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: false }) sort: MatSort;
 
-  constructor(protected activatedRoute: ActivatedRoute, public dialog: MatDialog, private cdr: ChangeDetectorRef) {}
+  constructor(
+    protected activatedRoute: ActivatedRoute,
+    public dialog: MatDialog,
+    private cdr: ChangeDetectorRef,
+    private wwhService: WeeklyWorkingHoursTimesheetService
+  ) {}
 
   ngOnInit() {
     this.activatedRoute.data.subscribe(({ employee }) => {
@@ -67,9 +73,13 @@ export class EmployeeTimesheetDetailComponent implements OnInit {
 
   deleteRow(row?: IWeeklyWorkingHoursTimesheet): void {
     if (row) {
-      const index = this.employeeWeekly.data.indexOf(row);
-      this.employeeWeekly.data.splice(index, 1);
-      this.refresh();
+      this.wwhService.delete(row.id).subscribe(res => {
+        if (res.ok) {
+          const index = this.employeeWeekly.data.indexOf(row);
+          this.employeeWeekly.data.splice(index, 1);
+          this.refresh();
+        }
+      });
     }
   }
 }
