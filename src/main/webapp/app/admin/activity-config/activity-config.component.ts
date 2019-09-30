@@ -14,7 +14,6 @@ import { IActivityTimesheet } from 'app/shared/model/activity-timesheet.model';
   styleUrls: ['./activity-config.component.scss']
 })
 export class ActivityConfigComponent implements OnInit {
-  // panelOpenState = false;
   @ViewChild(RoleTableComponent, { static: false }) roleTable: RoleTableComponent;
 
   @ViewChild(ActivityTableComponent, { static: false }) activityTable: ActivityTableComponent;
@@ -32,7 +31,7 @@ export class ActivityConfigComponent implements OnInit {
     });
   }
 
-  openactivityDialog(): void {
+  openActivityDialog(): void {
     const dialogRef = this.dialog.open(ActivityCreationDialogComponent, {});
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
@@ -41,7 +40,12 @@ export class ActivityConfigComponent implements OnInit {
     });
   }
 
-  openmappingDialog(): void {
+  openMappingDialog(): void {
     const dialogRef = this.dialog.open(ActivityRoleMappingDialogComponent, {});
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.roleTable.updateRole(<IRoleTimesheet>result);
+      }
+    });
   }
 }

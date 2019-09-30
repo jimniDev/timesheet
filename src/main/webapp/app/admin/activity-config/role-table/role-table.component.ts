@@ -27,7 +27,7 @@ export class RoleTableComponent implements OnInit {
       if (res.ok) {
         this.roles = res.body;
         this.datasource = new MatTableDataSource(this.roles);
-        this.pageAndSort();
+        this.refresh();
       }
     });
   }
@@ -61,13 +61,16 @@ export class RoleTableComponent implements OnInit {
   }
 
   public addRole(role: IRoleTimesheet) {
-    this.roles.push(role);
-    this.table.renderRows();
+    const idx = this.roles.findIndex(r => r.name === role.name);
+    if (idx === -1) {
+      this.roles.push(role);
+    }
     this.refresh();
   }
 
   public updateRole(role: IRoleTimesheet) {
-    this.roles.push(role);
+    const idx = this.roles.findIndex(r => r.id === role.id);
+    this.roles[idx] = role;
     this.table.renderRows();
     this.refresh();
   }
