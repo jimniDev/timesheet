@@ -159,4 +159,20 @@ public class EmployeeService {
     		return 0L;
     	}
     }
+
+	public long targetWorkTimeMinutes(Principal principal, Integer year, Integer month, Integer day) {
+		Optional<Employee> employee = this.findOneByUsername(principal.getName());
+		LocalDate date = LocalDate.of(year, month, day);
+		if (employee.isPresent()) {
+			return employee.get()
+					.getWeeklyWorkingHours()
+					.stream()
+					.filter(wwh -> (wwh.getStartDate().isBefore(date) || wwh.getStartDate().equals(date)) && (wwh.getEndDate() == null || wwh.getEndDate().isAfter(date) || wwh.getEndDate().equals(date)))
+					.map(wwh -> wwh.getHours() * 60L / 5L)
+					.findFirst()
+					.orElse(0L);
+		} else {
+			return 0L;
+		}
+	}
 }

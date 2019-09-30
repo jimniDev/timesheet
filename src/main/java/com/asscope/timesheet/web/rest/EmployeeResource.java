@@ -155,4 +155,9 @@ public class EmployeeResource {
     	return ResponseEntity.ok().body(employeeService.getWorkTimeMinutes(principal, year, month));
     }
     
+    @GetMapping({"/employees/me/target-work-time/{year}/{month}/{day}"})
+    public ResponseEntity<Long> getTargetWorktimeInformation(Principal principal, @PathVariable("year") Integer year, @PathVariable("month") Integer month, @PathVariable("day") Integer day) {
+    	log.debug("REST request to get worktimeInformation for Employee : {}", principal.getName());
+    	return ResponseEntity.ok().body(employeeService.targetWorkTimeMinutes(principal, year, month, day));
+    }
 }
