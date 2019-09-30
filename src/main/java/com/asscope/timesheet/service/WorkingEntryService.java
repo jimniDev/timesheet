@@ -73,14 +73,9 @@ public class WorkingEntryService {
         	workingEntryToSave.setDeleted(false);
         }
         workingEntryToSave.setWorkDay(workDay);
-        if(workingEntryToSave.getActivity() != null && workingEntryToSave.getActivity().isFillDay()) {
-        	workingEntryToSave.setStart(Instant.EPOCH);
-        	workingEntryToSave.setEnd(Instant.EPOCH);
-        } else {
-            if(validateOverlappingTime(workingEntryToSave, workDay.getWorkingEntries())) {
-        		throw new OverlappingWorkingTimesException();
-        	}
-        }
+        if(validateOverlappingTime(workingEntryToSave, workDay.getWorkingEntries())) {
+    		throw new OverlappingWorkingTimesException();
+    	}
         WorkingEntry savedWE = workingEntryRepository.save(workingEntryToSave);
         workDay.addWorkingEntry(savedWE);
         return savedWE;
