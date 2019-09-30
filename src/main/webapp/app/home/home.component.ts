@@ -105,24 +105,21 @@ export class HomeComponent implements OnInit {
     dialogConfig.autoFocus = true; // ocus will be set automatically on the first form field of the dialog
     dialogConfig.data = { newWorkingEntry };
 
-    const dialogRef = this.dialog.open(HomeDialogComponent, dialogConfig);
+    this.workingEntryService.active().subscribe(res => {
+      if (res.ok) {
+        const dialogRef = this.dialog.open(HomeDialogComponent, dialogConfig);
 
-    dialogRef.afterClosed().subscribe((workingEntry: IWorkingEntryTimesheet) => {
-      if (workingEntry) {
-        // const indexToUpdate = this.timetableComponent.DSworkingEntries.data.findIndex(we => we.id === workingEntry.id);
-        // this.timetableComponent.workingEntries[indexToUpdate] = workingEntry;
-        // this.timetableComponent.DSworkingEntries.data = this.timetableComponent.workingEntries;
-        // this.timetableComponent.addNewandSort(workingEntry);
-        // this.timetableComponent.DSworkingEntries._updateChangeSubscription();
-        this.workingEntryService.end().subscribe(res => {
-          if (res.ok) {
-            const indexToUpdate = this.timetableComponent.DSworkingEntries.data.findIndex(we => we.id === res.body.id);
-            this.timetableComponent.workingEntries[indexToUpdate] = res.body;
-            this.timetableComponent.DSworkingEntries.data = this.timetableComponent.workingEntries;
-            this.startBtnName = 'Start';
-            this.started = false;
-            this.btnColors = 'primary';
-          }
+        dialogRef.afterClosed().subscribe((workingEntry: IWorkingEntryTimesheet) => {
+          this.workingEntryService.end().subscribe(endRes => {
+            if (res.ok) {
+              const indexToUpdate = this.timetableComponent.DSworkingEntries.data.findIndex(we => we.id === endRes.body.id);
+              this.timetableComponent.workingEntries[indexToUpdate] = endRes.body;
+              this.timetableComponent.DSworkingEntries.data = this.timetableComponent.workingEntries;
+              this.startBtnName = 'Start';
+              this.started = false;
+              this.btnColors = 'primary';
+            }
+          });
         });
       }
     });
