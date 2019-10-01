@@ -134,7 +134,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
   }
 
   sortData(workingEntries: IWorkingEntryTimesheet[]): IWorkingEntryTimesheet[] {
-    const sortarray = workingEntries.sort((a, b) => b.start.valueOf() - a.start.valueOf());
+    const sortarray = workingEntries.sort((a, b) => b.workDay.date.valueOf() - a.workDay.date.valueOf());
     return sortarray;
   }
 

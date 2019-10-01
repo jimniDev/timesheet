@@ -24,7 +24,8 @@
 
 <div fxLayout="column" fxLayoutAlign="space-between" fxLayoutGap="" class="container">
     <mat-card id="timetable">
-        <table mat-table [dataSource]="DSworkingEntries" matSort>
+        <table mat-table [dataSource]="DSworkingEntries" matSort (matSortChange)="sortData($event)"
+            matSortActive="workDay.date" matSortDirection="desc">
             <ng-container matColumnDef="workDay.date">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Date </th>
                 <td mat-cell *matCellDef="let element; let i = index" [asRowSpan]="asRowSpan" [rowIndex]="i"
