@@ -104,40 +104,25 @@ export class DateFormComponent implements OnInit {
   }
 
   onSubmit() {
-    let startTimeString: string;
-    let endTimeString: string;
     const workDay: WorkDayTimesheet = new WorkDayTimesheet();
-    let activity: ActivityTimesheet = new ActivityTimesheet();
-
-    // const formDate = moment.utc(this.timeForm.value.date);
-    // const formDate = moment(moment.utc(this.timeForm.value.date).startOf('day').format('LL')).startOf('day').toDate();
     const formDate = moment(this.timeForm.value.dateControl).add(2, 'hours');
-
     workDay.date = formDate;
 
-    startTimeString = formDate.format('YYYY-MM-DD') + ' ' + this.timeForm.value.startTime;
-    endTimeString = formDate.format('YYYY-MM-DD') + ' ' + this.timeForm.value.endTime;
-    const startMoment = moment(startTimeString);
-    const endMoment = moment(endTimeString);
+    const startMoment = moment(formDate.format('YYYY-MM-DD') + ' ' + this.timeForm.value.startTime);
+    const endMoment = moment(formDate.format('YYYY-MM-DD') + ' ' + this.timeForm.value.endTime);
 
     if (startMoment >= endMoment) {
       this._snackBar.open('Please check End Time again', 'close', {
         duration: 5000
       });
     } else {
-      this.activities.forEach(a => {
-        if (a.id === this.timeForm.value.activityControl.id) {
-          activity = a;
-        }
-      });
-
       let workingEntry: WorkingEntryTimesheet;
       workingEntry = new WorkingEntryTimesheet();
       workingEntry.start = startMoment;
       workingEntry.end = endMoment;
       workingEntry.workDay = workDay;
       workingEntry.deleted = false;
-      workingEntry.activity = activity;
+      workingEntry.activity = this.timeForm.value.activityControl;
 
       this.workingEntryService.create(workingEntry).subscribe(
         res => {
