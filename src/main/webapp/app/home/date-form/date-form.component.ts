@@ -12,6 +12,7 @@ import { HttpResponse } from '@angular/common/http';
 import { IRoleTimesheet } from 'app/shared/model/role-timesheet.model';
 import { MatSnackBar } from '@angular/material';
 import { MAT_DATE_FORMATS } from '@angular/material/core';
+import { EmployeeTimesheetService } from 'app/entities/employee-timesheet';
 
 export const MY_FORMAT = {
   parse: {
@@ -38,7 +39,7 @@ export class DateFormComponent implements OnInit {
   @Output() saved = new EventEmitter<boolean>();
 
   timeForm = new FormGroup({
-    date: new FormControl('', Validators.required),
+    dateControl: new FormControl('', Validators.required),
     startTime: new FormControl('', Validators.compose([Validators.required, Validators.pattern('^([01][0-9]|2[0-3]):([0-5][0-9])$')])),
     endTime: new FormControl('', Validators.compose([Validators.required, Validators.pattern('^([01][0-9]|2[0-3]):([0-5][0-9])$')])),
     roleControl: new FormControl('', Validators.required),
@@ -53,6 +54,7 @@ export class DateFormComponent implements OnInit {
     private workingEntryService: WorkingEntryTimesheetService,
     private activityService: ActivityTimesheetService,
     private roleService: RoleTimesheetService,
+    private employeeService: EmployeeTimesheetService,
     private _snackBar: MatSnackBar
   ) {}
 
@@ -73,10 +75,32 @@ export class DateFormComponent implements OnInit {
         this.selectableActivities = value.activities;
       }
     });
+
+    this.timeForm.get('dateControl').valueChanges.subscribe(value => {
+      this.fillDay();
+    });
+
+    this.timeForm.get('activityControl').valueChanges.subscribe((value: IActivityTimesheet) => {
+      this.fillDay();
+    });
+  }
+
+  fillDay() {
+    const activity: IActivityTimesheet = this.timeForm.get('activityControl').value;
+    const dateBefore = this.timeForm.get('dateControl').value;
+    if (activity && activity.fillDay && dateBefore) {
+      const date: moment.Moment = moment(dateBefore).add(2, 'hours');
+      this.employeeService.targetWorkTimMinutes(date.year(), date.month() + 1, date.date()).subscribe(res => {
+        if (res.ok) {
+          const endTimeMoment = moment(date.format('YYYY-MM-DD') + ' 10:00').add(res.body, 'minutes');
+          this.timeForm.patchValue({ startTime: '10:00', endTime: endTimeMoment.format('HH:mm') });
+        }
+      });
+    }
   }
 
   selectToday() {
-    this.timeForm.patchValue({ date: moment() });
+    this.timeForm.patchValue({ dateControl: moment() });
   }
 
   onSubmit() {
@@ -87,7 +111,7 @@ export class DateFormComponent implements OnInit {
 
     // const formDate = moment.utc(this.timeForm.value.date);
     // const formDate = moment(moment.utc(this.timeForm.value.date).startOf('day').format('LL')).startOf('day').toDate();
-    const formDate = moment(this.timeForm.value.date).add(2, 'hours');
+    const formDate = moment(this.timeForm.value.dateControl).add(2, 'hours');
 
     workDay.date = formDate;
 
