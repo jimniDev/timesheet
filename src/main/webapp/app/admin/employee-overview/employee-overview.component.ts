@@ -18,30 +18,25 @@ export class EmployeeOverviewComponent implements OnInit {
 
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
 
-  constructor(private employeeService: EmployeeTimesheetService) {
-    this.totalWorkingHours = 0;
-  }
+  constructor(private employeeService: EmployeeTimesheetService) {}
 
   ngOnInit() {
     this.employeeService.query().subscribe((res: HttpResponse<IEmployeeTimesheet[]>) => {
       if (res.ok) {
         this.employees = res.body;
-        this.getActualWeeklyWorkingHours(this.employees);
+        this.totalWorkingHours = 0;
         this.datasource = new MatTableDataSource(this.employees);
+
+        if (this.employees[0].activeWeeklyWorkingHours.hours !== null) {
+          this.totalWorkingHours = this.employees[0].activeWeeklyWorkingHours.hours;
+        }
+
         this.datasource.paginator = this.paginator;
       }
     });
   }
+
   applyFilter(filterValue: string) {
     this.datasource.filter = filterValue.trim().toLowerCase();
-  }
-  getActualWeeklyWorkingHours(employee: EmployeeTimesheet[]): void {
-    if (employee) {
-      for (let indexEmployee = 0; indexEmployee < employee.length; indexEmployee++) {
-        for (let indexEmployeeHour = 0; indexEmployeeHour < employee[indexEmployee].weeklyWorkingHours.length; indexEmployeeHour++) {
-          this.totalWorkingHours += employee[indexEmployee].weeklyWorkingHours[indexEmployeeHour].hours;
-        }
-      }
-    }
   }
 }
