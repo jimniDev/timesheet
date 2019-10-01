@@ -13,7 +13,6 @@ import { IRoleTimesheet } from 'app/shared/model/role-timesheet.model';
 })
 export class EmployeeOverviewComponent implements OnInit {
   public employees: EmployeeTimesheet[];
-  public totalWorkingHours: number;
   datasource = new MatTableDataSource<EmployeeTimesheet>();
 
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
@@ -24,13 +23,7 @@ export class EmployeeOverviewComponent implements OnInit {
     this.employeeService.query().subscribe((res: HttpResponse<IEmployeeTimesheet[]>) => {
       if (res.ok) {
         this.employees = res.body;
-        this.totalWorkingHours = 0;
         this.datasource = new MatTableDataSource(this.employees);
-
-        if (this.employees[0].activeWeeklyWorkingHours.hours !== null) {
-          this.totalWorkingHours = this.employees[0].activeWeeklyWorkingHours.hours;
-        }
-
         this.datasource.paginator = this.paginator;
       }
     });
