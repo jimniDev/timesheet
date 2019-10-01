@@ -91,7 +91,7 @@ export class TimetableEditDialogComponent implements OnInit {
         duration: 5000
       });
     } else {
-      this.workingEntryData.workDay.date = moment(this.entryEditForm.value.date);
+      this.workingEntryData.workDay.date = moment(this.entryEditForm.value.date).add(2, 'hours');
       this.workingEntryData.deleted = false;
       this.workingEntryData.activity = this.entryEditForm.value.activity;
       this.workingService.update(this.workingEntryData).subscribe(res => {
