@@ -78,7 +78,7 @@ public class WorkDay implements Serializable {
     			.stream()
     			.filter(wwH -> {
     				return (wwH.getStartDate().isBefore(this.date) || wwH.getStartDate().isEqual(this.date)) 
-    						&& (wwH.getEndDate() == null || wwH.getEndDate().isAfter(this.date));
+    						&& (wwH.getEndDate() == null || wwH.getEndDate().isAfter(this.date) || wwH.getEndDate().isEqual(this.date));
     			}).findFirst();
     }
     

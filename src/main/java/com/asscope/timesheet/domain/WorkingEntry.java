@@ -64,16 +64,6 @@ public class WorkingEntry extends AbstractAuditingEntity implements Serializable
     		return 0L;
     	} else if(this.isCompleted()) {
         	return end.getEpochSecond() - start.getEpochSecond();
-//    	} else if(this.isCompleted() && this.activity.isFillDay()) {
-//    		Optional<Integer> oTargetWorkMinutes = this.workDay.getTargetWorkminutes();
-//    		if(oTargetWorkMinutes.isPresent()) {
-//    			return oTargetWorkMinutes.get() * 60 - workDay.getWorkingEntries()
-//				.stream()
-//				.filter(we -> we.isValid() && we.id != this.id)
-//				.map(we -> we.getWorkingTimeInSeconds())
-//				.reduce(0L, Long::sum);
-//    		}
-//    		return 0l;
     	} else {
     		return 0L;
     	}
