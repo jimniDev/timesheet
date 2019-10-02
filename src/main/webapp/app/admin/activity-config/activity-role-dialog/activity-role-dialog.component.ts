@@ -6,7 +6,6 @@ import { RoleTimesheetService } from 'app/entities/role-timesheet';
 import { ActivityTimesheetService } from 'app/entities/activity-timesheet';
 import { MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
 import { HttpResponse } from '@angular/common/http';
-import { RoleAlertComponent } from './activity-role-alert.component';
 
 @Component({
   selector: 'dialog-rolecreation',
@@ -44,7 +43,7 @@ export class ActivityRoleDialogComponent implements OnInit {
   }
 
   openAlertBar() {
-    this.alertBar.openFromComponent(RoleAlertComponent, {
+    this.alertBar.open('A rolw with this name already exists.', 'cancel', {
       duration: this.durationInSeconds * 1000
     });
   }

@@ -24,7 +24,6 @@ import { ActivityTableComponent } from './activity-config/activity-table/activit
 import { RoleTableComponent } from './activity-config/role-table/role-table.component';
 import { ActivityRoleEditDialogComponent } from './activity-config/activity-role-edit-dialog/activity-role-edit-dialog.component';
 import { ActivityEditDialogComponent } from './activity-config/activity-edit-dialog/activity-edit-dialog.component';
-import { RoleAlertComponent } from './activity-config/activity-role-dialog/activity-role-alert.component';
 
 @NgModule({
   imports: [AsLayoutsModule, TimesheetSharedModule, AsLayoutsModule, RouterModule.forChild(adminState)],
@@ -45,8 +44,7 @@ import { RoleAlertComponent } from './activity-config/activity-role-dialog/activ
     ActivityTableComponent,
     RoleTableComponent,
     ActivityRoleEditDialogComponent,
-    ActivityEditDialogComponent,
-    RoleAlertComponent
+    ActivityEditDialogComponent
   ],
   providers: [{ provide: JhiLanguageService, useClass: JhiLanguageService }],
   entryComponents: [
@@ -55,8 +53,7 @@ import { RoleAlertComponent } from './activity-config/activity-role-dialog/activ
     ActivityRoleDialogComponent,
     ActivityRoleMappingDialogComponent,
     ActivityRoleEditDialogComponent,
-    ActivityEditDialogComponent,
-    RoleAlertComponent
+    ActivityEditDialogComponent
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

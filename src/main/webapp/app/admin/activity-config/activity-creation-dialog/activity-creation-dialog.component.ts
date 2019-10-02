@@ -29,7 +29,7 @@ export class ActivityCreationDialogComponent {
     public dialogRef: MatDialogRef<ActivityCreationDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: IActivityTimesheet
   ) {
-    this.activityForm.patchValue({ absence: false, fillday: false });
+    this.activityForm.patchValue({ absence: false, fillday: false, reduce: false });
   }
 
   onsubmit(): void {
@@ -38,6 +38,7 @@ export class ActivityCreationDialogComponent {
     activityEntry.description = this.activityForm.value.description;
     activityEntry.absence = this.activityForm.value.absence;
     activityEntry.fillDay = this.activityForm.value.fillday;
+    activityEntry.reduce = this.activityForm.value.reduce;
     this.activityService.create(activityEntry).subscribe(res => {
       if (res.ok) {
         this.dialogRef.close(<IActivityTimesheet>res.body);

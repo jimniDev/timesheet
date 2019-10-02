@@ -13,12 +13,17 @@ import { HttpResponse } from '@angular/common/http';
 })
 export class ActivityRoleMappingDialogComponent implements OnInit {
   activities: ActivityTimesheet[];
+  defaultActivities: ActivityTimesheet[];
 
   roles: RoleTimesheet[];
 
+  roleName: string;
+
+  idx: number;
+
   mappingForm = new FormGroup({
     role: new FormControl(''),
-    activities: new FormControl('')
+    activities: new FormControl()
   });
 
   constructor(
@@ -56,5 +61,26 @@ export class ActivityRoleMappingDialogComponent implements OnInit {
 
   onNoClick(): void {
     this.dialogRef.close();
+  }
+
+  updateName(rolename: string): void {
+    this.roleName = rolename;
+    this.updateActivity();
+  }
+
+  updateActivity(): void {
+    this.idx = this.roles.findIndex(r => r.name === this.roleName);
+    if (this.idx !== -1) {
+      this.defaultActivities = this.roles[this.idx].activities;
+
+      for (const index of this.defaultActivities) {
+        const id = this.activities.findIndex(a => a.name === index.name);
+
+        if (id !== -1) {
+          this.activities[id] = index;
+          this.mappingForm.controls.activities.setValue(this.defaultActivities, { onlySelf: true });
+        }
+      }
+    }
   }
 }

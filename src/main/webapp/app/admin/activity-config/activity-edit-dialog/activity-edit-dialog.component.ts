@@ -20,11 +20,7 @@ export class ActivityEditDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any,
     public dialogRef: MatDialogRef<ActivityEditDialogComponent>,
     private activityService: ActivityTimesheetService
-  ) {
-    this.data.activity.absence = false;
-    this.data.activity.fillDay = false;
-    this.data.activity.reduce = false;
-  }
+  ) {}
 
   ngOnInit() {}
 
