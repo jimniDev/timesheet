@@ -22,7 +22,7 @@ steps:
       goals: 'clean package -Pprod  -DskipTests'
   - task: CopyFiles@1
     inputs:
-      Contents: '/home/vsts/work/1/s/target/*'
+      Contents: '/target/*'
       TargetFolder: '$(Build.ArtifactStagingDirectory)'
       OverWrite: true
   - task: PublishBuildArtifacts@1
