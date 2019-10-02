@@ -68,6 +68,7 @@ public class WorkingEntryService {
         }
         else {
         	workDay = workDayService.findOne(workDay.getId()).get();
+        	workDay.setAdditionalBreakMinutes(workingEntryToSave.getWorkDay().getAdditionalBreakMinutes());
         }
         if(workDay.getEmployee() == null) {
         	workDay.setEmployee(employee);
