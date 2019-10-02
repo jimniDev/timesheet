@@ -22,7 +22,7 @@ steps:
       goals: 'clean package -Pprod  -DskipTests'
   - task: CopyFiles@1
     inputs:
-      Contents: '/home/vsts/work/1/s/target/timesheet-0.0.1-SNAPSHOT.jar'
+      Contents: '/home/vsts/work/1/s/target/*'
       TargetFolder: '$(Build.ArtifactStagingDirectory)'
       OverWrite: true
   - task: PublishBuildArtifacts@1
