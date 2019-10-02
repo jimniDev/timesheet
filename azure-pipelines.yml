@@ -20,4 +20,9 @@ steps:
       publishJUnitResults: true
       testResultsFiles: '**/surefire-reports/TEST-*.xml'
       goals: 'clean package -Pprod  -DskipTests'
+  - task: CopyFiles@1
+    inputs:
+      Contents: '**'
+      TargetFolder: $(Build.ArtifactStagingDirectory)
+      OverWrite: true
   - task: PublishBuildArtifacts@1
