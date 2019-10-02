@@ -40,8 +40,6 @@ public class WorkDay implements Serializable {
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<WorkingEntry> workingEntries = new HashSet<>();
 
-
-
     @Column(name = "additional_break_minutes")
     private int additionalBreakMinutes;
 
@@ -58,7 +56,7 @@ public class WorkDay implements Serializable {
         		seconds += workingEntry.getWorkingTimeInSeconds();
     		}
     	}
-    	return seconds / 60;
+    	return seconds / 60 - this.additionalBreakMinutes;
     }
     
     @JsonProperty("targetWorkingMinutes")
