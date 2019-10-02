@@ -15,7 +15,7 @@ export class AuthExpiredInterceptor implements HttpInterceptor {
         (event: HttpEvent<any>) => {},
         (err: any) => {
           if (err instanceof HttpErrorResponse) {
-            if (err.status === 401 && err.url && !err.url.includes('api/account')) {
+            if ((err.status === 401 || err.status === 0) && err.url && !err.url.includes('api/account')) {
               const destination = this.stateStorageService.getDestinationState();
               if (destination !== null) {
                 const to = destination.destination;
@@ -28,6 +28,8 @@ export class AuthExpiredInterceptor implements HttpInterceptor {
               }
 
               this.loginService.login();
+              // } else if (err.status === 0) {
+              //   this.loginService.login();
             }
           }
         }
