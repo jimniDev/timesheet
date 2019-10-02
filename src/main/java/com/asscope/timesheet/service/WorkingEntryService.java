@@ -219,6 +219,9 @@ public class WorkingEntryService {
     				if(workingEntryToValidate.getStart().equals(wEntry.getStart())) {
              			return true;
              		}
+    				if(workingEntryToValidate.getStart().isAfter(wEntry.getStart())) {
+    					return true;
+    				}
     			}
     			
     		}
