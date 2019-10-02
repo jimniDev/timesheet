@@ -122,11 +122,10 @@ export class TimetableComponent implements OnInit, AfterViewInit {
       .subscribe(
         (res: IWorkingEntryTimesheet[]) => {
           this.workingEntries = res;
-          this.workingEntries = this.sortData(this.workingEntries);
-          this.workingEntriesUnfiltered = this.workingEntries;
-          this.DSworkingEntries.data = this.workingEntries;
           this.asRowSpan.setData(this.workingEntries);
           this.asRowSpan.cacheSpan('Date', d => d.workDay.date.format('YYYY-MM-DD'));
+          this.workingEntriesUnfiltered = this.workingEntries;
+          this.DSworkingEntries.data = this.workingEntries;
           this.initialized.emit(true);
         },
         (res: HttpErrorResponse) => this.onError(res.message)
@@ -137,21 +136,10 @@ export class TimetableComponent implements OnInit, AfterViewInit {
     throw new Error(message);
   }
 
-  sortData(workingEntries: IWorkingEntryTimesheet[]): IWorkingEntryTimesheet[] {
-    const sortarray = workingEntries.sort((a, b) => b.workDay.date.valueOf() - a.workDay.date.valueOf());
-    return sortarray;
-  }
-
   addNewandSort(workingEntry: WorkingEntryTimesheet) {
     this.loadTargetWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
     this.loadActualWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
-    // this.workingEntries.forEach(function (entry) {
-    //   if (entry.workDay.id === workingEntry.workDay.id) {
-    //     entry.workDay.totalWorkingMinutes = workingEntry.workDay.totalWorkingMinutes;
-    //   }
-    // });
     this.workingEntries.push(workingEntry);
-    this.workingEntries = this.sortData(this.workingEntries);
     this.workingEntriesUnfiltered = this.workingEntries;
     this.DSworkingEntries.data = this.workingEntries;
   }
@@ -203,11 +191,12 @@ export class TimetableComponent implements OnInit, AfterViewInit {
       if (result) {
         const idx = this.workingEntries.findIndex(we => we.id === result.id);
         this.workingEntries[idx] = result;
-        // this.workingEntries.forEach(function (entry) {
-        //   if (entry.workDay.id === result.workDay.id) {
-        //     entry.workDay.totalWorkingMinutes = workingEntry.workDay.totalWorkingMinutes;
-        //   }
-        // });
+        this.workingEntries.forEach(entry => {
+          if (entry.workDay.id === result.workDay.id) {
+            entry.workDay.totalWorkingMinutes = result.workDay.totalWorkingMinutes;
+            entry.workDay.totalBreakMinutes = result.workDay.totalBreakMinutes;
+          }
+        });
         this.DSworkingEntries.data = this.workingEntries;
 
         this.loadTargetWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
