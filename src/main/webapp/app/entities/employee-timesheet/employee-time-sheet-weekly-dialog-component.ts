@@ -35,6 +35,7 @@ export class EmployeeTimeSheetWeeklyDialogComponent {
   ) {
     this.employee = data.employee;
     this.myHour = 0;
+    this.myEndDate = null;
   }
 
   onSubmit() {

@@ -62,6 +62,7 @@ export class ActivityTableComponent implements OnInit {
       }
     });
   }
+
   editActivityDialog(activity: IActivityTimesheet): void {
     const dialogRef = this.dialog.open(ActivityEditDialogComponent, {
       data: {
@@ -69,7 +70,7 @@ export class ActivityTableComponent implements OnInit {
         description: activity.description,
         absence: activity.absence,
         fillday: activity.fillDay,
-        reduced: activity.reduce,
+        reduce: activity.reduce,
         activity
       }
     });

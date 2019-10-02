@@ -4,7 +4,7 @@ import { RoleTimesheet, IRoleTimesheet } from 'app/shared/model/role-timesheet.m
 import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
 import { RoleTimesheetService } from 'app/entities/role-timesheet';
 import { ActivityTimesheetService } from 'app/entities/activity-timesheet';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
 import { HttpResponse } from '@angular/common/http';
 
 @Component({
@@ -13,7 +13,7 @@ import { HttpResponse } from '@angular/common/http';
 })
 export class ActivityRoleDialogComponent implements OnInit {
   activities: ActivityTimesheet[];
-
+  durationInSeconds: number;
   roles: RoleTimesheet[];
   idx: number;
 
@@ -28,14 +28,23 @@ export class ActivityRoleDialogComponent implements OnInit {
     private activityService: ActivityTimesheetService,
     public dialogRef: MatDialogRef<ActivityRoleDialogComponent>,
     private fb: FormBuilder,
+    private alertBar: MatSnackBar,
     @Inject(MAT_DIALOG_DATA) public data: IRoleTimesheet
-  ) {}
+  ) {
+    this.durationInSeconds = 5;
+  }
 
   ngOnInit() {
     this.activityService.query().subscribe((res: HttpResponse<IActivityTimesheet[]>) => {
       if (res.ok) {
         this.activities = res.body;
       }
+    });
+  }
+
+  openAlertBar() {
+    this.alertBar.open('A rolw with this name already exists.', 'cancel', {
+      duration: this.durationInSeconds * 1000
     });
   }
 
@@ -51,6 +60,7 @@ export class ActivityRoleDialogComponent implements OnInit {
         this.idx = this.roles.findIndex(r => r.name === roleEntry.name);
         if (this.idx !== -1) {
           this.dialogRef.close();
+          this.openAlertBar();
         } else {
           this.createEntry(roleEntry);
         }
