@@ -110,16 +110,20 @@ export class HomeComponent implements OnInit {
         const dialogRef = this.dialog.open(HomeDialogComponent, dialogConfig);
 
         dialogRef.afterClosed().subscribe((workingEntry: IWorkingEntryTimesheet) => {
-          this.workingEntryService.end().subscribe(endRes => {
-            if (res.ok) {
-              const indexToUpdate = this.timetableComponent.DSworkingEntries.data.findIndex(we => we.id === endRes.body.id);
-              this.timetableComponent.workingEntries[indexToUpdate] = endRes.body;
-              this.timetableComponent.DSworkingEntries.data = this.timetableComponent.workingEntries;
-              this.startBtnName = 'Start';
-              this.started = false;
-              this.btnColors = 'primary';
-            }
-          });
+          if (workingEntry) {
+            this.workingEntryService.end().subscribe(endRes => {
+              if (endRes.ok) {
+                const indexToUpdate = this.timetableComponent.DSworkingEntries.data.findIndex(we => we.id === endRes.body.id);
+                this.timetableComponent.workingEntries[indexToUpdate] = endRes.body;
+                this.timetableComponent.DSworkingEntries.data = this.timetableComponent.workingEntries;
+                this.startBtnName = 'Start';
+                this.started = false;
+                this.btnColors = 'primary';
+              }
+            });
+          } else {
+            // continue
+          }
         });
       }
     });

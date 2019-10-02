@@ -39,7 +39,8 @@ export class TimetableEditDialogComponent implements OnInit {
     starttime: new FormControl('', Validators.compose([Validators.required, Validators.pattern('^([01][0-9]|2[0-3]):([0-5][0-9])$')])),
     endtime: new FormControl('', Validators.compose([Validators.required, Validators.pattern('^([01][0-9]|2[0-3]):([0-5][0-9])$')])),
     roleControl: new FormControl(''),
-    activity: new FormControl(this.workingEntryData.activity, Validators.required)
+    activity: new FormControl(this.workingEntryData.activity, Validators.required),
+    addBreakControl: new FormControl(this.workingEntryData.workDay.additionalBreakMinutes)
   });
 
   constructor(
@@ -81,19 +82,20 @@ export class TimetableEditDialogComponent implements OnInit {
   }
 
   updateEntry(): void {
-    this.workingEntryData.start = moment(
-      moment(this.entryEditForm.value.date).format('YYYY-MM-DD') + ' ' + this.entryEditForm.value.starttime
-    );
-    this.workingEntryData.end = moment(moment(this.entryEditForm.value.date).format('YYYY-MM-DD') + ' ' + this.entryEditForm.value.endtime);
+    const startEditValue = moment(moment(this.entryEditForm.value.date).format('YYYY-MM-DD') + ' ' + this.entryEditForm.value.starttime);
+    const endEditValue = moment(moment(this.entryEditForm.value.date).format('YYYY-MM-DD') + ' ' + this.entryEditForm.value.endtime);
 
-    if (this.workingEntryData.start >= this.workingEntryData.end) {
-      this._snackBar.open('Please check End Time again', 'Close', {
+    if (startEditValue >= endEditValue) {
+      this._snackBar.open('End time should be after the Start time', 'Close', {
         duration: 5000
       });
     } else {
+      this.workingEntryData.start = startEditValue;
+      this.workingEntryData.end = endEditValue;
       this.workingEntryData.workDay.date = moment(this.entryEditForm.value.date).add(2, 'hours');
       this.workingEntryData.deleted = false;
       this.workingEntryData.activity = this.entryEditForm.value.activity;
+      this.workingEntryData.workDay.additionalBreakMinutes = this.entryEditForm.value.addBreakControl;
       this.workingService.update(this.workingEntryData).subscribe(res => {
         if (res.ok) {
           this.dialogRef.close(res.body);

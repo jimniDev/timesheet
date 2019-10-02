@@ -112,7 +112,7 @@ export class DateFormComponent implements OnInit {
     const endMoment = moment(formDate.format('YYYY-MM-DD') + ' ' + this.timeForm.value.endTime);
 
     if (startMoment >= endMoment) {
-      this._snackBar.open('Please check End Time again', 'close', {
+      this._snackBar.open('End time should be after the Start time', 'close', {
         duration: 5000
       });
     } else {
