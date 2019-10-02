@@ -66,6 +66,9 @@ public class WorkingEntryService {
         		workDay = workDayService.save(workDay);
         	}
         }
+        else {
+        	workDay = workDayService.findOne(workDay.getId()).get();
+        }
         if(workDay.getEmployee() == null) {
         	workDay.setEmployee(employee);
         }
@@ -77,7 +80,6 @@ public class WorkingEntryService {
     		throw new OverlappingWorkingTimesException();
     	}
         WorkingEntry savedWE = workingEntryRepository.save(workingEntryToSave);
-        workDay.addWorkingEntry(savedWE);
         return savedWE;
     }
 
@@ -206,7 +208,7 @@ public class WorkingEntryService {
        
     private static boolean validateOverlappingTime(WorkingEntry workingEntryToValidate, Collection<WorkingEntry> workingEntries) {
     	 for (WorkingEntry wEntry: workingEntries) {
-    		if(!wEntry.isDeleted() && wEntry.getId() != workingEntryToValidate.getId()) {
+    		if(!wEntry.isDeleted() && !wEntry.getId().equals(workingEntryToValidate.getId())) {
     			if (wEntry.isValid()) {
              		if (workingEntryToValidate.getStart().isBefore(wEntry.getEnd()) 
              				&& workingEntryToValidate.getEnd().isAfter(wEntry.getStart())) {
