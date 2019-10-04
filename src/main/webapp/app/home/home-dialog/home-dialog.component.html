@@ -23,7 +23,7 @@
         </span>
         <mat-form-field>
             <mat-label>add Break</mat-label>
-            <input matInput placeholder="MM" formControlName="addBreakControl">
+            <input matInput type="tel" placeholder="MM" formControlName="addBreakControl" (keydown)="onKeyDown($event)">
             <mat-icon matSuffix>schedule</mat-icon>
         </mat-form-field>
         <button mat-button color="primary" type="submit" [disabled]="!modalForm.valid">Ok</button>
