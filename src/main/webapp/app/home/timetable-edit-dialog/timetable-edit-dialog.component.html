@@ -43,7 +43,7 @@
     </span>
     <mat-form-field>
       <mat-label>Additional Break Minutes</mat-label>
-      <input matInput formControlName="addBreakControl">
+      <input matInput formControlName="addBreakControl" (keydown)="onKeyDown($event)">
       <mat-icon matSuffix>schedule</mat-icon>
     </mat-form-field>
 
