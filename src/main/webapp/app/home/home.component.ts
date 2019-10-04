@@ -99,16 +99,15 @@ export class HomeComponent implements OnInit {
   }
 
   openDialog(newWorkingEntry: IWorkingEntryTimesheet): void {
-    const dialogConfig = new MatDialogConfig(); // configure the dialog with a set of default behaviors
+    const dialogConfig = new MatDialogConfig<IWorkingEntryTimesheet>(); // configure the dialog with a set of default behaviors
 
     dialogConfig.disableClose = true; // user will not be able to close the dialog just by clicking outside of it
     dialogConfig.autoFocus = true; // ocus will be set automatically on the first form field of the dialog
-    dialogConfig.data = { newWorkingEntry };
+    dialogConfig.data = newWorkingEntry;
 
     this.workingEntryService.active().subscribe(res => {
       if (res.ok) {
         const dialogRef = this.dialog.open(HomeDialogComponent, dialogConfig);
-
         dialogRef.afterClosed().subscribe((workingEntry: IWorkingEntryTimesheet) => {
           if (workingEntry) {
             this.workingEntryService.end().subscribe(endRes => {

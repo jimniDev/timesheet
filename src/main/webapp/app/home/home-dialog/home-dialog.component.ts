@@ -9,10 +9,6 @@ import { IRoleTimesheet } from 'app/shared/model/role-timesheet.model';
 import { RoleTimesheetService } from 'app/entities/role-timesheet';
 import { ActivityTimesheetService } from 'app/entities/activity-timesheet';
 
-export interface DialogData {
-  newWorkingEntry: IWorkingEntryTimesheet;
-}
-
 @Component({
   selector: 'home-dialog',
   templateUrl: 'home-dialog.component.html'
@@ -32,7 +28,7 @@ export class HomeDialogComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<HomeDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    @Inject(MAT_DIALOG_DATA) public data: IWorkingEntryTimesheet,
     private activityService: ActivityTimesheetService,
     private roleService: RoleTimesheetService,
     private workingEntryService: WorkingEntryTimesheetService
@@ -58,11 +54,11 @@ export class HomeDialogComponent implements OnInit {
   }
 
   save() {
-    this.data.newWorkingEntry.workDay.additionalBreakMinutes = Number.parseInt(this.modalForm.value.addBreakControl, 10) || 0;
-    this.data.newWorkingEntry.activity = this.modalForm.value.activityControl;
-    this.workingEntryService.update(this.data.newWorkingEntry).subscribe(res => {
+    this.data.workDay.additionalBreakMinutes = Number.parseInt(this.modalForm.value.addBreakControl, 10) || 0;
+    this.data.activity = this.modalForm.value.activityControl;
+    this.workingEntryService.update(<IWorkingEntryTimesheet>this.data).subscribe(res => {
       if (res.ok) {
-        this.dialogRef.close(res.body);
+        this.dialogRef.close(res.body || this.data); // Server doesn't respond with body???
       }
     });
   }
