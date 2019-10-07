@@ -68,6 +68,8 @@ public class WeeklyWorkingHoursService {
      */
     public void delete(Long id) {
         log.debug("Request to delete WeeklyWorkingHours : {}", id);
+        Optional<WeeklyWorkingHours> oWwh = weeklyWorkingHoursRepository.findById(id);
+        oWwh.ifPresent(wwh -> wwh.getEmployee().getWeeklyWorkingHours().removeIf((w) -> w.getId().equals(wwh.getId())));
         weeklyWorkingHoursRepository.deleteById(id);
     }
 }
