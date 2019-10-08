@@ -19,7 +19,7 @@ import java.util.Set;
 @NamedEntityGraph(name = "Employee.weeklyWorkingHours",
 attributeNodes = @NamedAttributeNode("weeklyWorkingHours"))
 @Table(name = "employee")
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+//@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Employee implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -34,22 +34,22 @@ public class Employee implements Serializable {
 
     @JsonIgnoreProperties("employee")
     @OneToMany(mappedBy = "employee")
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    //@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<WorkingEntry> workingEntries = new HashSet<>();
 
     @JsonIgnoreProperties("employee")
     @OneToMany(mappedBy = "employee")
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    //@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<TargetWorkingDay> targetWorkingDays = new HashSet<>();
 
     @JsonIgnoreProperties("employee")
     @OneToMany(mappedBy = "employee", fetch = FetchType.EAGER)
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    //@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<WeeklyWorkingHours> weeklyWorkingHours = new HashSet<>();
 
     @JsonIgnoreProperties("employee")
     @OneToMany(mappedBy = "employee")
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    //@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<WorkDay> workDays = new HashSet<>();
     
     @OneToOne
