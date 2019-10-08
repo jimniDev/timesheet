@@ -1,52 +1,53 @@
 <mat-toolbar color="primary">
   <mat-toolbar-row>
-      <div fxShow="true" fxHide.gt-sm="true"> 
-          <button mat-icon-button>
-              <mat-icon (click)="sidenav.toggle()">menu</mat-icon>
-            </button>
-      </div>
+    <div fxShow="true" fxHide.gt-sm="true">
+      <button mat-icon-button>
+        <mat-icon (click)="sidenav.toggle()">menu</mat-icon>
+      </button>
+    </div>
+    <img src="../../../content/images/asscopelogo.png" alt="logo" />
     <h1>{{title}}</h1>
     <ng-container *ngIf="messagesService.messages  && messagesService.messages.length > 0">
-        <span name="messageholder" class="fill-remaining-space text-center">{{messagesService.messages[messageIndex]}}
-            
-        </span>
-       <button mat-icon-button name="Next" aria-label="Example icon-button with a heart icon" (click)="nextMessage()">
-                <mat-icon>trending_flat</mat-icon>
-              </button>
-              <button mat-icon-button class="Close Message" aria-label="Example icon-button with a heart icon" (click)="deleteMessage(messageIndex)">
-                  <mat-icon>clear</mat-icon>
-              </button>
+      <span name="messageholder" class="fill-remaining-space text-center">{{messagesService.messages[messageIndex]}}
+
+      </span>
+      <button mat-icon-button name="Next" aria-label="Example icon-button with a heart icon" (click)="nextMessage()">
+        <mat-icon>trending_flat</mat-icon>
+      </button>
+      <button mat-icon-button class="Close Message" aria-label="Example icon-button with a heart icon"
+        (click)="deleteMessage(messageIndex)">
+        <mat-icon>clear</mat-icon>
+      </button>
     </ng-container>
     <!-- <ng-template #secondshow> -->
-      <ng-container *ngIf="messagesClearedShow">
-          <span  name="messageholder" class="fill-remaining-space text-center" >Messages Cleared</span>
-      </ng-container>
+    <ng-container *ngIf="messagesClearedShow">
+      <span name="messageholder" class="fill-remaining-space text-center">Messages Cleared</span>
+    </ng-container>
     <!-- </ng-template> -->
 
     <ng-container *ng></ng-container>
 
-    
-   </mat-toolbar-row>
+
+  </mat-toolbar-row>
 
   <mat-toolbar-row *ngIf="subtitle">
-      <span style="font-size: 12px;">{{subtitle}}</span>
-    </mat-toolbar-row>
+    <span style="font-size: 12px;">{{subtitle}}</span>
+  </mat-toolbar-row>
 </mat-toolbar>
 
 <mat-sidenav-container class="sidenav-container" autosize>
   <mat-sidenav #sidenav [mode]="sideNavMode">
     <mat-nav-list>
       <ng-content select="a [mat-list-item]"></ng-content>
-      <div fxShow="true" fxHide.gt-sm="true"> 
+      <div fxShow="true" fxHide.gt-sm="true">
         <!-- <a mat-list-item (click)="sidenav.toggle()" [routerLink]="" mat-list-item>Close</a> -->
-        <a mat-list-item (click)="sidenav.toggle()"  mat-list-item>Close</a>
+        <a mat-list-item (click)="sidenav.toggle()" mat-list-item>Close</a>
       </div>
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>
     <div class="sidenav-container-contents">
-        <ng-content></ng-content>
+      <ng-content></ng-content>
     </div>
   </mat-sidenav-content>
 </mat-sidenav-container>
-  
