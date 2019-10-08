@@ -8,7 +8,7 @@
             <jhi-date-form (newWorkingEntry)="addnewEntry($event)"></jhi-date-form>
             <as-interactive>
                 <button mat-fab [color]="btnColors" id="startBtn" type="button"
-                    [disabled]="disableButton || timetableComponent.DoesEntryExistNow ? 'disabled': null"
+                    [disabled]="disableButton || timetableComponent.doesEntryExistNow ? 'disabled': null"
                     (click)="startStop()">
                     {{startBtnName}}
                 </button>

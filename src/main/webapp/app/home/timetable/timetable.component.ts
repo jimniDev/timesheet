@@ -41,7 +41,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
   actualMinutes: number;
 
   filterDate: Moment = moment();
-  DoesEntryExistNow = false;
+  doesEntryExistNow = false;
 
   constructor(
     private workingEntryService: WorkingEntryTimesheetService,
@@ -129,7 +129,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
           this.DSworkingEntries.data = this.workingEntries;
           this.initialized.emit(true);
           const now = moment();
-          this.DoesEntryExistNow = this.workingEntries.some(entry => entry.start <= now && entry.end >= now);
+          this.doesEntryExistNow = this.workingEntries.some(entry => entry.start <= now && entry.end >= now);
         },
         (res: HttpErrorResponse) => this.onError(res.message)
       );
@@ -146,7 +146,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
     this.workingEntriesUnfiltered = this.workingEntries;
     this.DSworkingEntries.data = this.workingEntries;
     const now = moment();
-    this.DoesEntryExistNow = this.workingEntries.some(entry => entry.start <= now && entry.end >= now);
+    this.doesEntryExistNow = this.workingEntries.some(entry => entry.start <= now && entry.end >= now);
     // const nowWorkingEntry = <IWorkingEntryTimesheet>this.workingEntries.find(entry => (entry.start <= now && entry.end >= now));
     // if (nowWorkingEntry) {
     //   setTimeout(() => (this.DoesEntryExistNow = true), nowWorkingEntry.end.millisecond() - now.millisecond());
@@ -210,7 +210,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
         });
         this.DSworkingEntries.data = this.workingEntries;
         const now = moment();
-        this.DoesEntryExistNow = this.workingEntries.some(entry => entry.start <= now && entry.end >= now);
+        this.doesEntryExistNow = this.workingEntries.some(entry => entry.start <= now && entry.end >= now);
 
         this.loadTargetWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
         this.loadActualWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
@@ -225,7 +225,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
         this.workingEntries.splice(idx, 1);
         this.DSworkingEntries.data = this.workingEntries;
         const now = moment();
-        this.DoesEntryExistNow = this.workingEntries.some(entry => entry.start <= now && entry.end >= now);
+        this.doesEntryExistNow = this.workingEntries.some(entry => entry.start <= now && entry.end >= now);
 
         this.loadTargetWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
         this.loadActualWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
