@@ -17,7 +17,8 @@
             <mat-card-content id="btnMatcardContent">
                 <as-interactive>
                     <button mat-fab [color]="btnColors" id="startBtn" type="button"
-                        [disabled]="disableButton ? 'disabled': null" (click)="startStop()">
+                        [disabled]="disableButton || timetableComponent.doesEntryExistNow ? 'disabled': null"
+                        (click)="startStop()">
                         {{startBtnName}}
                     </button>
                 </as-interactive>
@@ -25,7 +26,8 @@
         </mat-card>
         <as-interactive fxHide fxShow.lt-md>
             <button mat-fab [color]="btnColors" id="startBtn" type="button"
-                [disabled]="disableButton ? 'disabled': null" (click)="startStop()">
+                [disabled]="disableButton || timetableComponent.doesEntryExistNow ? 'disabled': null"
+                (click)="startStop()">
                 {{startBtnName}}
             </button>
         </as-interactive>
