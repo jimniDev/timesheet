@@ -7,7 +7,7 @@ import com.asscope.timesheet.repository.WorkingEntryRepository;
 import com.asscope.timesheet.service.erros.OverlappingWorkingTimesException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,13 +33,17 @@ public class WorkingEntryService {
     private final WorkDayService workDayService;
 
     private final WorkingEntryRepository workingEntryRepository;
+    
+    private final CacheManager cacheManager;
 
     public WorkingEntryService(WorkingEntryRepository workingEntryRepository, 
     		EmployeeService employeeService, 
-    		WorkDayService workDayService) {
+    		WorkDayService workDayService,
+    		CacheManager cacheManager) {
         this.workingEntryRepository = workingEntryRepository;
         this.employeeService = employeeService;
         this.workDayService = workDayService;
+        this.cacheManager = cacheManager;
     }
 
     /**
@@ -80,6 +84,9 @@ public class WorkingEntryService {
     		throw new OverlappingWorkingTimesException();
     	}
         WorkingEntry savedWE = workingEntryRepository.save(workingEntryToSave);
+        this.cacheManager.getCache(Employee.class.getName()).clear();
+        this.cacheManager.getCache(Employee.class.getName() + ".workingEntries").clear();
+        this.cacheManager.getCache(Employee.class.getName() + ".workDays").clear();
         return savedWE;
     }
 
