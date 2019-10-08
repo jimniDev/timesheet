@@ -78,12 +78,9 @@ export class HomeComponent implements OnInit {
 
   startStop() {
     if (this.started) {
-      this.workingEntryService.end().subscribe(res => {
+      this.workingEntryService.active().subscribe(res => {
         if (res.ok) {
           this.openDialog(res.body);
-          this.startBtnName = 'Start';
-          this.started = false;
-          this.btnColors = 'primary';
         }
       });
     } else {
@@ -94,25 +91,39 @@ export class HomeComponent implements OnInit {
           this.startBtnName = 'Stop';
           this.started = true;
           this.btnColors = 'warn';
+          this.disableButton = true;
+          setTimeout(() => (this.disableButton = false), 10000);
         }
       });
     }
   }
 
   openDialog(newWorkingEntry: IWorkingEntryTimesheet): void {
-    const dialogConfig = new MatDialogConfig(); // configure the dialog with a set of default behaviors
+    const dialogConfig = new MatDialogConfig<IWorkingEntryTimesheet>(); // configure the dialog with a set of default behaviors
 
     dialogConfig.disableClose = true; // user will not be able to close the dialog just by clicking outside of it
     dialogConfig.autoFocus = true; // ocus will be set automatically on the first form field of the dialog
-    dialogConfig.data = { newWorkingEntry };
+    dialogConfig.data = newWorkingEntry;
 
-    const dialogRef = this.dialog.open(HomeDialogComponent, dialogConfig);
-
-    dialogRef.afterClosed().subscribe((workingEntry: IWorkingEntryTimesheet) => {
-      if (workingEntry) {
-        const indexToUpdate = this.timetableComponent.DSworkingEntries.data.findIndex(we => we.id === workingEntry.id);
-        this.timetableComponent.DSworkingEntries.data[indexToUpdate] = workingEntry;
-        this.timetableComponent.DSworkingEntries._updateChangeSubscription();
+    this.workingEntryService.active().subscribe(res => {
+      if (res.ok) {
+        const dialogRef = this.dialog.open(HomeDialogComponent, dialogConfig);
+        dialogRef.afterClosed().subscribe((workingEntry: IWorkingEntryTimesheet) => {
+          if (workingEntry) {
+            this.workingEntryService.end().subscribe(endRes => {
+              if (endRes.ok) {
+                const indexToUpdate = this.timetableComponent.DSworkingEntries.data.findIndex(we => we.id === endRes.body.id);
+                this.timetableComponent.workingEntries[indexToUpdate] = endRes.body;
+                this.timetableComponent.DSworkingEntries.data = this.timetableComponent.workingEntries;
+                this.startBtnName = 'Start';
+                this.started = false;
+                this.btnColors = 'primary';
+              }
+            });
+          } else {
+            // continue
+          }
+        });
       }
     });
   }

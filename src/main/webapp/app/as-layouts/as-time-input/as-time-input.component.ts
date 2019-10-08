@@ -4,6 +4,7 @@ import { MatFormFieldControl } from '@angular/material';
 import { Subject } from 'rxjs';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { FocusMonitor } from '@angular/cdk/a11y';
+import { Platform } from '@angular/cdk/platform';
 
 @Component({
   selector: 'as-time-input',
@@ -91,10 +92,9 @@ export class AsTimeInputComponent implements OnInit, OnDestroy, ControlValueAcce
   private onChange: Function;
   private onTouched: Function;
 
-  counthour = 0;
-
-  // To focus on minute inpute field
-  @ViewChild('minutes', { static: false }) private minuteInput: ElementRef;
+  @ViewChild('hours', { static: false }) private hoursInput: ElementRef;
+  // To focus on minute input field
+  @ViewChild('minutes', { static: false }) private minutesInput: ElementRef;
 
   constructor(
     private renderer: Renderer,
@@ -102,7 +102,8 @@ export class AsTimeInputComponent implements OnInit, OnDestroy, ControlValueAcce
     formBuilder: FormBuilder,
     fb: FormBuilder,
     private fm: FocusMonitor,
-    private elRef: ElementRef<HTMLElement>
+    private elRef: ElementRef<HTMLElement>,
+    private platform: Platform
   ) {
     // Replace the provider from above with this.
     if (this.ngControl != null) {
@@ -142,7 +143,8 @@ export class AsTimeInputComponent implements OnInit, OnDestroy, ControlValueAcce
   onKeyDown(event) {
     const e = <KeyboardEvent>event;
     if (
-      [46, 8, 9, 27, 13, 110, 190].indexOf(e.keyCode) !== -1 ||
+      // modification : blocked the period (.)
+      [46, 8, 9, 27, 13].indexOf(e.keyCode) !== -1 ||
       // Allow: Ctrl+A
       (e.keyCode === 65 && (e.ctrlKey || e.metaKey)) ||
       // Allow: Ctrl+C
@@ -179,11 +181,12 @@ export class AsTimeInputComponent implements OnInit, OnDestroy, ControlValueAcce
     this.disabled = isDisabled;
   }
 
-  onKeyPress(_event: any) {
-    this.counthour++;
-    if (this.counthour === 2) {
-      this.minuteInput.nativeElement.focus();
-      this.counthour = 0;
+  onKeyPress() {
+    if (!this.platform.IOS) {
+      const input = this.hoursInput.nativeElement;
+      if (this.parts.value.hours.length > 0 && !(input.selectionStart === 0 && input.selectionEnd === input.value.length)) {
+        this.minutesInput.nativeElement.focus();
+      }
     }
   }
 

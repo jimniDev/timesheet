@@ -1,4 +1,4 @@
-<div fxLayout="row" fxLayoutAlign="center stretch" fxLayout.xs="column" fxLayoutGap="8px" class="container">
+<div fxLayout="row" fxLayoutAlign="center stretch" fxLayout.xs="column" fxLayoutGap="8px">
     <mat-form-field fxFlex="45">
         <mat-label>Year</mat-label>
         <mat-select [ngModel]="selectedYear" (ngModelChange)="onChangeYear($event)">
@@ -16,6 +16,6 @@
             </mat-option>
         </mat-select>
     </mat-form-field>
-
-    <button mat-button type="button" color="primary" (click)="resetFilter()" [disabled]="resetButtonDisabled? true : null">Reset</button>
+    <button mat-button type="button" color="primary" (click)="resetFilter()"
+        [disabled]="resetButtonDisabled? true : null">Reset</button>
 </div>

@@ -4,7 +4,7 @@ import { RoleTimesheet, IRoleTimesheet } from 'app/shared/model/role-timesheet.m
 import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
 import { RoleTimesheetService } from 'app/entities/role-timesheet';
 import { ActivityTimesheetService } from 'app/entities/activity-timesheet';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
 import { HttpResponse } from '@angular/common/http';
 
 @Component({
@@ -13,8 +13,9 @@ import { HttpResponse } from '@angular/common/http';
 })
 export class ActivityRoleDialogComponent implements OnInit {
   activities: ActivityTimesheet[];
-
+  durationInSeconds: number;
   roles: RoleTimesheet[];
+  idx: number;
 
   rolemappingForm = new FormGroup({
     name: new FormControl(''),
@@ -27,8 +28,11 @@ export class ActivityRoleDialogComponent implements OnInit {
     private activityService: ActivityTimesheetService,
     public dialogRef: MatDialogRef<ActivityRoleDialogComponent>,
     private fb: FormBuilder,
+    private alertBar: MatSnackBar,
     @Inject(MAT_DIALOG_DATA) public data: IRoleTimesheet
-  ) {}
+  ) {
+    this.durationInSeconds = 5;
+  }
 
   ngOnInit() {
     this.activityService.query().subscribe((res: HttpResponse<IActivityTimesheet[]>) => {
@@ -38,13 +42,33 @@ export class ActivityRoleDialogComponent implements OnInit {
     });
   }
 
-  onsubmit(): void {
+  openAlertBar() {
+    this.alertBar.open('A rolw with this name already exists.', 'cancel', {
+      duration: this.durationInSeconds * 1000
+    });
+  }
+
+  onSubmit(): void {
     let roleEntry: RoleTimesheet;
     roleEntry = new RoleTimesheet();
     roleEntry.name = this.rolemappingForm.value.name;
     roleEntry.description = this.rolemappingForm.value.description;
-    console.log(this.rolemappingForm.value);
-    this.dialogRef.close();
+
+    this.roleService.query().subscribe((res: HttpResponse<RoleTimesheet[]>) => {
+      if (res.ok) {
+        this.roles = res.body;
+        this.idx = this.roles.findIndex(r => r.name === roleEntry.name);
+        if (this.idx !== -1) {
+          this.dialogRef.close();
+          this.openAlertBar();
+        } else {
+          this.createEntry(roleEntry);
+        }
+      }
+    });
+  }
+
+  createEntry(roleEntry: IRoleTimesheet): void {
     this.roleService.create(roleEntry).subscribe(res => {
       if (res.ok) {
         this.dialogRef.close(<IRoleTimesheet>res.body);

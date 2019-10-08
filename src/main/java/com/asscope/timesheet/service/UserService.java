@@ -178,9 +178,9 @@ public class UserService {
         } else {
             log.debug("Saving user '{}' in local database", user.getLogin());
             user = userRepository.save(user);
+            createEmployeeWithUser(user);
             this.clearUserCaches(user);
         }
-        createEmployeeWithUser(user);
         return user;
     }
     
@@ -191,7 +191,7 @@ public class UserService {
      		   (employee) -> {
      			   // TODO maybe update the employee information according to the user information from azure ad (Maybe not because of duplicate data)
      		   }, () -> {
-     			   // if there is now employee mapped to the user, create a new employee.
+     			   // if there is no employee mapped to the user, create a new employee.
      			   Employee employee = new Employee();
      			   employee.setUser(user);
      			   employeeRepository.save(employee);

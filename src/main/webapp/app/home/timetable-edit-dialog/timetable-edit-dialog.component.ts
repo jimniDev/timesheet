@@ -7,33 +7,40 @@ import { IActivityTimesheet, ActivityTimesheet } from 'app/shared/model/activity
 import { ActivityTimesheetService } from 'app/entities/activity-timesheet/activity-timesheet.service';
 import { HttpResponse } from '@angular/common/http';
 import * as moment from 'moment';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar, MAT_DATE_FORMATS } from '@angular/material';
 import { RoleTimesheetService } from 'app/entities/role-timesheet';
 import { IRoleTimesheet } from 'app/shared/model/role-timesheet.model';
+
+export const MY_FORMAT = {
+  parse: {
+    dateInput: 'DD.MM.YYYY'
+  },
+  display: {
+    dateInput: 'DD.MM.YYYY',
+    monthYearLabel: 'MM.YYYY',
+    dateA11yLabel: 'DD.MM.YYYY',
+    monthYearA11yLabel: 'MM.YYYY'
+  }
+};
 
 @Component({
   selector: 'jhi-timetable-edit-dialog',
   templateUrl: './timetable-edit-dialog.component.html',
-  styleUrls: ['./timetable-edit-dialog.component.scss']
+  styleUrls: ['./timetable-edit-dialog.component.scss'],
+  providers: [{ provide: MAT_DATE_FORMATS, useValue: MY_FORMAT }]
 })
 export class TimetableEditDialogComponent implements OnInit {
   activities: IActivityTimesheet[];
   roles: IRoleTimesheet[];
   selectableActivities: IActivityTimesheet[];
   workingEntry: IWorkingEntryTimesheet;
-
-  workingeditForm = new FormGroup({
-    date: new FormControl(this.workingEntryData.workDay.date.format('YYYY-MM-DD'), Validators.required),
-    starttime: new FormControl(
-      this.workingEntryData.start.format('HH:mm'),
-      Validators.compose([Validators.required, Validators.pattern('^([01][0-9]|2[0-3]):([0-5][0-9])$')])
-    ),
-    endtime: new FormControl(
-      this.workingEntryData.end.format('HH:mm'),
-      Validators.compose([Validators.required, Validators.pattern('^([01][0-9]|2[0-3]):([0-5][0-9])$')])
-    ),
-    roleControl: new FormControl('', Validators.required),
-    activity: new FormControl(this.workingEntryData.activity)
+  entryEditForm = new FormGroup({
+    date: new FormControl('', Validators.required),
+    starttime: new FormControl('', Validators.compose([Validators.required, Validators.pattern('^([01][0-9]|2[0-3]):([0-5][0-9])$')])),
+    endtime: new FormControl('', Validators.compose([Validators.required, Validators.pattern('^([01][0-9]|2[0-3]):([0-5][0-9])$')])),
+    roleControl: new FormControl(''),
+    activity: new FormControl(this.workingEntryData.activity, Validators.required),
+    addBreakControl: new FormControl(this.workingEntryData.workDay.additionalBreakMinutes)
   });
 
   constructor(
@@ -57,6 +64,17 @@ export class TimetableEditDialogComponent implements OnInit {
         this.selectableActivities = this.activities;
       }
     });
+    this.entryEditForm.patchValue({
+      date: this.workingEntryData.workDay.date,
+      starttime: this.workingEntryData.start ? this.workingEntryData.start.format('HH:mm') : '',
+      endtime: this.workingEntryData.end ? this.workingEntryData.end.format('HH:mm') : '',
+      activity: this.workingEntryData.activity
+    });
+    this.entryEditForm.get('roleControl').valueChanges.subscribe(value => {
+      if (value) {
+        this.selectableActivities = value.activities;
+      }
+    });
   }
 
   onNoClick(): void {
@@ -64,21 +82,21 @@ export class TimetableEditDialogComponent implements OnInit {
   }
 
   updateEntry(): void {
-    this.workingEntryData.start = moment(
-      moment(this.workingeditForm.value.date).format('YYYY-MM-DD') + ' ' + this.workingeditForm.value.starttime
-    );
-    this.workingEntryData.end = moment(
-      moment(this.workingeditForm.value.date).format('YYYY-MM-DD') + ' ' + this.workingeditForm.value.endtime
-    );
+    const startEditValue = moment(moment(this.entryEditForm.value.date).format('YYYY-MM-DD') + ' ' + this.entryEditForm.value.starttime);
+    const endEditValue = moment(moment(this.entryEditForm.value.date).format('YYYY-MM-DD') + ' ' + this.entryEditForm.value.endtime);
 
-    if (this.workingEntryData.start >= this.workingEntryData.end) {
-      this._snackBar.open('Please check End Time again', 'Close', {
+    if (startEditValue >= endEditValue) {
+      this._snackBar.open('End time should be after the Start time', 'Close', {
         duration: 5000
       });
     } else {
-      this.workingEntryData.workDay.date = moment(this.workingeditForm.value.date);
+      this.workingEntryData.start = startEditValue;
+      this.workingEntryData.end = endEditValue;
+      this.workingEntryData.workDay.date = moment(this.entryEditForm.value.date).add(2, 'hours');
       this.workingEntryData.deleted = false;
-      this.workingEntryData.activity = this.workingeditForm.value.activity;
+      this.workingEntryData.activity = this.entryEditForm.value.activity;
+      this.workingEntryData.workDay.additionalBreakMinutes = this.entryEditForm.value.addBreakControl;
+
       this.workingService.update(this.workingEntryData).subscribe(res => {
         if (res.ok) {
           this.dialogRef.close(res.body);
@@ -91,9 +109,28 @@ export class TimetableEditDialogComponent implements OnInit {
     return o1.name === o2.name && o1.id === o2.id;
   }
 
-  onChangeRole(role: IRoleTimesheet) {
-    if (role) {
-      this.selectableActivities = role.activities;
+  onKeyDown(event) {
+    const e = <KeyboardEvent>event;
+    if (
+      // modification : blocked the period (.)
+      [46, 8, 9, 27, 13].indexOf(e.keyCode) !== -1 ||
+      // Allow: Ctrl+A
+      (e.keyCode === 65 && (e.ctrlKey || e.metaKey)) ||
+      // Allow: Ctrl+C
+      (e.keyCode === 67 && (e.ctrlKey || e.metaKey)) ||
+      // Allow: Ctrl+V
+      (e.keyCode === 86 && (e.ctrlKey || e.metaKey)) ||
+      // Allow: Ctrl+X
+      (e.keyCode === 88 && (e.ctrlKey || e.metaKey)) ||
+      // Allow: home, end, left, right
+      (e.keyCode >= 35 && e.keyCode <= 39)
+    ) {
+      // let it happen, don't do anything
+      return;
+    }
+    // Ensure that it is a number and stop the keypress
+    if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+      e.preventDefault();
     }
   }
 }

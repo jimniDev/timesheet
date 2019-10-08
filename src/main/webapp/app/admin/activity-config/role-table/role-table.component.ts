@@ -27,16 +27,27 @@ export class RoleTableComponent implements OnInit {
       if (res.ok) {
         this.roles = res.body;
         this.datasource = new MatTableDataSource(this.roles);
-        this.datasource.sort = this.sort;
-        this.datasource.paginator = this.paginator;
-        // this.changeDetectorRefs.detectChanges();
+        this.refresh();
       }
     });
   }
 
+  refresh() {
+    this.datasource.connect().next(this.roles);
+    this.pageAndSort();
+  }
+
+  pageAndSort() {
+    this.cdr.detectChanges();
+    this.datasource.sort = this.sort;
+    this.datasource.paginator = this.paginator;
+  }
+
   applyFilter(filterValue: string) {
     this.datasource.filter = filterValue.trim().toLowerCase();
+    this.refresh();
   }
+
   editRoleDialog(role: IRoleTimesheet): void {
     const dialogRef = this.dialog.open(ActivityRoleEditDialogComponent, {
       data: { name: role.name, description: role.description, activities: role.activities, role }
@@ -45,31 +56,31 @@ export class RoleTableComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result: IRoleTimesheet) => {
       const idx = this.roles.findIndex(we => we.id === result.id);
       this.roles[idx] = result;
+      this.refresh();
     });
   }
 
   public addRole(role: IRoleTimesheet) {
-    this.roles.push(role);
-    this.table.renderRows();
+    const idx = this.roles.findIndex(r => r.name === role.name);
+    if (idx === -1) {
+      this.roles.push(role);
+    }
+    this.refresh();
   }
 
-  // editRoleDialog(): void {
-  //   const dialogRef = this.dialog.open(ActivityRoleEditDialogComponent, {
-  //     //width: '25%'
-  //   });
-  //   dialogRef.afterClosed().subscribe(result => {
-  //     if (result) {
-  //       this.roleTable.addRole(<IRoleTimesheet>result);
-  //     }
-  //   });
-  // }
+  public updateRole(role: IRoleTimesheet) {
+    const idx = this.roles.findIndex(r => r.id === role.id);
+    this.roles[idx] = role;
+    this.table.renderRows();
+    this.refresh();
+  }
 
   public deleteRole(role: IRoleTimesheet) {
     this.roleService.delete(role.id).subscribe(res => {
       if (res.ok) {
         this.roles.splice(this.roles.indexOf(role), 1);
         this.table.renderRows();
-        this.ngOnInit();
+        this.refresh();
       }
     });
   }

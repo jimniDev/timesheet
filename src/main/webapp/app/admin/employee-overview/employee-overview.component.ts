@@ -13,35 +13,23 @@ import { IRoleTimesheet } from 'app/shared/model/role-timesheet.model';
 })
 export class EmployeeOverviewComponent implements OnInit {
   public employees: EmployeeTimesheet[];
-  public totalWorkingHours: number;
   datasource = new MatTableDataSource<EmployeeTimesheet>();
 
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
 
-  constructor(private employeeService: EmployeeTimesheetService) {
-    this.totalWorkingHours = 0;
-  }
+  constructor(private employeeService: EmployeeTimesheetService) {}
 
   ngOnInit() {
     this.employeeService.query().subscribe((res: HttpResponse<IEmployeeTimesheet[]>) => {
       if (res.ok) {
         this.employees = res.body;
-        this.getActualWeeklyWorkingHours(this.employees);
         this.datasource = new MatTableDataSource(this.employees);
         this.datasource.paginator = this.paginator;
       }
     });
   }
+
   applyFilter(filterValue: string) {
     this.datasource.filter = filterValue.trim().toLowerCase();
-  }
-  getActualWeeklyWorkingHours(employee: EmployeeTimesheet[]): void {
-    if (employee) {
-      for (let indexEmployee = 0; indexEmployee < employee.length; indexEmployee++) {
-        for (let indexEmployeeHour = 0; indexEmployeeHour < employee[indexEmployee].weeklyWorkingHours.length; indexEmployeeHour++) {
-          this.totalWorkingHours += employee[indexEmployee].weeklyWorkingHours[indexEmployeeHour].hours;
-        }
-      }
-    }
   }
 }

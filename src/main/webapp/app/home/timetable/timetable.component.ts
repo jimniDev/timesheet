@@ -1,13 +1,12 @@
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { ChangeDetectorRef, Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ViewChild, AfterViewInit } from '@angular/core';
 import { MatPaginator } from '@angular/material';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSort } from '@angular/material/sort';
-import { MatTable, MatTableDataSource } from '@angular/material/table';
+import { MatTableDataSource } from '@angular/material/table';
 import { AsRowSpanService } from 'app/as-layouts/as-table/as-row-span.service';
 import { EmployeeTimesheetService } from 'app/entities/employee-timesheet';
 import { WorkingEntryTimesheetService } from 'app/entities/working-entry-timesheet';
-import { ActivityTimesheet } from 'app/shared/model/activity-timesheet.model';
 import { IWorkingEntryTimesheet, WorkingEntryTimesheet } from 'app/shared/model/working-entry-timesheet.model';
 import * as moment from 'moment';
 import { Moment } from 'moment';
@@ -21,11 +20,10 @@ import { PdfService } from 'app/shared/pdf/pdf.service';
   styleUrls: ['./timetable.component.scss'],
   providers: [AsRowSpanService]
 })
-export class TimetableComponent implements OnInit {
+export class TimetableComponent implements OnInit, AfterViewInit {
   @Output() initialized = new EventEmitter<boolean>();
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
-  @ViewChild(MatTable, { static: false }) table: MatTable<any>;
 
   monthNames = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER'];
   buttonDisable = false;
@@ -43,22 +41,28 @@ export class TimetableComponent implements OnInit {
   targetMinutes: number;
   actualMinutes: number;
 
-  dateAccessor = d => d.WorkDay.date.format('YYYY-MM-DD');
+  filterDate: Moment = moment();
 
   constructor(
     private workingEntryService: WorkingEntryTimesheetService,
     private employeeService: EmployeeTimesheetService,
-    private cdr: ChangeDetectorRef,
-    private pdfSerice: PdfService,
     public dialog: MatDialog,
-    public asRowSpan: AsRowSpanService
+    public asRowSpan: AsRowSpanService,
+    private pdfSerice: PdfService
   ) {}
 
-  ngOnInit() {
+  ngOnInit() {}
+
+  ngAfterViewInit() {
     const date = new Date();
     this.loadAllandSort();
     this.loadTargetWorkTime(date.getFullYear(), date.getMonth() + 1);
     this.loadActualWorkTime(date.getFullYear(), date.getMonth() + 1);
+    this.DSworkingEntries.sortingDataAccessor = this.sortingDataAccessor;
+    this.DSworkingEntries.paginator = this.paginator;
+    this.DSworkingEntries.sort = this.sort;
+    this.sort.sortChange.subscribe(() => this.paginator.firstPage());
+    this.DSworkingEntries.connect().subscribe(d => this.asRowSpan.updateCache(d));
   }
 
   sortingDataAccessor(item, property) {
@@ -66,29 +70,6 @@ export class TimetableComponent implements OnInit {
       return property.split('.').reduce((object, key) => object[key], item);
     }
     return item[property];
-  }
-
-  loadWorktimeInformation() {
-    const date = new Date();
-    this.employeeService.currentWorktimeInformation(date.getFullYear()).subscribe(res => {
-      if (res.ok) {
-        for (const month of res.body.years[0].months) {
-          if (month.name === this.monthNames[date.getMonth()]) {
-            this.targetTime = this.secondsToHHMM(month.targetWorkingMinutes * 60);
-            this.actualTime = this.secondsToHHMM(month.actualWorkingMinutes * 60);
-            this.diffTime = this.secondsToHHMM(month.actualWorkingMinutes * 60 - month.targetWorkingMinutes * 60);
-            return;
-          } else {
-            this.targetTime = '00:00';
-            this.actualTime = '00:00';
-          }
-        }
-      }
-    });
-  }
-
-  createPDF(): void {
-    this.pdfSerice.createPDF(this.workingEntries);
   }
 
   loadTargetWorkTime(year: number, month: number) {
@@ -99,6 +80,10 @@ export class TimetableComponent implements OnInit {
         this.calcDiffTargetActual();
       }
     });
+  }
+
+  createPDF(): void {
+    this.pdfSerice.createPDF(this.workingEntries);
   }
 
   loadActualWorkTime(year: number, month: number) {
@@ -113,6 +98,7 @@ export class TimetableComponent implements OnInit {
 
   filterTimeTable(date: Moment) {
     if (date) {
+      this.filterDate = date;
       this.loadTargetWorkTime(date.year(), date.month() + 1);
       this.loadActualWorkTime(date.year(), date.month() + 1);
       this.workingEntries = this.workingEntriesUnfiltered.filter(
@@ -120,14 +106,12 @@ export class TimetableComponent implements OnInit {
       );
     } else {
       date = moment();
+      this.filterDate = date;
       this.workingEntries = this.workingEntriesUnfiltered;
       this.loadTargetWorkTime(date.year(), date.month() + 1);
       this.loadActualWorkTime(date.year(), date.month() + 1);
     }
-    this.DSworkingEntries = new MatTableDataSource(this.workingEntries);
-    this.DSworkingEntries.sortingDataAccessor = this.sortingDataAccessor;
-    this.DSworkingEntries.paginator = this.paginator;
-    this.DSworkingEntries.sort = this.sort;
+    this.DSworkingEntries.data = this.workingEntries;
 
     if (this.DSworkingEntries.paginator) {
       this.DSworkingEntries.paginator.firstPage(); // go to the first page if filter changed
@@ -144,22 +128,10 @@ export class TimetableComponent implements OnInit {
       .subscribe(
         (res: IWorkingEntryTimesheet[]) => {
           this.workingEntries = res;
-          this.workingEntries = this.sortData(this.workingEntries);
-          this.workingEntriesUnfiltered = this.workingEntries;
-          // let workDays = this.workingEntries.map(we => we.workDay);
-          // this.targetTime = Array.from(new Set(workDays.map(a => a.id)))
-          //   .map(id => workDays.find(a => a.id === id))
-          //   .map(wd => wd.targetWorkingMinutes)
-          //   .reduce((x, y) => x + y)
-          //   .toString();
-          this.DSworkingEntries = new MatTableDataSource(this.workingEntries);
-
-          this.cdr.detectChanges(); // necessary fot pagination & sort -wait until initialization
-          this.DSworkingEntries.sortingDataAccessor = this.sortingDataAccessor;
-          this.DSworkingEntries.paginator = this.paginator;
-          this.DSworkingEntries.sort = this.sort;
           this.asRowSpan.setData(this.workingEntries);
           this.asRowSpan.cacheSpan('Date', d => d.workDay.date.format('YYYY-MM-DD'));
+          this.workingEntriesUnfiltered = this.workingEntries;
+          this.DSworkingEntries.data = this.workingEntries;
           this.initialized.emit(true);
         },
         (res: HttpErrorResponse) => this.onError(res.message)
@@ -170,24 +142,12 @@ export class TimetableComponent implements OnInit {
     throw new Error(message);
   }
 
-  sortData(workingEntries: IWorkingEntryTimesheet[]): IWorkingEntryTimesheet[] {
-    const sortarray = workingEntries.sort((a, b) => b.start.valueOf() - a.start.valueOf());
-    return sortarray;
-  }
-
   addNewandSort(workingEntry: WorkingEntryTimesheet) {
+    this.loadTargetWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
+    this.loadActualWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
     this.workingEntries.push(workingEntry);
-    this.asRowSpan.updateCache(this.workingEntries);
-    this.workingEntries = this.sortData(this.workingEntries);
     this.workingEntriesUnfiltered = this.workingEntries;
-    // this.DSworkingEntries = new MatTableDataSource(this.workingEntries);
-    this.DSworkingEntries.connect().next(this.workingEntries);
-    this.cdr.detectChanges(); // necessary fot pagination & sort -wait until initialization
-    this.DSworkingEntries.sortingDataAccessor = this.sortingDataAccessor;
-    this.DSworkingEntries.paginator = this.paginator;
-    this.DSworkingEntries.sort = this.sort;
-
-    this.loadWorktimeInformation();
+    this.DSworkingEntries.data = this.workingEntries;
   }
 
   sumDate(date1: any, date2: any): String {
@@ -215,30 +175,11 @@ export class TimetableComponent implements OnInit {
     return this.pad(hour, 2) + 'h ' + this.pad(min, 2) + 'm';
   }
 
-  isDifferentWorkingEntryDateBefore(index: number): boolean {
-    if (index > 0) {
-      if (!this.workingEntries[index].workDay.date.isSame(this.workingEntries[index - 1].workDay.date)) {
-        return true;
-      } else {
-        return false;
-      }
-    }
-    return true;
-  }
-
   getDatesFromWorkingEntries(): Moment[] {
     if (this.workingEntriesUnfiltered) {
       return this.workingEntriesUnfiltered.map(we => we.workDay.date);
     }
     return null;
-  }
-
-  loadActivity(activity: ActivityTimesheet): string {
-    if (activity) {
-      return activity.name;
-    } else {
-      return null;
-    }
   }
 
   calcDiffTargetActual() {
@@ -247,28 +188,47 @@ export class TimetableComponent implements OnInit {
     }
   }
 
-  edittimetableDialog(workingentry: IWorkingEntryTimesheet) {
+  edittimetableDialog(workingEntry: IWorkingEntryTimesheet): void {
     const dialogRef = this.dialog.open(TimetableEditDialogComponent, {
-      data: workingentry
+      data: workingEntry
     });
+
     dialogRef.afterClosed().subscribe((result: IWorkingEntryTimesheet) => {
       if (result) {
         const idx = this.workingEntries.findIndex(we => we.id === result.id);
         this.workingEntries[idx] = result;
+        this.workingEntries.forEach(entry => {
+          if (entry.workDay.id === result.workDay.id) {
+            entry.workDay.totalWorkingMinutes = result.workDay.totalWorkingMinutes;
+            entry.workDay.totalBreakMinutes = result.workDay.totalBreakMinutes;
+          }
+        });
+        this.DSworkingEntries.data = this.workingEntries;
+
+        this.loadTargetWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
+        this.loadActualWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
       }
     });
   }
+
   public deleteEntry(workingentry: IWorkingEntryTimesheet) {
     this.workingEntryService.delete(workingentry.id).subscribe(res => {
       if (res.ok) {
-        this.ngOnInit();
+        const idx = this.workingEntries.findIndex(we => we.id === workingentry.id);
+        this.workingEntries.splice(idx, 1);
+        this.DSworkingEntries.data = this.workingEntries;
+
+        this.loadTargetWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
+        this.loadActualWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
       }
     });
   }
 
   checkDate(workingentry: IWorkingEntryTimesheet): boolean {
-    if (moment().diff(workingentry.workDay.date, 'days') >= 30) {
-      // this.buttonDisable = true;
+    if (
+      moment().diff(workingentry.workDay.date, 'days') >= 30 ||
+      (workingentry.workDay.date.isSame(moment(), 'date') && workingentry.end === null)
+    ) {
       return true;
     }
     return false;

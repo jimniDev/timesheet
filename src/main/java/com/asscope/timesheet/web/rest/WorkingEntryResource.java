@@ -109,6 +109,7 @@ public class WorkingEntryResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/working-entries")
+    @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<WorkingEntry> updateWorkingEntry(@Valid @RequestBody WorkingEntry workingEntry) throws URISyntaxException {
         log.debug("REST request to update WorkingEntry : {}", workingEntry);
         if (workingEntry.getId() == null) {

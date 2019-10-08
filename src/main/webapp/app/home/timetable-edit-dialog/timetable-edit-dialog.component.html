@@ -1,12 +1,11 @@
-<form [formGroup]="workingeditForm" (ngSubmit)="updateEntry()">
+<form [formGroup]="entryEditForm" (ngSubmit)="updateEntry()">
   <div fxLayout="column" fxLayoutAlign="center stretch" fxLayout.xs="column" fxLayoutGap="8px" class="container">
     <mat-form-field>
       <mat-label>Date</mat-label>
-      <input matInput [matDatepicker]="picker" placeholder="Choose a date" formControlName="date" name="dp" required>
+      <input matInput [matDatepicker]="picker" placeholder="Choose a date" formControlName="date" readonly required>
       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
-
 
     <mat-form-field class="time">
       <mat-label>Start Time</mat-label>
@@ -22,23 +21,33 @@
 
     <mat-form-field>
       <mat-label>Role</mat-label>
-      <mat-select matNativeControl formControlName="roleControl" required (ngModelChange)="onChangeRole($event)">
+      <mat-select matNativeControl formControlName="roleControl">
         <mat-option *ngFor="let role of roles" [value]="role">
           {{role.name}}
         </mat-option>
       </mat-select>
     </mat-form-field>
-    
+
     <mat-form-field>
       <mat-label>Activity</mat-label>
-      <mat-select formControlName="activity" [compareWith]="compareObjects">
+      <mat-select formControlName="activity" [compareWith]="compareObjects" required>
         <mat-option *ngFor="let activity of selectableActivities" [value]="activity">
           {{activity.name}}
         </mat-option>
       </mat-select>
     </mat-form-field>
-   
-    <button mat-button type="submit" [disabled]="">Save</button>
+
+    <span style="text-align: center">
+      <span class="mat-h3">Calculated Minutes: </span>
+      <span class="mat-h3">{{workingEntryData.workDay.calculatedBreakMinutes}}</span>
+    </span>
+    <mat-form-field>
+      <mat-label>Additional Break Minutes</mat-label>
+      <input matInput formControlName="addBreakControl" (keydown)="onKeyDown($event)">
+      <mat-icon matSuffix>schedule</mat-icon>
+    </mat-form-field>
+
+    <button mat-button type="submit" [disabled]="!entryEditForm.valid">Save</button>
     <button mat-button type="button" (click)="onNoClick()">Cancel</button>
   </div>
 </form>

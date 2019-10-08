@@ -20,28 +20,31 @@
 
   <ng-container matColumnDef="absence">
     <th mat-header-cell *matHeaderCellDef>
-      <mat-icon>cancel</mat-icon>
+      <mat-icon fxHide fxShow.lt-xl>cancel</mat-icon>
+      <mat-label fxHide.lt-xl>Absence</mat-label>
     </th>
     <td mat-cell *matCellDef="let activity">
-      <mat-checkbox disabled [ngModel]="activity.absence"></mat-checkbox>
+      <mat-checkbox disabled [(ngModel)]="this.activity.absence"></mat-checkbox>
     </td>
   </ng-container>
 
   <ng-container matColumnDef="fillDay">
     <th mat-header-cell *matHeaderCellDef>
-      <mat-icon>work</mat-icon>
+      <mat-icon fxHide fxShow.lt-xl>work</mat-icon>
+      <mat-label fxHide.lt-xl>Fill Day</mat-label>
     </th>
     <td mat-cell *matCellDef="let activity">
-      <mat-checkbox disabled [ngModel]="activity.fillDay"></mat-checkbox>
+      <mat-checkbox disabled [(ngModel)]="this.activity.fillDay"></mat-checkbox>
     </td>
   </ng-container>
 
   <ng-container matColumnDef="reduce">
     <th mat-header-cell *matHeaderCellDef>
-      <mat-icon>thumb_down</mat-icon>
+      <mat-icon fxHide fxShow.lt-xl>thumb_down</mat-icon>
+      <mat-label fxHide.lt-xl>Reduce</mat-label>
     </th>
     <td mat-cell *matCellDef="let activity">
-      <mat-checkbox disabled [ngModel]="activity.reduce"></mat-checkbox>
+      <mat-checkbox disabled [(ngModel)]="this.activity.reduce"></mat-checkbox>
     </td>
   </ng-container>
 

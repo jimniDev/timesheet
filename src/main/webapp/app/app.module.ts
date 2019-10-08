@@ -22,7 +22,7 @@ import { AsLayoutsModule } from './as-layouts/as-layouts.module';
 @NgModule({
   imports: [
     BrowserModule,
-    ReactiveFormsModule,
+    ReactiveFormsModule.withConfig({ warnOnNgModelWithFormControl: 'always' }),
     AsLayoutsModule,
     NgxWebstorageModule.forRoot({ prefix: 'jhi', separator: '-' }),
     NgJhipsterModule.forRoot({

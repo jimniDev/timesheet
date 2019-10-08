@@ -26,6 +26,6 @@ public interface WorkingEntryRepository extends JpaRepository<WorkingEntry, Long
 	@Query("SELECT w FROM WorkingEntry w WHERE w.deleted = false AND w.employee = :employee")
 	List<WorkingEntry> findAllActiveWorkingEntriesByEmployee(@Param("employee") Employee employee);
 	
-	@Query("SELECT w FROM WorkingEntry w WHERE w.deleted = false AND w.employee = :employee AND w.workDay.date = :date AND w.end IS NULL")
+	@Query("SELECT DISTINCT w FROM WorkingEntry w WHERE w.deleted = false AND w.employee = :employee AND w.workDay.date = :date AND w.end IS NULL")
 	Optional<WorkingEntry> findStartedWorkingEntryByEmployeeAndDate(@Param("employee") Employee employee, @Param("date") LocalDate date);
 }

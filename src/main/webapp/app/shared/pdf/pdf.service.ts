@@ -9,14 +9,6 @@ export class PdfService {
   constructor(private resolver: ComponentFactoryResolver, private injector: Injector) {}
 
   public createPDF(workingEntries: IWorkingEntryTimesheet[]): void {
-    // const factory = this.resolver.resolveComponentFactory(TableGeneratorComponent);
-    // const tableComponent = factory.create(this.injector);
-    // tableComponent.instance.workingEntries = workingEntries;
-    // tableComponent.changeDetectorRef.detectChanges();
-    // const doc = new jsPDF();
-    // doc.autoTable({ html: tableComponent.instance.elRef.nativeElement.innerHTML });
-    // doc.save('timesheet.pdf');
-
     const rows = workingEntries.map(we => [
       we.workDay.date.format('YYYY-MM-DD'),
       we.start.format('HH:mm'),

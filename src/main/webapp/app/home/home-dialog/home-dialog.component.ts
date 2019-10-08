@@ -9,10 +9,6 @@ import { IRoleTimesheet } from 'app/shared/model/role-timesheet.model';
 import { RoleTimesheetService } from 'app/entities/role-timesheet';
 import { ActivityTimesheetService } from 'app/entities/activity-timesheet';
 
-export interface DialogData {
-  newWorkingEntry: IWorkingEntryTimesheet;
-}
-
 @Component({
   selector: 'home-dialog',
   templateUrl: 'home-dialog.component.html'
@@ -21,7 +17,7 @@ export class HomeDialogComponent implements OnInit {
   modalForm = new FormGroup({
     roleControl: new FormControl('', Validators.required),
     activityControl: new FormControl('', Validators.required),
-    addBreakControl: new FormControl('')
+    addBreakControl: new FormControl('', Validators.pattern('^[0-9]*$'))
   });
 
   openform = false;
@@ -32,7 +28,7 @@ export class HomeDialogComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<HomeDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    @Inject(MAT_DIALOG_DATA) public data: IWorkingEntryTimesheet,
     private activityService: ActivityTimesheetService,
     private roleService: RoleTimesheetService,
     private workingEntryService: WorkingEntryTimesheetService
@@ -50,22 +46,49 @@ export class HomeDialogComponent implements OnInit {
         this.selectableActivities = this.activities;
       }
     });
-  }
-
-  save() {
-    this.data.newWorkingEntry.workDay.additionalBreakMinutes = this.modalForm.value.addBreakControl;
-    this.data.newWorkingEntry.activity = this.modalForm.value.activityControl;
-    this.workingEntryService.update(this.data.newWorkingEntry).subscribe(res => {
-      console.log(res);
-      if (res.ok) {
-        this.dialogRef.close(res.body);
+    this.modalForm.get('roleControl').valueChanges.subscribe(value => {
+      if (value) {
+        this.selectableActivities = value.activities;
       }
     });
   }
 
-  onChangeRole(role: IRoleTimesheet) {
-    if (role) {
-      this.selectableActivities = role.activities;
+  save() {
+    this.data.workDay.additionalBreakMinutes = Number.parseInt(this.modalForm.value.addBreakControl, 10) || 0;
+    this.data.activity = this.modalForm.value.activityControl;
+    this.workingEntryService.update(<IWorkingEntryTimesheet>this.data).subscribe(res => {
+      if (res.ok) {
+        this.dialogRef.close(res.body || this.data); // Server doesn't respond with body???
+      }
+    });
+  }
+
+  continue(): void {
+    this.dialogRef.close();
+  }
+
+  onKeyDown(event) {
+    const e = <KeyboardEvent>event;
+    if (
+      // modification : blocked the period (.)
+      [46, 8, 9, 27, 13].indexOf(e.keyCode) !== -1 ||
+      // Allow: Ctrl+A
+      (e.keyCode === 65 && (e.ctrlKey || e.metaKey)) ||
+      // Allow: Ctrl+C
+      (e.keyCode === 67 && (e.ctrlKey || e.metaKey)) ||
+      // Allow: Ctrl+V
+      (e.keyCode === 86 && (e.ctrlKey || e.metaKey)) ||
+      // Allow: Ctrl+X
+      (e.keyCode === 88 && (e.ctrlKey || e.metaKey)) ||
+      // Allow: home, end, left, right
+      (e.keyCode >= 35 && e.keyCode <= 39)
+    ) {
+      // let it happen, don't do anything
+      return;
+    }
+    // Ensure that it is a number and stop the keypress
+    if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+      e.preventDefault();
     }
   }
 }

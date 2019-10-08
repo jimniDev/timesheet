@@ -129,19 +129,19 @@ public class EmployeeResource {
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
     }
     
-    @GetMapping({"/employees/{id}/worktime", "/employees/{id}/worktime/{year}"})
-    public ResponseEntity<WorktimeInformation> getWorktimeInformation(@PathVariable("id") Long id, @PathVariable("year") Optional<Integer> year) {
-    	log.debug("REST request to get worktimeInformation for Employee : {}", id);
-    	Optional<WorktimeInformation> wtInfo = employeeService.getWorkTimeInformation(id, year);
-    	return ResponseUtil.wrapOrNotFound(wtInfo);
-    }
-    
-    @GetMapping({"/employees/me/worktime", "/employees/me/worktime/{year}"})
-    public ResponseEntity<WorktimeInformation> getWorktimeInformation(Principal principal, @PathVariable("year") Optional<Integer> year) {
-    	log.debug("REST request to get worktimeInformation for Employee : {}", principal.getName());
-    	Optional<WorktimeInformation> wtInfo = employeeService.getWorkTimeInformation(principal, year);
-    	return ResponseUtil.wrapOrNotFound(wtInfo);
-    }
+//    @GetMapping({"/employees/{id}/worktime", "/employees/{id}/worktime/{year}"})
+//    public ResponseEntity<WorktimeInformation> getWorktimeInformation(@PathVariable("id") Long id, @PathVariable("year") Optional<Integer> year) {
+//    	log.debug("REST request to get worktimeInformation for Employee : {}", id);
+//    	Optional<WorktimeInformation> wtInfo = employeeService.getWorkTimeInformation(id, year);
+//    	return ResponseUtil.wrapOrNotFound(wtInfo);
+//    }
+//    
+//    @GetMapping({"/employees/me/worktime", "/employees/me/worktime/{year}"})
+//    public ResponseEntity<WorktimeInformation> getWorktimeInformation(Principal principal, @PathVariable("year") Optional<Integer> year) {
+//    	log.debug("REST request to get worktimeInformation for Employee : {}", principal.getName());
+//    	Optional<WorktimeInformation> wtInfo = employeeService.getWorkTimeInformation(principal, year);
+//    	return ResponseUtil.wrapOrNotFound(wtInfo);
+//    }
     
     @GetMapping({"/employees/me/target-work-time/{year}/{month}"})
     public ResponseEntity<Integer> getTargetWorktimeInformation(Principal principal, @PathVariable("year") Integer year, @PathVariable("month") Integer month) {
@@ -155,4 +155,9 @@ public class EmployeeResource {
     	return ResponseEntity.ok().body(employeeService.getWorkTimeMinutes(principal, year, month));
     }
     
+    @GetMapping({"/employees/me/target-work-time/{year}/{month}/{day}"})
+    public ResponseEntity<Long> getTargetWorktimeInformation(Principal principal, @PathVariable("year") Integer year, @PathVariable("month") Integer month, @PathVariable("day") Integer day) {
+    	log.debug("REST request to get worktimeInformation for Employee : {}", principal.getName());
+    	return ResponseEntity.ok().body(employeeService.targetWorkTimeMinutes(principal, year, month, day));
+    }
 }

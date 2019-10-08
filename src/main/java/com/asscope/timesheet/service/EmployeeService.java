@@ -3,8 +3,6 @@ package com.asscope.timesheet.service;
 import com.asscope.timesheet.domain.Employee;
 import com.asscope.timesheet.domain.User;
 import com.asscope.timesheet.domain.WeeklyWorkingHours;
-import com.asscope.timesheet.domain.WorkDay;
-import com.asscope.timesheet.domain.monthlyInformation.WorktimeInformation;
 import com.asscope.timesheet.repository.EmployeeRepository;
 import com.asscope.timesheet.repository.UserRepository;
 
@@ -19,9 +17,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing {@link Employee}.
@@ -35,13 +31,10 @@ public class EmployeeService {
     private final EmployeeRepository employeeRepository;
     
     private final UserRepository userRepository;
-    
-    private final CacheManager cacheManager;
 
-    public EmployeeService(EmployeeRepository employeeRepository, UserRepository userRepository, CacheManager cacheManager) {
+    public EmployeeService(EmployeeRepository employeeRepository, UserRepository userRepository) {
         this.employeeRepository = employeeRepository;
         this.userRepository = userRepository;
-        this.cacheManager = cacheManager;
     }
 
 	/**
@@ -67,37 +60,6 @@ public class EmployeeService {
         log.debug("Request to get all Employees");
         return employeeRepository.findAllWithWeeklyWorkingHours();
     }
-    
-    @Transactional(readOnly = true)
-    public Optional<WorktimeInformation> getWorkTimeInformation(long employeeID, Optional<Integer> optionalYear) {
-        Objects.requireNonNull(cacheManager.getCache(com.asscope.timesheet.domain.Employee.class.getName() + ".workDays")).clear();
-    	Optional<Employee> queriedEmployee = employeeRepository.findById(employeeID);
-    	if (queriedEmployee.isPresent()) {
-    		Employee employee = queriedEmployee.get();
-    		if (optionalYear.isPresent()) {
-    			int year = optionalYear.get();
-    			List<WorkDay> filteredWorkDays = employee.getWorkDays().stream().filter(wd -> wd.getDate().getYear() == year).collect(Collectors.toList());
-    			WorktimeInformation wtInfo = new WorktimeInformation(filteredWorkDays); 
-    			return Optional.of(wtInfo);
-    		} else {
-    			WorktimeInformation wtInfo = new WorktimeInformation(employee.getWorkDays());
-    			return Optional.of(wtInfo);
-    		}
-    	} else {
-        	return Optional.empty();
-    	}
-    }
-    
-    @Transactional(readOnly = true)
-    public Optional<WorktimeInformation> getWorkTimeInformation(Principal principal, Optional<Integer> optionalYear) {
-    	Optional<Employee> employee = this.findOneByUsername(principal.getName());
-    	if (employee.isPresent()) {
-    		return this.getWorkTimeInformation(employee.get().getId(), optionalYear);
-    	} else {
-    		return Optional.empty();
-    	}
-    }
-
 
     /**
      * Get one employee by id.
@@ -159,4 +121,20 @@ public class EmployeeService {
     		return 0L;
     	}
     }
+
+	public long targetWorkTimeMinutes(Principal principal, Integer year, Integer month, Integer day) {
+		Optional<Employee> employee = this.findOneByUsername(principal.getName());
+		LocalDate date = LocalDate.of(year, month, day);
+		if (employee.isPresent()) {
+			return employee.get()
+					.getWeeklyWorkingHours()
+					.stream()
+					.filter(wwh -> (wwh.getStartDate().isBefore(date) || wwh.getStartDate().equals(date)) && (wwh.getEndDate() == null || wwh.getEndDate().isAfter(date) || wwh.getEndDate().equals(date)))
+					.map(wwh -> wwh.getHours() * 60L / 5L)
+					.findFirst()
+					.orElse(0L);
+		} else {
+			return 0L;
+		}
+	}
 }

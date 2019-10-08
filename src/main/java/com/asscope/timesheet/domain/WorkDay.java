@@ -40,8 +40,6 @@ public class WorkDay implements Serializable {
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<WorkingEntry> workingEntries = new HashSet<>();
 
-
-
     @Column(name = "additional_break_minutes")
     private int additionalBreakMinutes;
 
@@ -58,7 +56,7 @@ public class WorkDay implements Serializable {
         		seconds += workingEntry.getWorkingTimeInSeconds();
     		}
     	}
-    	return seconds / 60;
+    	return seconds / 60 - this.additionalBreakMinutes;
     }
     
     @JsonProperty("targetWorkingMinutes")
@@ -78,7 +76,7 @@ public class WorkDay implements Serializable {
     			.stream()
     			.filter(wwH -> {
     				return (wwH.getStartDate().isBefore(this.date) || wwH.getStartDate().isEqual(this.date)) 
-    						&& (wwH.getEndDate() == null || wwH.getEndDate().isAfter(this.date));
+    						&& (wwH.getEndDate() == null || wwH.getEndDate().isAfter(this.date) || wwH.getEndDate().isEqual(this.date));
     			}).findFirst();
     }
     
@@ -115,19 +113,21 @@ public class WorkDay implements Serializable {
     	Instant firstStart = Instant.MAX;
     	Instant lastEnd = Instant.MIN;
     	long totalWorkingSeconds = 0;
-    	for(WorkingEntry workingEntry: this.workingEntries) {
-        		if(workingEntry.isValid() && (workingEntry.getActivity() == null || !workingEntry.getActivity().isFillDay())) {
-        			totalWorkingSeconds += workingEntry.getWorkingTimeInSeconds();
-        		if(workingEntry.getStart().isBefore(firstStart)) {
-        			firstStart = workingEntry.getStart();
+    	if(this.workingEntries.stream().filter(we -> we.isValid()).count() > 1) {
+        	for(WorkingEntry workingEntry: this.workingEntries) {
+            	if(workingEntry.isValid()) {
+            		totalWorkingSeconds += workingEntry.getWorkingTimeInSeconds();
+            		if(workingEntry.getStart().isBefore(firstStart)) {
+            			firstStart = workingEntry.getStart();
+            		}
+            		if(workingEntry.getEnd().isAfter(lastEnd)) {
+            			lastEnd = workingEntry.getEnd();
+            		}
         		}
-        		if(workingEntry.getEnd().isAfter(lastEnd)) {
-        			lastEnd = workingEntry.getEnd();
-        		}
-    		}
+        	}
+        	long totalSeconds = lastEnd.getEpochSecond() - firstStart.getEpochSecond();
+        	minutes += (int) (totalSeconds - totalWorkingSeconds) / 60;
     	}
-    	long totalSeconds = lastEnd.getEpochSecond() - firstStart.getEpochSecond();
-    	minutes += (int) (totalSeconds - totalWorkingSeconds) / 60;
     	return minutes;
     }
     

@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.security.Principal;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.temporal.ChronoField;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -66,6 +65,10 @@ public class WorkingEntryService {
         		workDay = workDayService.save(workDay);
         	}
         }
+        else {
+        	workDay = workDayService.findOne(workDay.getId()).get();
+        	workDay.setAdditionalBreakMinutes(workingEntryToSave.getWorkDay().getAdditionalBreakMinutes());
+        }
         if(workDay.getEmployee() == null) {
         	workDay.setEmployee(employee);
         }
@@ -73,16 +76,10 @@ public class WorkingEntryService {
         	workingEntryToSave.setDeleted(false);
         }
         workingEntryToSave.setWorkDay(workDay);
-        if(workingEntryToSave.getActivity() != null && workingEntryToSave.getActivity().isFillDay()) {
-        	workingEntryToSave.setStart(Instant.EPOCH);
-        	workingEntryToSave.setEnd(Instant.EPOCH);
-        } else {
-            if(validateOverlappingTime(workingEntryToSave, workDay.getWorkingEntries())) {
-        		throw new OverlappingWorkingTimesException();
-        	}
-        }
+        if(validateOverlappingTime(workingEntryToSave, workDay.getWorkingEntries())) {
+    		throw new OverlappingWorkingTimesException();
+    	}
         WorkingEntry savedWE = workingEntryRepository.save(workingEntryToSave);
-        workDay.addWorkingEntry(savedWE);
         return savedWE;
     }
 
@@ -211,29 +208,22 @@ public class WorkingEntryService {
        
     private static boolean validateOverlappingTime(WorkingEntry workingEntryToValidate, Collection<WorkingEntry> workingEntries) {
     	 for (WorkingEntry wEntry: workingEntries) {
-    		if(!wEntry.isDeleted() && wEntry.getId() != workingEntryToValidate.getId()) {
+    		if(!wEntry.isDeleted() && !wEntry.getId().equals(workingEntryToValidate.getId())) {
     			if (wEntry.isValid()) {
-             		if ((workingEntryToValidate.getStart().isBefore(wEntry.getEnd()) || workingEntryToValidate.getStart().equals(wEntry.getEnd())) 
-             				&& (workingEntryToValidate.getEnd().isAfter(wEntry.getStart()) || workingEntryToValidate.getEnd().equals(wEntry.getStart()))) {
+             		if (workingEntryToValidate.getStart().isBefore(wEntry.getEnd()) 
+             				&& workingEntryToValidate.getEnd().isAfter(wEntry.getStart())) {
              			return true;
              		}
     			} else {
     				if(workingEntryToValidate.getStart().equals(wEntry.getStart())) {
              			return true;
              		}
+    				if(workingEntryToValidate.getStart().isAfter(wEntry.getStart())) {
+    					return true;
+    				}
     			}
     			
     		}
-//         	if (wEntry.isValid() && wEntry.getId() != workingEntryToValidate.getId()) {
-//         		if ((workingEntryToValidate.getStart().isBefore(wEntry.getEnd()) || workingEntryToValidate.getStart().equals(wEntry.getEnd())) 
-//         				&& (workingEntryToValidate.getEnd().isAfter(wEntry.getStart()) || workingEntryToValidate.getEnd().equals(wEntry.getStart()))) {
-//         			return true;
-//         		}
-//         	} else if(!wEntry.isDeleted()) {
-//         		if(workingEntryToValidate.getStart().equals(wEntry.getStart())) {
-//         			return true;
-//         		}
-//         	}
          }
     	 return false;
     }
