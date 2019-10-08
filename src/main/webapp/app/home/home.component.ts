@@ -20,6 +20,7 @@ export interface DialogData {
 export class HomeComponent implements OnInit {
   account: Account;
   startBtnName: string;
+  matcardTitle: string;
   started: boolean;
   disableButton = true;
 
@@ -50,10 +51,12 @@ export class HomeComponent implements OnInit {
       // check header
       if (res.status === 200) {
         this.startBtnName = 'Stop';
+        this.matcardTitle = 'Time Clock';
         this.started = true;
         this.btnColors = 'warn';
       } else {
         this.startBtnName = 'Start';
+        this.matcardTitle = 'Time Clock';
         this.started = false;
         this.btnColors = 'primary';
       }
@@ -89,10 +92,11 @@ export class HomeComponent implements OnInit {
           const workingEntry = <IWorkingEntryTimesheet>res.body;
           this.timetableComponent.addNewandSort(workingEntry);
           this.startBtnName = 'Stop';
+          this.matcardTitle = 'You can press stop after few seconds';
           this.started = true;
           this.btnColors = 'warn';
           this.disableButton = true;
-          setTimeout(() => (this.disableButton = false), 10000);
+          setTimeout(() => ((this.disableButton = false), (this.matcardTitle = 'Have a break!')), 10000);
         }
       });
     }
@@ -116,6 +120,7 @@ export class HomeComponent implements OnInit {
                 this.timetableComponent.workingEntries[indexToUpdate] = endRes.body;
                 this.timetableComponent.DSworkingEntries.data = this.timetableComponent.workingEntries;
                 this.startBtnName = 'Start';
+                this.matcardTitle = 'Time Clock';
                 this.started = false;
                 this.btnColors = 'primary';
               }
