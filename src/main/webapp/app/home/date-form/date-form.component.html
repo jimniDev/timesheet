@@ -1,5 +1,5 @@
 <form [formGroup]="timeForm" (ngSubmit)="onSubmit()">
-  <div fxLayoutAlign.lt-xl="center stretch" fxLayout.lt-xl="column" fxLayoutGap="8px" class="container">
+  <div fxLayoutAlign="center stretch" fxLayout="column" fxLayoutGap="8px" class="container">
     <mat-form-field fxFlex="auto">
       <mat-label>Date</mat-label>
       <input matInput [matDatepicker]="picker" placeholder="Choose a date" formControlName="dateControl" readonly
@@ -9,14 +9,14 @@
     </mat-form-field>
     <button mat-button color="primary" type="button" (click)="selectToday()">Today</button>
 
-    <div fxLayoutAlign.xs="center stretch" fxLayout.xs="column" fxLayoutGap="8px">
-      <mat-form-field class="time" fxFlex="auto">
+    <div fxLayoutAlign="center stretch" fxLayout.xs="column" fxLayoutGap="8px">
+      <mat-form-field class="time" fxFlex="50">
         <mat-label>Start Time</mat-label>
         <as-time-input formControlName="startTime" required></as-time-input>
         <mat-icon matSuffix>access_time</mat-icon>
       </mat-form-field>
 
-      <mat-form-field class="time" fxFlex="auto">
+      <mat-form-field class="time" fxFlex="50">
         <mat-label>End Time</mat-label>
         <as-time-input formControlName="endTime" required></as-time-input>
         <mat-icon matSuffix>access_time</mat-icon>
