@@ -2,7 +2,7 @@
   <div fxLayout="column" fxLayoutAlign="center stretch" fxLayout.xs="column" fxLayoutGap="8px" class="container">
     <mat-form-field>
       <mat-label>Date</mat-label>
-      <input matInput [matDatepicker]="picker" placeholder="Choose a date" formControlName="date" name="dp" required>
+      <input matInput [matDatepicker]="picker" placeholder="Choose a date" formControlName="date" readonly required>
       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
