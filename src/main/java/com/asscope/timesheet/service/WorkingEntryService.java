@@ -84,9 +84,6 @@ public class WorkingEntryService {
     		throw new OverlappingWorkingTimesException();
     	}
         WorkingEntry savedWE = workingEntryRepository.save(workingEntryToSave);
-        this.cacheManager.getCache(Employee.class.getName()).clear();
-        this.cacheManager.getCache(Employee.class.getName() + ".workingEntries").clear();
-        this.cacheManager.getCache(Employee.class.getName() + ".workDays").clear();
         return savedWE;
     }
 

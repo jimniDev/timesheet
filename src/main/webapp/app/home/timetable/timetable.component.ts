@@ -143,6 +143,12 @@ export class TimetableComponent implements OnInit, AfterViewInit {
     this.loadTargetWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
     this.loadActualWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
     this.workingEntries.push(workingEntry);
+    this.workingEntries.forEach(function(entry) {
+      if (entry.workDay.id === workingEntry.workDay.id) {
+        entry.workDay.totalWorkingMinutes = workingEntry.workDay.totalWorkingMinutes;
+        entry.workDay.totalBreakMinutes = workingEntry.workDay.totalBreakMinutes;
+      }
+    });
     this.workingEntriesUnfiltered = this.workingEntries;
     this.DSworkingEntries.data = this.workingEntries;
     const now = moment();

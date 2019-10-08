@@ -3,17 +3,33 @@
 </div>
 <div *ngIf="isAuthenticated()">
     <jhi-timetable (initialized)="enableButton($event)" [started]="started"></jhi-timetable>
-    <mat-card>
-        <div fxLayoutAlign="center center" fxLayout="row" fxLayout.lt-xl="column" fxLayoutGap="8px" class="container">
-            <jhi-date-form (newWorkingEntry)="addnewEntry($event)"></jhi-date-form>
-            <as-interactive>
-                <button mat-fab [color]="btnColors" id="startBtn" type="button"
-                    [disabled]="disableButton || timetableComponent.doesEntryExistNow ? 'disabled': null"
-                    (click)="startStop()">
-                    {{startBtnName}}
-                </button>
-            </as-interactive>
-
-        </div>
-    </mat-card>
+    <div fxLayout="row" fxLayoutAlign="space-between" fxLayout.lt-md="column" fxLayoutGap="8px" class="container">
+        <mat-card fxFlex="auto">
+            <mat-card-subtitle>Add new working entry</mat-card-subtitle>
+            <mat-card-content>
+                <div fxLayoutAlign="center" fxLayout="row" fxLayout.lt-lg="column" fxLayoutGap="8px" class="container">
+                    <jhi-date-form (newWorkingEntry)="addnewEntry($event)"></jhi-date-form>
+                </div>
+            </mat-card-content>
+        </mat-card>
+        <mat-card fxFlex="25" fxHide.lt-md>
+            <mat-card-subtitle>{{matcardTitle}}</mat-card-subtitle>
+            <mat-card-content id="btnMatcardContent">
+                <as-interactive>
+                    <button mat-fab [color]="btnColors" id="startBtn" type="button"
+                        [disabled]="disableButton || timetableComponent.doesEntryExistNow ? 'disabled': null"
+                        (click)="startStop()">
+                        {{startBtnName}}
+                    </button>
+                </as-interactive>
+            </mat-card-content>
+        </mat-card>
+        <as-interactive fxHide fxShow.lt-md>
+            <button mat-fab [color]="btnColors" id="startBtn" type="button"
+                [disabled]="disableButton || timetableComponent.doesEntryExistNow ? 'disabled': null"
+                (click)="startStop()">
+                {{startBtnName}}
+            </button>
+        </as-interactive>
+    </div>
 </div>

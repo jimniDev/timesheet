@@ -21,7 +21,7 @@ import java.util.Set;
 @Entity
 @Table(name = "work_day", uniqueConstraints=
 @UniqueConstraint(columnNames={"date", "employee_id"}))
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+//@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class WorkDay implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -37,7 +37,7 @@ public class WorkDay implements Serializable {
 
     @JsonIgnoreProperties("workDay")
     @OneToMany(mappedBy = "workDay", fetch = FetchType.EAGER)
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    //@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<WorkingEntry> workingEntries = new HashSet<>();
 
     @Column(name = "additional_break_minutes")
