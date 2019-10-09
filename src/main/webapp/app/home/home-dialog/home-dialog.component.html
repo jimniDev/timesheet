@@ -18,15 +18,15 @@
             </mat-select>
         </mat-form-field>
         <span style="text-align: center">
-            <span class="mat-h3">Break Minutes : </span>
+            <span class="mat-h3">Calculated Break Minutes: </span>
             <span class="mat-h3">{{data.workDay.calculatedBreakMinutes}}</span>
         </span>
         <mat-form-field>
-            <mat-label>add Break</mat-label>
+            <mat-label>Add additional break minutes</mat-label>
             <input matInput type="tel" placeholder="MM" formControlName="addBreakControl" (keydown)="onKeyDown($event)">
             <mat-icon matSuffix>schedule</mat-icon>
         </mat-form-field>
-        <button mat-button color="primary" type="submit" [disabled]="!modalForm.valid">Ok</button>
+        <button mat-button color="primary" type="submit" [disabled]="!modalForm.valid">Save</button>
         <button mat-button color="primary" type="button" (click)="continue()">Continue</button>
     </div>
 </form>

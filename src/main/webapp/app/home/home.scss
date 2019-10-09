@@ -33,6 +33,18 @@ Main page styles
 // @media only screen and (max-width: 1850px) and (min-width: 1200px) {
 // }
 
-mat-card {
-  margin-top: 8px;
+div > mat-card {
+  padding-bottom: 32px;
+}
+
+#btnMatcardContent {
+  text-align: center;
+  margin-top: 9vh;
+}
+
+.mat-card-actions,
+.mat-card-content,
+.mat-card-subtitle {
+  display: block;
+  margin-bottom: 8px;
 }

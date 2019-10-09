@@ -157,6 +157,7 @@ public class WorkingEntryResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the workingEntry, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/working-entries/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<WorkingEntry> getWorkingEntry(@PathVariable Long id) {
         log.debug("REST request to get WorkingEntry : {}", id);
         Optional<WorkingEntry> workingEntry = workingEntryService.findOne(id);
@@ -169,6 +170,7 @@ public class WorkingEntryResource {
      * @param id the id of the workingEntry to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
+    @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
     @DeleteMapping("/working-entries/{id}")
     public ResponseEntity<Void> deleteWorkingEntry(@PathVariable Long id) {
         log.debug("REST request to delete WorkingEntry : {}", id);

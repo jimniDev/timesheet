@@ -12,6 +12,11 @@
   height: calc(100% - 64px);
 }
 
+img {
+  height: 44px;
+  margin: 3px 8px 3px 8px;
+}
+
 @media (max-width: 599px) {
   .sidenav-container {
     height: calc(100% - 56px);

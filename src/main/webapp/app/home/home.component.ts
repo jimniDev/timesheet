@@ -89,10 +89,11 @@ export class HomeComponent implements OnInit {
           const workingEntry = <IWorkingEntryTimesheet>res.body;
           this.timetableComponent.addNewandSort(workingEntry);
           this.startBtnName = 'Stop';
+          // this.matcardTitle = 'You can press stop after few seconds';
           this.started = true;
           this.btnColors = 'warn';
           this.disableButton = true;
-          setTimeout(() => (this.disableButton = false), 10000);
+          setTimeout(() => (this.disableButton = false), 5000);
         }
       });
     }
