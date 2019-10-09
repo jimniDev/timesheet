@@ -1,0 +1,208 @@
+@import '~@angular/material/theming';
+@include mat-core();
+
+$asscope-mint: (
+  50: #e0f0ef,
+  100: #b3dad7,
+  200: #80c2bc,
+  300: #4da9a1,
+  400: #26968c,
+  500: #008478,
+  600: #007c70,
+  700: #007165,
+  800: #00675b,
+  900: #005448,
+  A100: #86ffea,
+  A200: #53ffe1,
+  A400: #20ffd8,
+  A700: #07ffd3,
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #000000,
+    400: #ffffff,
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+    A100: #000000,
+    A200: #000000,
+    A400: #000000,
+    A700: #000000
+  )
+);
+
+$asscope-blue: (
+  50: #e0e6ec,
+  100: #b3c1ce,
+  200: #8097ae,
+  300: #4d6d8e,
+  400: #264e75,
+  500: #002f5d,
+  600: #002a55,
+  700: #00234b,
+  800: #001d41,
+  900: #001230,
+  A100: #698dff,
+  A200: #3666ff,
+  A400: #0340ff,
+  A700: #0038e8,
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #ffffff,
+    400: #ffffff,
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+    A100: #000000,
+    A200: #ffffff,
+    A400: #ffffff,
+    A700: #ffffff
+  )
+);
+
+$custom-warn-color: (
+  50: #fae6e6,
+  100: #f3c1c1,
+  200: #eb9898,
+  300: #e26e6f,
+  400: #dc4f50,
+  500: #d63031,
+  600: #d12b2c,
+  700: #cc2425,
+  800: #c61e1f,
+  900: #bc1313,
+  A100: #ffecec,
+  A200: #ffb9b9,
+  A400: #ff8686,
+  A700: #ff6d6d,
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #000000,
+    400: #ffffff,
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+    A100: #000000,
+    A200: #000000,
+    A400: #000000,
+    A700: #000000
+  )
+);
+
+$asscope-white: (
+  50: #fdfdff,
+  100: #fafbff,
+  200: #f6f8ff,
+  300: #f2f5fe,
+  400: #f0f3fe,
+  500: #edf1fe,
+  600: #ebeffe,
+  700: #e8edfe,
+  800: #e5ebfe,
+  900: #e0e7fd,
+  A100: #ffffff,
+  A200: #ffffff,
+  A400: #ffffff,
+  A700: #ffffff,
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #000000,
+    400: #000000,
+    500: #000000,
+    600: #000000,
+    700: #000000,
+    800: #000000,
+    900: #000000,
+    A100: #000000,
+    A200: #000000,
+    A400: #000000,
+    A700: #000000
+  )
+);
+
+$asscope-grey: (
+  50: #f1f1f2,
+  100: #dcdddd,
+  200: #c5c6c7,
+  300: #adafb1,
+  400: #9c9ea0,
+  500: #8a8d8f,
+  600: #828587,
+  700: #777a7c,
+  800: #6d7072,
+  900: #5a5d60,
+  A100: #d3e7fb,
+  A200: #a4cef7,
+  A400: #69b4ff,
+  A700: #50a7ff,
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #000000,
+    400: #000000,
+    500: #000000,
+    600: #000000,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+    A100: #000000,
+    A200: #000000,
+    A400: #000000,
+    A700: #000000
+  )
+);
+
+$asscope-black: (
+  50: #e2e3e4,
+  100: #b7babc,
+  200: #888c90,
+  300: #585d63,
+  400: #343b41,
+  500: #101820,
+  600: #0e151c,
+  700: #0c1118,
+  800: #090e13,
+  900: #05080b,
+  A100: #5184ff,
+  A200: #1e60ff,
+  A400: #0044ea,
+  A700: #003dd0,
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #ffffff,
+    400: #ffffff,
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+    A100: #000000,
+    A200: #ffffff,
+    A400: #ffffff,
+    A700: #ffffff
+  )
+);
+
+$asscope-primary: mat-palette($asscope-mint, 500, 900, A100);
+$asscope-accent: mat-palette($asscope-blue, 500, 900, A100);
+$asscope-warn: mat-palette($custom-warn-color, 500, 900, A100);
+
+$asscope-theme: mat-light-theme($asscope-primary, $asscope-accent, $asscope-warn);
+
+@include angular-material-theme($asscope-theme);

@@ -71,11 +71,11 @@
             <ng-container matColumnDef="Actions">
                 <th mat-header-cell *matHeaderCellDef> </th>
                 <td mat-cell *matCellDef="let element">
-                    <button type=button mat-icon-button color="primary" fxHide fxShow.lt-sm
+                    <button type=button mat-icon-button color="accent" fxHide fxShow.lt-sm
                         [disabled]="checkDate(element)" (click)="edittimetableDialog(element)">
                         <mat-icon>edit</mat-icon>
                     </button>
-                    <button mat-button type="button" color="primary" fxHide.lt-sm [disabled]="checkDate(element)"
+                    <button mat-button type="button" color="accent" fxHide.lt-sm [disabled]="checkDate(element)"
                         (click)="edittimetableDialog(element)">
                         Edit
                     </button>
