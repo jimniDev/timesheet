@@ -9,13 +9,14 @@ import { FormGroup, FormControl } from '@angular/forms';
   styleUrls: ['./activity-edit-dialog.component.scss']
 })
 export class ActivityEditDialogComponent implements OnInit {
-  activityeditForm = new FormGroup({
+  activityEditForm = new FormGroup({
     name: new FormControl(this.data.name),
     description: new FormControl(this.data.description),
     absence: new FormControl(this.data.absence),
     fillday: new FormControl(this.data.fillday),
     reduce: new FormControl(this.data.reduce)
   });
+
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     public dialogRef: MatDialogRef<ActivityEditDialogComponent>,
@@ -25,13 +26,12 @@ export class ActivityEditDialogComponent implements OnInit {
   ngOnInit() {}
 
   updateActivity(): void {
-    this.data.activity.name = this.activityeditForm.value.name;
-    this.data.activity.description = this.activityeditForm.value.description;
-    this.data.activity.absence = this.activityeditForm.value.absence;
-    this.data.activity.fillDay = this.activityeditForm.value.fillday;
-    this.data.activity.reduce = this.activityeditForm.value.reduce;
+    this.data.activity.name = this.activityEditForm.value.name;
+    this.data.activity.description = this.activityEditForm.value.description;
+    this.data.activity.absence = this.activityEditForm.value.absence;
+    this.data.activity.fillDay = this.activityEditForm.value.fillday;
+    this.data.activity.reduce = this.activityEditForm.value.reduce;
 
-    // this.roleService.update(this.data.role);
     this.activityService.update(this.data.activity).subscribe(res => {
       if (res.ok) {
         // TODO add res.body to the table
@@ -39,6 +39,7 @@ export class ActivityEditDialogComponent implements OnInit {
       this.dialogRef.close();
     });
   }
+
   onNoClick(): void {
     this.dialogRef.close();
   }

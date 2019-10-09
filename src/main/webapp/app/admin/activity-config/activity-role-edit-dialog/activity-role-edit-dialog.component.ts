@@ -11,9 +11,7 @@ import { RoleTimesheetService } from 'app/entities/role-timesheet';
   styleUrls: ['./activity-role-edit-dialog.component.scss']
 })
 export class ActivityRoleEditDialogComponent implements OnInit {
-  roles: IRoleTimesheet;
-  activities: ActivityTimesheet[];
-  roleeditForm = new FormGroup({
+  roleEditForm = new FormGroup({
     name: new FormControl(this.data.name),
     description: new FormControl(this.data.description)
   });
@@ -25,15 +23,11 @@ export class ActivityRoleEditDialogComponent implements OnInit {
   ) {}
 
   ngOnInit() {}
-  //   this.roleeditForm.patchValue({
-  //     name: this.data.name,
-  //     description: this
-  //   });
-  // }
+
   updateRole(): void {
-    this.data.role.name = this.roleeditForm.value.name;
-    this.data.role.description = this.roleeditForm.value.description;
-    // this.roleService.update(this.data.role);
+    this.data.role.name = this.roleEditForm.value.name;
+    this.data.role.description = this.roleEditForm.value.description;
+
     this.roleService.update(this.data.role).subscribe(res => {
       if (res.ok) {
         // TODO add res.body to the table
