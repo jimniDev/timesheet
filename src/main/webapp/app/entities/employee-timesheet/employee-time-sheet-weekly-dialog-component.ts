@@ -62,6 +62,7 @@ export class EmployeeTimeSheetWeeklyDialogComponent {
     weeklyEntry.hours = this.employeeWeeklyForm.value.weeklyHour;
     weeklyEntry.startDate = moment(this.employeeWeeklyForm.value.startingDate).add(2, 'hours');
     weeklyEntry.endDate = moment(this.employeeWeeklyForm.value.endingDate).add(2, 'hours');
+    weeklyEntry.employee = this.employee;
 
     this.weeklyWorkingHoursService.create(weeklyEntry).subscribe(res => {
       if (res.ok) {
