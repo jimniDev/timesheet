@@ -1,7 +1,8 @@
 <h1 mat-dialog-title>Role Creation</h1>
 <div mat-dialog-content>
         <form [formGroup]="rolemappingForm" (ngSubmit)="onSubmit()">
-                <div fxLayout="column" fxLayoutAlign="center stretch" fxLayout.xs="column" fxLayoutGap="8px" class="container">
+                <div fxLayout="column" fxLayoutAlign="center stretch" fxLayout.xs="column" fxLayoutGap="8px"
+                        class="container">
                         <mat-form-field>
                                 <input matInput required formControlName="name" placeholder="Name">
                         </mat-form-field>

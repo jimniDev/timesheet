@@ -12,15 +12,14 @@ import { HttpResponse } from '@angular/common/http';
   templateUrl: 'activity-role-dialog.component.html'
 })
 export class ActivityRoleDialogComponent implements OnInit {
-  activities: ActivityTimesheet[];
-  durationInSeconds: number;
-  roles: RoleTimesheet[];
-  idx: number;
+  private activities: ActivityTimesheet[];
+  private durationInSeconds: number;
+  private roles: RoleTimesheet[];
+  private idx: number;
 
   rolemappingForm = new FormGroup({
     name: new FormControl(''),
-    description: new FormControl(''),
-    activitiesform: new FormControl('')
+    description: new FormControl('')
   });
 
   constructor(
@@ -43,7 +42,7 @@ export class ActivityRoleDialogComponent implements OnInit {
   }
 
   openAlertBar() {
-    this.alertBar.open('A rolw with this name already exists.', 'cancel', {
+    this.alertBar.open('A role with the same name already exists.', 'Cancel', {
       duration: this.durationInSeconds * 1000
     });
   }
