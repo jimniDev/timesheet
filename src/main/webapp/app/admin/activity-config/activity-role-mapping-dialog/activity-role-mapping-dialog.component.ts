@@ -12,14 +12,11 @@ import { HttpResponse } from '@angular/common/http';
   templateUrl: 'activity-role-mapping-dialog.component.html'
 })
 export class ActivityRoleMappingDialogComponent implements OnInit {
-  activities: ActivityTimesheet[];
-  defaultActivities: ActivityTimesheet[];
-
-  roles: RoleTimesheet[];
-
-  roleName: string;
-
-  idx: number;
+  public activities: ActivityTimesheet[];
+  private defaultActivities: ActivityTimesheet[];
+  public roles: RoleTimesheet[];
+  private roleName: string;
+  private idx: number;
 
   mappingForm = new FormGroup({
     role: new FormControl(''),
