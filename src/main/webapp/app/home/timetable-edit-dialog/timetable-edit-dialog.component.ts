@@ -99,7 +99,7 @@ export class TimetableEditDialogComponent implements OnInit {
 
       this.workingService.update(this.workingEntryData).subscribe(res => {
         if (res.ok) {
-          this.dialogRef.close(res.body);
+          this.dialogRef.close(res.body || this.workingEntryData); // if res.body is null, use workingEntryData
         }
       });
     }
