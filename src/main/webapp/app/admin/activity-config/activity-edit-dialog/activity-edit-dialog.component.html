@@ -1,8 +1,7 @@
 <h1 mat-dialog-title>Activity Creation</h1>
 <div mat-dialog-content>
         <form [formGroup]="activityEditForm">
-                <div fxLayout="column" fxLayoutAlign="center stretch" fxLayout.xs="column" fxLayoutGap="8px"
-                        class="container">
+                <div fxLayoutAlign="center stretch" fxLayout="column" fxLayoutGap="8px" class="container">
                         <mat-form-field>
                                 <input matInput required formControlName="name" placeholder="Name">
                         </mat-form-field>
@@ -16,11 +15,11 @@
                         </mat-checkbox>
                         <mat-checkbox formControlName="reduce"> Reduce <mat-icon>thumb_down</mat-icon>
                         </mat-checkbox>
-                </div>
-                <mat-card-actions>
-                        <button mat-button [disabled]="activityEditForm.invalid" type="button"
+
+
+                        <button mat-button color="primary" [disabled]="activityEditForm.invalid" type="button"
                                 (click)="updateActivity()">Save</button>
-                        <button mat-button type="button" (click)="onNoClick()">Close</button>
-                </mat-card-actions>
+                        <button mat-button color="warn" type="button" (click)="onNoClick()">Close</button>
+                </div>
         </form>
 </div>
