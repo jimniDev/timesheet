@@ -4,7 +4,6 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgxWebstorageModule } from 'ngx-webstorage';
-import { NgJhipsterModule } from 'ng-jhipster';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AuthExpiredInterceptor } from './blocks/interceptor/auth-expired.interceptor';
@@ -16,7 +15,7 @@ import { TimesheetAppRoutingModule } from './app-routing.module';
 import { TimesheetHomeModule } from './home/home.module';
 import { TimesheetEntityModule } from './entities/entity.module';
 // jhipster-needle-angular-add-module-import JHipster will add new module here
-import { JhiMainComponent, NavbarComponent, FooterComponent, PageRibbonComponent, ActiveMenuDirective, ErrorComponent } from './layouts';
+import { JhiMainComponent, ErrorComponent } from './layouts';
 import { AsLayoutsModule } from './as-layouts/as-layouts.module';
 
 @NgModule({
@@ -25,13 +24,6 @@ import { AsLayoutsModule } from './as-layouts/as-layouts.module';
     ReactiveFormsModule.withConfig({ warnOnNgModelWithFormControl: 'always' }),
     AsLayoutsModule,
     NgxWebstorageModule.forRoot({ prefix: 'jhi', separator: '-' }),
-    NgJhipsterModule.forRoot({
-      // set below to true to make alerts look like toast
-      alertAsToast: false,
-      alertTimeout: 5000,
-      i18nEnabled: true,
-      defaultI18nLang: 'en'
-    }),
     TimesheetSharedModule.forRoot(),
     TimesheetCoreModule,
     TimesheetHomeModule,
@@ -40,7 +32,7 @@ import { AsLayoutsModule } from './as-layouts/as-layouts.module';
     TimesheetAppRoutingModule,
     BrowserAnimationsModule
   ],
-  declarations: [JhiMainComponent, NavbarComponent, ErrorComponent, PageRibbonComponent, ActiveMenuDirective, FooterComponent],
+  declarations: [JhiMainComponent, ErrorComponent],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,

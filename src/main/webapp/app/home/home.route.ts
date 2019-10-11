@@ -8,7 +8,7 @@ export const HOME_ROUTE: Route = {
   component: HomeComponent,
   data: {
     authorities: ['ROLE_USER', 'ROLE_ADMIN'],
-    pageTitle: 'home.title'
+    pageTitle: 'AS Scope Timesheet'
   },
   canActivate: [UserRouteAccessService]
 };
