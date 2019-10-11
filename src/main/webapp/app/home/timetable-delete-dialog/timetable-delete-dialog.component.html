@@ -1,0 +1,5 @@
+<span class="mat-h3">Do you really want to delete?</span>
+<div fxLayout="row" fxLayoutAlign="center stretch" fxLayout.lt-md="column-reverse" fxLayoutGap="8px" class="container">
+    <button fxFlex="50" mat-button color="primary" (click)="onNoClick()">Cancel</button>
+    <button fxFlex="50" mat-button color="warn" (click)="delete()" cdkFocusInitial>Delete</button>
+</div>

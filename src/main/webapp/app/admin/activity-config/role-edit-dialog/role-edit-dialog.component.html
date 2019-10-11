@@ -8,9 +8,13 @@
                         <mat-form-field>
                                 <input matInput formControlName="description" placeholder="description">
                         </mat-form-field>
-                        <button mat-button color="primary" [disabled]="roleEditForm.invalid" (click)="updateRole()"
-                                type="button">Save</button>
-                        <button mat-button color="warn" type="button" (click)="onNoClick()">Close</button>
+                        <div fxLayout="row" fxLayoutAlign="center stretch" fxLayout.lt-md="column-reverse"
+                                fxLayoutGap="8px" class="container">
+                                <button fxFlex="50" mat-button color="warn" type="button"
+                                        (click)="onNoClick()">Close</button>
+                                <button fxFlex="50" mat-button color="primary" [disabled]="roleEditForm.invalid"
+                                        (click)="updateRole()" type="button">Save</button>
+                        </div>
                 </div>
         </form>
 </div>

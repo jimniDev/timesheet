@@ -6,11 +6,11 @@ import { FormGroup, FormControl } from '@angular/forms';
 import { RoleTimesheetService } from 'app/entities/role-timesheet';
 
 @Component({
-  selector: 'jhi-activity-role-edit-dialog',
-  templateUrl: './activity-role-edit-dialog.component.html',
-  styleUrls: ['./activity-role-edit-dialog.component.scss']
+  selector: 'jhi-role-edit-dialog',
+  templateUrl: './role-edit-dialog.component.html',
+  styleUrls: ['./role-edit-dialog.component.scss']
 })
-export class ActivityRoleEditDialogComponent implements OnInit {
+export class RoleEditDialogComponent implements OnInit {
   roleEditForm = new FormGroup({
     name: new FormControl(this.data.name),
     description: new FormControl(this.data.description)
@@ -19,7 +19,7 @@ export class ActivityRoleEditDialogComponent implements OnInit {
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     private roleService: RoleTimesheetService,
-    public dialogRef: MatDialogRef<ActivityRoleEditDialogComponent>
+    public dialogRef: MatDialogRef<RoleEditDialogComponent>
   ) {}
 
   ngOnInit() {}
