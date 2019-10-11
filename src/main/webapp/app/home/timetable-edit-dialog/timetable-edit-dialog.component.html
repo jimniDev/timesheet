@@ -1,11 +1,9 @@
 <form [formGroup]="entryEditForm" (ngSubmit)="updateEntry()">
   <div fxLayout="column" fxLayoutAlign="center stretch" fxLayout.xs="column" fxLayoutGap="8px" class="container">
-    <mat-form-field>
-      <mat-label>Date</mat-label>
-      <input matInput [matDatepicker]="picker" placeholder="Choose a date" formControlName="date" readonly required>
-      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
-    </mat-form-field>
+
+    <span style="text-align: center">
+      <span class="mat-h3">{{this.workingEntryData.workDay.date.format('dddd DD.MM.YYYY')}}</span>
+    </span>
 
     <mat-form-field class="time">
       <mat-label>Start Time</mat-label>
@@ -46,8 +44,11 @@
       <input matInput formControlName="addBreakControl" (keydown)="onKeyDown($event)">
       <mat-icon matSuffix>schedule</mat-icon>
     </mat-form-field>
-
-    <button mat-button color="primary" type="submit" [disabled]="!entryEditForm.valid">Save</button>
-    <button mat-button color="warn" type="button" (click)="onNoClick()">Cancel</button>
+    <div fxLayout="row" fxLayoutAlign="center stretch" fxLayout.lt-md="column-reverse" fxLayoutGap="8px"
+      class="container">
+      <button fxFlex="50" mat-button color="warn" type="button" (click)="onNoClick()">Cancel</button>
+      <button fxFlex="50" mat-button color="primary" type="submit" [disabled]="!entryEditForm.valid"
+        cdkFocusInitial>Save</button>
+    </div>
   </div>
 </form>

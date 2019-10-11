@@ -10,6 +10,7 @@ import { YearMonthSelectComponent } from './year-month-select/year-month-select.
 import { AsLayoutsModule } from 'app/as-layouts/as-layouts.module';
 import { HomeDialogComponent } from './home-dialog/home-dialog.component';
 import { TimetableEditDialogComponent } from './timetable-edit-dialog/timetable-edit-dialog.component';
+import { TimetableDeleteDialogComponent } from './timetable-delete-dialog/timetable-delete-dialog.component';
 
 @NgModule({
   imports: [TimesheetSharedModule, RouterModule.forChild([HOME_ROUTE]), ReactiveFormsModule, AsLayoutsModule],
@@ -20,9 +21,10 @@ import { TimetableEditDialogComponent } from './timetable-edit-dialog/timetable-
     TwoDigitsDirective,
     YearMonthSelectComponent,
     HomeDialogComponent,
-    TimetableEditDialogComponent
+    TimetableEditDialogComponent,
+    TimetableDeleteDialogComponent
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  entryComponents: [HomeDialogComponent, TimetableComponent, TimetableEditDialogComponent]
+  entryComponents: [HomeDialogComponent, TimetableComponent, TimetableEditDialogComponent, TimetableDeleteDialogComponent]
 })
 export class TimesheetHomeModule {}

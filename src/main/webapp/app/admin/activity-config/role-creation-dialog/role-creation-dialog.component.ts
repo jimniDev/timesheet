@@ -9,15 +9,15 @@ import { HttpResponse } from '@angular/common/http';
 
 @Component({
   selector: 'dialog-rolecreation',
-  templateUrl: 'activity-role-dialog.component.html'
+  templateUrl: 'role-creation-dialog.component.html'
 })
-export class ActivityRoleDialogComponent implements OnInit {
+export class RoleCreationDialogComponent implements OnInit {
   private activities: ActivityTimesheet[];
   private durationInSeconds: number;
   private roles: RoleTimesheet[];
   private idx: number;
 
-  rolemappingForm = new FormGroup({
+  roleCreationForm = new FormGroup({
     name: new FormControl(''),
     description: new FormControl('')
   });
@@ -25,7 +25,7 @@ export class ActivityRoleDialogComponent implements OnInit {
   constructor(
     private roleService: RoleTimesheetService,
     private activityService: ActivityTimesheetService,
-    public dialogRef: MatDialogRef<ActivityRoleDialogComponent>,
+    public dialogRef: MatDialogRef<RoleCreationDialogComponent>,
     private fb: FormBuilder,
     private alertBar: MatSnackBar,
     @Inject(MAT_DIALOG_DATA) public data: IRoleTimesheet
@@ -50,8 +50,8 @@ export class ActivityRoleDialogComponent implements OnInit {
   onSubmit(): void {
     let roleEntry: RoleTimesheet;
     roleEntry = new RoleTimesheet();
-    roleEntry.name = this.rolemappingForm.value.name;
-    roleEntry.description = this.rolemappingForm.value.description;
+    roleEntry.name = this.roleCreationForm.value.name;
+    roleEntry.description = this.roleCreationForm.value.description;
 
     this.roleService.query().subscribe((res: HttpResponse<RoleTimesheet[]>) => {
       if (res.ok) {

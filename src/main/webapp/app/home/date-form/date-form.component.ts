@@ -11,7 +11,7 @@ import { RoleTimesheetService } from 'app/entities/role-timesheet';
 import { HttpResponse } from '@angular/common/http';
 import { IRoleTimesheet } from 'app/shared/model/role-timesheet.model';
 import { MatSnackBar } from '@angular/material';
-import { MAT_DATE_FORMATS } from '@angular/material/core';
+import { MAT_DATE_FORMATS, DateAdapter } from '@angular/material/core';
 import { EmployeeTimesheetService } from 'app/entities/employee-timesheet';
 
 export const MY_FORMAT = {
@@ -51,6 +51,7 @@ export class DateFormComponent implements OnInit {
   selectableActivities: IActivityTimesheet[];
 
   constructor(
+    private dateAdapter: DateAdapter<Date>,
     private workingEntryService: WorkingEntryTimesheetService,
     private activityService: ActivityTimesheetService,
     private roleService: RoleTimesheetService,
@@ -59,6 +60,10 @@ export class DateFormComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    // this.dateAdapter.setLocale('de'); // german calender
+    this.dateAdapter.getFirstDayOfWeek = () => {
+      return 1;
+    }; // start with monday
     this.roleService.query().subscribe((res: HttpResponse<IRoleTimesheet[]>) => {
       if (res.ok) {
         this.roles = res.body;
