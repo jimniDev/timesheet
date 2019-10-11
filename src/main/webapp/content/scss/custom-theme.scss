@@ -1,5 +1,9 @@
 @import '~@angular/material/theming';
-@include mat-core();
+
+$asscope-typography: mat-typography-config(
+  $font-family: 'unineue-regular'
+);
+@include mat-core($asscope-typography);
 
 $asscope-mint: (
   50: #e0f0ef,
