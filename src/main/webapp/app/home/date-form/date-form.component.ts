@@ -43,7 +43,8 @@ export class DateFormComponent implements OnInit {
     startTime: new FormControl('', Validators.compose([Validators.required, Validators.pattern('^([01][0-9]|2[0-3]):([0-5][0-9])$')])),
     endTime: new FormControl('', Validators.compose([Validators.required, Validators.pattern('^([01][0-9]|2[0-3]):([0-5][0-9])$')])),
     roleControl: new FormControl('', Validators.required),
-    activityControl: new FormControl('', Validators.required)
+    activityControl: new FormControl('', Validators.required),
+    addBreakControl: new FormControl('', Validators.pattern('^[0-9]*$'))
   });
 
   activities: IActivityTimesheet[];
@@ -111,6 +112,7 @@ export class DateFormComponent implements OnInit {
   onSubmit() {
     const workDay: WorkDayTimesheet = new WorkDayTimesheet();
     const formDate = moment(this.timeForm.value.dateControl).add(2, 'hours');
+
     workDay.date = formDate;
 
     const startMoment = moment(formDate.format('YYYY-MM-DD') + ' ' + this.timeForm.value.startTime);
@@ -125,6 +127,7 @@ export class DateFormComponent implements OnInit {
       workingEntry = new WorkingEntryTimesheet();
       workingEntry.start = startMoment;
       workingEntry.end = endMoment;
+      workDay.additionalBreakMinutes = Number.parseInt(this.timeForm.value.addBreakControl, 10) || 0;
       workingEntry.workDay = workDay;
       workingEntry.deleted = false;
       workingEntry.activity = this.timeForm.value.activityControl;
@@ -146,6 +149,31 @@ export class DateFormComponent implements OnInit {
           }
         }
       );
+    }
+  }
+
+  onKeyDown(event) {
+    const e = <KeyboardEvent>event;
+    if (
+      // modification : blocked the period (.)
+      [46, 8, 9, 27, 13].indexOf(e.keyCode) !== -1 ||
+      // Allow: Ctrl+A
+      (e.keyCode === 65 && (e.ctrlKey || e.metaKey)) ||
+      // Allow: Ctrl+C
+      (e.keyCode === 67 && (e.ctrlKey || e.metaKey)) ||
+      // Allow: Ctrl+V
+      (e.keyCode === 86 && (e.ctrlKey || e.metaKey)) ||
+      // Allow: Ctrl+X
+      (e.keyCode === 88 && (e.ctrlKey || e.metaKey)) ||
+      // Allow: home, end, left, right
+      (e.keyCode >= 35 && e.keyCode <= 39)
+    ) {
+      // let it happen, don't do anything
+      return;
+    }
+    // Ensure that it is a number and stop the keypress
+    if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+      e.preventDefault();
     }
   }
 }
