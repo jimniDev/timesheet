@@ -71,8 +71,8 @@ public class WorkingEntryService {
         }
         else {
         	workDay = workDayService.findOne(workDay.getId()).get();
-        	workDay.setAdditionalBreakMinutes(workingEntryToSave.getWorkDay().getAdditionalBreakMinutes());
         }
+        workDay.setAdditionalBreakMinutes(workingEntryToSave.getWorkDay().getAdditionalBreakMinutes());
         if(workDay.getEmployee() == null) {
         	workDay.setEmployee(employee);
         }
@@ -84,6 +84,7 @@ public class WorkingEntryService {
     		throw new OverlappingWorkingTimesException();
     	}
         WorkingEntry savedWE = workingEntryRepository.save(workingEntryToSave);
+        workDay.addWorkingEntry(savedWE);
         return savedWE;
     }
 
