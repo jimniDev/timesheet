@@ -31,10 +31,13 @@ public class EmployeeService {
     private final EmployeeRepository employeeRepository;
     
     private final UserRepository userRepository;
+    
+    private final HolidayService holidayService;
 
-    public EmployeeService(EmployeeRepository employeeRepository, UserRepository userRepository) {
+    public EmployeeService(EmployeeRepository employeeRepository, UserRepository userRepository, HolidayService holidayService) {
         this.employeeRepository = employeeRepository;
         this.userRepository = userRepository;
+        this.holidayService = holidayService;
     }
 
 	/**
@@ -103,8 +106,8 @@ public class EmployeeService {
     public int targetWorkTime(Principal principal, int year, int month) {
     	Employee employee = this.findOneByUsername(principal.getName()).get();
     	YearMonth yearMonth = YearMonth.of(year, month);
-    	return yearMonth.atDay(1).datesUntil(yearMonth.atEndOfMonth())
-    	.filter(date -> !date.getDayOfWeek().equals(DayOfWeek.SATURDAY) && !date.getDayOfWeek().equals(DayOfWeek.SUNDAY))
+    	return yearMonth.atDay(1).datesUntil(yearMonth.atEndOfMonth().plusDays(1L))
+    	.filter(date -> !date.getDayOfWeek().equals(DayOfWeek.SATURDAY) && !date.getDayOfWeek().equals(DayOfWeek.SUNDAY) && !this.holidayService.isfixedHoliday(date) && !this.holidayService.isflexibleHoliday(date))
     	.map(workDay -> getTargetWorkMinutesForDate(employee, workDay))
     	.reduce(0, Integer::sum);
     }
