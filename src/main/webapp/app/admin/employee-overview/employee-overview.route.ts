@@ -7,7 +7,7 @@ export const employeeOverviewRoute: Route = {
   component: EmployeeOverviewComponent,
   data: {
     authorities: ['ROLE_ADMIN'],
-    pageTitle: 'home.title'
+    pageTitle: 'AS Scope Timesheet'
   },
   canActivate: [UserRouteAccessService]
 };

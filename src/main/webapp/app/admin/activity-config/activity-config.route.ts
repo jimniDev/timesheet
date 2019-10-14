@@ -7,7 +7,7 @@ export const activityconfigRoute: Route = {
   component: ActivityConfigComponent,
   data: {
     authorities: ['ROLE_ADMIN'],
-    pageTitle: 'home.title'
+    pageTitle: 'AS Scope Timesheet'
   },
   canActivate: [UserRouteAccessService]
 };
