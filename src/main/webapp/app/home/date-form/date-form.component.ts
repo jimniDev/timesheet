@@ -127,10 +127,10 @@ export class DateFormComponent implements OnInit {
       workingEntry = new WorkingEntryTimesheet();
       workingEntry.start = startMoment;
       workingEntry.end = endMoment;
-      workDay.additionalBreakMinutes = Number.parseInt(this.timeForm.value.addBreakControl, 10) || 0;
       workingEntry.workDay = workDay;
       workingEntry.deleted = false;
       workingEntry.activity = this.timeForm.value.activityControl;
+      workingEntry.workDay.additionalBreakMinutes = Number.parseInt(this.timeForm.value.addBreakControl, 10) || 0;
 
       this.workingEntryService.create(workingEntry).subscribe(
         res => {

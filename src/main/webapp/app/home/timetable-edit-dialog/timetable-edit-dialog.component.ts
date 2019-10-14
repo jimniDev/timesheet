@@ -92,7 +92,7 @@ export class TimetableEditDialogComponent implements OnInit {
       //    this.workingEntryData.workDay.date = moment(this.entryEditForm.value.date).add(2, 'hours');
       this.workingEntryData.deleted = false;
       this.workingEntryData.activity = this.entryEditForm.value.activity;
-      this.workingEntryData.workDay.additionalBreakMinutes = this.entryEditForm.value.addBreakControl;
+      this.workingEntryData.workDay.additionalBreakMinutes = <number>this.entryEditForm.value.addBreakControl;
 
       this.workingService.update(this.workingEntryData).subscribe(res => {
         if (res.ok) {
