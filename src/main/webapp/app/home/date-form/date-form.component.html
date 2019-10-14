@@ -1,13 +1,16 @@
 <form [formGroup]="timeForm" (ngSubmit)="onSubmit()">
   <div fxLayoutAlign="center stretch" fxLayout="column" fxLayoutGap="8px" class="container">
-    <mat-form-field fxFlex="auto">
-      <mat-label>Date</mat-label>
-      <input matInput [matDatepicker]="picker" placeholder="Choose a date" formControlName="dateControl" readonly
-        required>
-      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
-    </mat-form-field>
-    <button mat-button color="primary" type="button" (click)="selectToday()">Today</button>
+    <div fxFlex="auto" fxLayout="row" fxLayoutAlign="center stretch" fxLayout.xs="column" fxLayoutGap="8px"
+      class="container">
+      <mat-form-field fxFlex="80">
+        <mat-label>Date</mat-label>
+        <input matInput [matDatepicker]="picker" placeholder="Choose a date" formControlName="dateControl" readonly
+          required>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+      <button fxFlex="20" mat-button color="primary" type="button" (click)="selectToday()">Today</button>
+    </div>
 
     <div fxLayoutAlign="center stretch" fxLayout.xs="column" fxLayoutGap="8px">
       <mat-form-field class="time" fxFlex="50">
@@ -42,6 +45,12 @@
         </mat-select>
       </mat-form-field>
     </div>
+    <mat-form-field>
+      <mat-label>Add break minutes</mat-label>
+      <input matInput #breakInput type="tel" placeholder="MM" formControlName="addBreakControl"
+        (keydown)="onKeyDown($event)">
+      <mat-icon matSuffix>free_breakfast</mat-icon>
+    </mat-form-field>
     <button mat-flat-button color="primary" type="submit" [disabled]="!timeForm.valid">Save</button>
 
   </div>
