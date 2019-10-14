@@ -87,18 +87,24 @@ export class TimetableEditDialogComponent implements OnInit {
         duration: 5000
       });
     } else {
-      this.workingEntryData.start = startEditValue;
-      this.workingEntryData.end = endEditValue;
-      //    this.workingEntryData.workDay.date = moment(this.entryEditForm.value.date).add(2, 'hours');
-      this.workingEntryData.deleted = false;
-      this.workingEntryData.activity = this.entryEditForm.value.activity;
-      this.workingEntryData.workDay.additionalBreakMinutes = <number>this.entryEditForm.value.addBreakControl;
-
-      this.workingService.update(this.workingEntryData).subscribe(res => {
-        if (res.ok) {
-          this.dialogRef.close(res.body || this.workingEntryData); // if res.body is null, use workingEntryData
-        }
-      });
+      const diff = moment.duration(endEditValue.diff(startEditValue)).asMinutes();
+      if (diff < this.entryEditForm.value.addBreakControl) {
+        this._snackBar.open('Break minutes cannot be over Working hours', 'Close', {
+          duration: 5000
+        });
+      } else {
+        this.workingEntryData.start = startEditValue;
+        this.workingEntryData.end = endEditValue;
+        //    this.workingEntryData.workDay.date = moment(this.entryEditForm.value.date).add(2, 'hours');
+        this.workingEntryData.deleted = false;
+        this.workingEntryData.activity = this.entryEditForm.value.activity;
+        this.workingEntryData.workDay.additionalBreakMinutes = <number>this.entryEditForm.value.addBreakControl;
+        this.workingService.update(this.workingEntryData).subscribe(res => {
+          if (res.ok) {
+            this.dialogRef.close(res.body || this.workingEntryData); // if res.body is null, use workingEntryData
+          }
+        });
+      }
     }
   }
 
