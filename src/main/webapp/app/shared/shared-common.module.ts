@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
 
-import { TimesheetSharedLibsModule, FindLanguageFromKeyPipe, JhiAlertComponent, JhiAlertErrorComponent } from './';
+import { TimesheetSharedLibsModule, FindLanguageFromKeyPipe } from './';
 
 @NgModule({
   imports: [TimesheetSharedLibsModule],
-  declarations: [FindLanguageFromKeyPipe, JhiAlertComponent, JhiAlertErrorComponent],
-  exports: [TimesheetSharedLibsModule, FindLanguageFromKeyPipe, JhiAlertComponent, JhiAlertErrorComponent]
+  declarations: [FindLanguageFromKeyPipe],
+  exports: [TimesheetSharedLibsModule, FindLanguageFromKeyPipe]
 })
 export class TimesheetSharedCommonModule {}

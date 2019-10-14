@@ -1,4 +1,18 @@
 @font-face {
+  font-family: 'unineue-regular';
+  src: url(../fonts/unineue-regular-webfont.woff2) format('woff2'), url(../fontsunineue-regular-webfont.woff) format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'unineue-heavy';
+  src: url(../fonts/unineue-heavy-webfont.woff2) format('woff2'), url(../fonts/unineue-heavy-webfont.woff) format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
   font-family: 'Material Icons';
   font-style: normal;
   font-weight: 400;
@@ -11,7 +25,7 @@
   font-family: 'Material Icons';
   font-weight: normal;
   font-style: normal;
-  font-size: 24px; /* Preferred icon size */
+  font-size: 22px; /* Preferred icon size */
   display: inline-block;
   line-height: 1;
   text-transform: none;

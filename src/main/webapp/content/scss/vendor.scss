@@ -4,11 +4,7 @@
 put Sass variables here:
 eg $input-color: red;
 ****************************/
-// Override Boostrap variables
-// @import '~bootswatch/dist/flatly/variables';
-// Import Bootstrap source files from node_modules
-// @import '~bootstrap/scss/bootstrap';
-// @import '~bootswatch/dist/flatly/bootswatch';
 @import '~@angular/material/prebuilt-themes/indigo-pink.css';
+@import './custom-theme';
 
 /* jhipster-needle-scss-add-vendor JHipster will add new css style */

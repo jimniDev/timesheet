@@ -13,6 +13,7 @@ import { Moment } from 'moment';
 import { filter, map } from 'rxjs/operators';
 import { TimetableEditDialogComponent } from '../timetable-edit-dialog/timetable-edit-dialog.component';
 import { PdfService } from 'app/shared/pdf/pdf.service';
+import { TimetableDeleteDialogComponent } from '../timetable-delete-dialog/timetable-delete-dialog.component';
 
 @Component({
   selector: 'jhi-timetable',
@@ -230,17 +231,24 @@ export class TimetableComponent implements OnInit, AfterViewInit {
     });
   }
 
-  public deleteEntry(workingentry: IWorkingEntryTimesheet) {
-    this.workingEntryService.delete(workingentry.id).subscribe(res => {
-      if (res.ok) {
-        const idx = this.workingEntries.findIndex(we => we.id === workingentry.id);
-        this.workingEntries.splice(idx, 1);
-        this.DSworkingEntries.data = this.workingEntries;
-        const now = moment();
-        this.doesEntryExistNow = this.workingEntries.some(entry => entry.start <= now && entry.end >= now);
+  public deleteEntry(workingEntry: IWorkingEntryTimesheet) {
+    const dialogRef = this.dialog.open(TimetableDeleteDialogComponent, {
+      data: workingEntry
+    });
+    dialogRef.afterClosed().subscribe((result: IWorkingEntryTimesheet) => {
+      if (result) {
+        this.workingEntryService.delete(workingEntry.id).subscribe(res => {
+          if (res.ok) {
+            const idx = this.workingEntries.findIndex(we => we.id === workingEntry.id);
+            this.workingEntries.splice(idx, 1);
+            this.DSworkingEntries.data = this.workingEntries;
+            const now = moment();
+            this.doesEntryExistNow = this.workingEntries.some(entry => entry.start <= now && entry.end >= now);
 
-        this.loadTargetWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
-        this.loadActualWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
+            this.loadTargetWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
+            this.loadActualWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
+          }
+        });
       }
     });
   }

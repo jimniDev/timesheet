@@ -26,7 +26,6 @@ export const MY_FORMAT = {
 @Component({
   selector: 'jhi-timetable-edit-dialog',
   templateUrl: './timetable-edit-dialog.component.html',
-  styleUrls: ['./timetable-edit-dialog.component.scss'],
   providers: [{ provide: MAT_DATE_FORMATS, useValue: MY_FORMAT }]
 })
 export class TimetableEditDialogComponent implements OnInit {
@@ -35,7 +34,6 @@ export class TimetableEditDialogComponent implements OnInit {
   selectableActivities: IActivityTimesheet[];
   workingEntry: IWorkingEntryTimesheet;
   entryEditForm = new FormGroup({
-    date: new FormControl('', Validators.required),
     starttime: new FormControl('', Validators.compose([Validators.required, Validators.pattern('^([01][0-9]|2[0-3]):([0-5][0-9])$')])),
     endtime: new FormControl('', Validators.compose([Validators.required, Validators.pattern('^([01][0-9]|2[0-3]):([0-5][0-9])$')])),
     roleControl: new FormControl(''),
@@ -65,7 +63,6 @@ export class TimetableEditDialogComponent implements OnInit {
       }
     });
     this.entryEditForm.patchValue({
-      date: this.workingEntryData.workDay.date,
       starttime: this.workingEntryData.start ? this.workingEntryData.start.format('HH:mm') : '',
       endtime: this.workingEntryData.end ? this.workingEntryData.end.format('HH:mm') : '',
       activity: this.workingEntryData.activity
@@ -92,14 +89,14 @@ export class TimetableEditDialogComponent implements OnInit {
     } else {
       this.workingEntryData.start = startEditValue;
       this.workingEntryData.end = endEditValue;
-      this.workingEntryData.workDay.date = moment(this.entryEditForm.value.date).add(2, 'hours');
+      //    this.workingEntryData.workDay.date = moment(this.entryEditForm.value.date).add(2, 'hours');
       this.workingEntryData.deleted = false;
       this.workingEntryData.activity = this.entryEditForm.value.activity;
       this.workingEntryData.workDay.additionalBreakMinutes = this.entryEditForm.value.addBreakControl;
 
       this.workingService.update(this.workingEntryData).subscribe(res => {
         if (res.ok) {
-          this.dialogRef.close(res.body);
+          this.dialogRef.close(res.body || this.workingEntryData); // if res.body is null, use workingEntryData
         }
       });
     }

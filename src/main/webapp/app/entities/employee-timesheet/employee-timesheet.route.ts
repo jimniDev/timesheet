@@ -6,10 +6,7 @@ import { Observable, of } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { EmployeeTimesheet } from 'app/shared/model/employee-timesheet.model';
 import { EmployeeTimesheetService } from './employee-timesheet.service';
-import { EmployeeTimesheetComponent } from './employee-timesheet.component';
 import { EmployeeTimesheetDetailComponent } from './employee-timesheet-detail.component';
-import { EmployeeTimesheetUpdateComponent } from './employee-timesheet-update.component';
-import { EmployeeTimesheetDeletePopupComponent } from './employee-timesheet-delete-dialog.component';
 import { IEmployeeTimesheet } from 'app/shared/model/employee-timesheet.model';
 
 @Injectable({ providedIn: 'root' })
@@ -30,15 +27,6 @@ export class EmployeeTimesheetResolve implements Resolve<IEmployeeTimesheet> {
 
 export const employeeRoute: Routes = [
   {
-    path: '',
-    component: EmployeeTimesheetComponent,
-    data: {
-      authorities: ['ROLE_ADMIN'],
-      pageTitle: 'timesheetApp.employee.home.title'
-    },
-    canActivate: [UserRouteAccessService]
-  },
-  {
     path: ':id/view',
     component: EmployeeTimesheetDetailComponent,
     resolve: {
@@ -49,45 +37,5 @@ export const employeeRoute: Routes = [
       pageTitle: 'timesheetApp.employee.home.title'
     },
     canActivate: [UserRouteAccessService]
-  },
-  {
-    path: 'new',
-    component: EmployeeTimesheetUpdateComponent,
-    resolve: {
-      employee: EmployeeTimesheetResolve
-    },
-    data: {
-      authorities: ['ROLE_ADMIN'],
-      pageTitle: 'timesheetApp.employee.home.title'
-    },
-    canActivate: [UserRouteAccessService]
-  },
-  {
-    path: ':id/edit',
-    component: EmployeeTimesheetUpdateComponent,
-    resolve: {
-      employee: EmployeeTimesheetResolve
-    },
-    data: {
-      authorities: ['ROLE_ADMIN'],
-      pageTitle: 'timesheetApp.employee.home.title'
-    },
-    canActivate: [UserRouteAccessService]
-  }
-];
-
-export const employeePopupRoute: Routes = [
-  {
-    path: ':id/delete',
-    component: EmployeeTimesheetDeletePopupComponent,
-    resolve: {
-      employee: EmployeeTimesheetResolve
-    },
-    data: {
-      authorities: ['ROLE_ADMIN'],
-      pageTitle: 'timesheetApp.employee.home.title'
-    },
-    canActivate: [UserRouteAccessService],
-    outlet: 'popup'
   }
 ];

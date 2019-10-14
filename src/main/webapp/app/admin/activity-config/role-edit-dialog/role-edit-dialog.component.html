@@ -1,0 +1,20 @@
+<h1 mat-dialog-title>Role Edit</h1>
+<div mat-dialog-content>
+        <form [formGroup]="roleEditForm">
+                <div fxLayout="column" fxLayoutAlign="center stretch" fxLayoutGap="8px" class="container">
+                        <mat-form-field>
+                                <input matInput required formControlName="name" placeholder="Name">
+                        </mat-form-field>
+                        <mat-form-field>
+                                <input matInput formControlName="description" placeholder="description">
+                        </mat-form-field>
+                        <div fxLayout="row" fxLayoutAlign="center stretch" fxLayout.lt-md="column-reverse"
+                                fxLayoutGap="8px" class="container">
+                                <button fxFlex="50" mat-button color="warn" type="button"
+                                        (click)="onNoClick()">Close</button>
+                                <button fxFlex="50" mat-button color="primary" [disabled]="roleEditForm.invalid"
+                                        (click)="updateRole()" type="button">Save</button>
+                        </div>
+                </div>
+        </form>
+</div>

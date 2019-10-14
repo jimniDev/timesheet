@@ -15,7 +15,7 @@ export class ActivityCreationDialogComponent {
   private idx: number;
   private durationInSeconds: number;
 
-  activityForm = new FormGroup({
+  activityCreationForm = new FormGroup({
     name: new FormControl('', Validators.required),
     description: new FormControl(''),
     absence: new FormControl(''),
@@ -29,7 +29,7 @@ export class ActivityCreationDialogComponent {
     @Inject(MAT_DIALOG_DATA) public data: IActivityTimesheet,
     private alertBar: MatSnackBar
   ) {
-    this.activityForm.patchValue({ absence: false, fillday: false, reduce: false });
+    this.activityCreationForm.patchValue({ absence: false, fillday: false, reduce: false });
     this.durationInSeconds = 5;
   }
 
@@ -40,11 +40,11 @@ export class ActivityCreationDialogComponent {
   }
   onsubmit(): void {
     const activityEntry: ActivityTimesheet = new ActivityTimesheet();
-    activityEntry.name = this.activityForm.value.name;
-    activityEntry.description = this.activityForm.value.description;
-    activityEntry.absence = this.activityForm.value.absence;
-    activityEntry.fillDay = this.activityForm.value.fillday;
-    activityEntry.reduce = this.activityForm.value.reduce;
+    activityEntry.name = this.activityCreationForm.value.name;
+    activityEntry.description = this.activityCreationForm.value.description;
+    activityEntry.absence = this.activityCreationForm.value.absence;
+    activityEntry.fillDay = this.activityCreationForm.value.fillday;
+    activityEntry.reduce = this.activityCreationForm.value.reduce;
 
     this.activityService.query().subscribe((res: HttpResponse<ActivityTimesheet[]>) => {
       if (res.ok) {
