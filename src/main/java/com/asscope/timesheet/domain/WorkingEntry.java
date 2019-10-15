@@ -45,7 +45,7 @@ public class WorkingEntry extends AbstractAuditingEntity implements Serializable
     private Boolean locked;
 
     @ManyToOne
-    @JsonIgnoreProperties({"workingEntries", "workDays"})
+    @JsonIgnoreProperties({"workingEntries", "workDays", "weeklyWorkingHours", "user"})
     private Employee employee;
 
     @ManyToOne
@@ -53,7 +53,7 @@ public class WorkingEntry extends AbstractAuditingEntity implements Serializable
     private Activity activity;
 
     @ManyToOne
-    @JsonIgnoreProperties("workingEntries")
+    @JsonIgnoreProperties({"workingEntries", "employee", "activeWeeklyWorkingHours"})
     private WorkDay workDay;
 
     @ManyToOne
