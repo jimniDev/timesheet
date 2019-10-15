@@ -39,25 +39,6 @@ public class EmployeeResource {
     }
 
     /**
-     * {@code POST  /employees} : Create a new employee.
-     *
-     * @param employee the employee to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new employee, or with status {@code 400 (Bad Request)} if the employee has already an ID.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
-     */
-//    @PostMapping("/employees")
-//    public ResponseEntity<Employee> createEmployee(@RequestBody Employee employee) throws URISyntaxException {
-//        log.debug("REST request to save Employee : {}", employee);
-//        if (employee.getId() != null) {
-//            throw new BadRequestAlertException("A new employee cannot already have an ID", ENTITY_NAME, "idexists");
-//        }
-//        Employee result = employeeService.save(employee);
-//        return ResponseEntity.created(new URI("/api/employees/" + result.getId()))
-//            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
-//            .body(result);
-//    }
-
-    /**
      * {@code PUT  /employees} : Updates an existing employee.
      *
      * @param employee the employee to update.
@@ -92,18 +73,6 @@ public class EmployeeResource {
     }
 
     /**
-    * {@code GET  /employees/count} : count all the employees.
-    *
-    * @param criteria the criteria which the requested entities should match.
-    * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
-    */
-//    @GetMapping("/employees/count")
-//    public ResponseEntity<Long> countEmployees(EmployeeCriteria criteria) {
-//        log.debug("REST request to count Employees by criteria: {}", criteria);
-//        return ResponseEntity.ok().body(employeeQueryService.countByCriteria(criteria));
-//    }
-
-    /**
      * {@code GET  /employees/:id} : get the "id" employee.
      *
      * @param id the id of the employee to retrieve.
@@ -115,33 +84,6 @@ public class EmployeeResource {
         Optional<Employee> employee = employeeService.findOne(id);
         return ResponseUtil.wrapOrNotFound(employee);
     }
-
-    /**
-     * {@code DELETE  /employees/:id} : delete the "id" employee.
-     *
-     * @param id the id of the employee to delete.
-     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
-     */
-    @DeleteMapping("/employees/{id}")
-    public ResponseEntity<Void> deleteEmployee(@PathVariable Long id) {
-        log.debug("REST request to delete Employee : {}", id);
-        employeeService.delete(id);
-        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
-    }
-    
-//    @GetMapping({"/employees/{id}/worktime", "/employees/{id}/worktime/{year}"})
-//    public ResponseEntity<WorktimeInformation> getWorktimeInformation(@PathVariable("id") Long id, @PathVariable("year") Optional<Integer> year) {
-//    	log.debug("REST request to get worktimeInformation for Employee : {}", id);
-//    	Optional<WorktimeInformation> wtInfo = employeeService.getWorkTimeInformation(id, year);
-//    	return ResponseUtil.wrapOrNotFound(wtInfo);
-//    }
-//    
-//    @GetMapping({"/employees/me/worktime", "/employees/me/worktime/{year}"})
-//    public ResponseEntity<WorktimeInformation> getWorktimeInformation(Principal principal, @PathVariable("year") Optional<Integer> year) {
-//    	log.debug("REST request to get worktimeInformation for Employee : {}", principal.getName());
-//    	Optional<WorktimeInformation> wtInfo = employeeService.getWorkTimeInformation(principal, year);
-//    	return ResponseUtil.wrapOrNotFound(wtInfo);
-//    }
     
     @GetMapping({"/employees/me/target-work-time/{year}/{month}"})
     public ResponseEntity<Integer> getTargetWorktimeInformation(Principal principal, @PathVariable("year") Integer year, @PathVariable("month") Integer month) {
@@ -159,5 +101,17 @@ public class EmployeeResource {
     public ResponseEntity<Long> getTargetWorktimeInformation(Principal principal, @PathVariable("year") Integer year, @PathVariable("month") Integer month, @PathVariable("day") Integer day) {
     	log.debug("REST request to get worktimeInformation for Employee : {}", principal.getName());
     	return ResponseEntity.ok().body(employeeService.targetWorkTimeMinutes(principal, year, month, day));
+    }
+    
+    @GetMapping("/employees/me/target-work-time/{year}/iso-week/{isoWeek}")
+    public ResponseEntity<Long> getTargetWorktimeInformation(Principal principal, @PathVariable("year") int year, @PathVariable("isoWeek") int isoWeek) {
+    	log.debug("REST request to get weekly worktimeInformation for Employee : {}", principal.getName());
+    	return ResponseEntity.ok().body(employeeService.weeklyTargetWorktimeMinutes(principal, year, isoWeek));
+    }
+    
+    @GetMapping("/employees/me/work-time/{year}/iso-week/{isoWeek}")
+    public ResponseEntity<Long> getWorktimeInformation(Principal principal, @PathVariable("year") int year, @PathVariable("isoWeek") int isoWeek) {
+    	log.debug("REST request to get weekly worktimeInformation for Employee : {}", principal.getName());
+    	return ResponseEntity.ok().body(employeeService.weeklyWorkTimeMinutes(principal, year, isoWeek));
     }
 }

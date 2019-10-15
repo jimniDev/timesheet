@@ -16,8 +16,12 @@ import java.security.Principal;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.time.temporal.IsoFields;
+import java.time.temporal.TemporalAdjusters;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Service Implementation for managing {@link Employee}.
@@ -124,7 +128,8 @@ public class EmployeeService {
     		return 0L;
     	}
     }
-
+    
+	@Transactional(readOnly = true)
 	public long targetWorkTimeMinutes(Principal principal, Integer year, Integer month, Integer day) {
 		Optional<Employee> employee = this.findOneByUsername(principal.getName());
 		LocalDate date = LocalDate.of(year, month, day);
@@ -139,5 +144,46 @@ public class EmployeeService {
 		} else {
 			return 0L;
 		}
+	}
+	
+    @Transactional(readOnly = true)
+    public long weeklyWorkTimeMinutes(Principal principal, int year, int isoWeek) {
+    	Optional<Employee> employee = this.findOneByUsername(principal.getName());
+    	if (employee.isPresent()) {
+    		return employee.get().getWorkDays().stream()
+    				.filter(wd -> wd.getDate().get(IsoFields.WEEK_BASED_YEAR) == year && wd.getDate().get(IsoFields.WEEK_OF_WEEK_BASED_YEAR) == isoWeek)
+    				.map(wd -> {
+    					return wd.getTotalWorkingMinutes();
+    					}
+    				)
+    				.reduce(0L, Long::sum);
+    	} else {
+    		return 0L;
+    	}
+    }
+
+	@Transactional(readOnly = true)
+	public long weeklyTargetWorktimeMinutes(Principal principal, int year, int isoWeek) {
+		Optional<Employee> employee = this.findOneByUsername(principal.getName());
+		if (employee.isPresent()) {
+			return getWorkingDatesOfIsoWeek(year, isoWeek)
+			.stream()
+			.filter(date -> !holidayService.isHoliday(date))
+			.map(workDay -> (long) getTargetWorkMinutesForDate(employee.get(), workDay))
+	    	.reduce(0L, Long::sum);	
+		}
+		return 0L;
+	}
+	
+	public Set<LocalDate> getWorkingDatesOfIsoWeek(int year, int isoWeek) {
+		Set<LocalDate> dates = new HashSet<>();
+		for(DayOfWeek dayOW: DayOfWeek.values()) {
+			if(!dayOW.equals(DayOfWeek.SATURDAY) && !dayOW.equals(DayOfWeek.SUNDAY)) {
+				dates.add(LocalDate.ofYearDay(year, 125)
+				.with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, isoWeek)
+				.with(TemporalAdjusters.previousOrSame(dayOW)));
+			}
+		}
+		return dates;
 	}
 }

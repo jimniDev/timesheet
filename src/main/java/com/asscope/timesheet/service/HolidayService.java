@@ -31,15 +31,19 @@ public class HolidayService {
 		} else
 			return LocalDate.of(year, 3, 22).plusDays(dYear + eYear);
 	}
+	
+	public boolean isHoliday(LocalDate date) {
+		return isfixedHoliday(date) || isflexibleHoliday(date);
+	}
 
 	public boolean isfixedHoliday(LocalDate date) {
-		fixedHolidayList.add(LocalDate.of(date.getYear(), 1, 1));
-		fixedHolidayList.add(LocalDate.of(date.getYear(), 5, 1));
-		fixedHolidayList.add(LocalDate.of(date.getYear(), 10, 3));
-		fixedHolidayList.add(LocalDate.of(date.getYear(), 12, 25));
-		fixedHolidayList.add(LocalDate.of(date.getYear(), 12, 26));
-		fixedHolidayList.add(LocalDate.of(date.getYear(), 12, 24));
-		fixedHolidayList.add(LocalDate.of(date.getYear(), 12, 31));
+		fixedHolidayList.add(LocalDate.of(date.getYear(), 1, 1)); // New Year's Day
+		fixedHolidayList.add(LocalDate.of(date.getYear(), 5, 1)); // Labour Day
+		fixedHolidayList.add(LocalDate.of(date.getYear(), 10, 3)); // German Unity Day
+		fixedHolidayList.add(LocalDate.of(date.getYear(), 12, 25)); // Christmas Day
+		fixedHolidayList.add(LocalDate.of(date.getYear(), 12, 26)); // St Stephens Day
+		fixedHolidayList.add(LocalDate.of(date.getYear(), 12, 24)); // Christmas Eve
+		fixedHolidayList.add(LocalDate.of(date.getYear(), 12, 31)); // New Years Eve
 
 		if (fixedHolidayList.indexOf(date) != -1) {
 			return true;

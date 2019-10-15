@@ -56,7 +56,8 @@ public class WorkDay implements Serializable {
         		seconds += workingEntry.getWorkingTimeInSeconds();
     		}
     	}
-    	return seconds / 60 - this.additionalBreakMinutes;
+    	long minutes = seconds / 60 - this.additionalBreakMinutes;
+    	return minutes >= 0? minutes : 0;
     }
     
     @JsonProperty("targetWorkingMinutes")
