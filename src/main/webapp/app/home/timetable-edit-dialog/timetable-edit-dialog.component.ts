@@ -79,8 +79,10 @@ export class TimetableEditDialogComponent implements OnInit {
   }
 
   updateEntry(): void {
-    const startEditValue = moment(moment(this.entryEditForm.value.date).format('YYYY-MM-DD') + ' ' + this.entryEditForm.value.starttime);
-    const endEditValue = moment(moment(this.entryEditForm.value.date).format('YYYY-MM-DD') + ' ' + this.entryEditForm.value.endtime);
+    const startEditValue = moment(
+      moment(this.workingEntryData.workDay.date).format('YYYY-MM-DD') + ' ' + this.entryEditForm.value.starttime
+    );
+    const endEditValue = moment(moment(this.workingEntryData.workDay.date).format('YYYY-MM-DD') + ' ' + this.entryEditForm.value.endtime);
 
     if (startEditValue >= endEditValue) {
       this._snackBar.open('End time should be after the Start time', 'Close', {
