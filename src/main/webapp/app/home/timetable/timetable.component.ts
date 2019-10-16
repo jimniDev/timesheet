@@ -38,8 +38,14 @@ export class TimetableComponent implements OnInit, AfterViewInit {
   diffTime = '00h 00m';
   todayTime = '00h 00m';
 
+  weeklyTargetTime = '00h 00m';
+  weeklyActualTime = '00h 00m';
+  weeklyDiffTime = '00h 00m';
+
   targetMinutes: number;
   actualMinutes: number;
+  weeklyTargetMinutes: number;
+  weeklyActualMinutes: number;
 
   filterDate: Moment = moment();
   doesEntryExistNow = false;
@@ -56,8 +62,8 @@ export class TimetableComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     const date = new Date();
     this.loadAllandSort();
-    this.loadTargetWorkTime(date.getFullYear(), date.getMonth() + 1);
-    this.loadActualWorkTime(date.getFullYear(), date.getMonth() + 1);
+    this.loadTargetWorkTime(date.getFullYear(), date.getMonth() + 1, moment(date).isoWeek());
+    this.loadActualWorkTime(date.getFullYear(), date.getMonth() + 1, moment(date).isoWeek());
     this.DSworkingEntries.sortingDataAccessor = this.sortingDataAccessor;
     this.DSworkingEntries.paginator = this.paginator;
     this.DSworkingEntries.sort = this.sort;
@@ -72,7 +78,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
     return item[property];
   }
 
-  loadTargetWorkTime(year: number, month: number) {
+  loadTargetWorkTime(year: number, month: number, week: number) {
     this.employeeService.targetWorkTime(year, month).subscribe(res => {
       if (res.ok) {
         this.targetMinutes = res.body;
@@ -80,9 +86,16 @@ export class TimetableComponent implements OnInit, AfterViewInit {
         this.calcDiffTargetActual();
       }
     });
+    this.employeeService.weeklyTargetWorkTime(year, week).subscribe(res => {
+      if (res.ok) {
+        this.weeklyTargetMinutes = res.body;
+        this.weeklyTargetTime = this.secondsToHHMM(res.body * 60);
+        this.calcWeeklyDiffTargetActual();
+      }
+    });
   }
 
-  loadActualWorkTime(year: number, month: number) {
+  loadActualWorkTime(year: number, month: number, week: number) {
     this.employeeService.actualWorkTime(year, month).subscribe(res => {
       if (res.ok) {
         this.actualMinutes = res.body;
@@ -90,13 +103,32 @@ export class TimetableComponent implements OnInit, AfterViewInit {
         this.calcDiffTargetActual();
       }
     });
+    this.employeeService.weeklyActualWorkTime(year, week).subscribe(res => {
+      if (res.ok) {
+        this.weeklyActualMinutes = res.body;
+        this.weeklyActualTime = this.secondsToHHMM(res.body * 60);
+        this.calcWeeklyDiffTargetActual();
+      }
+    });
+  }
+
+  calcDiffTargetActual() {
+    if (this.actualMinutes && this.targetMinutes) {
+      this.diffTime = this.secondsToHHMM(this.targetMinutes * 60 - this.actualMinutes * 60);
+    }
+  }
+
+  calcWeeklyDiffTargetActual() {
+    if (this.weeklyActualMinutes && this.weeklyTargetMinutes) {
+      this.weeklyDiffTime = this.secondsToHHMM(this.weeklyTargetMinutes * 60 - this.weeklyActualMinutes * 60);
+    }
   }
 
   filterTimeTable(date: Moment) {
     if (date) {
       this.filterDate = date;
-      this.loadTargetWorkTime(date.year(), date.month() + 1);
-      this.loadActualWorkTime(date.year(), date.month() + 1);
+      this.loadTargetWorkTime(date.year(), date.month() + 1, moment(date).isoWeek());
+      this.loadActualWorkTime(date.year(), date.month() + 1, moment(date).isoWeek());
       this.workingEntries = this.workingEntriesUnfiltered.filter(
         we => we.workDay.date.year() === date.year() && we.workDay.date.month() === date.month()
       );
@@ -104,8 +136,8 @@ export class TimetableComponent implements OnInit, AfterViewInit {
       date = moment();
       this.filterDate = date;
       this.workingEntries = this.workingEntriesUnfiltered;
-      this.loadTargetWorkTime(date.year(), date.month() + 1);
-      this.loadActualWorkTime(date.year(), date.month() + 1);
+      this.loadTargetWorkTime(date.year(), date.month() + 1, moment(date).isoWeek());
+      this.loadActualWorkTime(date.year(), date.month() + 1, moment(date).isoWeek());
     }
     this.DSworkingEntries.data = this.workingEntries;
 
@@ -141,8 +173,8 @@ export class TimetableComponent implements OnInit, AfterViewInit {
   }
 
   addNewandSort(workingEntry: WorkingEntryTimesheet) {
-    this.loadTargetWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
-    this.loadActualWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
+    this.loadTargetWorkTime(this.filterDate.year(), this.filterDate.month() + 1, moment(this.filterDate).isoWeek());
+    this.loadActualWorkTime(this.filterDate.year(), this.filterDate.month() + 1, moment(this.filterDate).isoWeek());
     this.workingEntries.push(workingEntry);
     this.workingEntries.forEach(function(entry) {
       if (entry.workDay.id === workingEntry.workDay.id) {
@@ -194,12 +226,6 @@ export class TimetableComponent implements OnInit, AfterViewInit {
     return null;
   }
 
-  calcDiffTargetActual() {
-    if (this.actualMinutes && this.targetMinutes) {
-      this.diffTime = this.secondsToHHMM(this.targetMinutes * 60 - this.actualMinutes * 60);
-    }
-  }
-
   edittimetableDialog(workingEntry: IWorkingEntryTimesheet): void {
     const dialogRef = this.dialog.open(TimetableEditDialogComponent, {
       data: workingEntry
@@ -219,8 +245,8 @@ export class TimetableComponent implements OnInit, AfterViewInit {
         const now = moment();
         this.doesEntryExistNow = this.workingEntries.some(entry => entry.start <= now && entry.end >= now);
 
-        this.loadTargetWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
-        this.loadActualWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
+        this.loadTargetWorkTime(this.filterDate.year(), this.filterDate.month() + 1, moment(this.filterDate).isoWeek());
+        this.loadActualWorkTime(this.filterDate.year(), this.filterDate.month() + 1, moment(this.filterDate).isoWeek());
       }
     });
   }
@@ -239,8 +265,8 @@ export class TimetableComponent implements OnInit, AfterViewInit {
             const now = moment();
             this.doesEntryExistNow = this.workingEntries.some(entry => entry.start <= now && entry.end >= now);
 
-            this.loadTargetWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
-            this.loadActualWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
+            this.loadTargetWorkTime(this.filterDate.year(), this.filterDate.month() + 1, moment(this.filterDate).isoWeek());
+            this.loadActualWorkTime(this.filterDate.year(), this.filterDate.month() + 1, moment(this.filterDate).isoWeek());
           }
         });
       }
