@@ -3,6 +3,7 @@ import * as jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import { IWorkingEntryTimesheet } from '../model/working-entry-timesheet.model';
 import { TableGeneratorComponent } from './table-generator/table-generator.component';
+import { loadOptions } from '@babel/core';
 
 @Injectable()
 export class PdfService {
@@ -17,13 +18,21 @@ export class PdfService {
       we.activity ? we.activity.name : ''
     ]);
     const doc = new jsPDF();
+    const logo = new Image();
+    logo.src = '../../content/images/logo.jpg';
+    const pageContent = function(data: { settings: { margin: { left: 5 } } }) {
+      if (logo) {
+        doc.addImage(logo, 'JPG', data.settings.margin.left, 0, 10, 15);
+      }
+    };
     doc.autoTable({
       head: [['Date', 'From', 'To', 'Worktime', 'Activity']],
-      body: rows
+      body: rows,
+      theme: 'grid',
+      didDrawPage: pageContent
     });
     doc.save('timesheet.pdf');
   }
-
   pad(num: number, size: number): string {
     let s = num + '';
     while (s.length < size) {
