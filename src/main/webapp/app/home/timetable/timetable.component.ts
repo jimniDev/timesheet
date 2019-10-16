@@ -61,7 +61,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     const date = new Date();
-    this.loadAllandSort();
+    this.loadWorkingEntries();
     this.loadTargetWorkTime(date.getFullYear(), date.getMonth() + 1, moment(date).isoWeek());
     this.loadActualWorkTime(date.getFullYear(), date.getMonth() + 1, moment(date).isoWeek());
     this.DSworkingEntries.sortingDataAccessor = this.sortingDataAccessor;
@@ -129,6 +129,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
       this.filterDate = date;
       this.loadTargetWorkTime(date.year(), date.month() + 1, moment(date).isoWeek());
       this.loadActualWorkTime(date.year(), date.month() + 1, moment(date).isoWeek());
+      this.loadWorkingEntries();
       this.workingEntries = this.workingEntriesUnfiltered.filter(
         we => we.workDay.date.year() === date.year() && we.workDay.date.month() === date.month()
       );
@@ -146,9 +147,9 @@ export class TimetableComponent implements OnInit, AfterViewInit {
     }
   }
 
-  loadAllandSort() {
+  loadWorkingEntries() {
     this.workingEntryService
-      .timetable()
+      .timetable(this.filterDate.year(), this.filterDate.month() + 1)
       .pipe(
         filter((res: HttpResponse<IWorkingEntryTimesheet[]>) => res.ok),
         map((res: HttpResponse<IWorkingEntryTimesheet[]>) => res.body)
@@ -176,7 +177,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
     this.loadTargetWorkTime(this.filterDate.year(), this.filterDate.month() + 1, moment(this.filterDate).isoWeek());
     this.loadActualWorkTime(this.filterDate.year(), this.filterDate.month() + 1, moment(this.filterDate).isoWeek());
     this.workingEntries.push(workingEntry);
-    this.workingEntries.forEach(function(entry) {
+    this.workingEntries.forEach(entry => {
       if (entry.workDay.id === workingEntry.workDay.id) {
         entry.workDay.totalWorkingMinutes = workingEntry.workDay.totalWorkingMinutes;
         entry.workDay.totalBreakMinutes = workingEntry.workDay.totalBreakMinutes;
