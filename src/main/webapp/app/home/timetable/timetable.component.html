@@ -1,112 +1,126 @@
-<div fxLayout="row" fxLayoutAlign="space-between" fxLayout.lt-md="column" fxLayoutGap="8px" class="container">
-    <mat-card fxFlex="50">
-        <mat-card-subtitle>Filter Timetable</mat-card-subtitle>
-        <mat-card-content>
+<div fxLayout="row" fxLayoutAlign="center stretch" fxLayoutGap="8px" class="container">
+
+
+    <div fxFlex="50" fxLayout="column" fxLayoutAlign="space-between" fxLayoutGap="" class="container">
+        <mat-card id="timetable">
+            <table mat-table [dataSource]="DSworkingEntries" matSort matSortActive="start" matSortDirection="desc">
+                <ng-container matColumnDef="workDay.date">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Date </th>
+                    <td mat-cell *matCellDef="let element; let i = index" [asRowSpan]="asRowSpan" [rowIndex]="i"
+                        colName="Date">
+                        {{element.workDay.date | date:'dd.MM.yy E'}}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="Total Worktime">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Total </th>
+                    <td mat-cell *matCellDef="let element; let i = index" [asRowSpan]="asRowSpan" [rowIndex]="i"
+                        colName="Date">
+                        {{secondsToHHMM(element.workDay.totalWorkingMinutes * 60)}}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="Break Time">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Break </th>
+                    <td mat-cell *matCellDef="let element; let i = index" [asRowSpan]="asRowSpan" [rowIndex]="i"
+                        colName="Date">
+                        {{secondsToHHMM(element.workDay.totalBreakMinutes * 60)}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="start">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Start </th>
+                    <td mat-cell *matCellDef="let element"> {{element.start | date:'HH:mm'}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="end">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> End </th>
+                    <td mat-cell *matCellDef="let element"> {{element.end | date:'HH:mm'}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="Sum">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header fxHide.lt-md="true"> Difference </th>
+                    <td mat-cell *matCellDef="let element" fxHide.lt-md="true"> {{sumDate(element.start, element.end)}}
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="Activity">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header fxHide.lt-md="true"> Activity </th>
+                    <td mat-cell *matCellDef="let element" fxHide.lt-md="true">
+                        {{element.activity ? element.activity.name : ''}} </td>
+                </ng-container>
+                <ng-container matColumnDef="Actions">
+                    <th mat-header-cell *matHeaderCellDef> </th>
+                    <td mat-cell *matCellDef="let element">
+                        <button type=button mat-icon-button color="accent" fxHide fxShow.lt-sm
+                            [disabled]="checkDate(element)" (click)="edittimetableDialog(element)">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                        <button mat-button type="button" color="accent" fxHide.lt-sm [disabled]="checkDate(element)"
+                            (click)="edittimetableDialog(element)">
+                            Edit
+                        </button>
+                        <button type=button mat-icon-button color="warn" fxHide fxShow.lt-sm
+                            [disabled]="checkDate(element)" (click)="deleteEntry(element)">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                        <button mat-button type="button" color="warn" fxHide.lt-sm [disabled]="checkDate(element)"
+                            (click)="deleteEntry(element)">
+                            Delete
+                        </button>
+                    </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+            <mat-paginator [pageSize]="10" [pageSizeOptions]="[10, 20, 50]" showFirstLastButtons>
+            </mat-paginator>
+        </mat-card>
+    </div>
+
+    <mat-card fxFlex="50" fxLayout="column" fxLayoutAlign="center stretch" fxLayout.lt-md="column" fxLayoutGap="8px"
+        class="container">
+        <!-- <mat-card fxFlex="50">
+                <mat-card-subtitle>Filter Timetable</mat-card-subtitle>
+                <mat-card-content>
+                    <jhi-year-month-select [dates]="getDatesFromWorkingEntries()" (selectedDate)="filterTimeTable($event)">
+                    </jhi-year-month-select>
+                </mat-card-content>
+            </mat-card> -->
+        <div fxLayout="column" fxLayoutAlign="space-between" fxLayout.lt-md="column" fxLayoutGap="8px"
+            class="container">
             <jhi-year-month-select [dates]="getDatesFromWorkingEntries()" (selectedDate)="filterTimeTable($event)">
             </jhi-year-month-select>
-        </mat-card-content>
-    </mat-card>
-    <div fxFlex="auto">
-        <mat-card fxFlex="auto">
-            <mat-card-subtitle>Target Time</mat-card-subtitle>
-            <mat-card-content><span class="mat-title">{{targetTime}}</span></mat-card-content>
-        </mat-card>
-        <mat-card fxFlex="auto">
-            <mat-card-subtitle>Actual Time</mat-card-subtitle>
-            <mat-card-content><span class="mat-title">{{actualTime}}</span></mat-card-content>
-        </mat-card>
-        <mat-card fxFlex="auto">
-            <mat-card-subtitle>Difference</mat-card-subtitle>
-            <mat-card-content><span class="mat-title">{{diffTime}}</span></mat-card-content>
-        </mat-card>
-    </div>
-    <div fxFlex="auto">
-        <mat-card fxFlex="auto">
-            <mat-card-subtitle>Weekly Target Time</mat-card-subtitle>
-            <mat-card-content><span class="mat-title">{{weeklyTargetTime}}</span></mat-card-content>
-        </mat-card>
-        <mat-card fxFlex="auto">
-            <mat-card-subtitle>Weekly Actual Time</mat-card-subtitle>
-            <mat-card-content><span class="mat-title">{{weeklyActualTime}}</span></mat-card-content>
-        </mat-card>
-        <mat-card fxFlex="auto">
-            <mat-card-subtitle>Weekly Difference</mat-card-subtitle>
-            <mat-card-content><span class="mat-title">{{weeklyDiffTime}}</span></mat-card-content>
-        </mat-card>
-    </div>
-</div>
-
-<div fxLayout="column" fxLayoutAlign="space-between" fxLayoutGap="" class="container">
-    <mat-card id="timetable">
-        <table mat-table [dataSource]="DSworkingEntries" matSort matSortActive="start" matSortDirection="desc">
-            <ng-container matColumnDef="workDay.date">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Date </th>
-                <td mat-cell *matCellDef="let element; let i = index" [asRowSpan]="asRowSpan" [rowIndex]="i"
-                    colName="Date">
-                    {{element.workDay.date | date:'dd.MM.yy E'}}
-                </td>
-            </ng-container>
-
-            <ng-container matColumnDef="Total Worktime">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Total </th>
-                <td mat-cell *matCellDef="let element; let i = index" [asRowSpan]="asRowSpan" [rowIndex]="i"
-                    colName="Date">
-                    {{secondsToHHMM(element.workDay.totalWorkingMinutes * 60)}}
-                </td>
-            </ng-container>
-
-            <ng-container matColumnDef="Break Time">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Break </th>
-                <td mat-cell *matCellDef="let element; let i = index" [asRowSpan]="asRowSpan" [rowIndex]="i"
-                    colName="Date">
-                    {{secondsToHHMM(element.workDay.totalBreakMinutes * 60)}} </td>
-            </ng-container>
-
-            <ng-container matColumnDef="start">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Start </th>
-                <td mat-cell *matCellDef="let element"> {{element.start | date:'HH:mm'}} </td>
-            </ng-container>
-
-            <ng-container matColumnDef="end">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> End </th>
-                <td mat-cell *matCellDef="let element"> {{element.end | date:'HH:mm'}} </td>
-            </ng-container>
-
-            <ng-container matColumnDef="Sum">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header fxHide.lt-md="true"> Difference </th>
-                <td mat-cell *matCellDef="let element" fxHide.lt-md="true"> {{sumDate(element.start, element.end)}}
-                </td>
-            </ng-container>
-            <ng-container matColumnDef="Activity">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header fxHide.lt-md="true"> Activity </th>
-                <td mat-cell *matCellDef="let element" fxHide.lt-md="true">
-                    {{element.activity ? element.activity.name : ''}} </td>
-            </ng-container>
-            <ng-container matColumnDef="Actions">
-                <th mat-header-cell *matHeaderCellDef> </th>
-                <td mat-cell *matCellDef="let element">
-                    <button type=button mat-icon-button color="accent" fxHide fxShow.lt-sm
-                        [disabled]="checkDate(element)" (click)="edittimetableDialog(element)">
-                        <mat-icon>edit</mat-icon>
-                    </button>
-                    <button mat-button type="button" color="accent" fxHide.lt-sm [disabled]="checkDate(element)"
-                        (click)="edittimetableDialog(element)">
-                        Edit
-                    </button>
-                    <button type=button mat-icon-button color="warn" fxHide fxShow.lt-sm [disabled]="checkDate(element)"
-                        (click)="deleteEntry(element)">
-                        <mat-icon>delete</mat-icon>
-                    </button>
-                    <button mat-button type="button" color="warn" fxHide.lt-sm [disabled]="checkDate(element)"
-                        (click)="deleteEntry(element)">
-                        Delete
-                    </button>
-                </td>
-            </ng-container>
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-        </table>
-        <mat-paginator [pageSize]="10" [pageSizeOptions]="[10, 20, 50]" showFirstLastButtons>
-        </mat-paginator>
+            <div fxFlex="auto" fxLayoutAlign="space-between" fxLayoutGap="8px">
+                <mat-card fxFlex="auto">
+                    <mat-card-subtitle>Target Time</mat-card-subtitle>
+                    <mat-card-content><span class="mat-title">{{targetTime}}</span></mat-card-content>
+                </mat-card>
+                <mat-card fxFlex="auto">
+                    <mat-card-subtitle>Actual Time</mat-card-subtitle>
+                    <mat-card-content><span class="mat-title">{{actualTime}}</span></mat-card-content>
+                </mat-card>
+                <mat-card fxFlex="auto">
+                    <mat-card-subtitle>Difference</mat-card-subtitle>
+                    <mat-card-content><span class="mat-title">{{diffTime}}</span></mat-card-content>
+                </mat-card>
+            </div>
+        </div>
+        <div fxLayout="column">
+            <jhi-year-month-select [dates]="getDatesFromWorkingEntries()" (selectedDate)="filterTimeTable($event)">
+            </jhi-year-month-select>
+            <div fxFlex="auto" fxLayoutAlign="space-between" fxLayoutGap="8px">
+                <mat-card fxFlex="auto">
+                    <mat-card-subtitle>Weekly Target Time</mat-card-subtitle>
+                    <mat-card-content><span class="mat-title">{{weeklyTargetTime}}</span></mat-card-content>
+                </mat-card>
+                <mat-card fxFlex="auto">
+                    <mat-card-subtitle>Weekly Actual Time</mat-card-subtitle>
+                    <mat-card-content><span class="mat-title">{{weeklyActualTime}}</span></mat-card-content>
+                </mat-card>
+                <mat-card fxFlex="auto">
+                    <mat-card-subtitle>Weekly Difference</mat-card-subtitle>
+                    <mat-card-content><span class="mat-title">{{weeklyDiffTime}}</span></mat-card-content>
+                </mat-card>
+            </div>
+        </div>
     </mat-card>
 </div>
