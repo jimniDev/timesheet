@@ -13,6 +13,29 @@ th.mat-header-cell:last-of-type {
   color: #002f5d;
 }
 
+mat-card {
+  display: inline;
+  float: left;
+}
+mat-card-subtitle {
+  float: left;
+  margin-top: 16px;
+  //display: inline;
+}
+
+mat-card-content {
+  //float: left;
+  margin-left: 10px;
+}
+
+.mat-title {
+  margin-left: 10px;
+}
+
+.timeCard {
+  box-shadow: none;
+}
+
 @media only screen and (max-width: 600px) {
   #timetable {
     padding: 0px;
