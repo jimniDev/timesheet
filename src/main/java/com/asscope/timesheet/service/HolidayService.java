@@ -59,7 +59,6 @@ public class HolidayService {
 		flexibleHolidayList.add(myDate.plusDays(1));//  Easter Monday
 		flexibleHolidayList.add(myDate.plusDays(60));// Corpus Christi
 		flexibleHolidayList.add(myDate.minusDays(2));// Good Friday
-		flexibleHolidayList.add(myDate.minusDays(2));// Good Friday
 
 		if (flexibleHolidayList.indexOf(date) != -1) {
 			return true;
