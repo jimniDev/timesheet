@@ -49,7 +49,7 @@ export class PdfService {
 
     doc.setFontSize('13');
     // doc.setFont('unineue-regular', 'normal');
-    doc.setLineWidth(0.7);
+    doc.setLineWidth(0.4);
     doc.setDrawColor(16, 24, 32);
     doc.line(data.settings.margin.left - 3, pageHeight - 25, data.settings.margin.left + 40, pageHeight - 25);
     doc.text('Signature', data.settings.margin.left + 7, pageHeight - 20);
