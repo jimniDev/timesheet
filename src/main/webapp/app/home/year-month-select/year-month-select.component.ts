@@ -10,6 +10,7 @@ import * as moment from 'moment';
 export class YearMonthSelectComponent implements OnInit, OnChanges {
   @Input() dates: Moment[] = new Array<Moment>();
   @Output() selectedDate = new EventEmitter<Moment>();
+  // @Output() pdfExportButtonFlag = new EventEmitter<Boolean>();
 
   distinctMonthsOfYear: string[] = new Array<string>();
   selectedYear: string;
@@ -27,6 +28,8 @@ export class YearMonthSelectComponent implements OnInit, OnChanges {
       this.resetButtonDisabled = false;
       this.selectedYear = year;
       this.selectedMonth = this.getDistinctMonthsFromYear()[0];
+      // this.pdfExportButtonDisabled = false;
+      // this.pdfExportButtonFlag.emit(this.pdfExportButtonDisabled);
       this.selectedDate.emit(moment(this.selectedYear + '-' + this.selectedMonth + '-01'));
     } else {
       this.selectedDate.emit(null);
@@ -36,6 +39,7 @@ export class YearMonthSelectComponent implements OnInit, OnChanges {
   onChangeMonth(month: string) {
     if (month) {
       this.resetButtonDisabled = false;
+      //this.pdfExportButtonDisabled = false;
       this.selectedMonth = month;
       this.selectedDate.emit(moment(this.selectedYear + '-' + this.selectedMonth + '-01'));
     } else {
@@ -85,6 +89,7 @@ export class YearMonthSelectComponent implements OnInit, OnChanges {
 
   resetFilter(): void {
     this.resetButtonDisabled = true;
+    // this.pdfExportButtonDisabled = false;
     this.selectedYear = null;
     this.selectedMonth = null;
     this.selectedDate.emit(null);

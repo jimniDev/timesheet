@@ -31,7 +31,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
   workingEntriesUnfiltered: IWorkingEntryTimesheet[];
   workingEntries: IWorkingEntryTimesheet[];
   DSworkingEntries = new MatTableDataSource<IWorkingEntryTimesheet>(this.workingEntries);
-
+  pdfExportButtonDisabled = true;
   displayedColumns: string[] = ['workDay.date', 'Total Worktime', 'Break Time', 'start', 'end', 'Sum', 'Activity', 'Actions'];
 
   targetTime = '00h 00m';
@@ -100,6 +100,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
 
   filterTimeTable(date: Moment) {
     if (date) {
+      this.pdfExportButtonDisabled = false;
       this.filterDate = date;
       this.loadTargetWorkTime(date.year(), date.month() + 1);
       this.loadActualWorkTime(date.year(), date.month() + 1);
@@ -109,6 +110,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
     } else {
       date = moment();
       this.filterDate = date;
+      this.pdfExportButtonDisabled = true;
       this.workingEntries = this.workingEntriesUnfiltered;
       this.loadTargetWorkTime(date.year(), date.month() + 1);
       this.loadActualWorkTime(date.year(), date.month() + 1);

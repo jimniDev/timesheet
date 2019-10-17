@@ -19,17 +19,28 @@ export class PdfService {
     ]);
     const doc = new jsPDF();
     const logo = new Image();
+    const employee = workingEntries[0].workDay.employee.user.firstName + ' ' + workingEntries[0].workDay.employee.user.lastName;
+    const month = workingEntries[0].workDay.date.format('MMMM');
     logo.src = '../../content/images/logo.jpg';
     const pageContent = function(data: { settings: { margin: { left: 5 } } }) {
       if (logo) {
-        doc.addImage(logo, 'JPG', data.settings.margin.left, 0, 10, 15);
+        doc.addImage(logo, 'JPG', data.settings.margin.left, 5, 30, 20);
+        const pageSize = doc.internal.pageSize;
+        const pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight();
+        doc.setFont('courier', 'normal');
+        doc.text('Total WorkTime :', data.settings.margin.left, pageHeight - 5);
       }
+      // doc.setFontSize('15');
+      doc.setFont('courier', 'normal');
+      doc.setFontSize('13');
+      doc.text(`Employee Name : ${employee}  Month : ${month}`, data.settings.margin.left + 30, 25);
     };
     doc.autoTable({
       head: [['Date', 'From', 'To', 'Worktime', 'Activity']],
       body: rows,
       theme: 'grid',
-      didDrawPage: pageContent
+      didDrawPage: pageContent,
+      margin: { top: 27 }
     });
     doc.save('timesheet.pdf');
   }
