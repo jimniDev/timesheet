@@ -6,6 +6,15 @@
             </jhi-year-month-select>
         </mat-card-content>
     </mat-card>
+
+    <mat-card fxFlex="50">
+        <mat-card-subtitle>Filter Timetable</mat-card-subtitle>
+        <mat-card-content>
+            <jhi-year-week-select (selectedDate)="filterTimeTableWeekly($event)">
+            </jhi-year-week-select>
+        </mat-card-content>
+    </mat-card>
+
     <div fxFlex="auto">
         <mat-card fxFlex="auto">
             <mat-card-subtitle>Target Time</mat-card-subtitle>
