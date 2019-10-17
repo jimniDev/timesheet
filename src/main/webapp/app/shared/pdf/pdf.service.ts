@@ -4,6 +4,7 @@ import 'jspdf-autotable';
 import { IWorkingEntryTimesheet } from '../model/working-entry-timesheet.model';
 import { TableGeneratorComponent } from './table-generator/table-generator.component';
 import { loadOptions } from '@babel/core';
+import { IWorkDayTimesheet } from '../model/work-day-timesheet.model';
 
 @Injectable()
 export class PdfService {
@@ -18,34 +19,48 @@ export class PdfService {
       we.activity ? we.activity.name : ''
     ]);
     const doc = new jsPDF();
-    const logo = new Image();
-    const employee = workingEntries[0].workDay.employee.user.firstName + ' ' + workingEntries[0].workDay.employee.user.lastName;
-    const month = workingEntries[0].workDay.date.format('MMMM');
-    const totalWorkTime = this.totalWorkTime(workingEntries);
-    logo.src = '../../content/images/logo.jpg';
-    const pageContent = function(data: { settings: { margin: { left: 5 } } }) {
-      if (logo) {
-        doc.addImage(logo, 'JPG', data.settings.margin.left, 5, 30, 20);
-        const pageSize = doc.internal.pageSize;
-        const pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight();
-        doc.setFontSize('13');
-        doc.setFont('courier', 'normal');
-        doc.text(`Total WorkTime :${totalWorkTime}`, data.settings.margin.left, pageHeight - 5);
-      }
-      // doc.setFontSize('15');
-      doc.setFont('courier', 'normal');
-      doc.setFontSize('13');
-      doc.text(`Employee : ${employee}  Month : ${month}`, data.settings.margin.left + 30, 25);
-    };
+
+    //   const pageContent = (data: { settings: { margin: { left: 5 } } }) => {
+
+    //   doc.addFont('../../content/fonts/unineue-heavy-webfont.ttf', 'unineue-heavy', 'normal');
+    //     doc.addFont('../../content/fonts/unineue-regular-webfont.ttf', 'unineue-regular', 'normal');
+
     doc.autoTable({
       head: [['Date', 'From', 'To', 'Worktime', 'Activity']],
       body: rows,
       theme: 'grid',
-      didDrawPage: pageContent,
+      didDrawPage: (autoTableData: any) => this.createPage(doc, workingEntries, autoTableData),
       margin: { top: 27 }
     });
     doc.save('timesheet.pdf');
   }
+
+  createPage(doc: jsPDF, workingEntries: IWorkingEntryTimesheet[], data: any): void {
+    const logo = new Image();
+    const pageSize = doc.internal.pageSize;
+    const pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight();
+    logo.src = '../../content/images/logo.jpg';
+    if (logo) {
+      doc.addImage(logo, 'JPG', data.settings.margin.left + 150, pageHeight - 27, 24, 10);
+    }
+    const employee = workingEntries[0].workDay.employee.user.firstName + ' ' + workingEntries[0].workDay.employee.user.lastName;
+    const month = workingEntries[0].workDay.date.format('MMMM');
+    const totalWorkTime = this.totalWorkTime(workingEntries);
+
+    doc.setFontSize('13');
+    // doc.setFont('unineue-regular', 'normal');
+    doc.setLineWidth(0.7);
+    doc.setDrawColor(16, 24, 32);
+    doc.line(data.settings.margin.left - 3, pageHeight - 25, data.settings.margin.left + 40, pageHeight - 25);
+    doc.text('Signature', data.settings.margin.left + 7, pageHeight - 20);
+    doc.text(`Total WorkTime :${totalWorkTime}`, data.settings.margin.left + 60, pageHeight - 20);
+
+    // doc.setFontSize('15');
+    // doc.setFont('unineue-regular', 'normal');
+    doc.setFontSize('13');
+    doc.text(`Employee : ${employee}  Month : ${month}`, data.settings.margin.left, 25);
+  }
+
   pad(num: number, size: number): string {
     let s = num + '';
     while (s.length < size) {
@@ -53,6 +68,7 @@ export class PdfService {
     }
     return s;
   }
+
   totalWorkTime(data: IWorkingEntryTimesheet[]): string {
     let tempWorkTime = 0;
     // let hours = 0;
@@ -66,7 +82,8 @@ export class PdfService {
   }
 
   secondsToHHMM(seconds: number): string {
-    const hour = Math.round(seconds / 3600);
+    // const hour = Math.round(seconds / 3600);
+    const hour = Math.floor(seconds / 3600);
     const min = Math.round((seconds % 3600) / 60);
     return this.pad(hour, 2) + 'h ' + this.pad(min, 2) + 'm';
   }

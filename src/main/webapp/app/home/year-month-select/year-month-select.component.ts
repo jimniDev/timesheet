@@ -39,7 +39,7 @@ export class YearMonthSelectComponent implements OnInit, OnChanges {
   onChangeMonth(month: string) {
     if (month) {
       this.resetButtonDisabled = false;
-      //this.pdfExportButtonDisabled = false;
+      // this.pdfExportButtonDisabled = false;
       this.selectedMonth = month;
       this.selectedDate.emit(moment(this.selectedYear + '-' + this.selectedMonth + '-01'));
     } else {
