@@ -85,6 +85,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
   }
 
   createPDF(): void {
+    this.workingEntries.sort((a, b) => a.workDay.date.valueOf() - b.workDay.date.valueOf());
     this.pdfSerice.createPDF(this.workingEntries);
   }
 

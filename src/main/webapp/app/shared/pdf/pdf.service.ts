@@ -21,19 +21,21 @@ export class PdfService {
     const logo = new Image();
     const employee = workingEntries[0].workDay.employee.user.firstName + ' ' + workingEntries[0].workDay.employee.user.lastName;
     const month = workingEntries[0].workDay.date.format('MMMM');
+    const totalWorkTime = this.totalWorkTime(workingEntries);
     logo.src = '../../content/images/logo.jpg';
     const pageContent = function(data: { settings: { margin: { left: 5 } } }) {
       if (logo) {
         doc.addImage(logo, 'JPG', data.settings.margin.left, 5, 30, 20);
         const pageSize = doc.internal.pageSize;
         const pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight();
+        doc.setFontSize('13');
         doc.setFont('courier', 'normal');
-        doc.text('Total WorkTime :', data.settings.margin.left, pageHeight - 5);
+        doc.text(`Total WorkTime :${totalWorkTime}`, data.settings.margin.left, pageHeight - 5);
       }
       // doc.setFontSize('15');
       doc.setFont('courier', 'normal');
       doc.setFontSize('13');
-      doc.text(`Employee Name : ${employee}  Month : ${month}`, data.settings.margin.left + 30, 25);
+      doc.text(`Employee : ${employee}  Month : ${month}`, data.settings.margin.left + 30, 25);
     };
     doc.autoTable({
       head: [['Date', 'From', 'To', 'Worktime', 'Activity']],
@@ -50,6 +52,17 @@ export class PdfService {
       s = '0' + s;
     }
     return s;
+  }
+  totalWorkTime(data: IWorkingEntryTimesheet[]): string {
+    let tempWorkTime = 0;
+    // let hours = 0;
+    // let minutes = 0;
+    const length = data.length;
+    let i = 0;
+    for (i = 0; i < length; i++) {
+      tempWorkTime = tempWorkTime + data[i].end.diff(data[i].start, 'seconds', true);
+    }
+    return this.secondsToHHMM(tempWorkTime);
   }
 
   secondsToHHMM(seconds: number): string {
