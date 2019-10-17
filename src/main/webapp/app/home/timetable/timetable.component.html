@@ -1,8 +1,6 @@
-<div fxLayout="row" fxLayoutAlign="center stretch" fxLayoutGap="8px" class="container">
-
-
+<div fxLayout="row" fxLayoutAlign="center stretch" fxLayout.lt-lg="column-reverse" fxLayoutGap="8px" class="container">
     <div fxFlex="auto" fxLayout="column" fxLayoutAlign="space-between" fxLayoutGap="" class="container"
-        fxLayoutGap="16px">
+        fxLayoutGap="8px">
         <mat-card id=" timetable">
             <table mat-table [dataSource]="DSworkingEntries" matSort matSortActive="start" matSortDirection="desc">
                 <ng-container matColumnDef="workDay.date">
@@ -51,19 +49,19 @@
                 <ng-container matColumnDef="Actions">
                     <th mat-header-cell *matHeaderCellDef> </th>
                     <td mat-cell *matCellDef="let element">
-                        <button type=button mat-icon-button color="accent" fxHide fxShow.lt-sm
+                        <button type=button mat-icon-button color="accent" fxHide fxShow.lt-md
                             [disabled]="checkDate(element)" (click)="edittimetableDialog(element)">
                             <mat-icon>edit</mat-icon>
                         </button>
-                        <button mat-button type="button" color="accent" fxHide.lt-sm [disabled]="checkDate(element)"
+                        <button mat-button type="button" color="accent" fxHide.lt-md [disabled]="checkDate(element)"
                             (click)="edittimetableDialog(element)">
                             Edit
                         </button>
-                        <button type=button mat-icon-button color="warn" fxHide fxShow.lt-sm
+                        <button type=button mat-icon-button color="warn" fxHide fxShow.lt-md
                             [disabled]="checkDate(element)" (click)="deleteEntry(element)">
                             <mat-icon>delete</mat-icon>
                         </button>
-                        <button mat-button type="button" color="warn" fxHide.lt-sm [disabled]="checkDate(element)"
+                        <button mat-button type="button" color="warn" fxHide.lt-md [disabled]="checkDate(element)"
                             (click)="deleteEntry(element)">
                             Delete
                         </button>
@@ -77,14 +75,13 @@
         </mat-card>
     </div>
 
-    <mat-card fxFlex="20" fxLayout="column" fxLayoutAlign="center stretch" fxLayout.lt-md="column" fxLayoutGap="16px"
+    <mat-card fxFlex="20" fxFlex.lt-xl="30" fxLayout="column" fxLayoutAlign="center stretch" fxLayoutGap="8px"
         class="container">
-        <div fxLayout="column" fxLayoutAlign="space-between" fxLayout.lt-md="column" fxLayoutGap="8px"
-            class="container">
+        <div fxLayout="column">
             <jhi-year-month-select [dates]="getDatesFromWorkingEntries()" (selectedDate)="filterTimeTable($event)">
             </jhi-year-month-select>
             <div fxFlex="auto" fxLayoutAlign="space-between" fxLayoutGap="8px">
-                <mat-card class="timeCard" fxFlex="auto">
+                <mat-card class="timeCard" fxFlex="auto" fxHide.lt-lg="true">
                     <mat-card-subtitle>Target Time</mat-card-subtitle>
                     <mat-card-content><span class="mat-title">{{targetTime}}</span></mat-card-content>
                     <mat-card-subtitle>Actual Time</mat-card-subtitle>
@@ -92,13 +89,22 @@
                     <mat-card-subtitle>Difference</mat-card-subtitle>
                     <mat-card-content><span class="mat-title">{{diffTime}}</span></mat-card-content>
                 </mat-card>
+                <mat-card class="timeCard" fxHide fxShow.lt-lg>
+                    <mat-card-subtitle>Target</mat-card-subtitle>
+                    <mat-title>{{targetTime}}</mat-title>
+                    <mat-card-subtitle>Actual</mat-card-subtitle>
+                    <mat-title>{{actualTime}}</mat-title>
+                    <mat-card-subtitle>Diff</mat-card-subtitle>
+                    <mat-title>{{diffTime}}</mat-title>
+                </mat-card>
             </div>
         </div>
         <div fxLayout="column">
             <jhi-year-month-select [dates]="getDatesFromWorkingEntries()" (selectedDate)="filterTimeTable($event)">
             </jhi-year-month-select>
             <div fxFlex="auto" fxLayoutAlign="space-between" fxLayoutGap="8px">
-                <mat-card class="timeCard" fxFlex="auto">
+                <mat-card class="timeCard" fxFlex="auto" fxLayout="column" fxLayoutAlign="start start"
+                    fxLayout.lt-lg="row">
                     <mat-card-subtitle>Weekly Target Time</mat-card-subtitle>
                     <mat-card-content><span class="mat-title">{{weeklyTargetTime}}</span></mat-card-content>
                     <mat-card-subtitle>Weekly Actual Time</mat-card-subtitle>
