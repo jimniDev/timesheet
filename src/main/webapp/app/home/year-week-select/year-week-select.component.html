@@ -1,0 +1,21 @@
+<div fxLayout="row" fxLayoutAlign="center stretch" fxLayout.lt-lg="column" fxLayoutGap="8px">
+        <mat-form-field fxFlex="auto">
+            <mat-label>Year</mat-label>
+            <mat-select [value]="selectedYear" (selectionChange)="onChangeYear($event)">
+                <mat-option *ngFor="let year of years" [value]="year">
+                    {{year}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    
+        <mat-form-field fxFlex="auto">
+            <mat-label>Week</mat-label>
+            <mat-select [value]="selectedWeek" (selectionChange)="onChangeWeek($event)">
+                <mat-option *ngFor="let week of weeks" [value]="week">
+                    {{week}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <!-- <button mat-button type="button" color="primary" (click)="resetFilter()"
+            [disabled]="resetButtonDisabled? true : null">Reset</button> -->
+    </div>
