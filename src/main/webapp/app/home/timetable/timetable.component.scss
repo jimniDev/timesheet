@@ -1,6 +1,6 @@
 div:nth-child(1) > div > mat-card:nth-child(1),
 div:nth-child(1) > div > mat-card:nth-child(2) {
-  margin-right: 8px;
+  //margin-right: 8px;
 }
 td.mat-cell:last-of-type,
 td.mat-footer-cell:last-of-type,
@@ -15,19 +15,20 @@ th.mat-header-cell:last-of-type {
 
 mat-card {
   display: inline;
-  float: left;
 }
+
 mat-card-subtitle {
   float: left;
   margin-top: 16px;
   //display: inline;
   width: 130px;
   line-height: 24px;
+  //color: #002f5d;
 }
 
 mat-card-content {
-  //float: left;
   margin-left: 10px;
+  //color: #002f5d;
 }
 
 .mat-title {
@@ -36,6 +37,11 @@ mat-card-content {
 
 .timeCard {
   box-shadow: none;
+}
+
+jhi-year-month-select {
+  margin-left: 16px;
+  // margin-right: 16px;
 }
 
 @media only screen and (max-width: 600px) {

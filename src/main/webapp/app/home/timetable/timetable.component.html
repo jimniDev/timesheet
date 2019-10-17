@@ -77,15 +77,8 @@
         </mat-card>
     </div>
 
-    <mat-card fxFlex="15" fxLayout="column" fxLayoutAlign="center stretch" fxLayout.lt-md="column" fxLayoutGap="16px"
+    <mat-card fxFlex="20" fxLayout="column" fxLayoutAlign="center stretch" fxLayout.lt-md="column" fxLayoutGap="16px"
         class="container">
-        <!-- <mat-card fxFlex="50">
-                <mat-card-subtitle>Filter Timetable</mat-card-subtitle>
-                <mat-card-content>
-                    <jhi-year-month-select [dates]="getDatesFromWorkingEntries()" (selectedDate)="filterTimeTable($event)">
-                    </jhi-year-month-select>
-                </mat-card-content>
-            </mat-card> -->
         <div fxLayout="column" fxLayoutAlign="space-between" fxLayout.lt-md="column" fxLayoutGap="8px"
             class="container">
             <jhi-year-month-select [dates]="getDatesFromWorkingEntries()" (selectedDate)="filterTimeTable($event)">
@@ -109,7 +102,8 @@
                     <mat-card-subtitle>Weekly Target Time</mat-card-subtitle>
                     <mat-card-content><span class="mat-title">{{weeklyTargetTime}}</span></mat-card-content>
                     <mat-card-subtitle>Weekly Actual Time</mat-card-subtitle>
-                    <mat-card-content><span class="mat-title">{{weeklyActualTime}}</span></mat-card-content>
+                    <mat-card-content><span class=" mat-title">{{weeklyActualTime}}</span>
+                    </mat-card-content>
                     <mat-card-subtitle>Weekly Difference</mat-card-subtitle>
                     <mat-card-content><span class="mat-title">{{weeklyDiffTime}}</span></mat-card-content>
                 </mat-card>
