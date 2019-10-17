@@ -181,7 +181,7 @@ public class EmployeeService {
 			if(!dayOW.equals(DayOfWeek.SATURDAY) && !dayOW.equals(DayOfWeek.SUNDAY)) {
 				dates.add(LocalDate.ofYearDay(year, 125)
 				.with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, isoWeek)
-				.with(TemporalAdjusters.previousOrSame(dayOW)));
+				.with(dayOW));
 			}
 		}
 		return dates;
