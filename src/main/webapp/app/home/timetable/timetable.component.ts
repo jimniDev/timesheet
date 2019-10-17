@@ -126,7 +126,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
   }
 
   calcWeeklyDiffTargetActual() {
-    if (this.weeklyTargetMinutes && this.weeklyTargetMinutes) {
+    if (this.weeklyActualMinutes && this.weeklyTargetMinutes) {
       this.weeklyDiffTime = this.secondsToHHMM(this.weeklyTargetMinutes * 60 - this.weeklyActualMinutes * 60);
     }
   }
