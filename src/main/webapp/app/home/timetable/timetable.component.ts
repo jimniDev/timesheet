@@ -13,6 +13,7 @@ import { Moment } from 'moment';
 import { filter, map } from 'rxjs/operators';
 import { TimetableEditDialogComponent } from '../timetable-edit-dialog/timetable-edit-dialog.component';
 import { TimetableDeleteDialogComponent } from '../timetable-delete-dialog/timetable-delete-dialog.component';
+import { YearWeek } from '../year-week-select/year-week-select.component';
 
 @Component({
   selector: 'jhi-timetable',
@@ -86,6 +87,9 @@ export class TimetableComponent implements OnInit, AfterViewInit {
         this.calcDiffTargetActual();
       }
     });
+  }
+
+  loadTargetWorkTimeWeekly(year: number, week: number) {
     this.employeeService.weeklyTargetWorkTime(year, week).subscribe(res => {
       if (res.ok) {
         this.weeklyTargetMinutes = res.body;
@@ -103,6 +107,9 @@ export class TimetableComponent implements OnInit, AfterViewInit {
         this.calcDiffTargetActual();
       }
     });
+  }
+
+  loadActualWorkTimeWeekly(year: number, week: number) {
     this.employeeService.weeklyActualWorkTime(year, week).subscribe(res => {
       if (res.ok) {
         this.weeklyActualMinutes = res.body;
@@ -139,6 +146,22 @@ export class TimetableComponent implements OnInit, AfterViewInit {
       this.workingEntries = this.workingEntriesUnfiltered;
       this.loadTargetWorkTime(date.year(), date.month() + 1, moment(date).isoWeek());
       this.loadActualWorkTime(date.year(), date.month() + 1, moment(date).isoWeek());
+    }
+    this.DSworkingEntries.data = this.workingEntries;
+
+    if (this.DSworkingEntries.paginator) {
+      this.DSworkingEntries.paginator.firstPage(); // go to the first page if filter changed
+    }
+  }
+
+  filterTimeTableWeekly(date: YearWeek) {
+    if (date) {
+      this.loadTargetWorkTimeWeekly(parseInt(date.year, 10), parseInt(date.week, 10));
+      this.loadActualWorkTimeWeekly(parseInt(date.year, 10), parseInt(date.week, 10));
+    } else {
+      this.workingEntries = this.workingEntriesUnfiltered;
+      this.loadTargetWorkTimeWeekly(parseInt(date.year, 10), parseInt(date.week, 10));
+      this.loadActualWorkTimeWeekly(parseInt(date.year, 10), parseInt(date.week, 10));
     }
     this.DSworkingEntries.data = this.workingEntries;
 
