@@ -15,17 +15,7 @@ mat-card {
 
 mat-card-subtitle {
   float: left;
-  margin-top: 16px;
-  width: 130px;
   line-height: 24px;
-
-  //color: #002f5d;
-}
-
-mat-card-content {
-  margin-left: 8px;
-  margin-right: 16px;
-  //color: #002f5d;
 }
 
 .mat-title {
@@ -40,25 +30,31 @@ jhi-year-month-select {
   margin-left: 16px;
 }
 
-@media only screen and (max-width: 1279px) {
+@media only screen and (min-width: 1280px) {
+  mat-card {
+    padding-top: 0px;
+    padding-bottom: 0px;
+    margin-bottom: 0px;
+  }
+
+  mat-card-subtitle {
+    width: 150px;
+  }
+}
+
+@media only screen and (max-width: 599px) {
   mat-card-subtitle {
     float: left;
-    margin-top: 0px;
-    width: 40px;
-    line-height: 16px;
+  }
+
+  mat-card > div:nth-child(2) > div > mat-card:nth-child(4),
+  mat-card > div:nth-child(1) > div > mat-card:nth-child(4) {
     margin-left: 16px;
-    //color: #002f5d;
   }
 
   mat-title {
-    float: left;
-    width: 80px;
+    float: none;
     margin-left: 10px;
-  }
-
-  .mat-card-subtitle:not(:first-child),
-  .mat-card-title:not(:first-child) {
-    margin-top: 0px;
   }
 
   mat-card {

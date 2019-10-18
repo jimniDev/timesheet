@@ -80,38 +80,60 @@
         <div fxLayout="column">
             <jhi-year-month-select [dates]="getDatesFromWorkingEntries()" (selectedDate)="filterTimeTable($event)">
             </jhi-year-month-select>
-            <div fxFlex="auto" fxLayoutAlign="space-between" fxLayoutGap="8px">
-                <mat-card class="timeCard" fxFlex="auto" fxHide.lt-lg="true">
+            <div fxFlex="auto" fxLayout="column" fxLayout.lt-lg="row" fxLayoutAlign="space-between" fxLayoutGap="8px">
+                <mat-card class="timeCard" fxFlex="auto" fxHide.lt-sm="true">
                     <mat-card-subtitle>Target Time</mat-card-subtitle>
                     <mat-card-content><span class="mat-title">{{targetTime}}</span></mat-card-content>
+                </mat-card>
+                <mat-card class="timeCard" fxFlex="auto" fxHide.lt-sm="true">
                     <mat-card-subtitle>Actual Time</mat-card-subtitle>
                     <mat-card-content><span class="mat-title">{{actualTime}}</span></mat-card-content>
+                </mat-card>
+                <mat-card class="timeCard" fxFlex="auto" fxHide.lt-sm="true">
                     <mat-card-subtitle>Difference</mat-card-subtitle>
                     <mat-card-content><span class="mat-title">{{diffTime}}</span></mat-card-content>
                 </mat-card>
-                <mat-card class="timeCard" fxHide fxShow.lt-lg>
-                    <mat-card-subtitle>Target</mat-card-subtitle>
+                <mat-card class="timeCard" fxFlex="auto" fxHide fxShow.lt-sm>
+                    <mat-card-subtitle>target</mat-card-subtitle>
                     <mat-title>{{targetTime}}</mat-title>
-                    <mat-card-subtitle>Actual</mat-card-subtitle>
+                </mat-card>
+                <mat-card class="timeCard" fxFlex="auto" fxHide fxShow.lt-sm>
+                    <mat-card-subtitle>actual</mat-card-subtitle>
                     <mat-title>{{actualTime}}</mat-title>
-                    <mat-card-subtitle>Diff</mat-card-subtitle>
-                    <mat-title>{{diffTime}}</mat-title>
+                </mat-card>
+                <mat-card class="timeCard" fxFlex="auto" fxHide fxShow.lt-sm fxHide.xs="true">
+                    <mat-card-subtitle fxHide.xs="true">diff</mat-card-subtitle>
+                    <mat-title fxHide.xs="true">{{diffTime}}</mat-title>
                 </mat-card>
             </div>
         </div>
         <div fxLayout="column">
             <jhi-year-month-select [dates]="getDatesFromWorkingEntries()" (selectedDate)="filterTimeTable($event)">
             </jhi-year-month-select>
-            <div fxFlex="auto" fxLayoutAlign="space-between" fxLayoutGap="8px">
-                <mat-card class="timeCard" fxFlex="auto" fxLayout="column" fxLayoutAlign="start start"
-                    fxLayout.lt-lg="row">
+            <div fxFlex="auto" fxLayout="column" fxLayout.lt-lg="row" fxLayoutAlign="space-between" fxLayoutGap="8px">
+                <mat-card class="timeCard" fxFlex="auto" fxHide.lt-sm="true">
                     <mat-card-subtitle>Weekly Target Time</mat-card-subtitle>
                     <mat-card-content><span class="mat-title">{{weeklyTargetTime}}</span></mat-card-content>
+                </mat-card>
+                <mat-card class="timeCard" fxFlex="auto" fxHide.lt-sm="true">
                     <mat-card-subtitle>Weekly Actual Time</mat-card-subtitle>
-                    <mat-card-content><span class=" mat-title">{{weeklyActualTime}}</span>
-                    </mat-card-content>
+                    <mat-card-content><span class="mat-title">{{weeklyActualTime}}</span></mat-card-content>
+                </mat-card>
+                <mat-card class="timeCard" fxFlex="auto" fxHide.lt-sm="true">
                     <mat-card-subtitle>Weekly Difference</mat-card-subtitle>
                     <mat-card-content><span class="mat-title">{{weeklyDiffTime}}</span></mat-card-content>
+                </mat-card>
+                <mat-card class="timeCard" fxFlex="auto" fxHide fxShow.lt-sm>
+                    <mat-card-subtitle>w.target</mat-card-subtitle>
+                    <mat-title>{{weeklyTargetTime}}</mat-title>
+                </mat-card>
+                <mat-card class="timeCard" fxFlex="auto" fxHide fxShow.lt-sm>
+                    <mat-card-subtitle>w.actual</mat-card-subtitle>
+                    <mat-title>{{weeklyActualTime}}</mat-title>
+                </mat-card>
+                <mat-card class="timeCard" fxFlex="auto" fxHide fxShow.lt-sm fxHide.xs="true">
+                    <mat-card-subtitle fxHide.xs="true">w.diff</mat-card-subtitle>
+                    <mat-title fxHide.xs="true">{{weeklyDiffTime}}</mat-title>
                 </mat-card>
             </div>
         </div>
