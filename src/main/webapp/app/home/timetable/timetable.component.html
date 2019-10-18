@@ -108,8 +108,8 @@
             </div>
         </div>
         <div fxLayout="column">
-            <jhi-year-month-select [dates]="getDatesFromWorkingEntries()" (selectedDate)="filterTimeTable($event)">
-            </jhi-year-month-select>
+            <jhi-year-week-select [dates]="getDatesFromWorkingEntries()" (selectedDate)="filterTimeTable($event)">
+            </jhi-year-week-select>
             <div fxFlex="auto" fxLayout="column" fxLayout.lt-lg="row" fxLayoutAlign="space-between" fxLayoutGap="8px">
                 <mat-card class="timeCard" fxFlex="auto" fxHide.lt-sm="true">
                     <mat-card-subtitle>Weekly Target Time</mat-card-subtitle>

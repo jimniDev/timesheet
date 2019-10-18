@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -106,21 +107,21 @@ public class WorkingEntryService {
     }
 
     @Transactional(readOnly = true)
-    public List<WorkingEntry> findAllByEmployee(Principal principal, int year, Optional<Integer> month) {
+    public Set<WorkingEntry> findAllByEmployee(Principal principal, int year, Optional<Integer> month) {
         log.debug("Request to get all WorkingEntries by Employee, Year and Month.");
-        List<WorkingEntry> workingEntries = List.of();
+        Set<WorkingEntry> workingEntries = Set.of();
         Optional<Employee> oEmployee = this.employeeService.findOneByUsername(principal.getName());
-        if (oEmployee.isPresent()) {
-        	workingEntries = this.workingEntryRepository.findAllActiveWorkingEntriesByEmployee(oEmployee.get())
-        			.stream()
-        			.filter(we -> {
-        				if (month.isPresent()) {
-        					return (we.getWorkDay().getDate().getYear() == year) && (we.getWorkDay().getDate().getMonthValue() == month.get());
-        				} else {
-        					return we.getWorkDay().getDate().getYear() == year;
-        				}
-        			})
-        			.collect(Collectors.toList());
+        if (oEmployee.isPresent() && month.isPresent()) {
+        	workingEntries = this.workingEntryRepository.findAllActiveWorkingEntriesByEmployeeAndDate(oEmployee.get(), year, month.get());
+//        			.stream()
+//        			.filter(we -> {
+//        				if (month.isPresent()) {
+//        					return (we.getWorkDay().getDate().getYear() == year) && (we.getWorkDay().getDate().getMonthValue() == month.get());
+//        				} else {
+//        					return we.getWorkDay().getDate().getYear() == year;
+//        				}
+//        			})
+//        			.collect(Collectors.toList());
         }
         return workingEntries;
     }

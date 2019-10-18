@@ -26,7 +26,8 @@ mat-card-subtitle {
   box-shadow: none;
 }
 
-jhi-year-month-select {
+jhi-year-month-select,
+jhi-year-week-select {
   margin-left: 16px;
 }
 
@@ -50,6 +51,7 @@ jhi-year-month-select {
   mat-card > div:nth-child(2) > div > mat-card:nth-child(4),
   mat-card > div:nth-child(1) > div > mat-card:nth-child(4) {
     margin-left: 16px;
+    margin-right: 16px;
   }
 
   mat-title {

@@ -13,6 +13,7 @@ import { Moment } from 'moment';
 import { filter, map } from 'rxjs/operators';
 import { TimetableEditDialogComponent } from '../timetable-edit-dialog/timetable-edit-dialog.component';
 import { TimetableDeleteDialogComponent } from '../timetable-delete-dialog/timetable-delete-dialog.component';
+import { YearWeek } from '../year-week-select/year-week-select.component';
 
 @Component({
   selector: 'jhi-timetable',
@@ -61,7 +62,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     const date = new Date();
-    this.loadAllandSort();
+    this.loadWorkingEntries();
     this.loadTargetWorkTime(date.getFullYear(), date.getMonth() + 1, moment(date).isoWeek());
     this.loadActualWorkTime(date.getFullYear(), date.getMonth() + 1, moment(date).isoWeek());
     this.DSworkingEntries.sortingDataAccessor = this.sortingDataAccessor;
@@ -86,6 +87,9 @@ export class TimetableComponent implements OnInit, AfterViewInit {
         this.calcDiffTargetActual();
       }
     });
+  }
+
+  loadTargetWorkTimeWeekly(year: number, week: number) {
     this.employeeService.weeklyTargetWorkTime(year, week).subscribe(res => {
       if (res.ok) {
         this.weeklyTargetMinutes = res.body;
@@ -103,6 +107,9 @@ export class TimetableComponent implements OnInit, AfterViewInit {
         this.calcDiffTargetActual();
       }
     });
+  }
+
+  loadActualWorkTimeWeekly(year: number, week: number) {
     this.employeeService.weeklyActualWorkTime(year, week).subscribe(res => {
       if (res.ok) {
         this.weeklyActualMinutes = res.body;
@@ -129,6 +136,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
       this.filterDate = date;
       this.loadTargetWorkTime(date.year(), date.month() + 1, moment(date).isoWeek());
       this.loadActualWorkTime(date.year(), date.month() + 1, moment(date).isoWeek());
+      this.loadWorkingEntries();
       this.workingEntries = this.workingEntriesUnfiltered.filter(
         we => we.workDay.date.year() === date.year() && we.workDay.date.month() === date.month()
       );
@@ -146,9 +154,25 @@ export class TimetableComponent implements OnInit, AfterViewInit {
     }
   }
 
-  loadAllandSort() {
+  filterTimeTableWeekly(date: YearWeek) {
+    if (date) {
+      this.loadTargetWorkTimeWeekly(parseInt(date.year, 10), parseInt(date.week, 10));
+      this.loadActualWorkTimeWeekly(parseInt(date.year, 10), parseInt(date.week, 10));
+    } else {
+      this.workingEntries = this.workingEntriesUnfiltered;
+      this.loadTargetWorkTimeWeekly(parseInt(date.year, 10), parseInt(date.week, 10));
+      this.loadActualWorkTimeWeekly(parseInt(date.year, 10), parseInt(date.week, 10));
+    }
+    this.DSworkingEntries.data = this.workingEntries;
+
+    if (this.DSworkingEntries.paginator) {
+      this.DSworkingEntries.paginator.firstPage(); // go to the first page if filter changed
+    }
+  }
+
+  loadWorkingEntries() {
     this.workingEntryService
-      .timetable()
+      .timetable(this.filterDate.year(), this.filterDate.month() + 1)
       .pipe(
         filter((res: HttpResponse<IWorkingEntryTimesheet[]>) => res.ok),
         map((res: HttpResponse<IWorkingEntryTimesheet[]>) => res.body)
@@ -176,7 +200,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
     this.loadTargetWorkTime(this.filterDate.year(), this.filterDate.month() + 1, moment(this.filterDate).isoWeek());
     this.loadActualWorkTime(this.filterDate.year(), this.filterDate.month() + 1, moment(this.filterDate).isoWeek());
     this.workingEntries.push(workingEntry);
-    this.workingEntries.forEach(function(entry) {
+    this.workingEntries.forEach(entry => {
       if (entry.workDay.id === workingEntry.workDay.id) {
         entry.workDay.totalWorkingMinutes = workingEntry.workDay.totalWorkingMinutes;
         entry.workDay.totalBreakMinutes = workingEntry.workDay.totalBreakMinutes;

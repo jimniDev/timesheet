@@ -11,6 +11,7 @@ import { AsLayoutsModule } from 'app/as-layouts/as-layouts.module';
 import { HomeDialogComponent } from './home-dialog/home-dialog.component';
 import { TimetableEditDialogComponent } from './timetable-edit-dialog/timetable-edit-dialog.component';
 import { TimetableDeleteDialogComponent } from './timetable-delete-dialog/timetable-delete-dialog.component';
+import { YearWeekSelectComponent } from './year-week-select/year-week-select.component';
 
 @NgModule({
   imports: [TimesheetSharedModule, RouterModule.forChild([HOME_ROUTE]), ReactiveFormsModule, AsLayoutsModule],
@@ -22,7 +23,8 @@ import { TimetableDeleteDialogComponent } from './timetable-delete-dialog/timeta
     YearMonthSelectComponent,
     HomeDialogComponent,
     TimetableEditDialogComponent,
-    TimetableDeleteDialogComponent
+    TimetableDeleteDialogComponent,
+    YearWeekSelectComponent
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   entryComponents: [HomeDialogComponent, TimetableComponent, TimetableEditDialogComponent, TimetableDeleteDialogComponent]

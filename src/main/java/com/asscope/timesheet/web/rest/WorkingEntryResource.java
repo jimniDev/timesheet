@@ -23,6 +23,7 @@ import java.net.URISyntaxException;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * REST controller for managing {@link com.asscope.timesheet.domain.WorkingEntry}.
@@ -203,7 +204,7 @@ public class WorkingEntryResource {
     
     @GetMapping({"employees/me/working-entries/year/{year}", "employees/me/working-entries/year/{year}/month/{month}"})
     @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
-    public ResponseEntity<List<WorkingEntry>> getWorkingEntriesByDateForCurrentUser(Principal principal, @PathVariable("year") int year, @PathVariable("month") Optional<Integer> month) {
+    public ResponseEntity<Set<WorkingEntry>> getWorkingEntriesByDateForCurrentUser(Principal principal, @PathVariable("year") int year, @PathVariable("month") Optional<Integer> month) {
     	log.debug("REST request to get WorkingEntries for Employee : {}", principal.getName());
     	return ResponseEntity.ok().body(this.workingEntryService.findAllByEmployee(principal, year, month));
     }
