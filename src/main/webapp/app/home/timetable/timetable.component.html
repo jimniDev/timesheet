@@ -78,7 +78,7 @@
     <mat-card fxFlex="20" fxFlex.lt-xl="30" fxLayout="column" fxLayoutAlign="center stretch" fxLayoutGap="8px"
         class="container">
         <div fxLayout="column">
-            <jhi-year-month-select [dates]="getDatesFromWorkingEntries()" (selectedDate)="filterTimeTable($event)">
+            <jhi-year-month-select (selectedDate)="filterTimeTable($event)">
             </jhi-year-month-select>
             <div fxFlex="auto" fxLayout="column" fxLayout.lt-lg="row" fxLayoutAlign="space-between" fxLayoutGap="8px">
                 <mat-card class="timeCard" fxFlex="auto" fxHide.lt-sm="true">
@@ -108,7 +108,7 @@
             </div>
         </div>
         <div fxLayout="column">
-            <jhi-year-week-select [dates]="getDatesFromWorkingEntries()" (selectedDate)="filterTimeTable($event)">
+            <jhi-year-week-select (selectedDate)="filterTimeTableWeekly($event)">
             </jhi-year-week-select>
             <div fxFlex="auto" fxLayout="column" fxLayout.lt-lg="row" fxLayoutAlign="space-between" fxLayoutGap="8px">
                 <mat-card class="timeCard" fxFlex="auto" fxHide.lt-sm="true">

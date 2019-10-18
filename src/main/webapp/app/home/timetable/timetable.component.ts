@@ -14,6 +14,7 @@ import { filter, map } from 'rxjs/operators';
 import { TimetableEditDialogComponent } from '../timetable-edit-dialog/timetable-edit-dialog.component';
 import { TimetableDeleteDialogComponent } from '../timetable-delete-dialog/timetable-delete-dialog.component';
 import { YearWeek } from '../year-week-select/year-week-select.component';
+import { YearMonth } from '../year-month-select/year-month-select.component';
 
 @Component({
   selector: 'jhi-timetable',
@@ -61,10 +62,12 @@ export class TimetableComponent implements OnInit, AfterViewInit {
   ngOnInit() {}
 
   ngAfterViewInit() {
-    const date = new Date();
-    this.loadWorkingEntries();
-    this.loadTargetWorkTime(date.getFullYear(), date.getMonth() + 1, moment(date).isoWeek());
-    this.loadActualWorkTime(date.getFullYear(), date.getMonth() + 1, moment(date).isoWeek());
+    const date = moment();
+    this.loadWorkingEntries(date.year(), date.month() + 1);
+    this.loadTargetWorkTime(date.year(), date.month() + 1);
+    this.loadActualWorkTime(date.year(), date.month() + 1);
+    this.loadActualWorkTimeWeekly(date.year(), date.isoWeek());
+    this.loadTargetWorkTimeWeekly(date.year(), date.isoWeek());
     this.DSworkingEntries.sortingDataAccessor = this.sortingDataAccessor;
     this.DSworkingEntries.paginator = this.paginator;
     this.DSworkingEntries.sort = this.sort;
@@ -79,7 +82,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
     return item[property];
   }
 
-  loadTargetWorkTime(year: number, month: number, week: number) {
+  loadTargetWorkTime(year: number, month: number) {
     this.employeeService.targetWorkTime(year, month).subscribe(res => {
       if (res.ok) {
         this.targetMinutes = res.body;
@@ -99,7 +102,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
     });
   }
 
-  loadActualWorkTime(year: number, month: number, week: number) {
+  loadActualWorkTime(year: number, month: number) {
     this.employeeService.actualWorkTime(year, month).subscribe(res => {
       if (res.ok) {
         this.actualMinutes = res.body;
@@ -131,21 +134,14 @@ export class TimetableComponent implements OnInit, AfterViewInit {
     }
   }
 
-  filterTimeTable(date: Moment) {
+  filterTimeTable(date: YearMonth) {
     if (date) {
-      this.filterDate = date;
-      this.loadTargetWorkTime(date.year(), date.month() + 1, moment(date).isoWeek());
-      this.loadActualWorkTime(date.year(), date.month() + 1, moment(date).isoWeek());
-      this.loadWorkingEntries();
-      this.workingEntries = this.workingEntriesUnfiltered.filter(
-        we => we.workDay.date.year() === date.year() && we.workDay.date.month() === date.month()
-      );
-    } else {
-      date = moment();
-      this.filterDate = date;
-      this.workingEntries = this.workingEntriesUnfiltered;
-      this.loadTargetWorkTime(date.year(), date.month() + 1, moment(date).isoWeek());
-      this.loadActualWorkTime(date.year(), date.month() + 1, moment(date).isoWeek());
+      this.loadTargetWorkTime(parseInt(date.year, 10), parseInt(date.month, 10));
+      this.loadActualWorkTime(parseInt(date.year, 10), parseInt(date.month, 10));
+      this.loadWorkingEntries(parseInt(date.year, 10), parseInt(date.month, 10));
+      // this.workingEntries = this.workingEntriesUnfiltered.filter(
+      //   we => we.workDay.date.year() === date.year() && we.workDay.date.month() === date.month()
+      // );
     }
     this.DSworkingEntries.data = this.workingEntries;
 
@@ -170,9 +166,9 @@ export class TimetableComponent implements OnInit, AfterViewInit {
     }
   }
 
-  loadWorkingEntries() {
+  loadWorkingEntries(year: number, month: number) {
     this.workingEntryService
-      .timetable(this.filterDate.year(), this.filterDate.month() + 1)
+      .timetable(year, month)
       .pipe(
         filter((res: HttpResponse<IWorkingEntryTimesheet[]>) => res.ok),
         map((res: HttpResponse<IWorkingEntryTimesheet[]>) => res.body)
@@ -197,8 +193,8 @@ export class TimetableComponent implements OnInit, AfterViewInit {
   }
 
   addNewandSort(workingEntry: WorkingEntryTimesheet) {
-    this.loadTargetWorkTime(this.filterDate.year(), this.filterDate.month() + 1, moment(this.filterDate).isoWeek());
-    this.loadActualWorkTime(this.filterDate.year(), this.filterDate.month() + 1, moment(this.filterDate).isoWeek());
+    this.loadTargetWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
+    this.loadActualWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
     this.workingEntries.push(workingEntry);
     this.workingEntries.forEach(entry => {
       if (entry.workDay.id === workingEntry.workDay.id) {
@@ -243,13 +239,6 @@ export class TimetableComponent implements OnInit, AfterViewInit {
     return this.pad(hour, 2) + 'h ' + this.pad(min, 2) + 'm';
   }
 
-  getDatesFromWorkingEntries(): Moment[] {
-    if (this.workingEntriesUnfiltered) {
-      return this.workingEntriesUnfiltered.map(we => we.workDay.date);
-    }
-    return null;
-  }
-
   edittimetableDialog(workingEntry: IWorkingEntryTimesheet): void {
     const dialogRef = this.dialog.open(TimetableEditDialogComponent, {
       data: workingEntry
@@ -269,8 +258,8 @@ export class TimetableComponent implements OnInit, AfterViewInit {
         const now = moment();
         this.doesEntryExistNow = this.workingEntries.some(entry => entry.start <= now && entry.end >= now);
 
-        this.loadTargetWorkTime(this.filterDate.year(), this.filterDate.month() + 1, moment(this.filterDate).isoWeek());
-        this.loadActualWorkTime(this.filterDate.year(), this.filterDate.month() + 1, moment(this.filterDate).isoWeek());
+        this.loadTargetWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
+        this.loadActualWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
       }
     });
   }
@@ -289,8 +278,8 @@ export class TimetableComponent implements OnInit, AfterViewInit {
             const now = moment();
             this.doesEntryExistNow = this.workingEntries.some(entry => entry.start <= now && entry.end >= now);
 
-            this.loadTargetWorkTime(this.filterDate.year(), this.filterDate.month() + 1, moment(this.filterDate).isoWeek());
-            this.loadActualWorkTime(this.filterDate.year(), this.filterDate.month() + 1, moment(this.filterDate).isoWeek());
+            this.loadTargetWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
+            this.loadActualWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
           }
         });
       }
