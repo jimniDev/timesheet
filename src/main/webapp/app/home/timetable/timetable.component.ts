@@ -15,13 +15,12 @@ import { TimetableEditDialogComponent } from '../timetable-edit-dialog/timetable
 import { TimetableDeleteDialogComponent } from '../timetable-delete-dialog/timetable-delete-dialog.component';
 import { YearWeek } from '../year-week-select/year-week-select.component';
 import { YearMonth } from '../year-month-select/year-month-select.component';
-import { HomeService } from '../home.service';
 
 @Component({
   selector: 'jhi-timetable',
   templateUrl: './timetable.component.html',
   styleUrls: ['./timetable.component.scss'],
-  providers: [AsRowSpanService, HomeService]
+  providers: [AsRowSpanService]
 })
 export class TimetableComponent implements OnInit, AfterViewInit {
   @Output() initialized = new EventEmitter<boolean>();
@@ -57,8 +56,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
     private workingEntryService: WorkingEntryTimesheetService,
     private employeeService: EmployeeTimesheetService,
     public dialog: MatDialog,
-    public asRowSpan: AsRowSpanService,
-    public homeService: HomeService
+    public asRowSpan: AsRowSpanService
   ) {}
 
   ngOnInit() {}
@@ -183,7 +181,6 @@ export class TimetableComponent implements OnInit, AfterViewInit {
           this.workingEntriesUnfiltered = this.workingEntries;
           this.DSworkingEntries.data = this.workingEntries;
           this.initialized.emit(true);
-          this.homeService.workingEntries = this.workingEntries;
           const now = moment();
           this.doesEntryExistNow = this.workingEntries.some(entry => entry.start <= now && entry.end >= now);
         },
@@ -196,13 +193,10 @@ export class TimetableComponent implements OnInit, AfterViewInit {
   }
 
   addNewandSort(workingEntry: WorkingEntryTimesheet) {
-    this.loadTargetWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
-    this.loadActualWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
     this.workingEntries.push(workingEntry);
     this.workingEntries.forEach(entry => {
       if (entry.workDay.id === workingEntry.workDay.id) {
-        entry.workDay.totalWorkingMinutes = workingEntry.workDay.totalWorkingMinutes;
-        entry.workDay.totalBreakMinutes = workingEntry.workDay.totalBreakMinutes;
+        entry.workDay = workingEntry.workDay;
       }
     });
     this.workingEntriesUnfiltered = this.workingEntries;
@@ -215,6 +209,10 @@ export class TimetableComponent implements OnInit, AfterViewInit {
     // } else {
     //   this.DoesEntryExistNow = false;
     // }
+    this.loadTargetWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
+    this.loadActualWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
+    this.loadActualWorkTimeWeekly(this.filterDate.year(), this.filterDate.isoWeek());
+    this.loadTargetWorkTimeWeekly(this.filterDate.year(), this.filterDate.isoWeek());
   }
 
   sumDate(date1: any, date2: any): String {
@@ -253,8 +251,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
         this.workingEntries[idx] = result;
         this.workingEntries.forEach(entry => {
           if (entry.workDay.id === result.workDay.id) {
-            entry.workDay.totalWorkingMinutes = result.workDay.totalWorkingMinutes;
-            entry.workDay.totalBreakMinutes = result.workDay.totalBreakMinutes;
+            entry.workDay = result.workDay;
           }
         });
         this.DSworkingEntries.data = this.workingEntries;
@@ -263,6 +260,8 @@ export class TimetableComponent implements OnInit, AfterViewInit {
 
         this.loadTargetWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
         this.loadActualWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
+        this.loadActualWorkTimeWeekly(this.filterDate.year(), this.filterDate.isoWeek());
+        this.loadTargetWorkTimeWeekly(this.filterDate.year(), this.filterDate.isoWeek());
       }
     });
   }
@@ -277,14 +276,20 @@ export class TimetableComponent implements OnInit, AfterViewInit {
           if (res.ok) {
             const idx = this.workingEntries.findIndex(we => we.id === workingEntry.id);
             this.workingEntries.splice(idx, 1);
+            // this.workingEntries.forEach(entry => {
+            //   if (entry.workDay.id === workingEntry.workDay.id) {
+            //     entry.workDay.totalWorkingMinutes -= workingEntry.workDay.;
+            //   }
+            // });
             this.DSworkingEntries.data = this.workingEntries;
-            const now = moment();
-            this.doesEntryExistNow = this.workingEntries.some(entry => entry.start <= now && entry.end >= now);
-
-            this.loadTargetWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
-            this.loadActualWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
           }
         });
+        const now = moment();
+        this.doesEntryExistNow = this.workingEntries.some(entry => entry.start <= now && entry.end >= now);
+        this.loadTargetWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
+        this.loadActualWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
+        this.loadActualWorkTimeWeekly(this.filterDate.year(), this.filterDate.isoWeek());
+        this.loadTargetWorkTimeWeekly(this.filterDate.year(), this.filterDate.isoWeek());
       }
     });
   }

@@ -49,6 +49,16 @@ export class WorkDayTimesheetService {
     return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
+  getBreakMinutes(id: number): Observable<HttpResponse<Number>> {
+    return this.http.get<Number>(`${this.resourceUrl}/${id}/break-minutes`, { observe: 'response' });
+  }
+
+  getBreakMinutesbyDate(year: number, month: number, day: number): Observable<HttpResponse<Number>> {
+    return this.http.get<Number>(SERVER_API_URL + `api/employees/me/work-days/year/${year}/month/${month}/day/${day}`, {
+      observe: 'response'
+    });
+  }
+
   protected convertDateFromClient(workDay: IWorkDayTimesheet): IWorkDayTimesheet {
     const copy: IWorkDayTimesheet = Object.assign({}, workDay, {
       date: workDay.date != null && workDay.date.isValid() ? workDay.date.toJSON() : null

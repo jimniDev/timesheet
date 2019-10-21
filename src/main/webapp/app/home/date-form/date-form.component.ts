@@ -13,7 +13,7 @@ import { IRoleTimesheet } from 'app/shared/model/role-timesheet.model';
 import { MatSnackBar } from '@angular/material';
 import { MAT_DATE_FORMATS, DateAdapter } from '@angular/material/core';
 import { EmployeeTimesheetService } from 'app/entities/employee-timesheet';
-import { HomeService } from '../home.service';
+import { WorkDayTimesheetService } from 'app/entities/work-day-timesheet';
 
 export const MY_FORMAT = {
   parse: {
@@ -31,7 +31,7 @@ export const MY_FORMAT = {
   selector: 'jhi-date-form',
   templateUrl: './date-form.component.html',
   styleUrls: ['./date-form.component.scss'],
-  providers: [{ provide: MAT_DATE_FORMATS, useValue: MY_FORMAT }, HomeService]
+  providers: [{ provide: MAT_DATE_FORMATS, useValue: MY_FORMAT }]
 })
 export class DateFormComponent implements OnInit {
   // roles: string[];
@@ -55,11 +55,11 @@ export class DateFormComponent implements OnInit {
   constructor(
     private dateAdapter: DateAdapter<Date>,
     private workingEntryService: WorkingEntryTimesheetService,
+    private workDayService: WorkDayTimesheetService,
     private activityService: ActivityTimesheetService,
     private roleService: RoleTimesheetService,
     private employeeService: EmployeeTimesheetService,
-    private _snackBar: MatSnackBar,
-    public homeService: HomeService
+    private _snackBar: MatSnackBar
   ) {}
 
   ngOnInit() {
@@ -86,6 +86,7 @@ export class DateFormComponent implements OnInit {
 
     this.timeForm.get('dateControl').valueChanges.subscribe(value => {
       this.fillDay();
+      this.fillBreak();
     });
 
     this.timeForm.get('activityControl').valueChanges.subscribe((value: IActivityTimesheet) => {
@@ -93,7 +94,22 @@ export class DateFormComponent implements OnInit {
     });
   }
 
-  fillBreak() {}
+  fillBreak() {
+    const dateBefore = this.timeForm.get('dateControl').value;
+    if (dateBefore) {
+      const date: moment.Moment = moment(dateBefore);
+      this.workDayService.getBreakMinutesbyDate(date.year(), date.month() + 1, date.date()).subscribe(
+        res => {
+          if (res.ok) {
+            this.timeForm.patchValue({ addBreakControl: res.body });
+          }
+        },
+        err => {
+          this.timeForm.patchValue({ addBreakControl: '' });
+        }
+      );
+    }
+  }
 
   fillDay() {
     const activity: IActivityTimesheet = this.timeForm.get('activityControl').value;
