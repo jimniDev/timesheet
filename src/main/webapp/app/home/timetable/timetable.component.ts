@@ -126,9 +126,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
   }
 
   calcWeeklyDiffTargetActual() {
-    if (this.weeklyTargetMinutes) {
-      this.weeklyDiffTime = this.secondsToHHMM(this.weeklyTargetMinutes * 60 - this.weeklyActualMinutes * 60);
-    }
+    this.weeklyDiffTime = this.secondsToHHMM(this.weeklyTargetMinutes * 60 - this.weeklyActualMinutes * 60);
   }
 
   filterTimeTable(date: Moment) {
