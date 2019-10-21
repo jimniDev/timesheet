@@ -90,7 +90,7 @@ export class TimetableEditDialogComponent implements OnInit {
       });
     } else {
       const diff = moment.duration(endEditValue.diff(startEditValue)).asMinutes();
-      if (diff < this.entryEditForm.value.addBreakControl) {
+      if (diff <= this.entryEditForm.value.addBreakControl) {
         this._snackBar.open('Break minutes cannot be over Working hours', 'Close', {
           duration: 5000
         });

@@ -123,32 +123,39 @@ export class DateFormComponent implements OnInit {
         duration: 5000
       });
     } else {
-      let workingEntry: WorkingEntryTimesheet;
-      workingEntry = new WorkingEntryTimesheet();
-      workingEntry.start = startMoment;
-      workingEntry.end = endMoment;
-      workingEntry.workDay = workDay;
-      workingEntry.deleted = false;
-      workingEntry.activity = this.timeForm.value.activityControl;
-      workingEntry.workDay.additionalBreakMinutes = Number.parseInt(this.timeForm.value.addBreakControl, 10) || 0;
+      const diff = moment.duration(endMoment.diff(startMoment)).asMinutes();
+      if (diff <= this.timeForm.value.addBreakControl) {
+        this._snackBar.open('Break minutes cannot be over Working hours', 'Close', {
+          duration: 5000
+        });
+      } else {
+        let workingEntry: WorkingEntryTimesheet;
+        workingEntry = new WorkingEntryTimesheet();
+        workingEntry.start = startMoment;
+        workingEntry.end = endMoment;
+        workingEntry.workDay = workDay;
+        workingEntry.deleted = false;
+        workingEntry.activity = this.timeForm.value.activityControl;
+        workingEntry.workDay.additionalBreakMinutes = Number.parseInt(this.timeForm.value.addBreakControl, 10) || 0;
 
-      this.workingEntryService.create(workingEntry).subscribe(
-        res => {
-          if (res.ok) {
-            this.newWorkingEntry.emit(res.body);
-            this.saved.emit(true);
-            // 400 else error
+        this.workingEntryService.create(workingEntry).subscribe(
+          res => {
+            if (res.ok) {
+              this.newWorkingEntry.emit(res.body);
+              this.saved.emit(true);
+              // 400 else error
+            }
+          },
+          err => {
+            if (err.error.errorKey === 'overlappingtime') {
+              // then show the snackbar.
+              this._snackBar.open('Time Entry is overlapped', 'Close', {
+                duration: 5000
+              });
+            }
           }
-        },
-        err => {
-          if (err.error.errorKey === 'overlappingtime') {
-            // then show the snackbar.
-            this._snackBar.open('Time Entry is overlapped', 'Close', {
-              duration: 5000
-            });
-          }
-        }
-      );
+        );
+      }
     }
   }
 
