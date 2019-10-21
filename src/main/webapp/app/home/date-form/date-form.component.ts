@@ -13,6 +13,7 @@ import { IRoleTimesheet } from 'app/shared/model/role-timesheet.model';
 import { MatSnackBar } from '@angular/material';
 import { MAT_DATE_FORMATS, DateAdapter } from '@angular/material/core';
 import { EmployeeTimesheetService } from 'app/entities/employee-timesheet';
+import { HomeService } from '../home.service';
 
 export const MY_FORMAT = {
   parse: {
@@ -30,7 +31,7 @@ export const MY_FORMAT = {
   selector: 'jhi-date-form',
   templateUrl: './date-form.component.html',
   styleUrls: ['./date-form.component.scss'],
-  providers: [{ provide: MAT_DATE_FORMATS, useValue: MY_FORMAT }]
+  providers: [{ provide: MAT_DATE_FORMATS, useValue: MY_FORMAT }, HomeService]
 })
 export class DateFormComponent implements OnInit {
   // roles: string[];
@@ -57,7 +58,8 @@ export class DateFormComponent implements OnInit {
     private activityService: ActivityTimesheetService,
     private roleService: RoleTimesheetService,
     private employeeService: EmployeeTimesheetService,
-    private _snackBar: MatSnackBar
+    private _snackBar: MatSnackBar,
+    public homeService: HomeService
   ) {}
 
   ngOnInit() {
@@ -90,6 +92,8 @@ export class DateFormComponent implements OnInit {
       this.fillDay();
     });
   }
+
+  fillBreak() {}
 
   fillDay() {
     const activity: IActivityTimesheet = this.timeForm.get('activityControl').value;

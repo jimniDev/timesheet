@@ -15,12 +15,13 @@ import { TimetableEditDialogComponent } from '../timetable-edit-dialog/timetable
 import { TimetableDeleteDialogComponent } from '../timetable-delete-dialog/timetable-delete-dialog.component';
 import { YearWeek } from '../year-week-select/year-week-select.component';
 import { YearMonth } from '../year-month-select/year-month-select.component';
+import { HomeService } from '../home.service';
 
 @Component({
   selector: 'jhi-timetable',
   templateUrl: './timetable.component.html',
   styleUrls: ['./timetable.component.scss'],
-  providers: [AsRowSpanService]
+  providers: [AsRowSpanService, HomeService]
 })
 export class TimetableComponent implements OnInit, AfterViewInit {
   @Output() initialized = new EventEmitter<boolean>();
@@ -56,7 +57,8 @@ export class TimetableComponent implements OnInit, AfterViewInit {
     private workingEntryService: WorkingEntryTimesheetService,
     private employeeService: EmployeeTimesheetService,
     public dialog: MatDialog,
-    public asRowSpan: AsRowSpanService
+    public asRowSpan: AsRowSpanService,
+    public homeService: HomeService
   ) {}
 
   ngOnInit() {}
@@ -181,6 +183,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
           this.workingEntriesUnfiltered = this.workingEntries;
           this.DSworkingEntries.data = this.workingEntries;
           this.initialized.emit(true);
+          this.homeService.workingEntries = this.workingEntries;
           const now = moment();
           this.doesEntryExistNow = this.workingEntries.some(entry => entry.start <= now && entry.end >= now);
         },
