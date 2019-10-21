@@ -62,10 +62,12 @@ export class TimetableComponent implements OnInit, AfterViewInit {
   ngOnInit() {}
 
   ngAfterViewInit() {
-    const date = new Date();
-    this.loadWorkingEntries(date.getFullYear(), date.getMonth() + 1);
-    this.loadTargetWorkTime(date.getFullYear(), date.getMonth() + 1);
-    this.loadActualWorkTime(date.getFullYear(), date.getMonth() + 1);
+    const date = moment();
+    this.loadWorkingEntries(date.year(), date.month() + 1);
+    this.loadTargetWorkTime(date.year(), date.month() + 1);
+    this.loadActualWorkTime(date.year(), date.month() + 1);
+    this.loadActualWorkTimeWeekly(date.year(), date.isoWeek());
+    this.loadTargetWorkTimeWeekly(date.year(), date.isoWeek());
     this.DSworkingEntries.sortingDataAccessor = this.sortingDataAccessor;
     this.DSworkingEntries.paginator = this.paginator;
     this.DSworkingEntries.sort = this.sort;
