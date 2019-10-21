@@ -28,7 +28,8 @@ mat-card-subtitle {
 
 jhi-year-month-select,
 jhi-year-week-select {
-  margin-left: 16px;
+  margin-left: 8px;
+  margin-right: 8px;
 }
 
 @media only screen and (min-width: 1280px) {
@@ -60,7 +61,11 @@ jhi-year-week-select {
   }
 
   mat-card {
-    padding: 0px;
+    padding: 8px;
+  }
+
+  #filterCard {
+    padding-top: 16px;
   }
 }
 
