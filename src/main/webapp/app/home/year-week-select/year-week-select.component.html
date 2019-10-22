@@ -9,13 +9,13 @@
     </mat-form-field>
 
     <mat-form-field fxFlex="50">
-        <mat-label>Month</mat-label>
-        <mat-select [value]="selectedMonth" (selectionChange)="onChangeMonth($event)">
-            <mat-option *ngFor="let month of months" [value]="month">
-                {{month}}
+        <mat-label>Week</mat-label>
+        <mat-select [value]="selectedWeek" (selectionChange)="onChangeWeek($event)">
+            <mat-option *ngFor="let week of weeks" [value]="week">
+                {{week}}
             </mat-option>
         </mat-select>
     </mat-form-field>
-    <button mat-button type="button" color="primary" (click)="resetFilter()"
-        [disabled]="resetButtonDisabled? true : null">Reset</button>
+    <!-- <button mat-button type="button" color="primary" (click)="resetFilter()"
+            [disabled]="resetButtonDisabled? true : null">Reset</button> -->
 </div>

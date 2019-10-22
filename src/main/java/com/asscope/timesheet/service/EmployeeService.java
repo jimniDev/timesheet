@@ -8,7 +8,6 @@ import com.asscope.timesheet.repository.UserRepository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,8 +15,12 @@ import java.security.Principal;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.time.temporal.IsoFields;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.IntStream;
 
 /**
  * Service Implementation for managing {@link Employee}.
@@ -31,10 +34,13 @@ public class EmployeeService {
     private final EmployeeRepository employeeRepository;
     
     private final UserRepository userRepository;
+    
+    private final HolidayService holidayService;
 
-    public EmployeeService(EmployeeRepository employeeRepository, UserRepository userRepository) {
+    public EmployeeService(EmployeeRepository employeeRepository, UserRepository userRepository, HolidayService holidayService) {
         this.employeeRepository = employeeRepository;
         this.userRepository = userRepository;
+        this.holidayService = holidayService;
     }
 
 	/**
@@ -90,7 +96,7 @@ public class EmployeeService {
         employeeRepository.deleteById(id);
     }
     
-    public int getTargetWorkMinutesForDate(Employee employee, LocalDate date) {
+    public long getTargetWorkMinutesForDate(Employee employee, LocalDate date) {
     	Optional<WeeklyWorkingHours> oWwh = employee.getWeeklyWorkingHours().stream().filter(wwh -> (wwh.getStartDate().isBefore(date) || wwh.getStartDate().equals(date)) && (wwh.getEndDate() == null || wwh.getEndDate().isAfter(date))).findFirst();
     	if (oWwh.isPresent()) {
     		return (oWwh.get().getHours() * 60) / 5;
@@ -100,13 +106,13 @@ public class EmployeeService {
     }
     
     @Transactional(readOnly = true)
-    public int targetWorkTime(Principal principal, int year, int month) {
+    public long getTargetWorkTimeMinutes(Principal principal, int year, int month) {
     	Employee employee = this.findOneByUsername(principal.getName()).get();
     	YearMonth yearMonth = YearMonth.of(year, month);
-    	return yearMonth.atDay(1).datesUntil(yearMonth.atEndOfMonth())
-    	.filter(date -> !date.getDayOfWeek().equals(DayOfWeek.SATURDAY) && !date.getDayOfWeek().equals(DayOfWeek.SUNDAY))
+    	return yearMonth.atDay(1).datesUntil(yearMonth.atEndOfMonth().plusDays(1L))
+    	.filter(date -> !date.getDayOfWeek().equals(DayOfWeek.SATURDAY) && !date.getDayOfWeek().equals(DayOfWeek.SUNDAY) && !this.holidayService.isfixedHoliday(date) && !this.holidayService.isflexibleHoliday(date))
     	.map(workDay -> getTargetWorkMinutesForDate(employee, workDay))
-    	.reduce(0, Integer::sum);
+    	.reduce(0L, Long::sum);
     }
     
     @Transactional(readOnly = true)
@@ -121,7 +127,8 @@ public class EmployeeService {
     		return 0L;
     	}
     }
-
+    
+	@Transactional(readOnly = true)
 	public long targetWorkTimeMinutes(Principal principal, Integer year, Integer month, Integer day) {
 		Optional<Employee> employee = this.findOneByUsername(principal.getName());
 		LocalDate date = LocalDate.of(year, month, day);
@@ -136,5 +143,55 @@ public class EmployeeService {
 		} else {
 			return 0L;
 		}
+	}
+	
+    @Transactional(readOnly = true)
+    public long weeklyWorkTimeMinutes(Principal principal, int year, int isoWeek) {
+    	Optional<Employee> employee = this.findOneByUsername(principal.getName());
+    	if (employee.isPresent()) {
+    		return employee.get().getWorkDays().stream()
+    				.filter(wd -> wd.getDate().get(IsoFields.WEEK_BASED_YEAR) == year && wd.getDate().get(IsoFields.WEEK_OF_WEEK_BASED_YEAR) == isoWeek)
+    				.map(wd -> {
+    					return wd.getTotalWorkingMinutes();
+    					}
+    				)
+    				.reduce(0L, Long::sum);
+    	} else {
+    		return 0L;
+    	}
+    }
+
+	@Transactional(readOnly = true)
+	public long weeklyTargetWorktimeMinutes(Principal principal, int year, int isoWeek) {
+		Optional<Employee> employee = this.findOneByUsername(principal.getName());
+		if (employee.isPresent()) {
+			return getWorkingDatesOfIsoWeek(year, isoWeek)
+			.stream()
+			.filter(date -> !holidayService.isHoliday(date))
+			.map(workDay -> getTargetWorkMinutesForDate(employee.get(), workDay))
+	    	.reduce(0L, Long::sum);	
+		}
+		return 0L;
+	}
+	
+	public Set<LocalDate> getWorkingDatesOfIsoWeek(int year, int isoWeek) {
+		Set<LocalDate> dates = new HashSet<>();
+		for(DayOfWeek dayOW: DayOfWeek.values()) {
+			if(!dayOW.equals(DayOfWeek.SATURDAY) && !dayOW.equals(DayOfWeek.SUNDAY)) {
+				dates.add(LocalDate.ofYearDay(year, 125)
+				.with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, isoWeek)
+				.with(dayOW));
+			}
+		}
+		return dates;
+	}
+	
+	@Transactional(readOnly = true)
+	public long currentWorktimeBalance(Principal principal) {
+		YearMonth currentMonth = YearMonth.now();
+		this.getTargetWorkTimeMinutes(principal, currentMonth.getYear(), currentMonth.getMonthValue());
+		return IntStream.range(1, currentMonth.getMonthValue())
+				.mapToLong(month -> this.getWorkTimeMinutes(principal, currentMonth.getYear(), month) - this.getTargetWorkTimeMinutes(principal, currentMonth.getYear(), month))
+				.reduce(0L, Long::sum);
 	}
 }

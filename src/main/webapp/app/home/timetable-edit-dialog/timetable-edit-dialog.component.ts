@@ -79,26 +79,34 @@ export class TimetableEditDialogComponent implements OnInit {
   }
 
   updateEntry(): void {
-    const startEditValue = moment(moment(this.entryEditForm.value.date).format('YYYY-MM-DD') + ' ' + this.entryEditForm.value.starttime);
-    const endEditValue = moment(moment(this.entryEditForm.value.date).format('YYYY-MM-DD') + ' ' + this.entryEditForm.value.endtime);
+    const startEditValue = moment(
+      moment(this.workingEntryData.workDay.date).format('YYYY-MM-DD') + ' ' + this.entryEditForm.value.starttime
+    );
+    const endEditValue = moment(moment(this.workingEntryData.workDay.date).format('YYYY-MM-DD') + ' ' + this.entryEditForm.value.endtime);
 
     if (startEditValue >= endEditValue) {
       this._snackBar.open('End time should be after the Start time', 'Close', {
         duration: 5000
       });
     } else {
-      this.workingEntryData.start = startEditValue;
-      this.workingEntryData.end = endEditValue;
-      //    this.workingEntryData.workDay.date = moment(this.entryEditForm.value.date).add(2, 'hours');
-      this.workingEntryData.deleted = false;
-      this.workingEntryData.activity = this.entryEditForm.value.activity;
-      this.workingEntryData.workDay.additionalBreakMinutes = this.entryEditForm.value.addBreakControl;
-
-      this.workingService.update(this.workingEntryData).subscribe(res => {
-        if (res.ok) {
-          this.dialogRef.close(res.body || this.workingEntryData); // if res.body is null, use workingEntryData
-        }
-      });
+      const diff = moment.duration(endEditValue.diff(startEditValue)).asMinutes();
+      if (diff < this.entryEditForm.value.addBreakControl) {
+        this._snackBar.open('Break minutes cannot be over Working hours', 'Close', {
+          duration: 5000
+        });
+      } else {
+        this.workingEntryData.start = startEditValue;
+        this.workingEntryData.end = endEditValue;
+        //    this.workingEntryData.workDay.date = moment(this.entryEditForm.value.date).add(2, 'hours');
+        this.workingEntryData.deleted = false;
+        this.workingEntryData.activity = this.entryEditForm.value.activity;
+        this.workingEntryData.workDay.additionalBreakMinutes = <number>this.entryEditForm.value.addBreakControl;
+        this.workingService.update(this.workingEntryData).subscribe(res => {
+          if (res.ok) {
+            this.dialogRef.close(res.body || this.workingEntryData); // if res.body is null, use workingEntryData
+          }
+        });
+      }
     }
   }
 

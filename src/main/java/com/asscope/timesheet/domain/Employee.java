@@ -60,19 +60,7 @@ public class Employee implements Serializable {
     public Optional<WeeklyWorkingHours> getActiveWeeklyWorkingHours() {
     	return this.weeklyWorkingHours.stream().max((wwH1, wwH2) -> wwH1.getStartDate().compareTo(wwH2.getStartDate()));
     }
-    
-//    public WeeklyWorkingHours getWeeklyWorkingHoursForWorkDay(WorkDay wd) {
-//    	return this.weeklyWorkingHours.stream().filter(wwh -> {
-//    		wwh.getStartDate()..isBefore(wd.getDate().)
-//    	})
-//    }
-    
-//    @JsonProperty("workTimeInformation")
-//    public WorktimeInformation getWorkTimeInformation() {
-//    	WorktimeInformation wtInformation = new WorktimeInformation(workDays);
-//    	return wtInformation;
-//    }
-    
+       
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;

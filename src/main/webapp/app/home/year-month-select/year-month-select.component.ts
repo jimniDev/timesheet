@@ -1,97 +1,54 @@
-import { Component, OnInit, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
-import { Moment } from 'moment';
+import { Component, OnInit, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import * as moment from 'moment';
+import { MatSelectChange } from '@angular/material/select';
+
+export interface YearMonth {
+  year: string;
+  month: string;
+}
 
 @Component({
   selector: 'jhi-year-month-select',
   templateUrl: './year-month-select.component.html',
   styleUrls: ['./year-month-select.component.scss']
 })
-export class YearMonthSelectComponent implements OnInit, OnChanges {
-  @Input() dates: Moment[] = new Array<Moment>();
-  @Output() selectedDate = new EventEmitter<Moment>();
-  // @Output() pdfExportButtonFlag = new EventEmitter<Boolean>();
+export class YearMonthSelectComponent implements OnInit {
+  @Output() selectedDate = new EventEmitter<YearMonth>();
 
-  distinctMonthsOfYear: string[] = new Array<string>();
-  selectedYear: string;
-  selectedMonth: string;
+  years = Array.from(Array(20), (e, i) => (i + 2019).toString());
+  months = Array.from(Array(12), (e, i) => (i + 1).toString());
+  selectedYear: string = moment()
+    .year()
+    .toString();
+  selectedMonth: string = (moment().month() + 1).toString();
   resetButtonDisabled = true;
 
   constructor() {}
 
   ngOnInit() {}
 
-  ngOnChanges(changes: SimpleChanges): void {}
-
-  onChangeYear(year: string) {
-    if (year) {
+  onChangeYear(year: MatSelectChange) {
+    if (year.value) {
       this.resetButtonDisabled = false;
-      this.selectedYear = year;
-      this.selectedMonth = this.getDistinctMonthsFromYear()[0];
-      // this.pdfExportButtonDisabled = false;
-      // this.pdfExportButtonFlag.emit(this.pdfExportButtonDisabled);
-      this.selectedDate.emit(moment(this.selectedYear + '-' + this.selectedMonth + '-01'));
-    } else {
-      this.selectedDate.emit(null);
+      this.selectedYear = year.value;
+      this.selectedDate.emit(<YearMonth>{ year: this.selectedYear, month: this.selectedMonth });
     }
   }
 
-  onChangeMonth(month: string) {
-    if (month) {
+  onChangeMonth(month: MatSelectChange) {
+    if (month.value) {
       this.resetButtonDisabled = false;
-      // this.pdfExportButtonDisabled = false;
-      this.selectedMonth = month;
-      this.selectedDate.emit(moment(this.selectedYear + '-' + this.selectedMonth + '-01'));
-    } else {
-      this.selectedDate.emit(null);
+      this.selectedMonth = month.value;
+      this.selectedDate.emit(<YearMonth>{ year: this.selectedYear, month: this.selectedMonth });
     }
-  }
-
-  getDistinctYears(): string[] {
-    if (!this.dates) {
-      return;
-    }
-    const years: string[] = new Array<string>();
-    this.dates.forEach(date => {
-      let yearContained = false;
-      years.forEach(year => {
-        if (year === date.format('YYYY')) {
-          yearContained = true;
-        }
-      });
-      if (!yearContained) {
-        years.push(date.format('YYYY'));
-      }
-    });
-    return years;
-  }
-
-  getDistinctMonthsFromYear() {
-    if (!this.dates) {
-      return;
-    }
-    const months: string[] = new Array<string>();
-    this.dates
-      .filter(date => date.format('YYYY') === this.selectedYear)
-      .forEach(date => {
-        let monthContained = false;
-        months.forEach(month => {
-          if (month === date.format('MM')) {
-            monthContained = true;
-          }
-        });
-        if (!monthContained) {
-          months.push(date.format('MM'));
-        }
-      });
-    return months;
   }
 
   resetFilter(): void {
     this.resetButtonDisabled = true;
-    // this.pdfExportButtonDisabled = false;
-    this.selectedYear = null;
-    this.selectedMonth = null;
-    this.selectedDate.emit(null);
+    this.selectedYear = moment()
+      .year()
+      .toString();
+    this.selectedMonth = (moment().month() + 1).toString();
+    this.selectedDate.emit(<YearMonth>{ year: this.selectedYear, month: this.selectedMonth });
   }
 }

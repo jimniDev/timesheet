@@ -6,10 +6,20 @@ import { TableGeneratorComponent } from './table-generator/table-generator.compo
 import { loadOptions } from '@babel/core';
 import { IWorkDayTimesheet } from '../model/work-day-timesheet.model';
 import { start } from 'repl';
+import { AccountService } from 'app/core/auth/account.service';
+import { Account } from 'app/core/user/account.model';
 
 @Injectable()
 export class PdfService {
-  constructor(private resolver: ComponentFactoryResolver, private injector: Injector) {}
+  public initialized = false;
+  private account: Account;
+
+  constructor(private resolver: ComponentFactoryResolver, private injector: Injector, private accountService: AccountService) {
+    this.accountService.identity().then(a => {
+      this.account = a;
+      this.initialized = true;
+    });
+  }
 
   public createPDF(workingEntries: IWorkingEntryTimesheet[]): void {
     const raw_data = workingEntries.map(we => [
@@ -19,7 +29,6 @@ export class PdfService {
       we.end.format('HH:mm'),
       we.activity ? we.activity.name : ''
     ]);
-
     const doc = new jsPDF();
     let bodyData = [];
     if (raw_data.length > 1) {
@@ -50,17 +59,21 @@ export class PdfService {
     const pageSize = doc.internal.pageSize;
     const pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight();
     logo.src = '../../content/images/logo.jpg';
-    const employee = workingEntries[0].workDay.employee.user.firstName + ' ' + workingEntries[0].workDay.employee.user.lastName;
+    // this.accountService.identity().then(account => {
+    if (!this.initialized) {
+      return;
+    }
+    const name = this.account.firstName + this.account.lastName;
     const month = workingEntries[0].workDay.date.format('MMMM');
     const totalWorkTime = this.totalWorkTime(workingEntries);
-    const number_of_pages = doc.internal.getNumberOfPages();
-    const docPages = doc.internal.pages;
+    // const number_of_pages = doc.internal.getNumberOfPages();
+    // const docPages = doc.internal.pages;
     if (logo) {
       //  console.log(data.table.rows.length)
       // doc.setFont('courier');
       doc.addImage(logo, 'JPG', data.settings.margin.left + 150, pageHeight - 27, 24, 10);
       doc.setFontSize('13');
-      doc.text(`Employee : ${employee} , Month : ${month}`, data.settings.margin.left, 25);
+      doc.text(`Employee : ${name} , Month : ${month}`, data.settings.margin.left, 25);
       doc.setLineWidth(0.4);
       doc.setDrawColor(16, 24, 32);
       doc.line(data.settings.margin.left - 3, pageHeight - 23, data.settings.margin.left + 40, pageHeight - 23);
@@ -110,8 +123,8 @@ export class PdfService {
     for (let i = 0; i < dates.length; i++) {
       let tempTotalWorkTime = 0;
       if (countsOfDates[i] > 1) {
-        const rowSpan = countsOfDates[i];
-        const dateProcessing = dates[i];
+        // const rowSpan = countsOfDates[i];
+        // const dateProcessing = dates[i];
         for (let x = 0; x < countsOfDates[i]; x++) {
           tempTotalWorkTime = tempTotalWorkTime + data[i + x].end.diff(data[i + x].start, 'seconds', true);
         }
