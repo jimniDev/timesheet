@@ -21,12 +21,16 @@ export class PdfService {
     ]);
 
     const doc = new jsPDF();
-    const rowSpanInformation = this.getRowSpanfromData(raw_data);
-    const bodyData = this.dataConversionForRowSpan(workingEntries, raw_data, rowSpanInformation);
-    // for (let i = 0; i < raw_data.length; i++) {
-    //   let row = raw_data[i];
-    //   if (i === 0) { row['0'] = { rowSpan: 5, content: raw_data[0][0], styles: { valign: 'middle', halign: 'center' } }; }
-    // }
+    let bodyData = [];
+    if (raw_data.length > 1) {
+      const rowSpanInformation = this.getRowSpanfromData(raw_data);
+      bodyData = this.dataConversionForRowSpan(workingEntries, raw_data, rowSpanInformation);
+    } else {
+      if (raw_data.length !== 0) {
+        bodyData = raw_data;
+      }
+    }
+
     doc.autoTable({
       head: this.getColumns(),
       body: bodyData,
@@ -39,7 +43,7 @@ export class PdfService {
     doc.save('timesheet.pdf');
   }
   getColumns() {
-    return [{ date: 'Date', from: 'From', to: 'to', worktime: 'Worktime', activity: 'Activity' }];
+    return [{ date: 'Date', worktime: 'Worktime', from: 'From', to: 'to', activity: 'Activity' }];
   }
   createPageHeaderFooter(doc: jsPDF, workingEntries: IWorkingEntryTimesheet[], data: any): void {
     const logo = new Image();
@@ -75,9 +79,9 @@ export class PdfService {
     const result = [];
     const counts = [];
     const startingIndex = [];
+    const endingIndex = [];
     const length = data.length;
-    let i = 0;
-    for (i = 0; i < length; i++) {
+    for (let i = 0; i < length; i++) {
       if (result.indexOf(data[i][0]) === -1) {
         result.push(data[i][0]);
         startingIndex.push(i);
@@ -87,28 +91,27 @@ export class PdfService {
         ++counts[index];
       }
     }
+    for (let y = 0; y < startingIndex.length; y++) {
+      endingIndex[y] = startingIndex[y] + counts[y] - 1;
+    }
     const resultObject = [];
-    resultObject.push(result, counts, startingIndex);
+    resultObject.push(result, counts, startingIndex, endingIndex);
     return resultObject;
   }
 
   dataConversionForRowSpan(data: IWorkingEntryTimesheet[], raw_data: any, result: object): any {
-    // for (let i = 0; i < raw_data.length; i++) {
-    //   let row = raw_data[i];
-    //   if (i === 0) { row['0'] = { rowSpan: 5, content: raw_data[0][0], styles: { valign: 'middle', halign: 'center' } }; }
-    // }
-    const counts = result[1];
-    const index = result[2];
+    const countsOfDates = result[1];
+    const indexOfDatesStarting = result[2];
+    const indexOfDatesEnding = result[3];
     const dates = result[0];
     const body = [];
     const totalWorkTime = [];
     for (let i = 0; i < dates.length; i++) {
-      // let rows = [];
       let tempTotalWorkTime = 0;
-      if (counts[i] > 1) {
-        const rowSpan = counts[i];
+      if (countsOfDates[i] > 1) {
+        const rowSpan = countsOfDates[i];
         const dateProcessing = dates[i];
-        for (let x = 0; x < counts[i]; x++) {
+        for (let x = 0; x < countsOfDates[i]; x++) {
           tempTotalWorkTime = tempTotalWorkTime + data[i + x].end.diff(data[i + x].start, 'seconds', true);
         }
         totalWorkTime[i] = this.secondsToHHMM(tempTotalWorkTime);
@@ -118,41 +121,54 @@ export class PdfService {
         totalWorkTime[i] = this.secondsToHHMM(tempTotalWorkTime);
       }
     }
-    for (let y = 0; y < dates.length; y++) {
-      const rowspan = counts[y];
-      if (rowspan > 1) {
-        const row = [];
-        for (let a = 0; a < rowspan; a++) {
-          for (let keys in raw_data) {
-            if (keys === '1' || keys === '2' || keys === '4') {
-              row.push(raw_data[index[y]][keys]);
+    let flag = 0;
+    let row = [];
+    for (let a = 0; a < dates.length; a++) {
+      const beginIndex = indexOfDatesStarting[a];
+      const endIndex = indexOfDatesStarting[a];
+      const counts = countsOfDates[a];
+
+      if (counts > 1) {
+        for (let b = 0; b < counts; b++) {
+          for (const keys in raw_data[flag]) {
+            if (raw_data.hasOwnProperty(keys)) {
+              if (keys === '0') {
+                if (flag === beginIndex) {
+                  row.push({ rowSpan: counts, content: dates[a], styles: { valign: 'middle', halign: 'left' } });
+                } else {
+                }
+              } else if (keys === '3') {
+                if (flag === beginIndex) {
+                  row.push({ rowSpan: counts, content: totalWorkTime[a], styles: { valign: 'middle', halign: 'left' } });
+                } else {
+                }
+              } else {
+                row.push(raw_data[flag][keys]);
+                if (keys === '4') {
+                  flag++;
+                  body.push(row);
+                  row = [];
+                }
+              }
             }
           }
-          row.unshift({ rowSpan: rowspan, content: dates[y], styles: { valign: 'middle', halign: 'center' } });
-          body.push(row);
         }
       } else {
-        const row = [];
-        for (let keys in raw_data) {
-          row.push(raw_data[index[y]][keys]);
+        for (const keys in raw_data[flag]) {
+          if (raw_data.hasOwnProperty(keys)) {
+            row.push(raw_data[flag][keys]);
+            if (keys === '4') {
+              flag++;
+              body.push(row);
+              row = [];
+            }
+          }
         }
-        body.push(row);
       }
     }
+
     return body;
   }
-
-  // for (var i = 0; i < raw.length; i++) {
-  //     var row = [];
-  //     for(var key in raw[i]) {
-  //         row.push(raw[i][key]);
-  //     }
-  //     if (i % 5 === 0) {
-  //         row.unshift({rowSpan: 5, content: i / 5 + 1, styles: {valign: 'middle', halign: 'center'}});
-  //     }
-  //     body.push(row)
-  // }
-
   totalWorkTime(data: IWorkingEntryTimesheet[]): string {
     let tempWorkTime = 0;
     const length = data.length;
