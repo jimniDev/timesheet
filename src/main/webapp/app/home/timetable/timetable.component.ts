@@ -39,6 +39,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
   actualTime = '00h 00m';
   diffTime = '00h 00m';
   todayTime = '00h 00m';
+  balanceTime = '00h 00m';
 
   weeklyTargetTime = '00h 00m';
   weeklyActualTime = '00h 00m';
@@ -46,6 +47,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
 
   targetMinutes: number;
   actualMinutes: number;
+  balanceMinutes: number;
   weeklyTargetMinutes: number;
   weeklyActualMinutes: number;
 
@@ -68,6 +70,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
     this.loadActualWorkTime(date.year(), date.month() + 1);
     this.loadActualWorkTimeWeekly(date.year(), date.isoWeek());
     this.loadTargetWorkTimeWeekly(date.year(), date.isoWeek());
+    this.loadCurrentWorktimeBalance();
     this.DSworkingEntries.sortingDataAccessor = this.sortingDataAccessor;
     this.DSworkingEntries.paginator = this.paginator;
     this.DSworkingEntries.sort = this.sort;
@@ -118,6 +121,15 @@ export class TimetableComponent implements OnInit, AfterViewInit {
         this.weeklyActualMinutes = res.body;
         this.weeklyActualTime = this.secondsToHHMM(res.body * 60);
         this.calcWeeklyDiffTargetActual();
+      }
+    });
+  }
+
+  loadCurrentWorktimeBalance() {
+    this.employeeService.currentWorkTimeBalance().subscribe(res => {
+      if (res.ok) {
+        this.balanceMinutes = res.body;
+        this.balanceTime = this.secondsToHHMM(res.body * 60);
       }
     });
   }
@@ -207,6 +219,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
     this.loadActualWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
     this.loadActualWorkTimeWeekly(this.filterDate.year(), this.filterDate.isoWeek());
     this.loadTargetWorkTimeWeekly(this.filterDate.year(), this.filterDate.isoWeek());
+    this.loadCurrentWorktimeBalance();
   }
 
   sumDate(date1: any, date2: any): String {
@@ -256,6 +269,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
         this.loadActualWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
         this.loadActualWorkTimeWeekly(this.filterDate.year(), this.filterDate.isoWeek());
         this.loadTargetWorkTimeWeekly(this.filterDate.year(), this.filterDate.isoWeek());
+        this.loadCurrentWorktimeBalance();
       }
     });
   }
@@ -284,6 +298,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
         this.loadActualWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
         this.loadActualWorkTimeWeekly(this.filterDate.year(), this.filterDate.isoWeek());
         this.loadTargetWorkTimeWeekly(this.filterDate.year(), this.filterDate.isoWeek());
+        this.loadCurrentWorktimeBalance();
       }
     });
   }
