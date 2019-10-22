@@ -2,7 +2,7 @@
     <p>Please Login</p>
 </div>
 <div *ngIf="isAuthenticated()">
-    <div fxLayout="column" fxLayout.lt-md="column-reverse" fxLayoutGap="8px" cclass="container">
+    <div fxLayout="column" fxLayout.lt-md="column-reverse" fxLayoutGap="8px" class="container">
         <jhi-timetable (initialized)="enableButton($event)" [started]="started"></jhi-timetable>
         <div fxLayout="row" fxLayoutAlign="space-between" fxLayout.lt-md="column" fxLayoutGap="8px" class="container">
             <mat-card id="addCard" fxFlex="auto">
