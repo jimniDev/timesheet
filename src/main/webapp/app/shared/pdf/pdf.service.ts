@@ -44,9 +44,7 @@ export class PdfService {
       head: this.getColumns(),
       body: bodyData,
       theme: 'grid',
-      // createdCell: (data: any) => this.createCells(),
       didDrawPage: (autoTableData: any) => this.createPageHeaderFooter(doc, workingEntries, autoTableData),
-      //    didParseCell: (data: any) => { if (data.index === 0) { data({ rowSpan: 5, content: 12, styles: { valign: 'middle', halign: 'center' } }); } },
       margin: { top: 27, bottom: 33 }
     });
     doc.save('timesheet.pdf');
