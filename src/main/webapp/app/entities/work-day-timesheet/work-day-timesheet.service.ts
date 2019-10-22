@@ -53,10 +53,28 @@ export class WorkDayTimesheetService {
     return this.http.get<Number>(`${this.resourceUrl}/${id}/break-minutes`, { observe: 'response' });
   }
 
-  getBreakMinutesbyDate(year: number, month: number, day: number): Observable<HttpResponse<Number>> {
-    return this.http.get<Number>(SERVER_API_URL + `api/employees/me/work-days/year/${year}/month/${month}/day/${day}`, {
+  getAdditionalBreakMinutesbyDate(year: number, month: number, day: number): Observable<HttpResponse<Number>> {
+    return this.http.get<Number>(
+      SERVER_API_URL + `api/employees/me/work-days/additional-break-minutes/year/${year}/month/${month}/day/${day}`,
+      {
+        observe: 'response'
+      }
+    );
+  }
+
+  getTotalBreakMinutesbyDate(year: number, month: number, day: number): Observable<HttpResponse<Number>> {
+    return this.http.get<Number>(SERVER_API_URL + `api/employees/me/work-days/total-break-minutes/year/${year}/month/${month}/day/${day}`, {
       observe: 'response'
     });
+  }
+
+  getTotalWorkingMinutesbyDate(year: number, month: number, day: number): Observable<HttpResponse<Number>> {
+    return this.http.get<Number>(
+      SERVER_API_URL + `api/employees/me/work-days/total-working-minutes/year/${year}/month/${month}/day/${day}`,
+      {
+        observe: 'response'
+      }
+    );
   }
 
   protected convertDateFromClient(workDay: IWorkDayTimesheet): IWorkDayTimesheet {

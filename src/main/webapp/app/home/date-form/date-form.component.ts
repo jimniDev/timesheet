@@ -98,7 +98,7 @@ export class DateFormComponent implements OnInit {
     const dateBefore = this.timeForm.get('dateControl').value;
     if (dateBefore) {
       const date: moment.Moment = moment(dateBefore);
-      this.workDayService.getBreakMinutesbyDate(date.year(), date.month() + 1, date.date()).subscribe(
+      this.workDayService.getAdditionalBreakMinutesbyDate(date.year(), date.month() + 1, date.date()).subscribe(
         res => {
           if (res.ok) {
             this.timeForm.patchValue({ addBreakControl: res.body });

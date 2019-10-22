@@ -141,10 +141,24 @@ public class WorkDayResource {
     	return ResponseUtil.wrapOrNotFound(workDayService.getBreakMinutes(id));
     }
     
-    @GetMapping("/employees/me/work-days/year/{year}/month/{month}/day/{dayOfMonth}")
+    @GetMapping("/employees/me/work-days/additional-break-minutes/year/{year}/month/{month}/day/{dayOfMonth}")
     public ResponseEntity<Integer> getAdditionalBreakMinutesByDate(Principal principal, @PathVariable("year") int year, @PathVariable("month") int month, @PathVariable("dayOfMonth") int dayOfMonth) {
     	Employee employee = employeeService.findOneByUsername(principal.getName()).get();
     	log.debug("REST request to get Additional Break Minutes by Date : {}", LocalDate.of(year, month, dayOfMonth));
     	return ResponseUtil.wrapOrNotFound(workDayService.findByEmployeeAndDate(employee, LocalDate.of(year, month, dayOfMonth)).map(wd->wd.getAdditionalBreakMinutes()));
+    }
+    
+    @GetMapping("/employees/me/work-days/total-working-minutes/year/{year}/month/{month}/day/{dayOfMonth}")
+    public ResponseEntity<Long> getTotalWorkingMinutesByDate(Principal principal, @PathVariable("year") int year, @PathVariable("month") int month, @PathVariable("dayOfMonth") int dayOfMonth) {
+    	Employee employee = employeeService.findOneByUsername(principal.getName()).get();
+    	log.debug("REST request to get Additional Break Minutes by Date : {}", LocalDate.of(year, month, dayOfMonth));
+    	return ResponseUtil.wrapOrNotFound(workDayService.findByEmployeeAndDate(employee, LocalDate.of(year, month, dayOfMonth)).map(wd->wd.getTotalWorkingMinutes()));
+    }
+    
+    @GetMapping("/employees/me/work-days/total-break-minutes/year/{year}/month/{month}/day/{dayOfMonth}")
+    public ResponseEntity<Integer> getTotalBreakMinutesByDate(Principal principal, @PathVariable("year") int year, @PathVariable("month") int month, @PathVariable("dayOfMonth") int dayOfMonth) {
+    	Employee employee = employeeService.findOneByUsername(principal.getName()).get();
+    	log.debug("REST request to get Additional Break Minutes by Date : {}", LocalDate.of(year, month, dayOfMonth));
+    	return ResponseUtil.wrapOrNotFound(workDayService.findByEmployeeAndDate(employee, LocalDate.of(year, month, dayOfMonth)).map(wd->wd.getTotalBreakMinutes()));
     }
 }

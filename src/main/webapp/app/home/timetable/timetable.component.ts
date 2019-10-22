@@ -15,6 +15,8 @@ import { TimetableEditDialogComponent } from '../timetable-edit-dialog/timetable
 import { TimetableDeleteDialogComponent } from '../timetable-delete-dialog/timetable-delete-dialog.component';
 import { YearWeek } from '../year-week-select/year-week-select.component';
 import { YearMonth } from '../year-month-select/year-month-select.component';
+import { WorkDayTimesheetService } from 'app/entities/work-day-timesheet';
+import { timingSafeEqual } from 'crypto';
 
 @Component({
   selector: 'jhi-timetable',
@@ -58,7 +60,8 @@ export class TimetableComponent implements OnInit, AfterViewInit {
     private workingEntryService: WorkingEntryTimesheetService,
     private employeeService: EmployeeTimesheetService,
     public dialog: MatDialog,
-    public asRowSpan: AsRowSpanService
+    public asRowSpan: AsRowSpanService,
+    private workDayService: WorkDayTimesheetService
   ) {}
 
   ngOnInit() {}
@@ -280,18 +283,42 @@ export class TimetableComponent implements OnInit, AfterViewInit {
     });
     dialogRef.afterClosed().subscribe((result: IWorkingEntryTimesheet) => {
       if (result) {
+        const workDayOfdeletedEntry = workingEntry.workDay;
+        this.workDayService
+          .getTotalWorkingMinutesbyDate(
+            workDayOfdeletedEntry.date.year(),
+            workDayOfdeletedEntry.date.month() + 1,
+            workDayOfdeletedEntry.date.date()
+          )
+          .subscribe(res => {
+            if (res.ok) {
+              workDayOfdeletedEntry.totalWorkingMinutes = <number>res.body;
+            }
+          });
+        this.workDayService
+          .getTotalBreakMinutesbyDate(
+            workDayOfdeletedEntry.date.year(),
+            workDayOfdeletedEntry.date.month() + 1,
+            workDayOfdeletedEntry.date.date()
+          )
+          .subscribe(res => {
+            if (res.ok) {
+              workDayOfdeletedEntry.totalBreakMinutes = <number>res.body;
+            }
+          });
+        this.workingEntries.forEach(entry => {
+          if (entry.workDay.id === workDayOfdeletedEntry.id) {
+            entry.workDay = workDayOfdeletedEntry;
+          }
+        });
         this.workingEntryService.delete(workingEntry.id).subscribe(res => {
           if (res.ok) {
             const idx = this.workingEntries.findIndex(we => we.id === workingEntry.id);
             this.workingEntries.splice(idx, 1);
-            // this.workingEntries.forEach(entry => {
-            //   if (entry.workDay.id === workingEntry.workDay.id) {
-            //     entry.workDay.totalWorkingMinutes -= workingEntry.workDay.;
-            //   }
-            // });
             this.DSworkingEntries.data = this.workingEntries;
           }
         });
+
         const now = moment();
         this.doesEntryExistNow = this.workingEntries.some(entry => entry.start <= now && entry.end >= now);
         this.loadTargetWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
