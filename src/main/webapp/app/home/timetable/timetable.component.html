@@ -1,7 +1,7 @@
 <div fxLayout="row" fxLayoutAlign="center stretch" fxLayout.lt-lg="column-reverse" fxLayoutGap="8px" class="container">
     <div fxFlex="auto" fxLayout="column" fxLayoutAlign="space-between" fxLayoutGap="" class="container"
         fxLayoutGap="8px">
-        <mat-card id=" timetable">
+        <mat-card id="timetable" fxFlex="100">
             <table mat-table [dataSource]="DSworkingEntries" matSort matSortActive="start" matSortDirection="desc">
                 <ng-container matColumnDef="workDay.date">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header> Date </th>
@@ -38,7 +38,8 @@
 
                 <ng-container matColumnDef="Sum">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header fxHide.lt-md="true"> Difference </th>
-                    <td mat-cell *matCellDef="let element" fxHide.lt-md="true"> {{sumDate(element.start, element.end)}}
+                    <td mat-cell *matCellDef="let element" fxHide.lt-md="true">
+                        {{sumDate(element.start, element.end)}}
                     </td>
                 </ng-container>
                 <ng-container matColumnDef="Activity">
