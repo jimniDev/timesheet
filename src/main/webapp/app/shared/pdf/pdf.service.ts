@@ -14,9 +14,9 @@ export class PdfService {
   public createPDF(workingEntries: IWorkingEntryTimesheet[]): void {
     const raw_data = workingEntries.map(we => [
       we.workDay.date.format('YYYY-MM-DD'),
+      this.secondsToHHMM(we.end.diff(we.start, 'seconds', true)),
       we.start.format('HH:mm'),
       we.end.format('HH:mm'),
-      this.secondsToHHMM(we.end.diff(we.start, 'seconds', true)),
       we.activity ? we.activity.name : ''
     ]);
 
@@ -57,6 +57,7 @@ export class PdfService {
     const docPages = doc.internal.pages;
     if (logo) {
       //  console.log(data.table.rows.length)
+      // doc.setFont('courier');
       doc.addImage(logo, 'JPG', data.settings.margin.left + 150, pageHeight - 27, 24, 10);
       doc.setFontSize('13');
       doc.text(`Employee : ${employee} , Month : ${month}`, data.settings.margin.left, 25);
@@ -100,10 +101,10 @@ export class PdfService {
   }
 
   dataConversionForRowSpan(data: IWorkingEntryTimesheet[], raw_data: any, result: object): any {
-    const countsOfDates = result[1];
-    const indexOfDatesStarting = result[2];
-    const indexOfDatesEnding = result[3];
-    const dates = result[0];
+    const countsOfDates = result[1]; // Date Count Array from result object
+    const indexOfDatesStarting = result[2]; // Index of Dates Starting in the raw_Data or WorkingEntries
+    // const indexOfDatesEnding = result[3];
+    const dates = result[0]; // Distinct Dates Array from the result object
     const body = [];
     const totalWorkTime = [];
     for (let i = 0; i < dates.length; i++) {
@@ -114,20 +115,19 @@ export class PdfService {
         for (let x = 0; x < countsOfDates[i]; x++) {
           tempTotalWorkTime = tempTotalWorkTime + data[i + x].end.diff(data[i + x].start, 'seconds', true);
         }
-        totalWorkTime[i] = this.secondsToHHMM(tempTotalWorkTime);
+        totalWorkTime[i] = this.secondsToHHMM(tempTotalWorkTime); // total Worktime from multiple Entries of Same Day
         tempTotalWorkTime = 0;
       } else {
         tempTotalWorkTime = data[i].end.diff(data[i].start, 'seconds', true);
         totalWorkTime[i] = this.secondsToHHMM(tempTotalWorkTime);
       }
     }
-    let flag = 0;
-    let row = [];
+    let flag = 0; // Flag variable or watchVariable to follow up with Index
+    let row = []; // To be pushed in the body for autotable with rowspan details
     for (let a = 0; a < dates.length; a++) {
-      const beginIndex = indexOfDatesStarting[a];
-      const endIndex = indexOfDatesStarting[a];
-      const counts = countsOfDates[a];
-
+      const beginIndex = indexOfDatesStarting[a]; // First apperance of date in the workingEntries Array
+      // const endIndex = indexOfDatesStarting[a];
+      const counts = countsOfDates[a]; // Counts of Dates in the dataset
       if (counts > 1) {
         for (let b = 0; b < counts; b++) {
           for (const keys in raw_data[flag]) {
@@ -137,7 +137,7 @@ export class PdfService {
                   row.push({ rowSpan: counts, content: dates[a], styles: { valign: 'middle', halign: 'left' } });
                 } else {
                 }
-              } else if (keys === '3') {
+              } else if (keys === '1') {
                 if (flag === beginIndex) {
                   row.push({ rowSpan: counts, content: totalWorkTime[a], styles: { valign: 'middle', halign: 'left' } });
                 } else {
