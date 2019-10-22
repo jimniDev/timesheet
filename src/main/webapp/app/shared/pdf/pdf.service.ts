@@ -57,7 +57,6 @@ export class PdfService {
     const pageSize = doc.internal.pageSize;
     const pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight();
     logo.src = '../../content/images/logo.jpg';
-    // this.accountService.identity().then(account => {
     if (!this.initialized) {
       return;
     }
@@ -67,8 +66,6 @@ export class PdfService {
     // const number_of_pages = doc.internal.getNumberOfPages();
     // const docPages = doc.internal.pages;
     if (logo) {
-      //  console.log(data.table.rows.length)
-      // doc.setFont('courier');
       doc.addImage(logo, 'JPG', data.settings.margin.left + 150, pageHeight - 27, 24, 10);
       doc.setFontSize('13');
       doc.text(`Employee : ${name} , Month : ${month}`, data.settings.margin.left, 25);
