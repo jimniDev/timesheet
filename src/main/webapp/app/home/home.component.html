@@ -5,7 +5,7 @@
     <div fxLayout="column" fxLayout.lt-md="column-reverse" fxLayoutGap="8px" cclass="container">
         <jhi-timetable (initialized)="enableButton($event)" [started]="started"></jhi-timetable>
         <div fxLayout="row" fxLayoutAlign="space-between" fxLayout.lt-md="column" fxLayoutGap="8px" class="container">
-            <mat-card fxFlex="auto">
+            <mat-card id="addCard" fxFlex="auto">
                 <mat-card-subtitle>Add new entry</mat-card-subtitle>
                 <mat-card-content>
                     <div fxLayoutAlign="center" fxLayout="row" fxLayout.lt-lg="column" fxLayoutGap="8px"

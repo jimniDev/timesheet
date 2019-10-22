@@ -13,3 +13,9 @@ Main page styles
   display: block;
   margin-bottom: 8px;
 }
+
+@media only screen and (max-width: 960px) {
+  #addCard {
+    margin-bottom: 0px;
+  }
+}
