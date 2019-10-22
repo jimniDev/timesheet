@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.IntStream;
 
 /**
  * Service Implementation for managing {@link Employee}.
@@ -95,7 +96,7 @@ public class EmployeeService {
         employeeRepository.deleteById(id);
     }
     
-    public int getTargetWorkMinutesForDate(Employee employee, LocalDate date) {
+    public long getTargetWorkMinutesForDate(Employee employee, LocalDate date) {
     	Optional<WeeklyWorkingHours> oWwh = employee.getWeeklyWorkingHours().stream().filter(wwh -> (wwh.getStartDate().isBefore(date) || wwh.getStartDate().equals(date)) && (wwh.getEndDate() == null || wwh.getEndDate().isAfter(date))).findFirst();
     	if (oWwh.isPresent()) {
     		return (oWwh.get().getHours() * 60) / 5;
@@ -105,13 +106,13 @@ public class EmployeeService {
     }
     
     @Transactional(readOnly = true)
-    public int targetWorkTime(Principal principal, int year, int month) {
+    public long getTargetWorkTimeMinutes(Principal principal, int year, int month) {
     	Employee employee = this.findOneByUsername(principal.getName()).get();
     	YearMonth yearMonth = YearMonth.of(year, month);
     	return yearMonth.atDay(1).datesUntil(yearMonth.atEndOfMonth().plusDays(1L))
     	.filter(date -> !date.getDayOfWeek().equals(DayOfWeek.SATURDAY) && !date.getDayOfWeek().equals(DayOfWeek.SUNDAY) && !this.holidayService.isfixedHoliday(date) && !this.holidayService.isflexibleHoliday(date))
     	.map(workDay -> getTargetWorkMinutesForDate(employee, workDay))
-    	.reduce(0, Integer::sum);
+    	.reduce(0L, Long::sum);
     }
     
     @Transactional(readOnly = true)
@@ -167,7 +168,7 @@ public class EmployeeService {
 			return getWorkingDatesOfIsoWeek(year, isoWeek)
 			.stream()
 			.filter(date -> !holidayService.isHoliday(date))
-			.map(workDay -> (long) getTargetWorkMinutesForDate(employee.get(), workDay))
+			.map(workDay -> getTargetWorkMinutesForDate(employee.get(), workDay))
 	    	.reduce(0L, Long::sum);	
 		}
 		return 0L;
@@ -183,5 +184,14 @@ public class EmployeeService {
 			}
 		}
 		return dates;
+	}
+	
+	@Transactional(readOnly = true)
+	public long currentWorktimeBalance(Principal principal) {
+		YearMonth currentMonth = YearMonth.now();
+		this.getTargetWorkTimeMinutes(principal, currentMonth.getYear(), currentMonth.getMonthValue());
+		return IntStream.range(1, currentMonth.getMonthValue())
+				.mapToLong(month -> this.getWorkTimeMinutes(principal, currentMonth.getYear(), month) - this.getTargetWorkTimeMinutes(principal, currentMonth.getYear(), month))
+				.reduce(0L, Long::sum);
 	}
 }

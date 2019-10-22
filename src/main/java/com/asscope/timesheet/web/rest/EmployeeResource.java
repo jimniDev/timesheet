@@ -91,9 +91,9 @@ public class EmployeeResource {
     
     @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
     @GetMapping({"/employees/me/target-work-time/{year}/{month}"})
-    public ResponseEntity<Integer> getTargetWorktimeInformation(Principal principal, @PathVariable("year") Integer year, @PathVariable("month") Integer month) {
+    public ResponseEntity<Long> getTargetWorktimeInformation(Principal principal, @PathVariable("year") Integer year, @PathVariable("month") Integer month) {
     	log.debug("REST request to get worktimeInformation for Employee : {}", principal.getName());
-    	return ResponseEntity.ok().body(employeeService.targetWorkTime(principal, year, month));
+    	return ResponseEntity.ok().body(employeeService.getTargetWorkTimeMinutes(principal, year, month));
     }
     
     @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
@@ -122,5 +122,12 @@ public class EmployeeResource {
     public ResponseEntity<Long> getWorktimeInformation(Principal principal, @PathVariable("year") int year, @PathVariable("isoWeek") int isoWeek) {
     	log.debug("REST request to get weekly worktimeInformation for Employee : {}", principal.getName());
     	return ResponseEntity.ok().body(employeeService.weeklyWorkTimeMinutes(principal, year, isoWeek));
+    }
+    
+    @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
+    @GetMapping("/employees/me/work-time/balance")
+    public ResponseEntity<Long> currentBalance(Principal principal) {
+    	log.debug("REST request to get current worktime balance for employee : {}", principal.getName());
+    	return ResponseEntity.ok().body(employeeService.currentWorktimeBalance(principal));
     }
 }
