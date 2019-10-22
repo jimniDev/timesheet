@@ -150,19 +150,13 @@ export class TimetableComponent implements OnInit, AfterViewInit {
     }
   }
 
-  filterTimeTableWeekly(date: YearWeek) {
+  loadWeeklyInformation(date: YearWeek) {
     if (date) {
       this.loadTargetWorkTimeWeekly(parseInt(date.year, 10), parseInt(date.week, 10));
       this.loadActualWorkTimeWeekly(parseInt(date.year, 10), parseInt(date.week, 10));
     } else {
-      this.workingEntries = this.workingEntriesUnfiltered;
       this.loadTargetWorkTimeWeekly(parseInt(date.year, 10), parseInt(date.week, 10));
       this.loadActualWorkTimeWeekly(parseInt(date.year, 10), parseInt(date.week, 10));
-    }
-    this.DSworkingEntries.data = this.workingEntries;
-
-    if (this.DSworkingEntries.paginator) {
-      this.DSworkingEntries.paginator.firstPage(); // go to the first page if filter changed
     }
   }
 
