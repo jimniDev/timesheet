@@ -32,6 +32,10 @@ jhi-year-week-select {
   margin-right: 8px;
 }
 
+#filterCard {
+  padding-top: 16px;
+}
+
 @media only screen and (min-width: 1280px) {
   mat-card {
     padding-top: 0px;
@@ -64,12 +68,8 @@ jhi-year-week-select {
     padding: 8px;
   }
 
-  #filterCard {
-    padding-top: 16px;
-  }
-}
+  /*timetable*/
 
-@media only screen and (max-width: 600px) {
   #timetable {
     padding: 0px;
   }
