@@ -96,7 +96,7 @@ export class PdfService {
       endingIndex[y] = startingIndex[y] + counts[y] - 1;
     }
     const resultObject = [];
-    resultObject.push(result, counts, startingIndex, endingIndex);
+    resultObject.push(result, counts, startingIndex, endingIndex); // Result Object with result(having dates) , counts(having counts of dates in workingEntries) , startingIndex (having starting Index of dates)
     return resultObject;
   }
 
@@ -125,6 +125,7 @@ export class PdfService {
     let flag = 0; // Flag variable or watchVariable to follow up with Index
     let row = []; // To be pushed in the body for autotable with rowspan details
     for (let a = 0; a < dates.length; a++) {
+      // for-loop working with the length of dates [Logic is to go through all dates and use the count of them to put them into body with total workTime]
       const beginIndex = indexOfDatesStarting[a]; // First apperance of date in the workingEntries Array
       // const endIndex = indexOfDatesStarting[a];
       const counts = countsOfDates[a]; // Counts of Dates in the dataset
@@ -135,12 +136,10 @@ export class PdfService {
               if (keys === '0') {
                 if (flag === beginIndex) {
                   row.push({ rowSpan: counts, content: dates[a], styles: { valign: 'middle', halign: 'left' } });
-                } else {
                 }
               } else if (keys === '1') {
                 if (flag === beginIndex) {
                   row.push({ rowSpan: counts, content: totalWorkTime[a], styles: { valign: 'middle', halign: 'left' } });
-                } else {
                 }
               } else {
                 row.push(raw_data[flag][keys]);
