@@ -30,7 +30,7 @@ export class PdfService {
     ]);
     const doc = new jsPDF();
     const rawdataLength = rawData.length;
-    //let bodyData = [];
+    // let bodyData = [];
     let processedData = [];
     switch (rawdataLength) {
       case 0:
@@ -59,7 +59,7 @@ export class PdfService {
         workingEntryParts.push(tempParts);
         start = start + 30 * (i + 1);
         end = end + (processedData.length - start);
-        //let totalTime = this.totalWorkTime()
+        // let totalTime = this.totalWorkTime()
         if (i === parts - 1) {
           const dataDivision = processedData.slice(start, end);
           const temp = workingEntries.slice(start, end);
