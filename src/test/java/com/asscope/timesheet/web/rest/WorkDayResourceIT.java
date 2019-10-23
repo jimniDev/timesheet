@@ -6,6 +6,7 @@ import com.asscope.timesheet.domain.WorkDay;
 import com.asscope.timesheet.domain.WorkingEntry;
 import com.asscope.timesheet.domain.Employee;
 import com.asscope.timesheet.repository.WorkDayRepository;
+import com.asscope.timesheet.service.EmployeeService;
 import com.asscope.timesheet.service.WorkDayService;
 import com.asscope.timesheet.web.rest.errors.ExceptionTranslator;
 
@@ -46,6 +47,9 @@ public class WorkDayResourceIT {
 
     @Autowired
     private WorkDayService workDayService;
+    
+    @Autowired
+    private EmployeeService employeeService;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -69,7 +73,7 @@ public class WorkDayResourceIT {
     @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final WorkDayResource workDayResource = new WorkDayResource(workDayService);
+        final WorkDayResource workDayResource = new WorkDayResource(workDayService, employeeService);
         this.restWorkDayMockMvc = MockMvcBuilders.standaloneSetup(workDayResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
