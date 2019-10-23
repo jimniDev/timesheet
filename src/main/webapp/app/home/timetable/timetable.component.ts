@@ -15,6 +15,8 @@ import { TimetableEditDialogComponent } from '../timetable-edit-dialog/timetable
 import { TimetableDeleteDialogComponent } from '../timetable-delete-dialog/timetable-delete-dialog.component';
 import { YearWeek } from '../year-week-select/year-week-select.component';
 import { YearMonth } from '../year-month-select/year-month-select.component';
+import { WorkDayTimesheetService } from 'app/entities/work-day-timesheet';
+import { timingSafeEqual } from 'crypto';
 
 @Component({
   selector: 'jhi-timetable',
@@ -39,6 +41,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
   actualTime = '00h 00m';
   diffTime = '00h 00m';
   todayTime = '00h 00m';
+  balanceTime = '00h 00m';
 
   weeklyTargetTime = '00h 00m';
   weeklyActualTime = '00h 00m';
@@ -46,6 +49,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
 
   targetMinutes: number;
   actualMinutes: number;
+  balanceMinutes: number;
   weeklyTargetMinutes: number;
   weeklyActualMinutes: number;
 
@@ -56,7 +60,8 @@ export class TimetableComponent implements OnInit, AfterViewInit {
     private workingEntryService: WorkingEntryTimesheetService,
     private employeeService: EmployeeTimesheetService,
     public dialog: MatDialog,
-    public asRowSpan: AsRowSpanService
+    public asRowSpan: AsRowSpanService,
+    private workDayService: WorkDayTimesheetService
   ) {}
 
   ngOnInit() {}
@@ -68,6 +73,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
     this.loadActualWorkTime(date.year(), date.month() + 1);
     this.loadActualWorkTimeWeekly(date.year(), date.isoWeek());
     this.loadTargetWorkTimeWeekly(date.year(), date.isoWeek());
+    this.loadCurrentWorktimeBalance();
     this.DSworkingEntries.sortingDataAccessor = this.sortingDataAccessor;
     this.DSworkingEntries.paginator = this.paginator;
     this.DSworkingEntries.sort = this.sort;
@@ -118,6 +124,15 @@ export class TimetableComponent implements OnInit, AfterViewInit {
         this.weeklyActualMinutes = res.body;
         this.weeklyActualTime = this.secondsToHHMM(res.body * 60);
         this.calcWeeklyDiffTargetActual();
+      }
+    });
+  }
+
+  loadCurrentWorktimeBalance() {
+    this.employeeService.currentWorkTimeBalance().subscribe(res => {
+      if (res.ok) {
+        this.balanceMinutes = res.body;
+        this.balanceTime = this.secondsToHHMM(res.body * 60);
       }
     });
   }
@@ -185,13 +200,10 @@ export class TimetableComponent implements OnInit, AfterViewInit {
   }
 
   addNewandSort(workingEntry: WorkingEntryTimesheet) {
-    this.loadTargetWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
-    this.loadActualWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
     this.workingEntries.push(workingEntry);
     this.workingEntries.forEach(entry => {
       if (entry.workDay.id === workingEntry.workDay.id) {
-        entry.workDay.totalWorkingMinutes = workingEntry.workDay.totalWorkingMinutes;
-        entry.workDay.totalBreakMinutes = workingEntry.workDay.totalBreakMinutes;
+        entry.workDay = workingEntry.workDay;
       }
     });
     this.workingEntriesUnfiltered = this.workingEntries;
@@ -204,6 +216,11 @@ export class TimetableComponent implements OnInit, AfterViewInit {
     // } else {
     //   this.DoesEntryExistNow = false;
     // }
+    this.loadTargetWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
+    this.loadActualWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
+    this.loadActualWorkTimeWeekly(this.filterDate.year(), this.filterDate.isoWeek());
+    this.loadTargetWorkTimeWeekly(this.filterDate.year(), this.filterDate.isoWeek());
+    this.loadCurrentWorktimeBalance();
   }
 
   sumDate(date1: any, date2: any): String {
@@ -242,8 +259,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
         this.workingEntries[idx] = result;
         this.workingEntries.forEach(entry => {
           if (entry.workDay.id === result.workDay.id) {
-            entry.workDay.totalWorkingMinutes = result.workDay.totalWorkingMinutes;
-            entry.workDay.totalBreakMinutes = result.workDay.totalBreakMinutes;
+            entry.workDay = result.workDay;
           }
         });
         this.DSworkingEntries.data = this.workingEntries;
@@ -252,6 +268,9 @@ export class TimetableComponent implements OnInit, AfterViewInit {
 
         this.loadTargetWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
         this.loadActualWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
+        this.loadActualWorkTimeWeekly(this.filterDate.year(), this.filterDate.isoWeek());
+        this.loadTargetWorkTimeWeekly(this.filterDate.year(), this.filterDate.isoWeek());
+        this.loadCurrentWorktimeBalance();
       }
     });
   }
@@ -262,18 +281,49 @@ export class TimetableComponent implements OnInit, AfterViewInit {
     });
     dialogRef.afterClosed().subscribe((result: IWorkingEntryTimesheet) => {
       if (result) {
+        const workDayOfdeletedEntry = workingEntry.workDay;
+        this.workDayService
+          .getTotalWorkingMinutesbyDate(
+            workDayOfdeletedEntry.date.year(),
+            workDayOfdeletedEntry.date.month() + 1,
+            workDayOfdeletedEntry.date.date()
+          )
+          .subscribe(res => {
+            if (res.ok) {
+              workDayOfdeletedEntry.totalWorkingMinutes = <number>res.body;
+            }
+          });
+        this.workDayService
+          .getTotalBreakMinutesbyDate(
+            workDayOfdeletedEntry.date.year(),
+            workDayOfdeletedEntry.date.month() + 1,
+            workDayOfdeletedEntry.date.date()
+          )
+          .subscribe(res => {
+            if (res.ok) {
+              workDayOfdeletedEntry.totalBreakMinutes = <number>res.body;
+            }
+          });
+        this.workingEntries.forEach(entry => {
+          if (entry.workDay.id === workDayOfdeletedEntry.id) {
+            entry.workDay = workDayOfdeletedEntry;
+          }
+        });
         this.workingEntryService.delete(workingEntry.id).subscribe(res => {
           if (res.ok) {
             const idx = this.workingEntries.findIndex(we => we.id === workingEntry.id);
             this.workingEntries.splice(idx, 1);
             this.DSworkingEntries.data = this.workingEntries;
-            const now = moment();
-            this.doesEntryExistNow = this.workingEntries.some(entry => entry.start <= now && entry.end >= now);
-
-            this.loadTargetWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
-            this.loadActualWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
           }
         });
+
+        const now = moment();
+        this.doesEntryExistNow = this.workingEntries.some(entry => entry.start <= now && entry.end >= now);
+        this.loadTargetWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
+        this.loadActualWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
+        this.loadActualWorkTimeWeekly(this.filterDate.year(), this.filterDate.isoWeek());
+        this.loadTargetWorkTimeWeekly(this.filterDate.year(), this.filterDate.isoWeek());
+        this.loadCurrentWorktimeBalance();
       }
     });
   }

@@ -13,6 +13,7 @@ import { IRoleTimesheet } from 'app/shared/model/role-timesheet.model';
 import { MatSnackBar } from '@angular/material';
 import { MAT_DATE_FORMATS, DateAdapter } from '@angular/material/core';
 import { EmployeeTimesheetService } from 'app/entities/employee-timesheet';
+import { WorkDayTimesheetService } from 'app/entities/work-day-timesheet';
 
 export const MY_FORMAT = {
   parse: {
@@ -54,6 +55,7 @@ export class DateFormComponent implements OnInit {
   constructor(
     private dateAdapter: DateAdapter<Date>,
     private workingEntryService: WorkingEntryTimesheetService,
+    private workDayService: WorkDayTimesheetService,
     private activityService: ActivityTimesheetService,
     private roleService: RoleTimesheetService,
     private employeeService: EmployeeTimesheetService,
@@ -84,11 +86,29 @@ export class DateFormComponent implements OnInit {
 
     this.timeForm.get('dateControl').valueChanges.subscribe(value => {
       this.fillDay();
+      this.fillBreak();
     });
 
     this.timeForm.get('activityControl').valueChanges.subscribe((value: IActivityTimesheet) => {
       this.fillDay();
     });
+  }
+
+  fillBreak() {
+    const dateBefore = this.timeForm.get('dateControl').value;
+    if (dateBefore) {
+      const date: moment.Moment = moment(dateBefore);
+      this.workDayService.getAdditionalBreakMinutesbyDate(date.year(), date.month() + 1, date.date()).subscribe(
+        res => {
+          if (res.ok) {
+            this.timeForm.patchValue({ addBreakControl: res.body });
+          }
+        },
+        err => {
+          this.timeForm.patchValue({ addBreakControl: '' });
+        }
+      );
+    }
   }
 
   fillDay() {
@@ -123,32 +143,39 @@ export class DateFormComponent implements OnInit {
         duration: 5000
       });
     } else {
-      let workingEntry: WorkingEntryTimesheet;
-      workingEntry = new WorkingEntryTimesheet();
-      workingEntry.start = startMoment;
-      workingEntry.end = endMoment;
-      workingEntry.workDay = workDay;
-      workingEntry.deleted = false;
-      workingEntry.activity = this.timeForm.value.activityControl;
-      workingEntry.workDay.additionalBreakMinutes = Number.parseInt(this.timeForm.value.addBreakControl, 10) || 0;
+      const diff = moment.duration(endMoment.diff(startMoment)).asMinutes();
+      if (diff <= this.timeForm.value.addBreakControl) {
+        this._snackBar.open('Break minutes cannot be over Working hours', 'Close', {
+          duration: 5000
+        });
+      } else {
+        let workingEntry: WorkingEntryTimesheet;
+        workingEntry = new WorkingEntryTimesheet();
+        workingEntry.start = startMoment;
+        workingEntry.end = endMoment;
+        workingEntry.workDay = workDay;
+        workingEntry.deleted = false;
+        workingEntry.activity = this.timeForm.value.activityControl;
+        workingEntry.workDay.additionalBreakMinutes = Number.parseInt(this.timeForm.value.addBreakControl, 10) || 0;
 
-      this.workingEntryService.create(workingEntry).subscribe(
-        res => {
-          if (res.ok) {
-            this.newWorkingEntry.emit(res.body);
-            this.saved.emit(true);
-            // 400 else error
+        this.workingEntryService.create(workingEntry).subscribe(
+          res => {
+            if (res.ok) {
+              this.newWorkingEntry.emit(res.body);
+              this.saved.emit(true);
+              // 400 else error
+            }
+          },
+          err => {
+            if (err.error.errorKey === 'overlappingtime') {
+              // then show the snackbar.
+              this._snackBar.open('Time Entry is overlapped', 'Close', {
+                duration: 5000
+              });
+            }
           }
-        },
-        err => {
-          if (err.error.errorKey === 'overlappingtime') {
-            // then show the snackbar.
-            this._snackBar.open('Time Entry is overlapped', 'Close', {
-              duration: 5000
-            });
-          }
-        }
-      );
+        );
+      }
     }
   }
 

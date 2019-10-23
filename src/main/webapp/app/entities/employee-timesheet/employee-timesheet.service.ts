@@ -64,4 +64,8 @@ export class EmployeeTimesheetService {
   weeklyActualWorkTime(year: number, week: number) {
     return this.http.get<number>(this.resourceUrl + '/me/work-time/' + year + '/iso-week/' + week, { observe: 'response' });
   }
+
+  currentWorkTimeBalance() {
+    return this.http.get<number>(this.resourceUrl + '/me/work-time/balance', { observe: 'response' });
+  }
 }
