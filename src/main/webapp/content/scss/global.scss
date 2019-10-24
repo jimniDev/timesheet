@@ -6,11 +6,32 @@ table {
   //margin-top: 8px;
 }
 
-body {
-  margin: 0px;
-}
+// body {
+//   margin: 0px;
+//   -webkit-overflow-scrolling: touch;
+//   -webkit-transform: translateZ(0px);
+//   -webkit-transform: translate3d(0,0,0);
+//   -webkit-perspective: 1000;
+// }
 
 .mat-header-cell,
 .mat-sort-header-arrow {
   color: #002f5d;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  position: fixed;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: 0 0;
+  -webkit-overflow-scrolling: touch;
+  overflow-x: auto;
+  overflow-y: scroll;
 }
