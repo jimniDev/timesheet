@@ -1,16 +1,20 @@
-.fill-remaining-space {
-  /* This fills the remaining space, by using flexbox. 
-       Every toolbar row uses a flexbox row layout. */
-  flex: 1 1 auto;
-}
+// .fill-remaining-space {
+//   /* This fills the remaining space, by using flexbox.
+//        Every toolbar row uses a flexbox row layout. */
+//   flex: 1 1 auto;
+// }
+
 .text-center {
   text-align: center;
 }
 
-.sidenav-container {
-  flex: 1;
-  height: calc(100% - 64px);
-}
+// .sidenav-container {
+//   display: flex;
+//   position: absolute;
+//   top: 56px;
+//   bottom: 0px;
+//   // height: calc(100% - 64px);
+// }
 
 img {
   height: 44px;
@@ -18,7 +22,8 @@ img {
 }
 
 mat-toolbar {
-  position: relative;
+  position: fixed;
+  top: 0px;
   z-index: 2;
 }
 
@@ -26,11 +31,11 @@ h1 {
   font-size: 24px;
 }
 
-@media (max-width: 599px) {
-  .sidenav-container {
-    height: calc(100% - 56px);
-  }
-}
+// @media (max-width: 599px) {
+//   .sidenav-container {
+//     height: calc(100% - 56px);
+//   }
+// }
 
 .sidenav-container-contents {
   padding: 8px;

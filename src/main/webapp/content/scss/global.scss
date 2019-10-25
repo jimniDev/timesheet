@@ -6,6 +6,14 @@ table {
   //margin-top: 8px;
 }
 
+as-navbar {
+  display: flex;
+  position: absolute;
+  top: 56px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+}
 // body {
 //   margin: 0px;
 //   -webkit-overflow-scrolling: touch;
@@ -19,19 +27,22 @@ table {
   color: #002f5d;
 }
 
-html,
-body {
-  height: 100%;
-}
+// html {
+//   height: 100%;
+//   position: relative;
+//   overflow: hidden;
+// }
 
 body {
-  position: fixed;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  outline: 0;
-  background: 0 0;
-  -webkit-overflow-scrolling: touch;
-  overflow-x: auto;
-  overflow-y: scroll;
+  display: block;
+  // height: 100%;
+  // position: fixed;
+  // margin: 0;
+  // padding: 0;
+  // border: 0;
+  // outline: 0;
+  // background: 0 0;
+  // -webkit-overflow-scrolling: touch;
+  // overflow-x: auto;
+  // overflow-y: scroll;
 }
