@@ -14,7 +14,7 @@ export class PdfService {
   public initialized = false;
   private account: Account;
 
-  constructor(private resolver: ComponentFactoryResolver, private injector: Injector, private accountService: AccountService) {
+  constructor(private accountService: AccountService) {
     this.accountService.identity().then(a => {
       this.account = a;
       this.initialized = true;
@@ -35,8 +35,10 @@ export class PdfService {
     const workingEntryParts = [];
     const timeTotalOfParts = [];
     const totaltimeParts = [];
+
     switch (rawdataLength) {
       case 0:
+        console.log('No data for printing');
         break;
 
       case 1:
@@ -48,6 +50,7 @@ export class PdfService {
         processedData = this.dataConversionForRowSpan(workingEntries, rawData, calculateRowSpan);
         break;
     }
+
     if (processedData.length > 30) {
       const parts = Math.floor(processedData.length / 30);
       let starting = 0;
@@ -69,11 +72,13 @@ export class PdfService {
     } else {
       bodyParts[0] = processedData;
     }
+
     for (let x = 0; x < workingEntryParts.length; x++) {
       const total = this.totalWorkTime(workingEntryParts[x]);
       totaltimeParts[x] = total;
     }
     totaltimeParts.push(this.totalWorkTime(workingEntries));
+
     if (bodyParts.length > 1) {
       for (let s = 0; s < bodyParts.length; s++) {
         doc.autoTable({
@@ -95,6 +100,7 @@ export class PdfService {
         margin: { top: 27, bottom: 33, right: 15, left: 15 }
       });
     }
+
     doc.save('timesheet.pdf');
   }
   getColumns() {
@@ -114,42 +120,33 @@ export class PdfService {
     const name = this.account.firstName + this.account.lastName;
     const month = workingEntries[0].workDay.date.format('MMMM');
     // const totalWorkTime = this.totalWorkTime(workingEntries);
-    let totalWorkTime;
+    let totalWorkTime: any;
     logo.src = '../../content/images/logo.jpg';
     if (!this.initialized) {
       return;
     }
     if (logo) {
       if (totalPages > 1) {
-        doc.addImage(logo, 'JPG', data.settings.margin.left + 150, pageHeight - 27, 24, 10);
+        this.addLogo(doc, logo, data, pageHeight);
         doc.setFontSize('13');
         if (pageNumber !== totalPages) {
-          doc.setFontSize('10');
-          doc.text(`Page ${pageNumber} / ${totalPages}`, data.settings.margin.left, pageHeight - 27);
-          doc.setFontSize('13');
+          this.addPageNumber(doc, pageNumber, totalPages, data, pageHeight);
         }
         if (pageNumber === 1) {
-          doc.text(`Employee: ${name}, Month: ${month} `, data.settings.margin.left, 25);
+          this.addEmployeeNameandMonth(doc, name, month, data);
         } else {
-          doc.text(`Sum of previous page: ${totalTime[pageNumber - 2]}`, data.settings.margin.left, 25);
+          this.addSumOnPreviousPage(doc, totalTime[pageNumber - 2], data);
         }
         if (pageNumber === totalPages) {
-          doc.setLineWidth(0.4);
-          doc.setDrawColor(16, 24, 32);
-          doc.line(data.settings.margin.left - 3, pageHeight - 23, data.settings.margin.left + 40, pageHeight - 23);
-          doc.text('Signature', data.settings.margin.left + 7, pageHeight - 18);
-          doc.text(`Total WorkTime: ${totalTime[pageNumber]} `, data.settings.margin.left + 60, pageHeight - 18);
+          this.addSignature(doc, data, pageHeight);
+          this.addTotalWorkTime(doc, totalWorkTime, data, pageHeight);
         }
       } else {
         totalWorkTime = this.totalWorkTime(workingEntries);
-        doc.addImage(logo, 'JPG', data.settings.margin.left + 150, pageHeight - 27, 24, 10);
-        doc.setFontSize('13');
-        doc.text(`Employee: ${name}, Month: ${month} `, data.settings.margin.left, 25);
-        doc.setLineWidth(0.4);
-        doc.setDrawColor(16, 24, 32);
-        doc.line(data.settings.margin.left - 3, pageHeight - 23, data.settings.margin.left + 40, pageHeight - 23);
-        doc.text('Signature', data.settings.margin.left + 7, pageHeight - 18);
-        doc.text(`Total WorkTime: ${totalWorkTime} `, data.settings.margin.left + 60, pageHeight - 18);
+        this.addLogo(doc, logo, data, pageHeight);
+        this.addEmployeeNameandMonth(doc, name, month, data);
+        this.addTotalWorkTime(doc, totalWorkTime, data, pageHeight);
+        this.addSignature(doc, data, pageHeight);
       }
     }
   }
@@ -186,7 +183,7 @@ export class PdfService {
     const dates = result.dates;
     const rowSpan = result.rowSpan;
     const datesIndexInRawData = result.datesIndexInRawData;
-    let flag = 0; // Flag variable or watchVariable to follow up with Index
+    let flag = 0; // Flag variable or watchVariable to follow up with Index in WorkingEntries
     let row = []; // To be pushed in the body for autotable with rowspan details
     for (let i = 0; i < dates.length; i++) {
       let tempTotalWorkTime = 0;
@@ -268,5 +265,37 @@ export class PdfService {
     const hour = Math.floor(seconds / 3600);
     const min = Math.round((seconds % 3600) / 60);
     return this.pad(hour, 2) + 'h ' + this.pad(min, 2) + 'm';
+  }
+
+  addLogo(doc: jsPDF, logo: any, data: any, pageHeight: any): void {
+    doc.addImage(logo, 'JPG', data.settings.margin.left + 150, pageHeight - 27, 24, 10);
+  }
+
+  addSignature(doc: jsPDF, data: any, pageHeight: any): void {
+    doc.setFontSize('13');
+    doc.setLineWidth(0.4);
+    doc.setDrawColor(16, 24, 32);
+    doc.line(data.settings.margin.left - 3, pageHeight - 23, data.settings.margin.left + 40, pageHeight - 23);
+    doc.text('Signature', data.settings.margin.left + 7, pageHeight - 18);
+  }
+
+  addEmployeeNameandMonth(doc: jsPDF, name: string, month: string, data: any): void {
+    doc.setFontSize('13');
+    doc.text(`Employee: ${name}, Month: ${month} `, data.settings.margin.left, 25);
+  }
+
+  addTotalWorkTime(doc: jsPDF, totalWorkTime: any, data: any, pageHeight: any): void {
+    doc.setFontSize('13');
+    doc.text(`Total WorkTime: ${totalWorkTime} `, data.settings.margin.left + 60, pageHeight - 18);
+  }
+
+  addPageNumber(doc: jsPDF, pageNumber: any, totalPages: number, data: any, pageHeight: any): void {
+    doc.setFontSize('10');
+    doc.text(`Page ${pageNumber} / ${totalPages}`, data.settings.margin.left, pageHeight - 27);
+  }
+
+  addSumOnPreviousPage(doc: jsPDF, totalTimeOnPreviouspage: any, data: any): void {
+    doc.setFontSize('13');
+    doc.text(`Sum of previous page: ${totalTimeOnPreviouspage}`, data.settings.margin.left, 25);
   }
 }

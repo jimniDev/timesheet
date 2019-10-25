@@ -87,6 +87,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
   loadTargetWorkTime(year: number, month: number) {
     this.employeeService.targetWorkTime(year, month).subscribe(res => {
       if (res.ok) {
+        this.pdfExportButtonDisabled = false;
         this.targetMinutes = res.body;
         this.targetTime = this.secondsToHHMM(res.body * 60);
         this.calcDiffTargetActual();
@@ -151,7 +152,6 @@ export class TimetableComponent implements OnInit, AfterViewInit {
       // );
     }
     this.DSworkingEntries.data = this.workingEntries;
-
     if (this.DSworkingEntries.paginator) {
       this.DSworkingEntries.paginator.firstPage(); // go to the first page if filter changed
     }
