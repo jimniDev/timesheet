@@ -186,6 +186,8 @@ export class PdfService {
     const dates = result.dates;
     const rowSpan = result.rowSpan;
     const datesIndexInRawData = result.datesIndexInRawData;
+    let flag = 0; // Flag variable or watchVariable to follow up with Index
+    let row = []; // To be pushed in the body for autotable with rowspan details
     for (let i = 0; i < dates.length; i++) {
       let tempTotalWorkTime = 0;
       const rowspan = rowSpan[i];
@@ -200,8 +202,6 @@ export class PdfService {
         totalWorkTime[i] = this.secondsToHHMM(tempTotalWorkTime);
       }
     }
-    let flag = 0; // Flag variable or watchVariable to follow up with Index
-    let row = []; // To be pushed in the body for autotable with rowspan details
     for (let a = 0; a < result.dates.length; a++) {
       const beginIndex = datesIndexInRawData[a]; // First apperance of date in the workingEntries Array
       const counts = rowSpan[a]; // Counts of Dates in the dataset
