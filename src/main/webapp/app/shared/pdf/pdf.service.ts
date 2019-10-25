@@ -1,11 +1,11 @@
-import { Injectable, ComponentFactoryResolver, Injector } from '@angular/core';
+import { Injectable } from '@angular/core';
 import * as jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import { IWorkingEntryTimesheet } from '../model/working-entry-timesheet.model';
-import { TableGeneratorComponent } from './table-generator/table-generator.component';
-import { loadOptions } from '@babel/core';
-import { IWorkDayTimesheet } from '../model/work-day-timesheet.model';
-import { start } from 'repl';
+// import { TableGeneratorComponent } from './table-generator/table-generator.component';
+// import { loadOptions } from '@babel/core';
+// import { IWorkDayTimesheet } from '../model/work-day-timesheet.model';
+// import { start } from 'repl';
 import { AccountService } from 'app/core/auth/account.service';
 import { Account } from 'app/core/user/account.model';
 
@@ -28,12 +28,12 @@ export class PdfService {
       we.end.format('HH:mm'),
       we.activity ? we.activity.name : ''
     ]);
+
     const doc = new jsPDF();
     const rawdataLength = rawData.length;
     let processedData = [];
     const bodyParts = [];
     const workingEntryParts = [];
-    const timeTotalOfParts = [];
     const totaltimeParts = [];
 
     switch (rawdataLength) {
@@ -86,7 +86,7 @@ export class PdfService {
           body: bodyParts[s],
           theme: 'grid',
           didDrawPage: (autoTableData: any) =>
-            this.createPageHeaderFooter(doc, workingEntryParts[s], autoTableData, s + 1, bodyParts.length, totaltimeParts),
+            this.createPage(doc, workingEntryParts[s], autoTableData, s + 1, bodyParts.length, totaltimeParts),
           margin: { top: 27, bottom: 33, right: 15, left: 15 }
         });
       }
@@ -96,17 +96,19 @@ export class PdfService {
         body: bodyParts[0],
         theme: 'grid',
         didDrawPage: (autoTableData: any) =>
-          this.createPageHeaderFooter(doc, workingEntries, autoTableData, bodyParts.length, bodyParts.length, totaltimeParts),
+          this.createPage(doc, workingEntries, autoTableData, bodyParts.length, bodyParts.length, totaltimeParts),
         margin: { top: 27, bottom: 33, right: 15, left: 15 }
       });
     }
 
     doc.save('timesheet.pdf');
   }
+
   getColumns() {
     return [{ date: 'Date', worktime: 'Worktime', from: 'From', to: 'to', activity: 'Activity' }];
   }
-  createPageHeaderFooter(
+
+  createPage(
     doc: jsPDF,
     workingEntries: IWorkingEntryTimesheet[],
     data: any,
@@ -119,7 +121,6 @@ export class PdfService {
     const pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight();
     const name = this.account.firstName + this.account.lastName;
     const month = workingEntries[0].workDay.date.format('MMMM');
-    // const totalWorkTime = this.totalWorkTime(workingEntries);
     let totalWorkTime: any;
     logo.src = '../../content/images/logo.jpg';
     if (!this.initialized) {
@@ -150,6 +151,7 @@ export class PdfService {
       }
     }
   }
+
   pad(num: number, size: number): string {
     let s = num + '';
     while (s.length < size) {
@@ -157,6 +159,7 @@ export class PdfService {
     }
     return s;
   }
+
   calculateDataStats(data: any): object {
     const processingResult = {
       dates: [],
@@ -252,6 +255,7 @@ export class PdfService {
     }
     return body;
   }
+
   totalWorkTime(data: IWorkingEntryTimesheet[]): string {
     let tempWorkTime = 0;
     for (let i = 0; i < data.length; i++) {
