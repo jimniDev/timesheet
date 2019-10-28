@@ -9,6 +9,8 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { WeeklyWorkingHoursTimesheetService } from '../weekly-working-hours-timesheet';
+import { EmployeeTimesheetEditComponent } from './employee-timesheet-edit-component/employee-timesheet-edit-component';
+import { runInThisContext } from 'vm';
 
 @Component({
   selector: 'jhi-employee-timesheet-detail',
@@ -18,7 +20,8 @@ import { WeeklyWorkingHoursTimesheetService } from '../weekly-working-hours-time
 export class EmployeeTimesheetDetailComponent implements OnInit {
   public lengthEmployeeWeekly: number;
   public employee: EmployeeTimesheet;
-  public employeeWeekly = new MatTableDataSource<IWeeklyWorkingHoursTimesheet>([]);
+  public employeeWeekly;
+  public roleWeek: IWeeklyWorkingHoursTimesheet;
 
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: false }) sort: MatSort;
@@ -33,11 +36,16 @@ export class EmployeeTimesheetDetailComponent implements OnInit {
   ngOnInit() {
     this.activatedRoute.data.subscribe(({ employee }) => {
       this.employee = employee;
-      this.employeeWeekly.data = this.employee.weeklyWorkingHours;
-      this.lengthEmployeeWeekly = this.employeeWeekly.data.length;
+      //this.employeeWeekly.data = this.employee.weeklyWorkingHours;
+      //this.lengthEmployeeWeekly = this.employeeWeekly.data.length;
+      this.wwhService.query().subscribe(result => {
+        if (result.ok) {
+          this.employeeWeekly = new MatTableDataSource<IWeeklyWorkingHoursTimesheet>(this.employee.weeklyWorkingHours);
+        }
+      });
       this.pageAndSort();
     });
-    this.employeeWeekly.data = this.employee.weeklyWorkingHours;
+    //this.employeeWeekly.data = this.employee.weeklyWorkingHours;
   }
 
   refresh() {
@@ -80,5 +88,20 @@ export class EmployeeTimesheetDetailComponent implements OnInit {
         }
       });
     }
+  }
+
+  editWeeklyDialog(role: IWeeklyWorkingHoursTimesheet): void {
+    //this.roleWeek = role;
+    const diagRef = this.dialog.open(EmployeeTimesheetEditComponent, {
+      data: { employee: this.employee, role },
+      disableClose: true
+    });
+
+    diagRef.afterClosed().subscribe(result => {
+      if (result.ok) {
+        this.employeeWeekly.data.push(result);
+        this.refresh();
+      }
+    });
   }
 }
