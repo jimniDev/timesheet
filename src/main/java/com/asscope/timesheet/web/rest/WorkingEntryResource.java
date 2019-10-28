@@ -70,7 +70,7 @@ public class WorkingEntryResource {
 		} catch (OverlappingWorkingTimesException e) {
 			throw new BadRequestAlertException("Overlapping worktime", ENTITY_NAME, "overlappingtime");
 		} catch(OlderThanOneMonthTimeEntryException y) {
-			throw new BadRequestAlertException("Time Entry older than 1 month", ENTITY_NAME, "Oldertimeentry1Month");
+			throw new BadRequestAlertException("Time Entry older than 1 month", ENTITY_NAME, "olderthan1month");
 		}
         return ResponseEntity.created(new URI("/api/working-entries/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -98,7 +98,7 @@ public class WorkingEntryResource {
 		} catch (OverlappingWorkingTimesException e) {
 			throw new BadRequestAlertException("Overlapping worktime", ENTITY_NAME, "overlappingtime");
 		} catch(OlderThanOneMonthTimeEntryException y) {
-			throw new BadRequestAlertException("Time Entry older than 1 month", ENTITY_NAME, "Oldertimeentry1Month");
+			throw new BadRequestAlertException("Time Entry older than 1 month", ENTITY_NAME, "olderthan1month");
 		}
         return ResponseEntity.created(new URI("/api/working-entries/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -127,7 +127,7 @@ public class WorkingEntryResource {
 		} catch (OverlappingWorkingTimesException e) {
 			throw new BadRequestAlertException("Overlapping worktime", ENTITY_NAME, "overlappingtime");
 		} catch(OlderThanOneMonthTimeEntryException y) {
-			throw new BadRequestAlertException("Time Entry older than 1 month", ENTITY_NAME, "Oldertimeentry1Month");
+			throw new BadRequestAlertException("Time Entry older than 1 month", ENTITY_NAME, "olderthan1month");
 		}
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, workingEntry.getId().toString()))
