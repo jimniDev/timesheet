@@ -4,6 +4,7 @@ import com.asscope.timesheet.domain.Employee;
 import com.asscope.timesheet.domain.WorkDay;
 import com.asscope.timesheet.domain.WorkingEntry;
 import com.asscope.timesheet.repository.WorkingEntryRepository;
+import com.asscope.timesheet.service.erros.OlderThanOneMonthTimeEntryException;
 import com.asscope.timesheet.service.erros.OverlappingWorkingTimesException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +55,7 @@ public class WorkingEntryService {
      * @return the persisted entity.
      * @throws Exception 
      */
-    public WorkingEntry save(WorkingEntry workingEntryToSave) throws OverlappingWorkingTimesException {
+    public WorkingEntry save(WorkingEntry workingEntryToSave) throws OverlappingWorkingTimesException,OlderThanOneMonthTimeEntryException {
         log.debug("Request to save WorkingEntry : {}", workingEntryToSave);
         Employee employee = workingEntryToSave.getEmployee();
         WorkDay workDay = workingEntryToSave.getWorkDay();
@@ -84,6 +85,10 @@ public class WorkingEntryService {
         if(validateOverlappingTime(workingEntryToSave, workDay.getWorkingEntries())) {
     		throw new OverlappingWorkingTimesException();
     	}
+        if(workingEntryToSave.getWorkDay().getDate().compareTo(LocalDate.now().minusMonths(1)) < 0){
+        	throw new OlderThanOneMonthTimeEntryException();
+        }
+
         WorkingEntry savedWE = workingEntryRepository.save(workingEntryToSave);
         workDay.addWorkingEntry(savedWE);
         return savedWE;
@@ -150,7 +155,7 @@ public class WorkingEntryService {
         });
     }
     
-    public WorkingEntry saveForEmployee (WorkingEntry workingEntry, String username) throws OverlappingWorkingTimesException {
+    public WorkingEntry saveForEmployee (WorkingEntry workingEntry, String username) throws OverlappingWorkingTimesException,OlderThanOneMonthTimeEntryException {
     	Employee employee = employeeService.findOneByUsername(username).get();
     	workingEntry.setEmployee(employee);
     	return this.save(workingEntry);
