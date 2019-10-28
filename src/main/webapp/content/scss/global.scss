@@ -2,10 +2,6 @@ table {
   width: 100%;
 }
 
-// .container {
-//   margin-top: 8px;
-// }
-
 as-navbar {
   display: flex;
   position: absolute;
@@ -14,35 +10,12 @@ as-navbar {
   left: 0px;
   right: 0px;
 }
-// body {
-//   margin: 0px;
-//   -webkit-overflow-scrolling: touch;
-//   -webkit-transform: translateZ(0px);
-//   -webkit-transform: translate3d(0,0,0);
-//   -webkit-perspective: 1000;
-// }
 
 .mat-header-cell,
 .mat-sort-header-arrow {
   color: #002f5d;
 }
 
-// html {
-//   height: 100%;
-//   position: relative;
-//   overflow: hidden;
-// }
-
 body {
   display: block;
-  // height: 100%;
-  // position: fixed;
-  // margin: 0;
-  // padding: 0;
-  // border: 0;
-  // outline: 0;
-  // background: 0 0;
-  // -webkit-overflow-scrolling: touch;
-  // overflow-x: auto;
-  // overflow-y: scroll;
 }
