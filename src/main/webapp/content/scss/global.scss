@@ -2,15 +2,20 @@ table {
   width: 100%;
 }
 
-.container {
-  //margin-top: 8px;
-}
-
-body {
-  margin: 0px;
+as-navbar {
+  display: flex;
+  position: absolute;
+  top: 56px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
 }
 
 .mat-header-cell,
 .mat-sort-header-arrow {
   color: #002f5d;
+}
+
+body {
+  display: block;
 }
