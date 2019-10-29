@@ -13,6 +13,7 @@ export interface IEmployeeTimesheet {
   weeklyWorkingHours?: IWeeklyWorkingHoursTimesheet[];
   workDays?: IWorkDayTimesheet[];
   activeWeeklyWorkingHours?: IWeeklyWorkingHoursTimesheet;
+  balance?: number;
 }
 
 export class EmployeeTimesheet implements IEmployeeTimesheet {
@@ -24,7 +25,8 @@ export class EmployeeTimesheet implements IEmployeeTimesheet {
     public targetWorkingDays?: ITargetWorkingDayTimesheet[],
     public weeklyWorkingHours?: IWeeklyWorkingHoursTimesheet[],
     public workDays?: IWorkDayTimesheet[],
-    public activeWeeklyWorkingHours?: IWeeklyWorkingHoursTimesheet
+    public activeWeeklyWorkingHours?: IWeeklyWorkingHoursTimesheet,
+    public balance?: number
   ) {
     this.isEmployed = this.isEmployed || false;
   }

@@ -114,6 +114,10 @@ module.exports = webpackMerge(commonConfig({ env: ENV }), {
                         ecma: 6
                     },
                     mangle: {
+                        reserved: [
+                            't',
+                            'res'
+                        ],
                         module: true,
                         toplevel: true
                     }
@@ -131,10 +135,10 @@ module.exports = webpackMerge(commonConfig({ env: ENV }), {
         }),
         new MomentLocalesPlugin({
             localesToKeep: [
-                    'en',
-                    'de'
-                    // jhipster-needle-i18n-language-moment-webpack - JHipster will add/remove languages in this array
-                ]
+                'en',
+                'de'
+                // jhipster-needle-i18n-language-moment-webpack - JHipster will add/remove languages in this array
+            ]
         }),
         new Visualizer({
             // Webpack statistics in target folder
@@ -150,8 +154,8 @@ module.exports = webpackMerge(commonConfig({ env: ENV }), {
             debug: false
         }),
         new WorkboxPlugin.GenerateSW({
-          clientsClaim: true,
-          skipWaiting: true,
+            clientsClaim: true,
+            skipWaiting: true,
         })
     ],
     mode: 'production'

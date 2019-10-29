@@ -1,8 +1,8 @@
 package com.asscope.timesheet.web.rest;
 
 import com.asscope.timesheet.domain.Employee;
-import com.asscope.timesheet.domain.monthlyInformation.WorktimeInformation;
 import com.asscope.timesheet.service.EmployeeService;
+import com.asscope.timesheet.service.dto.EmployeeDTO;
 import com.asscope.timesheet.web.rest.errors.BadRequestAlertException;
 
 import io.github.jhipster.web.util.HeaderUtil;
@@ -18,6 +18,7 @@ import java.net.URISyntaxException;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * REST controller for managing {@link com.asscope.timesheet.domain.Employee}.
@@ -69,10 +70,20 @@ public class EmployeeResource {
      */
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     @GetMapping("/employees")
-    public ResponseEntity<List<Employee>> getAllEmployees() {
+    public ResponseEntity<List<EmployeeDTO>> getAllEmployees() {
         log.debug("REST request to get all Employees");
         List<Employee> entityList = employeeService.findAll();
-        return ResponseEntity.ok().body(entityList);
+        return ResponseEntity.ok().body(entityList.stream().map(e -> mapToDto(e)).collect(Collectors.toList()));
+    }
+    
+    private EmployeeDTO mapToDto(Employee employee) {
+    	EmployeeDTO eDTO = new EmployeeDTO();
+    	eDTO.setUser(employee.getUser());
+    	eDTO.setId(employee.getId());
+    	eDTO.setIsEmployed(employee.isIsEmployed());
+    	eDTO.setWeeklyWorkingHours(employee.getWeeklyWorkingHours());
+    	eDTO.setBalance(employeeService.currentWorktimeBalance(employee.getUser().getId()));
+    	return eDTO;
     }
 
     /**
@@ -93,41 +104,54 @@ public class EmployeeResource {
     @GetMapping({"/employees/me/target-work-time/{year}/{month}"})
     public ResponseEntity<Long> getTargetWorktimeInformation(Principal principal, @PathVariable("year") Integer year, @PathVariable("month") Integer month) {
     	log.debug("REST request to get worktimeInformation for Employee : {}", principal.getName());
-    	return ResponseEntity.ok().body(employeeService.getTargetWorkTimeMinutes(principal, year, month));
+    	return ResponseEntity.ok().body(employeeService.getTargetWorkTimeMinutes(principal.getName(), year, month));
     }
     
     @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
     @GetMapping({"/employees/me/work-time/{year}/{month}"})
     public ResponseEntity<Long> getWorktimeInformation(Principal principal, @PathVariable("year") Integer year, @PathVariable("month") Integer month) {
     	log.debug("REST request to get worktime in minutes for Employee : {}", principal.getName());
-    	return ResponseEntity.ok().body(employeeService.getWorkTimeMinutes(principal, year, month));
+    	return ResponseEntity.ok().body(employeeService.getWorkTimeMinutes(principal.getName(), year, month));
     }
     
     @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
     @GetMapping({"/employees/me/target-work-time/{year}/{month}/{day}"})
     public ResponseEntity<Long> getTargetWorktimeInformation(Principal principal, @PathVariable("year") Integer year, @PathVariable("month") Integer month, @PathVariable("day") Integer day) {
     	log.debug("REST request to get worktimeInformation for Employee : {}", principal.getName());
-    	return ResponseEntity.ok().body(employeeService.targetWorkTimeMinutes(principal, year, month, day));
+    	return ResponseEntity.ok().body(employeeService.targetWorkTimeMinutes(principal.getName(), year, month, day));
     }
     
     @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
     @GetMapping("/employees/me/target-work-time/{year}/iso-week/{isoWeek}")
     public ResponseEntity<Long> getTargetWorktimeInformation(Principal principal, @PathVariable("year") int year, @PathVariable("isoWeek") int isoWeek) {
     	log.debug("REST request to get weekly worktimeInformation for Employee : {}", principal.getName());
-    	return ResponseEntity.ok().body(employeeService.weeklyTargetWorktimeMinutes(principal, year, isoWeek));
+    	return ResponseEntity.ok().body(employeeService.weeklyTargetWorktimeMinutes(principal.getName(), year, isoWeek));
     }
     
     @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
     @GetMapping("/employees/me/work-time/{year}/iso-week/{isoWeek}")
     public ResponseEntity<Long> getWorktimeInformation(Principal principal, @PathVariable("year") int year, @PathVariable("isoWeek") int isoWeek) {
     	log.debug("REST request to get weekly worktimeInformation for Employee : {}", principal.getName());
-    	return ResponseEntity.ok().body(employeeService.weeklyWorkTimeMinutes(principal, year, isoWeek));
+    	return ResponseEntity.ok().body(employeeService.weeklyWorkTimeMinutes(principal.getName(), year, isoWeek));
     }
     
     @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
     @GetMapping("/employees/me/work-time/balance")
     public ResponseEntity<Long> currentBalance(Principal principal) {
     	log.debug("REST request to get current worktime balance for employee : {}", principal.getName());
-    	return ResponseEntity.ok().body(employeeService.currentWorktimeBalance(principal));
+    	return ResponseEntity.ok().body(employeeService.currentWorktimeBalance(principal.getName()));
+    }
+    
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
+    @GetMapping("/employees/{id}/work-time/balance")
+    public ResponseEntity<Long> currentBalance(@PathVariable long id) {
+    	log.debug("REST request to get current worktime balance for employee : {}", id);
+    	Optional<Employee> employee = employeeService.findOne(id);
+    	if (employee.isPresent()) {
+        	return ResponseEntity.ok().body(employeeService.currentWorktimeBalance(employee.get().getUser().getId()));
+    	} else {
+    		return ResponseEntity.notFound().build();
+    	}
+
     }
 }

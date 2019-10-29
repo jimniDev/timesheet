@@ -53,4 +53,16 @@ export class YearWeekSelectComponent implements OnInit {
       this.selectedDate.emit(null);
     }
   }
+
+  resetFilter(): void {
+    this.resetButtonDisabled = true;
+    this.selectedYear = moment()
+      .year()
+      .toString();
+    this.selectedMonth = (moment().month() + 1).toString();
+    this.selectedWeek = moment()
+      .isoWeek()
+      .toString();
+    this.selectedDate.emit(<YearWeek>{ year: this.selectedYear, week: this.selectedWeek });
+  }
 }

@@ -1,10 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { EmployeeTimesheet, IEmployeeTimesheet } from 'app/shared/model/employee-timesheet.model';
-import { EmployeeTimesheetService, EmployeeTimesheetDetailComponent } from 'app/entities/employee-timesheet';
+import { EmployeeTimesheetService } from 'app/entities/employee-timesheet';
 import { HttpResponse } from '@angular/common/http';
-import { WeeklyWorkingHoursTimesheet } from 'app/shared/model/weekly-working-hours-timesheet.model';
 import { MatPaginator, MatTableDataSource } from '@angular/material';
-import { IRoleTimesheet } from 'app/shared/model/role-timesheet.model';
 
 @Component({
   selector: 'jhi-employee-overview',
@@ -16,6 +14,8 @@ export class EmployeeOverviewComponent implements OnInit {
   datasource = new MatTableDataSource<EmployeeTimesheet>();
 
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
+
+  // balances = new Array<Observable<number>>();
 
   constructor(private employeeService: EmployeeTimesheetService) {}
 
@@ -32,4 +32,8 @@ export class EmployeeOverviewComponent implements OnInit {
   applyFilter(filterValue: string) {
     this.datasource.filter = filterValue.trim().toLowerCase();
   }
+
+  // getBalance(employeeId: number): Observable<number> {
+  //   return this.employeeService.balanceByEmployee(employeeId).pipe(map(res => res.ok ? res.body : 0));
+  // }
 }

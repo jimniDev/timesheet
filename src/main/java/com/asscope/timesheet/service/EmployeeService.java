@@ -106,8 +106,8 @@ public class EmployeeService {
     }
     
     @Transactional(readOnly = true)
-    public long getTargetWorkTimeMinutes(Principal principal, int year, int month) {
-    	Employee employee = this.findOneByUsername(principal.getName()).get();
+    public long getTargetWorkTimeMinutes(String userId, int year, int month) {
+    	Employee employee = this.findOneByUsername(userId).get();
     	YearMonth yearMonth = YearMonth.of(year, month);
     	return yearMonth.atDay(1).datesUntil(yearMonth.atEndOfMonth().plusDays(1L))
     	.filter(date -> !date.getDayOfWeek().equals(DayOfWeek.SATURDAY) && !date.getDayOfWeek().equals(DayOfWeek.SUNDAY) && !this.holidayService.isfixedHoliday(date) && !this.holidayService.isflexibleHoliday(date))
@@ -116,8 +116,8 @@ public class EmployeeService {
     }
     
     @Transactional(readOnly = true)
-    public long getWorkTimeMinutes(Principal principal, int year, int month) {
-    	Optional<Employee> employee = this.findOneByUsername(principal.getName());
+    public long getWorkTimeMinutes(String userId, int year, int month) {
+    	Optional<Employee> employee = this.findOneByUsername(userId);
     	if (employee.isPresent()) {
     		return employee.get().getWorkDays().stream()
     				.filter(wd -> wd.getDate().getYear() == year && wd.getDate().getMonthValue() == month)
@@ -129,8 +129,8 @@ public class EmployeeService {
     }
     
 	@Transactional(readOnly = true)
-	public long targetWorkTimeMinutes(Principal principal, Integer year, Integer month, Integer day) {
-		Optional<Employee> employee = this.findOneByUsername(principal.getName());
+	public long targetWorkTimeMinutes(String userId, Integer year, Integer month, Integer day) {
+		Optional<Employee> employee = this.findOneByUsername(userId);
 		LocalDate date = LocalDate.of(year, month, day);
 		if (employee.isPresent()) {
 			return employee.get()
@@ -146,8 +146,8 @@ public class EmployeeService {
 	}
 	
     @Transactional(readOnly = true)
-    public long weeklyWorkTimeMinutes(Principal principal, int year, int isoWeek) {
-    	Optional<Employee> employee = this.findOneByUsername(principal.getName());
+    public long weeklyWorkTimeMinutes(String userId, int year, int isoWeek) {
+    	Optional<Employee> employee = this.findOneByUsername(userId);
     	if (employee.isPresent()) {
     		return employee.get().getWorkDays().stream()
     				.filter(wd -> wd.getDate().get(IsoFields.WEEK_BASED_YEAR) == year && wd.getDate().get(IsoFields.WEEK_OF_WEEK_BASED_YEAR) == isoWeek)
@@ -162,8 +162,8 @@ public class EmployeeService {
     }
 
 	@Transactional(readOnly = true)
-	public long weeklyTargetWorktimeMinutes(Principal principal, int year, int isoWeek) {
-		Optional<Employee> employee = this.findOneByUsername(principal.getName());
+	public long weeklyTargetWorktimeMinutes(String userId, int year, int isoWeek) {
+		Optional<Employee> employee = this.findOneByUsername(userId);
 		if (employee.isPresent()) {
 			return getWorkingDatesOfIsoWeek(year, isoWeek)
 			.stream()
@@ -187,11 +187,11 @@ public class EmployeeService {
 	}
 	
 	@Transactional(readOnly = true)
-	public long currentWorktimeBalance(Principal principal) {
+	public long currentWorktimeBalance(String userId) {
 		YearMonth currentMonth = YearMonth.now();
-		this.getTargetWorkTimeMinutes(principal, currentMonth.getYear(), currentMonth.getMonthValue());
+		this.getTargetWorkTimeMinutes(userId, currentMonth.getYear(), currentMonth.getMonthValue());
 		return IntStream.range(1, currentMonth.getMonthValue())
-				.mapToLong(month -> this.getWorkTimeMinutes(principal, currentMonth.getYear(), month) - this.getTargetWorkTimeMinutes(principal, currentMonth.getYear(), month))
+				.mapToLong(month -> this.getWorkTimeMinutes(userId, currentMonth.getYear(), month) - this.getTargetWorkTimeMinutes(userId, currentMonth.getYear(), month))
 				.reduce(0L, Long::sum);
 	}
 }

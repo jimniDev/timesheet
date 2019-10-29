@@ -2,14 +2,17 @@ package com.asscope.timesheet.service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 @Service
+@Scope("singleton")
 public class HolidayService {
-
-	ArrayList<LocalDate> fixedHolidayList = new ArrayList<LocalDate>();
-	ArrayList<LocalDate> flexibleHolidayList = new ArrayList<LocalDate>();
+	
+	HashMap<Integer, List<Integer>> holidayMap = new HashMap<>();
 
 	HolidayService() {
 	}
@@ -36,34 +39,41 @@ public class HolidayService {
 		return isfixedHoliday(date) || isflexibleHoliday(date);
 	}
 
-	public boolean isfixedHoliday(LocalDate date) {
-		fixedHolidayList.add(LocalDate.of(date.getYear(), 1, 1)); // New Year's Day
-		fixedHolidayList.add(LocalDate.of(date.getYear(), 5, 1)); // Labour Day
-		fixedHolidayList.add(LocalDate.of(date.getYear(), 10, 3)); // German Unity Day
-		fixedHolidayList.add(LocalDate.of(date.getYear(), 12, 25)); // Christmas Day
-		fixedHolidayList.add(LocalDate.of(date.getYear(), 12, 26)); // St Stephens Day
-		fixedHolidayList.add(LocalDate.of(date.getYear(), 12, 24)); // Christmas Eve
-		fixedHolidayList.add(LocalDate.of(date.getYear(), 12, 31)); // New Years Eve
-
-		if (fixedHolidayList.indexOf(date) != -1) {
+	public boolean isfixedHoliday(LocalDate date) {	
+		if(date.getMonthValue() == 1 && date.getDayOfMonth() == 1) {
 			return true;
 		}
+
+		if(date.getMonthValue() == 1 && date.getDayOfMonth() == 1) {
+			return true;
+		}
+		if(date.getMonthValue() == 5 && date.getDayOfMonth() == 1) {
+			return true;
+		}
+		if(date.getMonthValue() == 10 && date.getDayOfMonth() == 3) {
+			return true;
+		}
+		if(date.getMonthValue() == 12 ) {
+			if(date.getDayOfMonth() == 24 || date.getDayOfMonth() == 25 || date.getDayOfMonth() == 26 || date.getDayOfMonth() == 31)
+			return true;
+		}
+		
 		return false;
 	}
 
 	public boolean isflexibleHoliday(LocalDate date) {
-		LocalDate myDate = this.getEasterDate(date.getYear());
-
-		flexibleHolidayList.add(myDate.plusDays(50));// Whit Monday
-		flexibleHolidayList.add(myDate.plusDays(39));// Ascension day
-		flexibleHolidayList.add(myDate.plusDays(1));//  Easter Monday
-		flexibleHolidayList.add(myDate.plusDays(60));// Corpus Christi
-		flexibleHolidayList.add(myDate.minusDays(2));// Good Friday
-
-		if (flexibleHolidayList.indexOf(date) != -1) {
-			return true;
-		}
-		return false;
+		List<Integer> holidays = this.holidayMap.get(date.getYear());
+		if(holidays == null) {
+			LocalDate easter = getEasterDate(date.getYear());
+			holidays = new ArrayList<>();
+			holidays.add(easter.plusDays(50).getDayOfYear());
+			holidays.add(easter.plusDays(39).getDayOfYear());
+			holidays.add(easter.plusDays(1).getDayOfYear());
+			holidays.add(easter.plusDays(60).getDayOfYear());
+			holidays.add(easter.minusDays(2).getDayOfYear());
+			this.holidayMap.put(date.getYear(), holidays);
+		} 
+		return holidays.contains(date.getDayOfYear());		
 	}
 
 }

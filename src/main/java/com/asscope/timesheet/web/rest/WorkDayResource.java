@@ -1,6 +1,8 @@
 package com.asscope.timesheet.web.rest;
 
+import com.asscope.timesheet.domain.Employee;
 import com.asscope.timesheet.domain.WorkDay;
+import com.asscope.timesheet.service.EmployeeService;
 import com.asscope.timesheet.service.WorkDayService;
 import com.asscope.timesheet.web.rest.errors.BadRequestAlertException;
 
@@ -16,6 +18,7 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.Principal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,9 +37,12 @@ public class WorkDayResource {
     private String applicationName;
 
     private final WorkDayService workDayService;
+    private final EmployeeService employeeService;
 
-    public WorkDayResource(WorkDayService workDayService) {
-        this.workDayService = workDayService;
+    public WorkDayResource(WorkDayService workDayService, EmployeeService employeeService) {
+		this.employeeService = employeeService;
+		this.workDayService = workDayService;
+	
     }
 
     /**
@@ -133,5 +139,26 @@ public class WorkDayResource {
     @GetMapping("/work-days/{id}/break-minutes")
     public ResponseEntity<Integer> getBreakMinutes(@PathVariable Long id, Principal principal) {
     	return ResponseUtil.wrapOrNotFound(workDayService.getBreakMinutes(id));
+    }
+    
+    @GetMapping("/employees/me/work-days/additional-break-minutes/year/{year}/month/{month}/day/{dayOfMonth}")
+    public ResponseEntity<Integer> getAdditionalBreakMinutesByDate(Principal principal, @PathVariable("year") int year, @PathVariable("month") int month, @PathVariable("dayOfMonth") int dayOfMonth) {
+    	Employee employee = employeeService.findOneByUsername(principal.getName()).get();
+    	log.debug("REST request to get Additional Break Minutes by Date : {}", LocalDate.of(year, month, dayOfMonth));
+    	return ResponseUtil.wrapOrNotFound(workDayService.findByEmployeeAndDate(employee, LocalDate.of(year, month, dayOfMonth)).map(wd->wd.getAdditionalBreakMinutes()));
+    }
+    
+    @GetMapping("/employees/me/work-days/total-working-minutes/year/{year}/month/{month}/day/{dayOfMonth}")
+    public ResponseEntity<Long> getTotalWorkingMinutesByDate(Principal principal, @PathVariable("year") int year, @PathVariable("month") int month, @PathVariable("dayOfMonth") int dayOfMonth) {
+    	Employee employee = employeeService.findOneByUsername(principal.getName()).get();
+    	log.debug("REST request to get Additional Break Minutes by Date : {}", LocalDate.of(year, month, dayOfMonth));
+    	return ResponseUtil.wrapOrNotFound(workDayService.findByEmployeeAndDate(employee, LocalDate.of(year, month, dayOfMonth)).map(wd->wd.getTotalWorkingMinutes()));
+    }
+    
+    @GetMapping("/employees/me/work-days/total-break-minutes/year/{year}/month/{month}/day/{dayOfMonth}")
+    public ResponseEntity<Integer> getTotalBreakMinutesByDate(Principal principal, @PathVariable("year") int year, @PathVariable("month") int month, @PathVariable("dayOfMonth") int dayOfMonth) {
+    	Employee employee = employeeService.findOneByUsername(principal.getName()).get();
+    	log.debug("REST request to get Additional Break Minutes by Date : {}", LocalDate.of(year, month, dayOfMonth));
+    	return ResponseUtil.wrapOrNotFound(workDayService.findByEmployeeAndDate(employee, LocalDate.of(year, month, dayOfMonth)).map(wd->wd.getTotalBreakMinutes()));
     }
 }

@@ -9,7 +9,6 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { WeeklyWorkingHoursTimesheetService } from '../weekly-working-hours-timesheet';
-import { HttpResponse } from '@angular/common/http';
 
 @Component({
   selector: 'jhi-employee-timesheet-detail',
