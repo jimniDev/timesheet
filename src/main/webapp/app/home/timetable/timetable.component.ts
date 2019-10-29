@@ -243,9 +243,15 @@ export class TimetableComponent implements OnInit, AfterViewInit {
   }
 
   secondsToHHMM(seconds: number): string {
-    const hour = Math.floor(seconds / 3600);
-    const min = Math.floor((seconds % 3600) / 60);
-    return this.pad(hour, 2) + 'h ' + this.pad(min, 2) + 'm';
+    if (seconds >= 0) {
+      const hour = Math.floor(seconds / 3600);
+      const min = Math.floor((seconds % 3600) / 60);
+      return this.pad(hour, 2) + 'h ' + this.pad(min, 2) + 'm';
+    } else {
+      const hour = Math.ceil(seconds / 3600);
+      const min = Math.ceil((seconds % 3600) / 60);
+      return this.pad(hour, 2) + 'h ' + this.pad(min, 2) + 'm';
+    }
   }
 
   edittimetableDialog(workingEntry: IWorkingEntryTimesheet): void {
