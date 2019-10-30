@@ -79,12 +79,13 @@
                     <tr mat-row *matRowDef="let row; columns: ['id', 'hours', 'start', 'end','actions'];">
                     </tr>
                 </table>
-                <mat-paginator [length]="lengthEmployeeWeekly" [pageSize]="10" [pageSizeOptions]="[5, 10, 15, 20]">
+                <mat-paginator [length]="roleWeek?roleWeek.length:0" [pageSize]="10"
+                    [pageSizeOptions]="[5, 10, 15, 20]">
                 </mat-paginator>
             </mat-card-content>
 
             <mat-card-actions>
-                <button mat-flat-button color="primary" (click)="openDialog()">Add Time Details</button>
+                <button mat-flat-button color="primary" (click)="openWeeklyDialog()">Add Time Details</button>
             </mat-card-actions>
         </mat-card>
     </div>

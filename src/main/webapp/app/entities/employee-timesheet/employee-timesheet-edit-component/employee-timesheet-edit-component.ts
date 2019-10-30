@@ -1,6 +1,8 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { WeeklyWorkingHoursTimesheet, IWeeklyWorkingHoursTimesheet } from 'app/shared/model/weekly-working-hours-timesheet.model';
+
+import { IWeeklyWorkingHoursTimesheet } from 'app/shared/model/weekly-working-hours-timesheet.model';
+
 import moment = require('moment');
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { WeeklyWorkingHoursTimesheetService } from 'app/entities/weekly-working-hours-timesheet/weekly-working-hours-timesheet.service';
@@ -13,12 +15,13 @@ import { IEmployeeTimesheet } from 'app/shared/model/employee-timesheet.model';
 })
 export class EmployeeTimesheetEditComponent implements OnInit {
   public employee: IEmployeeTimesheet;
+
   public role: IWeeklyWorkingHoursTimesheet;
 
   employeeWeeklyForm = new FormGroup({
-    weeklyHour: new FormControl('', Validators.compose([Validators.required, Validators.pattern('^([0-9]*)$')])),
-    startingDate: new FormControl(''),
-    endingDate: new FormControl('')
+    weeklyHour: new FormControl(this.data.hours, Validators.compose([Validators.required, Validators.pattern('^([0-9]*)$')])),
+    startingDate: new FormControl(this.data.startDate),
+    endingDate: new FormControl(this.data.endDate)
   });
 
   constructor(
@@ -27,6 +30,7 @@ export class EmployeeTimesheetEditComponent implements OnInit {
     private weeklyWorkingHoursService: WeeklyWorkingHoursTimesheetService
   ) {
     this.employee = data.employee;
+
     this.role = data.role;
   }
 
@@ -59,12 +63,14 @@ export class EmployeeTimesheetEditComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.role.hours = this.employeeWeeklyForm.value.weeklyHour;
-    this.role.startDate = moment(this.employeeWeeklyForm.value.startingDate).add(2, 'hours');
-    this.role.endDate = moment(this.employeeWeeklyForm.value.endingDate).add(2, 'hours');
-    // this.role.employee = this.employee;
+    this.data.weeklyWorkingHour.hours = this.employeeWeeklyForm.value.weeklyHour;
+    this.data.weeklyWorkingHour.startDate = moment(this.employeeWeeklyForm.value.startingDate).add(2, 'hours');
+    if (this.employeeWeeklyForm.value.endingDate) {
+      this.data.weeklyWorkingHour.endDate = moment(this.employeeWeeklyForm.value.endingDate).add(2, 'hours');
+    }
+    this.data.weeklyWorkingHour.employee = this.employee;
 
-    this.weeklyWorkingHoursService.update(this.role).subscribe(res => {
+    this.weeklyWorkingHoursService.update(this.data.weeklyWorkingHour).subscribe(res => {
       if (res.ok) {
         this.employeeDialogRef.close(res.body);
       }
