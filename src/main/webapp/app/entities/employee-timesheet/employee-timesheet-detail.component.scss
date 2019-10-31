@@ -17,6 +17,10 @@ div:nth-child(1) > div > mat-card:nth-child(2) {
   margin-right: 8px;
 }
 
+#tableCard {
+  margin-top: 8px;
+}
+
 @media only screen and (max-width: 600px) {
   table {
     border-radius: 8px;

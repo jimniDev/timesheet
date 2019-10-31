@@ -24,9 +24,11 @@
             </mat-form-field>
         </div>
 
-        <mat-card-actions>
-            <button mat-button [disabled]="employeeWeeklyForm.invalid" type="submit">Create</button>
-            <button mat-button type="button" (click)="close()">Close</button>
-        </mat-card-actions>
+        <div fxLayout="row" fxLayoutAlign="center stretch" fxLayout.lt-md="column-reverse" fxLayoutGap="8px"
+            class="container">
+            <button fxFlex="50" color="warn" mat-button type="button" (click)="close()">Close</button>
+            <button fxFlex="50" color="primary" mat-button [disabled]="employeeWeeklyForm.invalid"
+                type="submit">Update</button>
+        </div>
     </form>
 </div>
