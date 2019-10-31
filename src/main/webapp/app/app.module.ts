@@ -17,7 +17,6 @@ import { TimesheetEntityModule } from './entities/entity.module';
 // jhipster-needle-angular-add-module-import JHipster will add new module here
 import { JhiMainComponent, ErrorComponent } from './layouts';
 import { AsLayoutsModule } from './as-layouts/as-layouts.module';
-//import { EmployeeTimesheetEditComponentComponent } from './employee-timesheet-edit-component/employee-timesheet-edit-component.component';
 
 @NgModule({
   imports: [
