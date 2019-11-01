@@ -152,7 +152,7 @@ export class PdfService {
     const name = this.account.firstName + this.account.lastName;
     const month = workingEntries[0].workDay.date.format('MMMM');
     let totalWorkTime: any;
-    logo.src = '../../content/images/logo.jpg';
+    logo.src = 'content/images/logo.jpg';
     if (!this.initialized) {
       return;
     }
