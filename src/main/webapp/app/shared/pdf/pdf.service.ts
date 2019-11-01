@@ -2,134 +2,142 @@ import { Injectable } from '@angular/core';
 import * as jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import { IWorkingEntryTimesheet } from '../model/working-entry-timesheet.model';
-// import { TableGeneratorComponent } from './table-generator/table-generator.component';
-// import { loadOptions } from '@babel/core';
-// import { IWorkDayTimesheet } from '../model/work-day-timesheet.model';
-// import { start } from 'repl';
 import { AccountService } from 'app/core/auth/account.service';
 import { Account } from 'app/core/user/account.model';
-import { switchCase } from '@babel/types';
-
+import { MatSnackBar } from '@angular/material';
+import { TimetableComponent } from 'app/home/timetable/timetable.component';
 @Injectable()
 export class PdfService {
   public initialized = false;
   private account: Account;
 
-  constructor(private accountService: AccountService) {
+  constructor(private accountService: AccountService, private _snackBar: MatSnackBar) {
     this.accountService.identity().then(a => {
       this.account = a;
       this.initialized = true;
     });
   }
   public createPDF(workingEntries: IWorkingEntryTimesheet[]): void {
-    const rawData = workingEntries.map(we => [
-      we.workDay.date.format('YYYY-MM-DD'),
-      this.secondsToHHMM(we.end.diff(we.start, 'seconds', true)),
-      we.start.format('HH:mm'),
-      we.end.format('HH:mm'),
-      we.activity ? we.activity.name : ''
-    ]);
+    const initialChecking = this.checkEmptyData(workingEntries);
+    if (initialChecking === true) {
+      const rawData = workingEntries.map(we => [
+        we.workDay.date.format('YYYY-MM-DD'),
+        this.secondsToHHMM(we.end.diff(we.start, 'seconds', true)),
+        we.start.format('HH:mm'),
+        we.end.format('HH:mm'),
+        we.activity ? we.activity.name : ''
+      ]);
+      const topMargin = 27;
+      const leftMargin = 15;
+      const rightMargin = 15;
+      const bottomMargin = 33;
+      const maxRowInPage = 31;
+      const doc = new jsPDF();
+      const rawdataLength = rawData.length;
+      let processedData = [];
+      const bodyParts = [];
+      const workingEntryParts = [];
+      const totaltimeParts = [];
+      let calculateRowSpan: any;
+      switch (rawdataLength) {
+        case 0:
+          console.log('No data for printing');
+          break;
 
-    const topMargin = 27;
-    const leftMargin = 15;
-    const rightMargin = 15;
-    const bottomMargin = 33;
-    const maxRowInPage = 31;
-    const doc = new jsPDF();
-    const rawdataLength = rawData.length;
-    let processedData = [];
-    const bodyParts = [];
-    let workingEntryParts = [];
-    let totaltimeParts = [];
-    let calculateRowSpan;
+        case 1:
+          processedData = rawData;
+          break;
 
-    switch (rawdataLength) {
-      case 0:
-        console.log('No data for printing');
-        break;
-
-      case 1:
-        processedData = rawData;
-        break;
-
-      default:
-        calculateRowSpan = this.calculateDataStats(rawData);
-        processedData = this.dataConversionForRowSpan(workingEntries, rawData, calculateRowSpan);
-        break;
-    }
-    const idealIndexPairs = [];
-    const checkedIndexPairs = [];
-    let checker = 0;
-    // let bodyParts = [];
-    if (processedData.length > 30) {
-      const parts = Math.floor(processedData.length / 30);
-      let starting = 0;
-      let end = 0;
-      for (let i = 0; i <= parts; i++) {
-        if (i === 0) {
-          starting = 30 * i;
-          end = 29 * (i + 1) + i;
-          checker = this.checkProcessedData(processedData, end, calculateRowSpan.datesIndexInRawData);
-          idealIndexPairs.push(checker);
-        } else if (i === parts) {
-          starting = checker + 1;
-          end = processedData.length - 1;
-          idealIndexPairs.push(end);
-        } else {
-          starting = checker + 1;
-          end = 29 * (i + 1) + i;
-          checker = this.checkProcessedData(processedData, end, calculateRowSpan.datesIndexInRawData);
-          idealIndexPairs.push(checker);
-        }
+        default:
+          calculateRowSpan = this.calculateDataStats(rawData);
+          processedData = this.dataConversionForRowSpan(workingEntries, rawData, calculateRowSpan);
+          break;
       }
-    } else {
-      bodyParts[0] = processedData;
-    }
-    //
-    let start = 0;
-    for (let i = 0; i < idealIndexPairs.length; i++) {
-      const tempWEParts = workingEntries.slice(start, idealIndexPairs[i]);
-      const tempBodyParts = processedData.slice(start, idealIndexPairs[i]);
-      workingEntryParts.push(tempWEParts);
-      bodyParts.push(tempBodyParts);
-      start = idealIndexPairs[i];
-    }
+      const idealIndexPairs = [];
+      const checkedIndexPairs = [];
+      let checker = 0;
+      if (processedData.length > 30) {
+        const parts = Math.floor(processedData.length / 30);
+        let starting = 0;
+        let end = 0;
+        for (let i = 0; i <= parts; i++) {
+          if (i === 0) {
+            starting = 30 * i;
+            end = 29 * (i + 1) + i;
+            checker = this.checkProcessedData(processedData, end, calculateRowSpan.datesIndexInRawData);
+            idealIndexPairs.push(checker);
+          } else if (i === parts) {
+            starting = checker + 1;
+            end = processedData.length - 1;
+            idealIndexPairs.push(end);
+          } else {
+            starting = checker + 1;
+            end = 29 * (i + 1) + i;
+            checker = this.checkProcessedData(processedData, end, calculateRowSpan.datesIndexInRawData);
+            idealIndexPairs.push(checker);
+          }
+        }
+      } else {
+        bodyParts[0] = processedData;
+      }
+      //
+      let start = 0;
+      for (let i = 0; i < idealIndexPairs.length; i++) {
+        const tempWEParts = workingEntries.slice(start, idealIndexPairs[i]);
+        const tempBodyParts = processedData.slice(start, idealIndexPairs[i]);
+        workingEntryParts.push(tempWEParts);
+        bodyParts.push(tempBodyParts);
+        start = idealIndexPairs[i];
+      }
 
-    for (let x = 0; x < workingEntryParts.length; x++) {
-      const total = this.totalWorkTime(workingEntryParts[x]);
-      totaltimeParts[x] = total;
-    }
-    totaltimeParts.push(this.totalWorkTime(workingEntries));
+      for (let x = 0; x < workingEntryParts.length; x++) {
+        const total = this.totalWorkTime(workingEntryParts[x]);
+        totaltimeParts[x] = total;
+      }
+      totaltimeParts.push(this.totalWorkTime(workingEntries));
 
-    if (bodyParts.length > 1) {
-      for (let s = 0; s < bodyParts.length; s++) {
+      if (bodyParts.length > 1) {
+        for (let s = 0; s < bodyParts.length; s++) {
+          doc.autoTable({
+            head: this.getColumns(),
+            body: bodyParts[s],
+            theme: 'grid',
+            pageBreak: 'always',
+            didDrawPage: (autoTableData: any) =>
+              this.createPage(doc, workingEntryParts[s], autoTableData, s + 1, bodyParts.length, totaltimeParts),
+            margin: { top: topMargin, bottom: bottomMargin, right: rightMargin, left: leftMargin }
+          });
+        }
+        doc.deletePage(1);
+      } else {
         doc.autoTable({
           head: this.getColumns(),
-          body: bodyParts[s],
+          body: bodyParts[0],
           theme: 'grid',
-          pageBreak: 'always',
           didDrawPage: (autoTableData: any) =>
-            this.createPage(doc, workingEntryParts[s], autoTableData, s + 1, bodyParts.length, totaltimeParts),
+            this.createPage(doc, workingEntries, autoTableData, bodyParts.length, bodyParts.length, totaltimeParts),
           margin: { top: topMargin, bottom: bottomMargin, right: rightMargin, left: leftMargin }
         });
       }
-      doc.deletePage(1);
-    } else {
-      doc.autoTable({
-        head: this.getColumns(),
-        body: bodyParts[0],
-        theme: 'grid',
-        didDrawPage: (autoTableData: any) =>
-          this.createPage(doc, workingEntries, autoTableData, bodyParts.length, bodyParts.length, totaltimeParts),
-        margin: { top: topMargin, bottom: bottomMargin, right: rightMargin, left: leftMargin }
-      });
-    }
 
-    doc.save('timesheet.pdf');
+      doc.save('timesheet.pdf');
+    } else {
+      this._snackBar.open('Some Working Entries are not Complete', 'Undo', { duration: 3000 });
+    }
   }
 
   getColumns() {
     return [{ date: 'Date', worktime: 'Worktime', from: 'From', to: 'To', activity: 'Activity' }];
+  }
+  checkEmptyData(data: any): any {
+    let flag = true;
+    for (let i = 0; i < data.length; i++) {
+      if (data[i].start === null || data[i].end === null) {
+        flag = false;
+        break;
+      }
+    }
+    return flag;
   }
 
   createPage(
@@ -212,8 +220,8 @@ export class PdfService {
     const dates = result.dates;
     const rowSpan = result.rowSpan;
     const datesIndexInRawData = result.datesIndexInRawData;
-    let flag = 0; // Flag variable or watchVariable to follow up with Index in WorkingEntries
-    let row = []; // To be pushed in the body for autotable with rowspan details
+    let flag = 0;
+    let row = [];
     for (let i = 0; i < dates.length; i++) {
       let tempTotalWorkTime = 0;
       const rowspan = rowSpan[i];
@@ -230,8 +238,8 @@ export class PdfService {
       }
     }
     for (let a = 0; a < result.dates.length; a++) {
-      const beginIndex = datesIndexInRawData[a]; // First apperance of date in the workingEntries Array
-      const counts = rowSpan[a]; // Counts of Dates in the dataset
+      const beginIndex = datesIndexInRawData[a];
+      const counts = rowSpan[a];
       if (counts > 1) {
         for (let b = 0; b < counts; b++) {
           // tslint:disable-next-line: forin
@@ -292,7 +300,6 @@ export class PdfService {
   }
 
   secondsToHHMM(seconds: number): string {
-    // const hour = Math.round(seconds / 3600);
     const hour = Math.floor(seconds / 3600);
     const min = Math.round((seconds % 3600) / 60);
     return this.pad(hour, 2) + 'h ' + this.pad(min, 2) + 'm';
@@ -333,12 +340,8 @@ export class PdfService {
   checkProcessedData(processedDataSet: any, index: any, startingIndexinRawData: any): any {
     let properIndexforPageDivision: any;
     if (typeof processedDataSet[index][0] === 'object') {
-      // let date = processedDataSet[index][0].content;
-      // let indexInProcessedData = startingIndexinRawData.dates.indexOf(date);
       properIndexforPageDivision = index - 1;
     } else if (processedDataSet[index].length === 3) {
-      // let date = processedDataSet[index][0].content;
-      // let indexInProcessedData = startingIndexinRawData.dates.indexOf(date);
       for (let i = index; i >= 0; i--) {
         if (processedDataSet[i].length === 5) {
           properIndexforPageDivision = i - 1;
