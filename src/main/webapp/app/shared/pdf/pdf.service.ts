@@ -129,7 +129,7 @@ export class PdfService {
   }
 
   getColumns() {
-    return [{ date: 'Date', worktime: 'Worktime', from: 'From', to: 'to', activity: 'Activity' }];
+    return [{ date: 'Date', worktime: 'Worktime', from: 'From', to: 'To', activity: 'Activity' }];
   }
 
   createPage(
@@ -219,7 +219,8 @@ export class PdfService {
       const rowspan = rowSpan[i];
       if (rowspan > 1) {
         for (let x = 0; x < rowSpan[i]; x++) {
-          tempTotalWorkTime = tempTotalWorkTime + data[i + x].end.diff(data[i + x].start, 'seconds', true);
+          const index = datesIndexInRawData[i];
+          tempTotalWorkTime = tempTotalWorkTime + data[index + x].end.diff(data[index + x].start, 'seconds', true);
         }
         totalWorkTime[i] = this.secondsToHHMM(tempTotalWorkTime);
         tempTotalWorkTime = 0;
@@ -321,7 +322,7 @@ export class PdfService {
 
   addPageNumber(doc: jsPDF, pageNumber: any, totalPages: number, data: any, pageHeight: any): void {
     doc.setFontSize('10');
-    doc.text(`Page ${pageNumber} / ${totalPages}`, data.settings.margin.left, pageHeight - 27);
+    doc.text(`Page ${pageNumber} / ${totalPages}`, data.settings.margin.left, pageHeight - 20);
   }
 
   addSumOnPreviousPage(doc: jsPDF, totalTimeOnPreviouspage: any, data: any): void {
