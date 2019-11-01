@@ -36,6 +36,11 @@ jhi-year-week-select {
   padding-top: 16px;
 }
 
+#pdfBtn {
+  position: absolute;
+  bottom: 10px;
+}
+
 @media only screen and (min-width: 1280px) {
   mat-card {
     padding-top: 0px;
@@ -91,5 +96,9 @@ jhi-year-week-select {
   th.mat-header-cell:first-of-type {
     padding-left: 20px;
     padding-right: 15px;
+  }
+
+  #pdfBtn {
+    left: 8px;
   }
 }
