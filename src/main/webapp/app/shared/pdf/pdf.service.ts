@@ -8,6 +8,7 @@ import { IWorkingEntryTimesheet } from '../model/working-entry-timesheet.model';
 // import { start } from 'repl';
 import { AccountService } from 'app/core/auth/account.service';
 import { Account } from 'app/core/user/account.model';
+import { switchCase } from '@babel/types';
 
 @Injectable()
 export class PdfService {
@@ -29,12 +30,18 @@ export class PdfService {
       we.activity ? we.activity.name : ''
     ]);
 
+    const topMargin = 27;
+    const leftMargin = 15;
+    const rightMargin = 15;
+    const bottomMargin = 33;
+    const maxRowInPage = 31;
     const doc = new jsPDF();
     const rawdataLength = rawData.length;
     let processedData = [];
     const bodyParts = [];
-    const workingEntryParts = [];
-    const totaltimeParts = [];
+    let workingEntryParts = [];
+    let totaltimeParts = [];
+    let calculateRowSpan;
 
     switch (rawdataLength) {
       case 0:
@@ -46,31 +53,46 @@ export class PdfService {
         break;
 
       default:
-        const calculateRowSpan = this.calculateDataStats(rawData);
+        calculateRowSpan = this.calculateDataStats(rawData);
         processedData = this.dataConversionForRowSpan(workingEntries, rawData, calculateRowSpan);
         break;
     }
-
+    const idealIndexPairs = [];
+    const checkedIndexPairs = [];
+    let checker = 0;
+    // let bodyParts = [];
     if (processedData.length > 30) {
       const parts = Math.floor(processedData.length / 30);
       let starting = 0;
-      let end = 29;
-      for (let i = 0; i < parts; i++) {
-        let dataDivision = processedData.slice(starting, end);
-        const tempParts = workingEntries.slice(starting, end);
-        bodyParts.push(dataDivision);
-        workingEntryParts.push(tempParts);
-        starting = starting + 30 * (i + 1);
-        end = end + (processedData.length - starting + 1);
-        if (i === parts - 1) {
-          dataDivision = processedData.slice(starting, end);
-          const temp = workingEntries.slice(starting, end);
-          bodyParts.push(dataDivision);
-          workingEntryParts.push(temp);
+      let end = 0;
+      for (let i = 0; i <= parts; i++) {
+        if (i === 0) {
+          starting = 30 * i;
+          end = 29 * (i + 1) + i;
+          checker = this.checkProcessedData(processedData, end, calculateRowSpan.datesIndexInRawData);
+          idealIndexPairs.push(checker);
+        } else if (i === parts) {
+          starting = checker + 1;
+          end = processedData.length - 1;
+          idealIndexPairs.push(end);
+        } else {
+          starting = checker + 1;
+          end = 29 * (i + 1) + i;
+          checker = this.checkProcessedData(processedData, end, calculateRowSpan.datesIndexInRawData);
+          idealIndexPairs.push(checker);
         }
       }
     } else {
       bodyParts[0] = processedData;
+    }
+    //
+    let start = 0;
+    for (let i = 0; i < idealIndexPairs.length; i++) {
+      const tempWEParts = workingEntries.slice(start, idealIndexPairs[i]);
+      const tempBodyParts = processedData.slice(start, idealIndexPairs[i]);
+      workingEntryParts.push(tempWEParts);
+      bodyParts.push(tempBodyParts);
+      start = idealIndexPairs[i];
     }
 
     for (let x = 0; x < workingEntryParts.length; x++) {
@@ -85,11 +107,13 @@ export class PdfService {
           head: this.getColumns(),
           body: bodyParts[s],
           theme: 'grid',
+          pageBreak: 'always',
           didDrawPage: (autoTableData: any) =>
             this.createPage(doc, workingEntryParts[s], autoTableData, s + 1, bodyParts.length, totaltimeParts),
-          margin: { top: 27, bottom: 33, right: 15, left: 15 }
+          margin: { top: topMargin, bottom: bottomMargin, right: rightMargin, left: leftMargin }
         });
       }
+      doc.deletePage(1);
     } else {
       doc.autoTable({
         head: this.getColumns(),
@@ -97,7 +121,7 @@ export class PdfService {
         theme: 'grid',
         didDrawPage: (autoTableData: any) =>
           this.createPage(doc, workingEntries, autoTableData, bodyParts.length, bodyParts.length, totaltimeParts),
-        margin: { top: 27, bottom: 33, right: 15, left: 15 }
+        margin: { top: topMargin, bottom: bottomMargin, right: rightMargin, left: leftMargin }
       });
     }
 
@@ -130,16 +154,18 @@ export class PdfService {
       if (totalPages > 1) {
         this.addLogo(doc, logo, data, pageHeight);
         doc.setFontSize('13');
-        if (pageNumber !== totalPages) {
+        if (pageNumber < totalPages && pageNumber > 1) {
           this.addPageNumber(doc, pageNumber, totalPages, data, pageHeight);
+          this.addSumOnPreviousPage(doc, totalTime[pageNumber - 2], data);
         }
         if (pageNumber === 1) {
           this.addEmployeeNameandMonth(doc, name, month, data);
-        } else {
-          this.addSumOnPreviousPage(doc, totalTime[pageNumber - 2], data);
+          this.addPageNumber(doc, pageNumber, totalPages, data, pageHeight);
         }
         if (pageNumber === totalPages) {
           this.addSignature(doc, data, pageHeight);
+          totalWorkTime = totalTime[totalTime.length - 1];
+          this.addSumOnPreviousPage(doc, totalTime[pageNumber - 2], data);
           this.addTotalWorkTime(doc, totalWorkTime, data, pageHeight);
         }
       } else {
@@ -301,5 +327,26 @@ export class PdfService {
   addSumOnPreviousPage(doc: jsPDF, totalTimeOnPreviouspage: any, data: any): void {
     doc.setFontSize('13');
     doc.text(`Sum of previous page: ${totalTimeOnPreviouspage}`, data.settings.margin.left, 25);
+  }
+
+  checkProcessedData(processedDataSet: any, index: any, startingIndexinRawData: any): any {
+    let properIndexforPageDivision: any;
+    if (typeof processedDataSet[index][0] === 'object') {
+      // let date = processedDataSet[index][0].content;
+      // let indexInProcessedData = startingIndexinRawData.dates.indexOf(date);
+      properIndexforPageDivision = index - 1;
+    } else if (processedDataSet[index].length === 3) {
+      // let date = processedDataSet[index][0].content;
+      // let indexInProcessedData = startingIndexinRawData.dates.indexOf(date);
+      for (let i = index; i >= 0; i--) {
+        if (processedDataSet[i].length === 5) {
+          properIndexforPageDivision = i - 1;
+          break;
+        }
+      }
+    } else {
+      properIndexforPageDivision = index;
+    }
+    return properIndexforPageDivision;
   }
 }
