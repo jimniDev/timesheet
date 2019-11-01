@@ -1,17 +1,17 @@
-<div fxLayout="row" fxLayoutAlign="center stretch" fxLayout.lt-lg="column" fxLayoutGap="8px">
-    <mat-form-field fxFlex="45">
+<div fxLayout="row" fxLayoutAlign="center stretch" fxLayoutGap="8px">
+    <mat-form-field fxFlex="50">
         <mat-label>Year</mat-label>
-        <mat-select [ngModel]="selectedYear" (ngModelChange)="onChangeYear($event)">
-            <mat-option *ngFor="let year of getDistinctYears()" [value]="year">
+        <mat-select [value]="selectedYear" (selectionChange)="onChangeYear($event)">
+            <mat-option *ngFor="let year of years" [value]="year">
                 {{year}}
             </mat-option>
         </mat-select>
     </mat-form-field>
 
-    <mat-form-field fxFlex="45">
+    <mat-form-field fxFlex="50">
         <mat-label>Month</mat-label>
-        <mat-select [ngModel]="selectedMonth" (ngModelChange)="onChangeMonth($event)">
-            <mat-option *ngFor="let month of getDistinctMonthsFromYear()" [value]="month">
+        <mat-select [value]="selectedMonth" (selectionChange)="onChangeMonth($event)">
+            <mat-option *ngFor="let month of months" [value]="month">
                 {{month}}
             </mat-option>
         </mat-select>

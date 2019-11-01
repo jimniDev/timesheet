@@ -1,69 +1,181 @@
 import { Injectable } from '@angular/core';
+import * as jsPDF from 'jspdf';
+import 'jspdf-autotable';
 import { IWorkingEntryTimesheet } from '../model/working-entry-timesheet.model';
-
-// import * as jsPDF from 'jspdf';
-// import 'jspdf-autotable';
-
-import * as pdfMake from 'pdfmake/build/pdfmake';
-import * as pdfFonts from 'pdfmake/build/vfs_fonts';
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
+// import { TableGeneratorComponent } from './table-generator/table-generator.component';
+// import { loadOptions } from '@babel/core';
+// import { IWorkDayTimesheet } from '../model/work-day-timesheet.model';
+// import { start } from 'repl';
+import { AccountService } from 'app/core/auth/account.service';
+import { Account } from 'app/core/user/account.model';
+import { switchCase } from '@babel/types';
 
 @Injectable()
 export class PdfService {
-  constructor() {}
+  public initialized = false;
+  private account: Account;
 
+  constructor(private accountService: AccountService) {
+    this.accountService.identity().then(a => {
+      this.account = a;
+      this.initialized = true;
+    });
+  }
   public createPDF(workingEntries: IWorkingEntryTimesheet[]): void {
-    // const rows = workingEntries.map(we => [
-    //   we.workDay.date.format('YYYY-MM-DD'),
-    //   we.start.format('HH:mm'),
-    //   we.end.format('HH:mm'),
-    //   this.secondsToHHMM(we.end.diff(we.start, 'seconds', true)),
-    //   we.activity ? we.activity.name : ''
-    // ]);
-    // const doc = new jsPDF();
-    // doc.text(30, 10, 'Timesheet');
-    // doc.autoTable(40, {
-    //   head: [['Date', 'From', 'To', 'Worktime', 'Activity']],
-    //   body: rows
-    // });
-    // doc.text(20, 20, 'Sum');
-    // doc.save('timesheet.pdf');
+    const rawData = workingEntries.map(we => [
+      we.workDay.date.format('YYYY-MM-DD'),
+      this.secondsToHHMM(we.end.diff(we.start, 'seconds', true)),
+      we.start.format('HH:mm'),
+      we.end.format('HH:mm'),
+      we.activity ? we.activity.name : ''
+    ]);
 
-    const docDefinition = {
-      content: [
-        { text: 'AS Scope Timesheet - Philipp Ringele - October', fontSize: 15 },
-        {
-          layout: {
-            hLineWidth: (i, node) => 1, // (i === 0 || i === node.table.body.length) ? 2 : 1,
-            vLineWidth: (i, node) => 1, //  (i === 0 || i === node.table.widths.length) ? 2 : 1,
-            hLineColor: (i, node) => 'black', // (i === 0 || i === node.table.body.length) ? 'black' : 'gray',
-            vLineColor: (i, node) => 'black' // (i === 0 || i === node.table.widths.length) ? 'black' : 'gray',
-            // hLineStyle: function (i, node) { return {dash: { length: 10, space: 4 }}; },
-            // vLineStyle: function (i, node) { return {dash: { length: 10, space: 4 }}; },
-            // paddingLeft: function(i, node) { return 4; },
-            // paddingRight: function(i, node) { return 4; },
-            // paddingTop: function(i, node) { return 2; },
-            // paddingBottom: function(i, node) { return 2; },
-            // fillColor: function (rowIndex, node, columnIndex) { return null; }
-          },
-          table: {
-            // headers are automatically repeated if the table spans over multiple pages
-            // you can declare how many rows should be treated as headers
-            headerRows: 1,
-            widths: ['*', '*', '*', '*', '*'],
+    const topMargin = 27;
+    const leftMargin = 15;
+    const rightMargin = 15;
+    const bottomMargin = 33;
+    const maxRowInPage = 31;
+    const doc = new jsPDF();
+    const rawdataLength = rawData.length;
+    let processedData = [];
+    const bodyParts = [];
+    let workingEntryParts = [];
+    let totaltimeParts = [];
+    let calculateRowSpan;
 
-            body: workingEntries.map(we => [
-              we.workDay.date.format('YYYY-MM-DD'),
-              we.start.format('HH:mm'),
-              we.end.format('HH:mm'),
-              this.secondsToHHMM(we.end.diff(we.start, 'seconds', true)),
-              we.activity ? we.activity.name : ''
-            ])
-          }
+    switch (rawdataLength) {
+      case 0:
+        console.log('No data for printing');
+        break;
+
+      case 1:
+        processedData = rawData;
+        break;
+
+      default:
+        calculateRowSpan = this.calculateDataStats(rawData);
+        processedData = this.dataConversionForRowSpan(workingEntries, rawData, calculateRowSpan);
+        break;
+    }
+    const idealIndexPairs = [];
+    const checkedIndexPairs = [];
+    let checker = 0;
+    // let bodyParts = [];
+    if (processedData.length > 30) {
+      const parts = Math.floor(processedData.length / 30);
+      let starting = 0;
+      let end = 0;
+      for (let i = 0; i <= parts; i++) {
+        if (i === 0) {
+          starting = 30 * i;
+          end = 29 * (i + 1) + i;
+          checker = this.checkProcessedData(processedData, end, calculateRowSpan.datesIndexInRawData);
+          idealIndexPairs.push(checker);
+        } else if (i === parts) {
+          starting = checker + 1;
+          end = processedData.length - 1;
+          idealIndexPairs.push(end);
+        } else {
+          starting = checker + 1;
+          end = 29 * (i + 1) + i;
+          checker = this.checkProcessedData(processedData, end, calculateRowSpan.datesIndexInRawData);
+          idealIndexPairs.push(checker);
         }
-      ]
-    };
-    pdfMake.createPdf(docDefinition).open({}, window);
+      }
+    } else {
+      bodyParts[0] = processedData;
+    }
+    //
+    let start = 0;
+    for (let i = 0; i < idealIndexPairs.length; i++) {
+      const tempWEParts = workingEntries.slice(start, idealIndexPairs[i]);
+      const tempBodyParts = processedData.slice(start, idealIndexPairs[i]);
+      workingEntryParts.push(tempWEParts);
+      bodyParts.push(tempBodyParts);
+      start = idealIndexPairs[i];
+    }
+
+    for (let x = 0; x < workingEntryParts.length; x++) {
+      const total = this.totalWorkTime(workingEntryParts[x]);
+      totaltimeParts[x] = total;
+    }
+    totaltimeParts.push(this.totalWorkTime(workingEntries));
+
+    if (bodyParts.length > 1) {
+      for (let s = 0; s < bodyParts.length; s++) {
+        doc.autoTable({
+          head: this.getColumns(),
+          body: bodyParts[s],
+          theme: 'grid',
+          pageBreak: 'always',
+          didDrawPage: (autoTableData: any) =>
+            this.createPage(doc, workingEntryParts[s], autoTableData, s + 1, bodyParts.length, totaltimeParts),
+          margin: { top: topMargin, bottom: bottomMargin, right: rightMargin, left: leftMargin }
+        });
+      }
+      doc.deletePage(1);
+    } else {
+      doc.autoTable({
+        head: this.getColumns(),
+        body: bodyParts[0],
+        theme: 'grid',
+        didDrawPage: (autoTableData: any) =>
+          this.createPage(doc, workingEntries, autoTableData, bodyParts.length, bodyParts.length, totaltimeParts),
+        margin: { top: topMargin, bottom: bottomMargin, right: rightMargin, left: leftMargin }
+      });
+    }
+
+    doc.save('timesheet.pdf');
+  }
+
+  getColumns() {
+    return [{ date: 'Date', worktime: 'Worktime', from: 'From', to: 'To', activity: 'Activity' }];
+  }
+
+  createPage(
+    doc: jsPDF,
+    workingEntries: IWorkingEntryTimesheet[],
+    data: any,
+    pageNumber: number,
+    totalPages: number,
+    totalTime: any
+  ): void {
+    const logo = new Image();
+    const pageSize = doc.internal.pageSize;
+    const pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight();
+    const name = this.account.firstName + this.account.lastName;
+    const month = workingEntries[0].workDay.date.format('MMMM');
+    let totalWorkTime: any;
+    logo.src = '../../content/images/logo.jpg';
+    if (!this.initialized) {
+      return;
+    }
+    if (logo) {
+      if (totalPages > 1) {
+        this.addLogo(doc, logo, data, pageHeight);
+        doc.setFontSize('13');
+        if (pageNumber < totalPages && pageNumber > 1) {
+          this.addPageNumber(doc, pageNumber, totalPages, data, pageHeight);
+          this.addSumOnPreviousPage(doc, totalTime[pageNumber - 2], data);
+        }
+        if (pageNumber === 1) {
+          this.addEmployeeNameandMonth(doc, name, month, data);
+          this.addPageNumber(doc, pageNumber, totalPages, data, pageHeight);
+        }
+        if (pageNumber === totalPages) {
+          this.addSignature(doc, data, pageHeight);
+          totalWorkTime = totalTime[totalTime.length - 1];
+          this.addSumOnPreviousPage(doc, totalTime[pageNumber - 2], data);
+          this.addTotalWorkTime(doc, totalWorkTime, data, pageHeight);
+        }
+      } else {
+        totalWorkTime = this.totalWorkTime(workingEntries);
+        this.addLogo(doc, logo, data, pageHeight);
+        this.addEmployeeNameandMonth(doc, name, month, data);
+        this.addTotalWorkTime(doc, totalWorkTime, data, pageHeight);
+        this.addSignature(doc, data, pageHeight);
+      }
+    }
   }
 
   pad(num: number, size: number): string {
@@ -74,9 +186,168 @@ export class PdfService {
     return s;
   }
 
+  calculateDataStats(data: any): object {
+    const processingResult = {
+      dates: [],
+      rowSpan: [],
+      datesIndexInRawData: []
+    };
+    const processingResultObject = processingResult;
+    const datesLength = data.length;
+    for (let i = 0; i < datesLength; i++) {
+      if (processingResultObject.dates.indexOf(data[i][0]) === -1) {
+        processingResultObject.dates.push(data[i][0]);
+        processingResultObject.datesIndexInRawData.push(i);
+        processingResultObject.rowSpan.push(1);
+      } else {
+        ++processingResultObject.rowSpan[processingResult.dates.indexOf(data[i][0])];
+      }
+    }
+    return processingResultObject;
+  }
+
+  dataConversionForRowSpan(data: IWorkingEntryTimesheet[], raw_data: any, result: any): any {
+    const body = [];
+    const totalWorkTime = [];
+    const dates = result.dates;
+    const rowSpan = result.rowSpan;
+    const datesIndexInRawData = result.datesIndexInRawData;
+    let flag = 0; // Flag variable or watchVariable to follow up with Index in WorkingEntries
+    let row = []; // To be pushed in the body for autotable with rowspan details
+    for (let i = 0; i < dates.length; i++) {
+      let tempTotalWorkTime = 0;
+      const rowspan = rowSpan[i];
+      if (rowspan > 1) {
+        for (let x = 0; x < rowSpan[i]; x++) {
+          const index = datesIndexInRawData[i];
+          tempTotalWorkTime = tempTotalWorkTime + data[index + x].end.diff(data[index + x].start, 'seconds', true);
+        }
+        totalWorkTime[i] = this.secondsToHHMM(tempTotalWorkTime);
+        tempTotalWorkTime = 0;
+      } else {
+        tempTotalWorkTime = data[i].end.diff(data[i].start, 'seconds', true);
+        totalWorkTime[i] = this.secondsToHHMM(tempTotalWorkTime);
+      }
+    }
+    for (let a = 0; a < result.dates.length; a++) {
+      const beginIndex = datesIndexInRawData[a]; // First apperance of date in the workingEntries Array
+      const counts = rowSpan[a]; // Counts of Dates in the dataset
+      if (counts > 1) {
+        for (let b = 0; b < counts; b++) {
+          // tslint:disable-next-line: forin
+          for (const keys in raw_data[flag]) {
+            switch (keys) {
+              case '0':
+                switch (flag) {
+                  case beginIndex:
+                    row.push({ rowSpan: counts, content: result.dates[a], styles: { valign: 'middle', halign: 'left' } });
+                    break;
+                  default:
+                    break;
+                }
+                break;
+              case '1':
+                switch (flag) {
+                  case beginIndex:
+                    row.push({ rowSpan: counts, content: totalWorkTime[a], styles: { valign: 'middle', halign: 'left' } });
+                    break;
+                  default:
+                    break;
+                }
+                break;
+              case '4':
+                row.push(raw_data[flag][keys]);
+                flag++;
+                body.push(row);
+                row = [];
+                break;
+              default:
+                row.push(raw_data[flag][keys]);
+                break;
+            }
+          }
+        }
+      } else {
+        for (const keys in raw_data[flag]) {
+          if (raw_data.hasOwnProperty(keys)) {
+            row.push(raw_data[flag][keys]);
+            if (keys === '4') {
+              flag++;
+              body.push(row);
+              row = [];
+            }
+          }
+        }
+      }
+    }
+    return body;
+  }
+
+  totalWorkTime(data: IWorkingEntryTimesheet[]): string {
+    let tempWorkTime = 0;
+    for (let i = 0; i < data.length; i++) {
+      tempWorkTime = tempWorkTime + data[i].end.diff(data[i].start, 'seconds', true);
+    }
+    return this.secondsToHHMM(tempWorkTime);
+  }
+
   secondsToHHMM(seconds: number): string {
-    const hour = Math.round(seconds / 3600);
+    // const hour = Math.round(seconds / 3600);
+    const hour = Math.floor(seconds / 3600);
     const min = Math.round((seconds % 3600) / 60);
     return this.pad(hour, 2) + 'h ' + this.pad(min, 2) + 'm';
+  }
+
+  addLogo(doc: jsPDF, logo: any, data: any, pageHeight: any): void {
+    doc.addImage(logo, 'JPG', data.settings.margin.left + 150, pageHeight - 27, 24, 10);
+  }
+
+  addSignature(doc: jsPDF, data: any, pageHeight: any): void {
+    doc.setFontSize('13');
+    doc.setLineWidth(0.4);
+    doc.setDrawColor(16, 24, 32);
+    doc.line(data.settings.margin.left - 3, pageHeight - 23, data.settings.margin.left + 40, pageHeight - 23);
+    doc.text('Signature', data.settings.margin.left + 7, pageHeight - 18);
+  }
+
+  addEmployeeNameandMonth(doc: jsPDF, name: string, month: string, data: any): void {
+    doc.setFontSize('13');
+    doc.text(`Employee: ${name}, Month: ${month} `, data.settings.margin.left, 25);
+  }
+
+  addTotalWorkTime(doc: jsPDF, totalWorkTime: any, data: any, pageHeight: any): void {
+    doc.setFontSize('13');
+    doc.text(`Total WorkTime: ${totalWorkTime} `, data.settings.margin.left + 60, pageHeight - 18);
+  }
+
+  addPageNumber(doc: jsPDF, pageNumber: any, totalPages: number, data: any, pageHeight: any): void {
+    doc.setFontSize('10');
+    doc.text(`Page ${pageNumber} / ${totalPages}`, data.settings.margin.left, pageHeight - 20);
+  }
+
+  addSumOnPreviousPage(doc: jsPDF, totalTimeOnPreviouspage: any, data: any): void {
+    doc.setFontSize('13');
+    doc.text(`Sum of previous page: ${totalTimeOnPreviouspage}`, data.settings.margin.left, 25);
+  }
+
+  checkProcessedData(processedDataSet: any, index: any, startingIndexinRawData: any): any {
+    let properIndexforPageDivision: any;
+    if (typeof processedDataSet[index][0] === 'object') {
+      // let date = processedDataSet[index][0].content;
+      // let indexInProcessedData = startingIndexinRawData.dates.indexOf(date);
+      properIndexforPageDivision = index - 1;
+    } else if (processedDataSet[index].length === 3) {
+      // let date = processedDataSet[index][0].content;
+      // let indexInProcessedData = startingIndexinRawData.dates.indexOf(date);
+      for (let i = index; i >= 0; i--) {
+        if (processedDataSet[i].length === 5) {
+          properIndexforPageDivision = i - 1;
+          break;
+        }
+      }
+    } else {
+      properIndexforPageDivision = index;
+    }
+    return properIndexforPageDivision;
   }
 }

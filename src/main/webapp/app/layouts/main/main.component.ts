@@ -3,7 +3,7 @@ import { Router, ActivatedRouteSnapshot, NavigationEnd, NavigationError } from '
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { JhiLanguageHelper, Account, AccountService, StateStorageService, LoginService } from 'app/core';
+import { Account, AccountService, StateStorageService, LoginService } from 'app/core';
 
 @Component({
   selector: 'jhi-main',
@@ -15,7 +15,6 @@ export class JhiMainComponent implements OnInit, OnDestroy {
   constructor(
     private accountService: AccountService,
     private stateStorageService: StateStorageService,
-    private jhiLanguageHelper: JhiLanguageHelper,
     private loginService: LoginService,
     private router: Router
   ) {}
@@ -34,7 +33,7 @@ export class JhiMainComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
-        this.jhiLanguageHelper.updateTitle(this.getPageTitle(this.router.routerState.snapshot.root));
+        // this.jhiLanguageHelper.updateTitle(this.getPageTitle(this.router.routerState.snapshot.root));
       }
       if (event instanceof NavigationError && event.error.status === 404) {
         this.router.navigate(['/404']);

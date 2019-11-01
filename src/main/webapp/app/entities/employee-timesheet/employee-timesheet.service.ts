@@ -56,4 +56,20 @@ export class EmployeeTimesheetService {
   targetWorkTimMinutes(year: number, month: number, day: number) {
     return this.http.get<number>(this.resourceUrl + '/me/target-work-time/' + year + '/' + month + '/' + day, { observe: 'response' });
   }
+
+  weeklyTargetWorkTime(year: number, week: number) {
+    return this.http.get<number>(this.resourceUrl + '/me/target-work-time/' + year + '/iso-week/' + week, { observe: 'response' });
+  }
+
+  weeklyActualWorkTime(year: number, week: number) {
+    return this.http.get<number>(this.resourceUrl + '/me/work-time/' + year + '/iso-week/' + week, { observe: 'response' });
+  }
+
+  balanceByEmployee(employeeId: number) {
+    return this.http.get<number>(`${this.resourceUrl}/${employeeId}/work-time/balance`, { observe: 'response' });
+  }
+
+  currentWorkTimeBalance() {
+    return this.http.get<number>(this.resourceUrl + '/me/work-time/balance', { observe: 'response' });
+  }
 }

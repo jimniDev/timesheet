@@ -1,12 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ActivityRoleDialogComponent } from './activity-role-dialog/activity-role-dialog.component';
+
 import { ActivityCreationDialogComponent } from './activity-creation-dialog/activity-creation-dialog.component';
 import { ActivityRoleMappingDialogComponent } from './activity-role-mapping-dialog/activity-role-mapping-dialog.component';
 import { RoleTableComponent } from './role-table/role-table.component';
 import { IRoleTimesheet } from 'app/shared/model/role-timesheet.model';
 import { ActivityTableComponent } from './activity-table/activity-table.component';
 import { IActivityTimesheet } from 'app/shared/model/activity-timesheet.model';
+import { RoleCreationDialogComponent } from './role-creation-dialog/role-creation-dialog.component';
 
 @Component({
   selector: 'jhi-activity-config',
@@ -23,7 +24,7 @@ export class ActivityConfigComponent implements OnInit {
   ngOnInit() {}
 
   openRoleDialog(): void {
-    const dialogRef = this.dialog.open(ActivityRoleDialogComponent, {});
+    const dialogRef = this.dialog.open(RoleCreationDialogComponent, {});
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.roleTable.addRole(<IRoleTimesheet>result);

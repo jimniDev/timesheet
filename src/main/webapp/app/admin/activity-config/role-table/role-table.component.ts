@@ -3,8 +3,9 @@ import { RoleTimesheetService } from 'app/entities/role-timesheet';
 import { HttpResponse } from '@angular/common/http';
 import { IRoleTimesheet } from 'app/shared/model/role-timesheet.model';
 import { MatTableDataSource, MatTable, MatPaginator } from '@angular/material';
-import { ActivityRoleEditDialogComponent } from 'app/admin/activity-config/activity-role-edit-dialog/activity-role-edit-dialog.component';
+
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { RoleEditDialogComponent } from '../role-edit-dialog/role-edit-dialog.component';
 
 @Component({
   selector: 'jhi-role-table',
@@ -49,7 +50,7 @@ export class RoleTableComponent implements OnInit {
   }
 
   editRoleDialog(role: IRoleTimesheet): void {
-    const dialogRef = this.dialog.open(ActivityRoleEditDialogComponent, {
+    const dialogRef = this.dialog.open(RoleEditDialogComponent, {
       data: { name: role.name, description: role.description, activities: role.activities, role }
     });
 

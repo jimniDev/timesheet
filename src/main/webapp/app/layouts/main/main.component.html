@@ -1,17 +1,17 @@
 <as-navbar #asNavbar [title]="'Timesheet'">
     <a mat-list-item (click)='login()' *ngIf="!isAuthenticated()" (click)="asNavbar.closeOnLtMd()">
-        <mat-icon mat-list-icon>note</mat-icon> Login
+        <mat-icon mat-list-icon style="color: #002F5D;">note</mat-icon> Login
     </a>
     <a mat-list-item routerLink="/" *ngIf="isAuthenticated()" (click)="asNavbar.closeOnLtMd()">
-        <mat-icon mat-list-icon>home</mat-icon> Home
+        <mat-icon mat-list-icon style="color: #008478;">home</mat-icon> Home
     </a>
     <a *jhiHasAnyAuthority="'ROLE_ADMIN'" routerLink="admin/employee-overview" (click)="asNavbar.closeOnLtMd()"
         mat-list-item>
-        <mat-icon mat-list-icon>people</mat-icon> Employee Overview
+        <mat-icon mat-list-icon style="color: #002F5D;">people</mat-icon> Employee Overview
     </a>
     <a *jhiHasAnyAuthority="'ROLE_ADMIN'" routerLink="admin/activity-config" (click)="asNavbar.closeOnLtMd()"
         mat-list-item>
-        <mat-icon mat-list-icon>device_hub</mat-icon> Activity Configuration
+        <mat-icon mat-list-icon style="color: #8A8D8F;">device_hub</mat-icon> Activity Configuration
     </a>
     <router-outlet></router-outlet>
 </as-navbar>

@@ -4,6 +4,7 @@ import com.asscope.timesheet.domain.Employee;
 import com.asscope.timesheet.domain.WorkingEntry;
 import com.asscope.timesheet.service.WorkingEntryService;
 import com.asscope.timesheet.web.rest.errors.BadRequestAlertException;
+import com.asscope.timesheet.service.erros.OlderThanOneMonthTimeEntryException;
 import com.asscope.timesheet.service.erros.OverlappingWorkingTimesException;
 import com.asscope.timesheet.service.EmployeeService;
 
@@ -23,6 +24,7 @@ import java.net.URISyntaxException;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * REST controller for managing {@link com.asscope.timesheet.domain.WorkingEntry}.
@@ -67,6 +69,8 @@ public class WorkingEntryResource {
 			result = workingEntryService.save(workingEntry);
 		} catch (OverlappingWorkingTimesException e) {
 			throw new BadRequestAlertException("Overlapping worktime", ENTITY_NAME, "overlappingtime");
+		} catch(OlderThanOneMonthTimeEntryException y) {
+			throw new BadRequestAlertException("Time Entry older than 1 month", ENTITY_NAME, "olderthan1month");
 		}
         return ResponseEntity.created(new URI("/api/working-entries/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -93,6 +97,8 @@ public class WorkingEntryResource {
 			result = workingEntryService.saveForEmployee(workingEntry, principal.getName());
 		} catch (OverlappingWorkingTimesException e) {
 			throw new BadRequestAlertException("Overlapping worktime", ENTITY_NAME, "overlappingtime");
+		} catch(OlderThanOneMonthTimeEntryException y) {
+			throw new BadRequestAlertException("Time Entry older than 1 month", ENTITY_NAME, "olderthan1month");
 		}
         return ResponseEntity.created(new URI("/api/working-entries/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -120,6 +126,8 @@ public class WorkingEntryResource {
 			result = workingEntryService.save(workingEntry);
 		} catch (OverlappingWorkingTimesException e) {
 			throw new BadRequestAlertException("Overlapping worktime", ENTITY_NAME, "overlappingtime");
+		} catch(OlderThanOneMonthTimeEntryException y) {
+			throw new BadRequestAlertException("Time Entry older than 1 month", ENTITY_NAME, "olderthan1month");
 		}
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, workingEntry.getId().toString()))
@@ -203,7 +211,7 @@ public class WorkingEntryResource {
     
     @GetMapping({"employees/me/working-entries/year/{year}", "employees/me/working-entries/year/{year}/month/{month}"})
     @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
-    public ResponseEntity<List<WorkingEntry>> getWorkingEntriesByDateForCurrentUser(Principal principal, @PathVariable("year") int year, @PathVariable("month") Optional<Integer> month) {
+    public ResponseEntity<Set<WorkingEntry>> getWorkingEntriesByDateForCurrentUser(Principal principal, @PathVariable("year") int year, @PathVariable("month") Optional<Integer> month) {
     	log.debug("REST request to get WorkingEntries for Employee : {}", principal.getName());
     	return ResponseEntity.ok().body(this.workingEntryService.findAllByEmployee(principal, year, month));
     }

@@ -1,6 +1,6 @@
 <mat-label class="mat-h1">Choose your Role and Activity</mat-label>
 <form [formGroup]="modalForm" (ngSubmit)="save()">
-    <div fxLayout="column" fxLayoutAlign="center none" fxLayout.lt-sm="column" fxLayoutGap="8px" class="container">
+    <div fxLayout="column" fxLayoutAlign="center none" fxLayout.lt-md="column" fxLayoutGap="8px" class="container">
         <mat-form-field>
             <mat-label>Role</mat-label>
             <mat-select matNativeControl formControlName="roleControl" required>
@@ -27,6 +27,6 @@
             <mat-icon matSuffix>schedule</mat-icon>
         </mat-form-field>
         <button mat-button color="primary" type="submit" [disabled]="!modalForm.valid">Save</button>
-        <button mat-button color="primary" type="button" (click)="continue()">Continue</button>
+        <button mat-button color="warn" type="button" (click)="continue()">Continue</button>
     </div>
 </form>

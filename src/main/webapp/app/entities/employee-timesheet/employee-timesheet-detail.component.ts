@@ -9,7 +9,6 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { WeeklyWorkingHoursTimesheetService } from '../weekly-working-hours-timesheet';
-import { HttpResponse } from '@angular/common/http';
 
 @Component({
   selector: 'jhi-employee-timesheet-detail',
@@ -38,12 +37,7 @@ export class EmployeeTimesheetDetailComponent implements OnInit {
       this.lengthEmployeeWeekly = this.employeeWeekly.data.length;
       this.pageAndSort();
     });
-    this.wwhService.query().subscribe((res: HttpResponse<IWeeklyWorkingHoursTimesheet[]>) => {
-      if (res.ok) {
-        this.employeeWeekly.data = res.body;
-        this.refresh();
-      }
-    });
+    this.employeeWeekly.data = this.employee.weeklyWorkingHours;
   }
 
   refresh() {

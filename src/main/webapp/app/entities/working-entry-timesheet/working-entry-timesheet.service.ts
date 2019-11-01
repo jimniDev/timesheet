@@ -46,10 +46,18 @@ export class WorkingEntryTimesheetService {
       .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
   }
 
-  timetable(req?: any): Observable<EntityArrayResponseType> {
-    const options = createRequestOption(req);
+  // timetable(req?: any): Observable<EntityArrayResponseType> {
+  //   const options = createRequestOption(req);
+  //   return this.http
+  //     .get<IWorkingEntryTimesheet[]>(SERVER_API_URL + 'api/employees/me/working-entries', { params: options, observe: 'response' })
+  //     .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
+  // }
+
+  timetable(year: number, month: number): Observable<EntityArrayResponseType> {
     return this.http
-      .get<IWorkingEntryTimesheet[]>(SERVER_API_URL + 'api/employees/me/working-entries', { params: options, observe: 'response' })
+      .get<IWorkingEntryTimesheet[]>(SERVER_API_URL + `api/employees/me/working-entries/year/${year}/month/${month}`, {
+        observe: 'response'
+      })
       .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
   }
 

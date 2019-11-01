@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -18,6 +19,7 @@ import java.util.Optional;
  */
 @Entity
 @Table(name = "working_entry")
+@Where(clause="deleted_flag=0")
 //@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class WorkingEntry extends AbstractAuditingEntity implements Serializable {
 
@@ -43,7 +45,7 @@ public class WorkingEntry extends AbstractAuditingEntity implements Serializable
     private Boolean locked;
 
     @ManyToOne
-    @JsonIgnoreProperties({"workingEntries", "workDays"})
+    @JsonIgnoreProperties({"workingEntries", "workDays", "weeklyWorkingHours", "user"})
     private Employee employee;
 
     @ManyToOne
@@ -51,7 +53,7 @@ public class WorkingEntry extends AbstractAuditingEntity implements Serializable
     private Activity activity;
 
     @ManyToOne
-    @JsonIgnoreProperties("workingEntries")
+    @JsonIgnoreProperties({"workingEntries", "employee", "activeWeeklyWorkingHours"})
     private WorkDay workDay;
 
     @ManyToOne

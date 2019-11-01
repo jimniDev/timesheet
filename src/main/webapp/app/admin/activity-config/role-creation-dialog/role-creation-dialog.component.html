@@ -1,0 +1,20 @@
+<h1 mat-dialog-title>Role Creation</h1>
+<div mat-dialog-content>
+        <form [formGroup]="roleCreationForm" (ngSubmit)="onSubmit()">
+                <div fxLayout="column" fxLayoutAlign="center stretch" fxLayoutGap="8px" class="container">
+                        <mat-form-field>
+                                <input matInput required formControlName="name" placeholder="Name">
+                        </mat-form-field>
+                        <mat-form-field>
+                                <input matInput formControlName="description" placeholder="Description">
+                        </mat-form-field>
+                        <div fxLayout="row" fxLayoutAlign="center stretch" fxLayout.lt-md="column-reverse"
+                                fxLayoutGap="8px" class="container">
+                                <button fxFlex="50" mat-button color="warn" type="button"
+                                        (click)="onNoClick()">Close</button>
+                                <button fxFlex="50" mat-button color="primary" [disabled]="roleCreationForm.invalid"
+                                        type="submit">Create</button>
+                        </div>
+                </div>
+        </form>
+</div>

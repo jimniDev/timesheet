@@ -7,6 +7,7 @@ import com.asscope.timesheet.domain.WorkingEntry;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
@@ -28,4 +29,7 @@ public interface WorkingEntryRepository extends JpaRepository<WorkingEntry, Long
 	
 	@Query("SELECT DISTINCT w FROM WorkingEntry w WHERE w.deleted = false AND w.employee = :employee AND w.workDay.date = :date AND w.end IS NULL")
 	Optional<WorkingEntry> findStartedWorkingEntryByEmployeeAndDate(@Param("employee") Employee employee, @Param("date") LocalDate date);
+	
+	@Query("SELECT w FROM WorkingEntry w WHERE w.deleted = false AND w.employee = :employee AND YEAR(w.workDay.date) = :year AND MONTH(w.workDay.date) = :month")
+	Set<WorkingEntry> findAllActiveWorkingEntriesByEmployeeAndDate(@Param("employee") Employee employee, @Param("year") int year, @Param("month") int month);
 }

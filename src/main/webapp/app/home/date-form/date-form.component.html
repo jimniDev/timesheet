@@ -1,48 +1,59 @@
 <form [formGroup]="timeForm" (ngSubmit)="onSubmit()">
-  <div fxLayoutAlign="center stretch" fxLayout="column" fxLayoutGap="8px" class="container">
-    <mat-form-field fxFlex="auto">
-      <mat-label>Date</mat-label>
-      <input matInput [matDatepicker]="picker" placeholder="Choose a date" formControlName="dateControl" readonly
-        required>
-      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
-    </mat-form-field>
-    <button mat-button color="primary" type="button" (click)="selectToday()">Today</button>
+  <div fxLayoutAlign="space-evenly center" fxLayout="row" fxLayoutGap="40px" class="container">
+    <div fxLayoutAlign="center stretch" fxLayout="column" fxLayoutGap="8px" class="container">
+      <div fxFlex="auto" fxLayout="row" fxLayoutAlign="center stretch" fxLayout.xs="column" fxLayoutGap="8px"
+        class="container">
+        <mat-form-field fxFlex="80">
+          <mat-label>Date</mat-label>
+          <input matInput [matDatepicker]="picker" placeholder="Choose a date" formControlName="dateControl" readonly
+            required>
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+        <button fxFlex="20" mat-button color="primary" type="button" (click)="selectToday()">Today</button>
+      </div>
 
-    <div fxLayoutAlign="center stretch" fxLayout.xs="column" fxLayoutGap="8px">
-      <mat-form-field class="time" fxFlex="50">
-        <mat-label>Start Time</mat-label>
-        <as-time-input formControlName="startTime" required></as-time-input>
-        <mat-icon matSuffix>access_time</mat-icon>
-      </mat-form-field>
+      <div fxLayoutAlign="center stretch" fxLayout.xs="column" fxLayoutGap="8px">
+        <mat-form-field class="time" fxFlex="50">
+          <mat-label>Start Time</mat-label>
+          <as-time-input formControlName="startTime" required></as-time-input>
+          <mat-icon matSuffix>access_time</mat-icon>
+        </mat-form-field>
 
-      <mat-form-field class="time" fxFlex="50">
-        <mat-label>End Time</mat-label>
-        <as-time-input formControlName="endTime" required></as-time-input>
-        <mat-icon matSuffix>access_time</mat-icon>
+        <mat-form-field class="time" fxFlex="50">
+          <mat-label>End Time</mat-label>
+          <as-time-input formControlName="endTime" required></as-time-input>
+          <mat-icon matSuffix>access_time</mat-icon>
+        </mat-form-field>
+      </div>
+
+      <div fxLayoutAlign="center stretch" fxLayout.xs="column" fxLayoutGap="8px">
+        <mat-form-field fxFlex="50">
+          <mat-label>Role</mat-label>
+          <mat-select matNativeControl formControlName="roleControl" required>
+            <mat-option *ngFor="let role of roles" [value]="role">
+              {{role.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field fxFlex="50">
+          <mat-label>Activity</mat-label>
+          <mat-select matNativeControl formControlName="activityControl" required>
+            <mat-option *ngFor="let activity of selectableActivities" [value]="activity">
+              {{activity.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <mat-form-field>
+        <mat-label>Additional break minutes</mat-label>
+        <input matInput #breakInput type="tel" placeholder="MM" formControlName="addBreakControl"
+          (keydown)="onKeyDown($event)">
+        <mat-icon matSuffix>free_breakfast</mat-icon>
       </mat-form-field>
+      <button mat-flat-button color="primary" type="submit" [disabled]="!timeForm.valid">Add</button>
+
     </div>
-
-    <div fxLayoutAlign="center stretch" fxLayout.xs="column" fxLayoutGap="8px">
-      <mat-form-field fxFlex="50">
-        <mat-label>Role</mat-label>
-        <mat-select matNativeControl formControlName="roleControl" required>
-          <mat-option *ngFor="let role of roles" [value]="role">
-            {{role.name}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-
-      <mat-form-field fxFlex="50">
-        <mat-label>Activity</mat-label>
-        <mat-select matNativeControl formControlName="activityControl" required>
-          <mat-option *ngFor="let activity of selectableActivities" [value]="activity">
-            {{activity.name}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
-    <button mat-stroked-button color="primary" type="submit" [disabled]="!timeForm.valid">Save</button>
-
   </div>
 </form>

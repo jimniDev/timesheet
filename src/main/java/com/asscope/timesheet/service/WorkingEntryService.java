@@ -4,6 +4,7 @@ import com.asscope.timesheet.domain.Employee;
 import com.asscope.timesheet.domain.WorkDay;
 import com.asscope.timesheet.domain.WorkingEntry;
 import com.asscope.timesheet.repository.WorkingEntryRepository;
+import com.asscope.timesheet.service.erros.OlderThanOneMonthTimeEntryException;
 import com.asscope.timesheet.service.erros.OverlappingWorkingTimesException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +18,7 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -53,7 +55,7 @@ public class WorkingEntryService {
      * @return the persisted entity.
      * @throws Exception 
      */
-    public WorkingEntry save(WorkingEntry workingEntryToSave) throws OverlappingWorkingTimesException {
+    public WorkingEntry save(WorkingEntry workingEntryToSave) throws OverlappingWorkingTimesException,OlderThanOneMonthTimeEntryException {
         log.debug("Request to save WorkingEntry : {}", workingEntryToSave);
         Employee employee = workingEntryToSave.getEmployee();
         WorkDay workDay = workingEntryToSave.getWorkDay();
@@ -71,8 +73,8 @@ public class WorkingEntryService {
         }
         else {
         	workDay = workDayService.findOne(workDay.getId()).get();
-        	workDay.setAdditionalBreakMinutes(workingEntryToSave.getWorkDay().getAdditionalBreakMinutes());
         }
+        workDay.setAdditionalBreakMinutes(workingEntryToSave.getWorkDay().getAdditionalBreakMinutes());
         if(workDay.getEmployee() == null) {
         	workDay.setEmployee(employee);
         }
@@ -83,7 +85,12 @@ public class WorkingEntryService {
         if(validateOverlappingTime(workingEntryToSave, workDay.getWorkingEntries())) {
     		throw new OverlappingWorkingTimesException();
     	}
+        if(workingEntryToSave.getWorkDay().getDate().compareTo(LocalDate.now().minusMonths(1)) < 0){
+        	throw new OlderThanOneMonthTimeEntryException();
+        }
+
         WorkingEntry savedWE = workingEntryRepository.save(workingEntryToSave);
+        workDay.addWorkingEntry(savedWE);
         return savedWE;
     }
 
@@ -105,21 +112,21 @@ public class WorkingEntryService {
     }
 
     @Transactional(readOnly = true)
-    public List<WorkingEntry> findAllByEmployee(Principal principal, int year, Optional<Integer> month) {
+    public Set<WorkingEntry> findAllByEmployee(Principal principal, int year, Optional<Integer> month) {
         log.debug("Request to get all WorkingEntries by Employee, Year and Month.");
-        List<WorkingEntry> workingEntries = List.of();
+        Set<WorkingEntry> workingEntries = Set.of();
         Optional<Employee> oEmployee = this.employeeService.findOneByUsername(principal.getName());
-        if (oEmployee.isPresent()) {
-        	workingEntries = this.workingEntryRepository.findAllActiveWorkingEntriesByEmployee(oEmployee.get())
-        			.stream()
-        			.filter(we -> {
-        				if (month.isPresent()) {
-        					return (we.getWorkDay().getDate().getYear() == year) && (we.getWorkDay().getDate().getMonthValue() == month.get());
-        				} else {
-        					return we.getWorkDay().getDate().getYear() == year;
-        				}
-        			})
-        			.collect(Collectors.toList());
+        if (oEmployee.isPresent() && month.isPresent()) {
+        	workingEntries = this.workingEntryRepository.findAllActiveWorkingEntriesByEmployeeAndDate(oEmployee.get(), year, month.get());
+//        			.stream()
+//        			.filter(we -> {
+//        				if (month.isPresent()) {
+//        					return (we.getWorkDay().getDate().getYear() == year) && (we.getWorkDay().getDate().getMonthValue() == month.get());
+//        				} else {
+//        					return we.getWorkDay().getDate().getYear() == year;
+//        				}
+//        			})
+//        			.collect(Collectors.toList());
         }
         return workingEntries;
     }
@@ -148,7 +155,7 @@ public class WorkingEntryService {
         });
     }
     
-    public WorkingEntry saveForEmployee (WorkingEntry workingEntry, String username) throws OverlappingWorkingTimesException {
+    public WorkingEntry saveForEmployee (WorkingEntry workingEntry, String username) throws OverlappingWorkingTimesException,OlderThanOneMonthTimeEntryException {
     	Employee employee = employeeService.findOneByUsername(username).get();
     	workingEntry.setEmployee(employee);
     	return this.save(workingEntry);
