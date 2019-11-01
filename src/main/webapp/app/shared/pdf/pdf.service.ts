@@ -5,10 +5,12 @@ import { IWorkingEntryTimesheet } from '../model/working-entry-timesheet.model';
 import { AccountService } from 'app/core/auth/account.service';
 import { Account } from 'app/core/user/account.model';
 import { MatSnackBar } from '@angular/material';
+
 @Injectable()
 export class PdfService {
   public initialized = false;
   private account: Account;
+
   constructor(private accountService: AccountService, private _snackBar: MatSnackBar) {
     this.accountService.identity().then(a => {
       this.account = a;
@@ -30,7 +32,7 @@ export class PdfService {
       const leftMargin = 15;
       const rightMargin = 15;
       const bottomMargin = 33;
-      const maxRowInPage = 31; // put the following in parts.
+      const maxRowInPage = 30; // put the following in parts.
       const doc = new jsPDF();
       const rawdataLength = rawData.length;
       let processedData = [];
@@ -55,13 +57,13 @@ export class PdfService {
       const idealIndexPairs = [];
 
       let checker = 0;
-      if (processedData.length > 30) {
-        const parts = Math.floor(processedData.length / 30);
+      if (processedData.length > maxRowInPage) {
+        const parts = Math.floor(processedData.length / maxRowInPage);
         let starting = 0;
         let end = 0;
         for (let i = 0; i <= parts; i++) {
           if (i === 0) {
-            starting = 30 * i;
+            starting = maxRowInPage * i;
             end = 29 * (i + 1) + i;
             checker = this.checkProcessedData(processedData, end);
             idealIndexPairs.push(checker);
@@ -79,7 +81,6 @@ export class PdfService {
       } else {
         bodyParts[0] = processedData;
       }
-      //
       let start = 0;
       for (let i = 0; i < idealIndexPairs.length; i++) {
         const tempWEParts = workingEntries.slice(start, idealIndexPairs[i]);
@@ -94,7 +95,6 @@ export class PdfService {
         totaltimeParts[x] = total;
       }
       totaltimeParts.push(this.totalWorkTime(workingEntries));
-
       if (bodyParts.length > 1) {
         for (let s = 0; s < bodyParts.length; s++) {
           doc.autoTable({
@@ -118,7 +118,6 @@ export class PdfService {
           margin: { top: topMargin, bottom: bottomMargin, right: rightMargin, left: leftMargin }
         });
       }
-
       doc.save('timesheet.pdf');
     } else {
       this._snackBar.open('Some Working Entries are not Complete', 'Undo', { duration: 3000 });
