@@ -12,11 +12,11 @@ import * as moment from 'moment';
 import { Moment } from 'moment';
 import { filter, map } from 'rxjs/operators';
 import { TimetableEditDialogComponent } from '../timetable-edit-dialog/timetable-edit-dialog.component';
+import { PdfService } from 'app/shared/pdf/pdf.service';
 import { TimetableDeleteDialogComponent } from '../timetable-delete-dialog/timetable-delete-dialog.component';
 import { YearWeek } from '../year-week-select/year-week-select.component';
 import { YearMonth } from '../year-month-select/year-month-select.component';
 import { WorkDayTimesheetService } from 'app/entities/work-day-timesheet';
-import { timingSafeEqual } from 'crypto';
 
 @Component({
   selector: 'jhi-timetable',
@@ -34,7 +34,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
   workingEntriesUnfiltered: IWorkingEntryTimesheet[];
   workingEntries: IWorkingEntryTimesheet[];
   DSworkingEntries = new MatTableDataSource<IWorkingEntryTimesheet>(this.workingEntries);
-
+  pdfExportButtonDisabled = true;
   displayedColumns: string[] = ['workDay.date', 'Total Worktime', 'Break Time', 'start', 'end', 'Sum', 'Activity', 'Actions'];
 
   targetTime = '00h 00m';
@@ -61,6 +61,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
     private employeeService: EmployeeTimesheetService,
     public dialog: MatDialog,
     public asRowSpan: AsRowSpanService,
+    public pdfService: PdfService,
     private workDayService: WorkDayTimesheetService
   ) {}
 
@@ -91,11 +92,17 @@ export class TimetableComponent implements OnInit, AfterViewInit {
   loadTargetWorkTime(year: number, month: number) {
     this.employeeService.targetWorkTime(year, month).subscribe(res => {
       if (res.ok) {
+        this.pdfExportButtonDisabled = false;
         this.targetMinutes = res.body;
         this.targetTime = this.secondsToHHMM(res.body * 60);
         this.calcDiffTargetActual();
       }
     });
+  }
+
+  createPDF(): void {
+    this.workingEntries.sort((a, b) => a.workDay.date.valueOf() - b.workDay.date.valueOf());
+    this.pdfService.createPDF(this.workingEntries);
   }
 
   loadTargetWorkTimeWeekly(year: number, week: number) {
@@ -157,7 +164,6 @@ export class TimetableComponent implements OnInit, AfterViewInit {
       // );
     }
     this.DSworkingEntries.data = this.workingEntries;
-
     if (this.DSworkingEntries.paginator) {
       this.DSworkingEntries.paginator.firstPage(); // go to the first page if filter changed
     }

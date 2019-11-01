@@ -73,6 +73,9 @@
             </table>
             <mat-paginator [pageSize]="10" [pageSizeOptions]="[10, 20, 50]" showFirstLastButtons>
             </mat-paginator>
+            <button id="pdfBtn" type="button" mat-flat-button color="primary" (click)="createPDF()"
+                [disabled]="workingEntries && pdfService.initialized && workingEntries.length > 0? null : true">Export
+                PDF</button>
         </mat-card>
     </div>
     <div fxFlex="20" fxFlex.lt-xl="30" fxLayout="column" fxLayoutAlign="stretch" fxLayoutGap="8px" class="container">
