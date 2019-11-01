@@ -5,18 +5,17 @@ import { IWorkingEntryTimesheet } from '../model/working-entry-timesheet.model';
 import { AccountService } from 'app/core/auth/account.service';
 import { Account } from 'app/core/user/account.model';
 import { MatSnackBar } from '@angular/material';
-import { TimetableComponent } from 'app/home/timetable/timetable.component';
 @Injectable()
 export class PdfService {
   public initialized = false;
   private account: Account;
-
   constructor(private accountService: AccountService, private _snackBar: MatSnackBar) {
     this.accountService.identity().then(a => {
       this.account = a;
       this.initialized = true;
     });
   }
+
   public createPDF(workingEntries: IWorkingEntryTimesheet[]): void {
     const initialChecking = this.checkEmptyData(workingEntries);
     if (initialChecking === true) {
@@ -31,7 +30,7 @@ export class PdfService {
       const leftMargin = 15;
       const rightMargin = 15;
       const bottomMargin = 33;
-      const maxRowInPage = 31;
+      const maxRowInPage = 31; // put the following in parts.
       const doc = new jsPDF();
       const rawdataLength = rawData.length;
       let processedData = [];
@@ -54,7 +53,7 @@ export class PdfService {
           break;
       }
       const idealIndexPairs = [];
-      const checkedIndexPairs = [];
+
       let checker = 0;
       if (processedData.length > 30) {
         const parts = Math.floor(processedData.length / 30);
@@ -64,7 +63,7 @@ export class PdfService {
           if (i === 0) {
             starting = 30 * i;
             end = 29 * (i + 1) + i;
-            checker = this.checkProcessedData(processedData, end, calculateRowSpan.datesIndexInRawData);
+            checker = this.checkProcessedData(processedData, end);
             idealIndexPairs.push(checker);
           } else if (i === parts) {
             starting = checker + 1;
@@ -73,7 +72,7 @@ export class PdfService {
           } else {
             starting = checker + 1;
             end = 29 * (i + 1) + i;
-            checker = this.checkProcessedData(processedData, end, calculateRowSpan.datesIndexInRawData);
+            checker = this.checkProcessedData(processedData, end);
             idealIndexPairs.push(checker);
           }
         }
@@ -337,7 +336,7 @@ export class PdfService {
     doc.text(`Sum of previous page: ${totalTimeOnPreviouspage}`, data.settings.margin.left, 25);
   }
 
-  checkProcessedData(processedDataSet: any, index: any, startingIndexinRawData: any): any {
+  checkProcessedData(processedDataSet: any, index: any): any {
     let properIndexforPageDivision: any;
     if (typeof processedDataSet[index][0] === 'object') {
       properIndexforPageDivision = index - 1;
