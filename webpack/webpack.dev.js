@@ -59,13 +59,17 @@ module.exports = (options) => webpackMerge(commonConfig({ env: ENV }), {
             exclude: [/(node_modules)/, new RegExp('reflect-metadata\\' + path.sep + 'Reflect\\.ts')]
         },
         {
+            test: /\.txt$/i,
+            use: 'raw-loader',
+        },
+        {
             test: /\.ts$/,
             use: [
                 'angular2-template-loader',
                 {
                     loader: 'cache-loader',
                     options: {
-                      cacheDirectory: path.resolve('target/cache-loader')
+                        cacheDirectory: path.resolve('target/cache-loader')
                     }
                 },
                 {
@@ -110,7 +114,7 @@ module.exports = (options) => webpackMerge(commonConfig({ env: ENV }), {
             ? null
             : new SimpleProgressWebpackPlugin({
                 format: options.stats === 'minimal' ? 'compact' : 'expanded'
-              }),
+            }),
         new FriendlyErrorsWebpackPlugin(),
         new ForkTsCheckerWebpackPlugin(),
         new BrowserSyncPlugin({
@@ -129,8 +133,8 @@ module.exports = (options) => webpackMerge(commonConfig({ env: ENV }), {
                 }
             }
         }, {
-            reload: false
-        }),
+                reload: false
+            }),
         new webpack.ContextReplacementPlugin(
             /angular(\\|\/)core(\\|\/)/,
             path.resolve(__dirname, './src/main/webapp/')
