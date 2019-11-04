@@ -216,12 +216,6 @@ export class TimetableComponent implements OnInit, AfterViewInit {
     this.DSworkingEntries.data = this.workingEntries;
     const now = moment();
     this.doesEntryExistNow = this.workingEntries.some(entry => entry.start <= now && entry.end >= now);
-    // const nowWorkingEntry = <IWorkingEntryTimesheet>this.workingEntries.find(entry => (entry.start <= now && entry.end >= now));
-    // if (nowWorkingEntry) {
-    //   setTimeout(() => (this.DoesEntryExistNow = true), nowWorkingEntry.end.millisecond() - now.millisecond());
-    // } else {
-    //   this.DoesEntryExistNow = false;
-    // }
     this.loadTargetWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
     this.loadActualWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
     this.loadActualWorkTimeWeekly(this.filterDate.year(), this.filterDate.isoWeek());
