@@ -232,6 +232,9 @@ public class WorkingEntryService {
     				if(workingEntryToValidate.getStart().isAfter(wEntry.getStart())) {
     					return true;
     				}
+    				if(workingEntryToValidate.getStart().isBefore(wEntry.getStart()) && workingEntryToValidate.getEnd().isAfter(wEntry.getStart())) {
+    					return true;
+    				}
     			}
     			
     		}
