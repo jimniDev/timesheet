@@ -12,8 +12,7 @@ import { filter, map } from 'rxjs/operators';
 
 @Injectable()
 export class PdfService {
-  public logoUrl = SERVER_API_URL + 'content/images/logo-base64Img.txt';
-
+  // public logoUrl = SERVER_API_URL + 'content/images/logo-base64Img.txt';
   public initialized = false;
   private account: Account;
 
@@ -89,11 +88,11 @@ export class PdfService {
       }
       let start = 0;
       for (let i = 0; i < idealIndexPairs.length; i++) {
-        const tempWEParts = workingEntries.slice(start, idealIndexPairs[i]);
-        const tempBodyParts = processedData.slice(start, idealIndexPairs[i]);
+        const tempWEParts = workingEntries.slice(start, idealIndexPairs[i] + 1);
+        const tempBodyParts = processedData.slice(start, idealIndexPairs[i] + 1);
         workingEntryParts.push(tempWEParts);
         bodyParts.push(tempBodyParts);
-        start = idealIndexPairs[i];
+        start = idealIndexPairs[i] + 1;
       }
 
       for (let x = 0; x < workingEntryParts.length; x++) {

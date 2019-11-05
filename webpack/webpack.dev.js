@@ -59,6 +59,10 @@ module.exports = (options) => webpackMerge(commonConfig({ env: ENV }), {
             exclude: [/(node_modules)/, new RegExp('reflect-metadata\\' + path.sep + 'Reflect\\.ts')]
         },
         {
+            test: /\.txt$/i,
+            use: 'raw-loader',
+        },
+        {
             test: /\.ts$/,
             use: [
                 'angular2-template-loader',
