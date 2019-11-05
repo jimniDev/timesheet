@@ -17,7 +17,7 @@ export class PdfService {
   public initialized = false;
   private account: Account;
 
-  constructor(private accountService: AccountService, private _snackBar: MatSnackBar, private http: HttpClient) {
+  constructor(private accountService: AccountService, private _snackBar: MatSnackBar) {
     this.accountService.identity().then(a => {
       this.account = a;
       this.initialized = true;
@@ -38,7 +38,7 @@ export class PdfService {
       const leftMargin = 15;
       const rightMargin = 15;
       const bottomMargin = 33;
-      const maxRowInPage = 30; // put the following in parts.
+      const maxRowInPage = 30;
       const doc = new jsPDF();
       const rawdataLength = rawData.length;
       let processedData = [];
@@ -357,12 +357,7 @@ export class PdfService {
     }
     return properIndexforPageDivision;
   }
-  // private getLogoBase64(): Observable<string> {
-  //   return this.http.get(this.logoUrl, { observe: 'response', responseType: 'text' }).pipe(
-  //     filter(res => res.ok),
-  //     map(res => res.body)
-  //   );
-  // }
+
   getLogo(): any {
     return require('app/../content/images/logo-base64Img.txt');
   }
