@@ -18,6 +18,15 @@ export class PdfService {
     });
   }
 
+  public buttonPDF(workingEntries: IWorkingEntryTimesheet[]) {
+    this.initialized = false;
+    try {
+      this.createPDF(workingEntries);
+    } finally {
+      this.initialized = true;
+    }
+  }
+
   public createPDF(workingEntries: IWorkingEntryTimesheet[]): void {
     const initialChecking = this.checkEmptyData(workingEntries);
     if (initialChecking === true) {
@@ -28,7 +37,6 @@ export class PdfService {
         we.end.format('HH:mm'),
         we.activity ? we.activity.name : ''
       ]);
-      this.initialized = false;
       const topMargin = 27;
       const leftMargin = 15;
       const rightMargin = 15;
@@ -123,7 +131,6 @@ export class PdfService {
         });
       }
       doc.save('timesheet.pdf');
-      this.initialized = true;
     } else {
       this._snackBar.open('Some Working Entries are not Complete', 'Undo', { duration: 3000 });
     }
