@@ -151,7 +151,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
   }
 
   calcWeeklyDiffTargetActual() {
-    this.weeklyDiffTime = this.secondsToHHMM(this.weeklyTargetMinutes * 60 - this.weeklyActualMinutes * 60);
+    this.weeklyDiffTime = this.secondsToHHMM(this.weeklyActualMinutes * 60 - this.weeklyTargetMinutes * 60);
   }
 
   filterTimeTable(date: YearMonth) {
@@ -159,9 +159,6 @@ export class TimetableComponent implements OnInit, AfterViewInit {
       this.loadTargetWorkTime(parseInt(date.year, 10), parseInt(date.month, 10));
       this.loadActualWorkTime(parseInt(date.year, 10), parseInt(date.month, 10));
       this.loadWorkingEntries(parseInt(date.year, 10), parseInt(date.month, 10));
-      // this.workingEntries = this.workingEntriesUnfiltered.filter(
-      //   we => we.workDay.date.year() === date.year() && we.workDay.date.month() === date.month()
-      // );
     }
     this.DSworkingEntries.data = this.workingEntries;
     if (this.DSworkingEntries.paginator) {
@@ -250,7 +247,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
     } else {
       const hour = Math.ceil(seconds / 3600);
       const min = Math.ceil((seconds % 3600) / 60);
-      return this.pad(hour, 2) + 'h ' + this.pad(min, 2) + 'm';
+      return '-' + this.pad(Math.abs(hour), 2) + 'h ' + this.pad(Math.abs(min), 2) + 'm';
     }
   }
 
