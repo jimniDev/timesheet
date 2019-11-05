@@ -5,14 +5,9 @@ import { IWorkingEntryTimesheet } from '../model/working-entry-timesheet.model';
 import { AccountService } from 'app/core/auth/account.service';
 import { Account } from 'app/core/user/account.model';
 import { MatSnackBar } from '@angular/material';
-import { Observable } from 'rxjs';
-import { HttpClient, HttpResponse } from '@angular/common/http';
-import { SERVER_API_URL } from 'app/app.constants';
-import { filter, map } from 'rxjs/operators';
 
 @Injectable()
 export class PdfService {
-  // public logoUrl = SERVER_API_URL + 'content/images/logo-base64Img.txt';
   public initialized = false;
   private account: Account;
 
@@ -60,7 +55,6 @@ export class PdfService {
           break;
       }
       const idealIndexPairs = [];
-
       let checker = 0;
       if (processedData.length > maxRowInPage) {
         const parts = Math.floor(processedData.length / maxRowInPage);
@@ -186,7 +180,6 @@ export class PdfService {
         this.addSignature(doc, data, pageHeight);
       }
     }
-    // });
   }
 
   pad(num: number, size: number): string {
@@ -220,11 +213,12 @@ export class PdfService {
   dataConversionForRowSpan(data: IWorkingEntryTimesheet[], raw_data: any, result: any): any {
     const body = [];
     const totalWorkTime = [];
+    let row = [];
     const dates = result.dates;
     const rowSpan = result.rowSpan;
     const datesIndexInRawData = result.datesIndexInRawData;
     let flag = 0;
-    let row = [];
+
     for (let i = 0; i < dates.length; i++) {
       let tempTotalWorkTime = 0;
       const rowspan = rowSpan[i];
