@@ -28,12 +28,16 @@ export class PdfService {
         we.end.format('HH:mm'),
         we.activity ? we.activity.name : ''
       ]);
+      this.initialized = false;
       const topMargin = 27;
       const leftMargin = 15;
       const rightMargin = 15;
       const bottomMargin = 33;
       const maxRowInPage = 30;
-      const doc = new jsPDF();
+      let doc: any;
+      try {
+        doc = new jsPDF();
+      } catch (e) {}
       const rawdataLength = rawData.length;
       let processedData = [];
       const bodyParts = [];
@@ -55,6 +59,7 @@ export class PdfService {
           break;
       }
       const idealIndexPairs = [];
+
       let checker = 0;
       if (processedData.length > maxRowInPage) {
         const parts = Math.floor(processedData.length / maxRowInPage);
@@ -118,6 +123,7 @@ export class PdfService {
         });
       }
       doc.save('timesheet.pdf');
+      this.initialized = true;
     } else {
       this._snackBar.open('Some Working Entries are not Complete', 'Undo', { duration: 3000 });
     }
