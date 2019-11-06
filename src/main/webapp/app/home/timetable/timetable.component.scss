@@ -41,6 +41,12 @@ jhi-year-week-select {
   bottom: 10px;
 }
 
+#searchDate {
+  position: absolute;
+  bottom: -10px;
+  left: 140px;
+}
+
 @media only screen and (min-width: 1280px) {
   mat-card {
     padding-top: 0px;
@@ -50,6 +56,18 @@ jhi-year-week-select {
 
   mat-card-subtitle {
     width: 150px;
+  }
+}
+
+@media only screen and (max-width: 767px) {
+  #pdfBtn {
+    position: relative;
+    left: 8px;
+    bottom: 8px;
+  }
+
+  #searchDate {
+    bottom: 8px;
   }
 }
 
@@ -98,7 +116,8 @@ jhi-year-week-select {
     padding-right: 15px;
   }
 
-  #pdfBtn {
-    left: 8px;
+  #searchDate {
+    left: 120px;
+    bottom: -8px;
   }
 }

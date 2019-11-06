@@ -29,7 +29,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
 
-  monthNames = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER'];
+  monthNames = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
   buttonDisable = false;
   workingEntriesUnfiltered: IWorkingEntryTimesheet[];
   workingEntries: IWorkingEntryTimesheet[];
@@ -55,6 +55,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
 
   filterDate: Moment = moment();
   doesEntryExistNow = false;
+  tableMonth = this.monthNames[this.filterDate.month()];
 
   constructor(
     private workingEntryService: WorkingEntryTimesheetService,
@@ -159,6 +160,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
       this.loadTargetWorkTime(parseInt(date.year, 10), parseInt(date.month, 10));
       this.loadActualWorkTime(parseInt(date.year, 10), parseInt(date.month, 10));
       this.loadWorkingEntries(parseInt(date.year, 10), parseInt(date.month, 10));
+      this.tableMonth = this.monthNames[parseInt(date.month, 10) - 1];
     }
     this.DSworkingEntries.data = this.workingEntries;
     if (this.DSworkingEntries.paginator) {
@@ -340,5 +342,39 @@ export class TimetableComponent implements OnInit, AfterViewInit {
       return true;
     }
     return false;
+  }
+
+  applyDateFilter(searchDate: number) {
+    if (searchDate) {
+      const dateFilteredWorkingEntries = this.workingEntries.filter(we => we.workDay.date.date() == searchDate);
+      this.DSworkingEntries.data = dateFilteredWorkingEntries;
+    } else {
+      this.DSworkingEntries.data = this.workingEntries;
+    }
+  }
+
+  onKeyDown(event) {
+    const e = <KeyboardEvent>event;
+    if (
+      // modification : blocked the period (.)
+      [46, 8, 9, 27, 13].indexOf(e.keyCode) !== -1 ||
+      // Allow: Ctrl+A
+      (e.keyCode === 65 && (e.ctrlKey || e.metaKey)) ||
+      // Allow: Ctrl+C
+      (e.keyCode === 67 && (e.ctrlKey || e.metaKey)) ||
+      // Allow: Ctrl+V
+      (e.keyCode === 86 && (e.ctrlKey || e.metaKey)) ||
+      // Allow: Ctrl+X
+      (e.keyCode === 88 && (e.ctrlKey || e.metaKey)) ||
+      // Allow: home, end, left, right
+      (e.keyCode >= 35 && e.keyCode <= 39)
+    ) {
+      // let it happen, don't do anything
+      return;
+    }
+    // Ensure that it is a number and stop the keypress
+    if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+      e.preventDefault();
+    }
   }
 }
