@@ -180,7 +180,7 @@ export class PdfService {
           this.addTotalWorkTime(doc, totalWorkTime, data, pageHeight, targetTime, differnce);
         }
       } else {
-        totalWorkTime = this.totalWorkTime(workingEntries);
+        // totalWorkTime = this.totalWorkTime(workingEntries);
         this.addLogo(doc, base64logo, data, pageHeight);
         this.addEmployeeNameandMonth(doc, name, month, data);
         this.addTotalWorkTime(doc, totalWorkTime, data, pageHeight, targetTime, differnce);
