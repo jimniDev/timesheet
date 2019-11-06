@@ -34,17 +34,12 @@ export class EmployeeTimesheetDetailComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.activatedRoute.data.subscribe(({ employee }) => {
-      this.employee = employee;
-
-      this.wwhService.query().subscribe(result => {
-        if (result.ok) {
-          this.employeeOverviewWeek = result.body;
-          this.employeeWeekly = new MatTableDataSource(this.employeeOverviewWeek);
-          this.refresh();
-        }
-      });
-      this.pageAndSort();
+    this.activatedRoute.data.subscribe((routeData: any) => {
+      this.employee = routeData.employee;
+      this.employeeOverviewWeek = this.employee.weeklyWorkingHours;
+      this.employeeWeekly.data = this.employeeOverviewWeek;
+      // this.refresh();
+      //  this.pageAndSort();
     });
   }
 
@@ -101,7 +96,7 @@ export class EmployeeTimesheetDetailComponent implements OnInit {
         hours: weeklyWorkingHour.hours,
         startDate: weeklyWorkingHour.startDate,
         endDate: weeklyWorkingHour.endDate,
-        employee: weeklyWorkingHour.employee,
+        employee: this.employee,
         weeklyWorkingHour
       },
       disableClose: true
@@ -111,8 +106,7 @@ export class EmployeeTimesheetDetailComponent implements OnInit {
       if (result.ok) {
         const idx = this.employeeOverviewWeek.findIndex(we => we.id === result.id);
         this.employeeOverviewWeek[idx] = result;
-        this.table.renderRows();
-        this.refresh();
+        this.employeeWeekly.data = this.employeeOverviewWeek;
       }
     });
   }

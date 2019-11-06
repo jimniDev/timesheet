@@ -1,12 +1,13 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
-import { IWeeklyWorkingHoursTimesheet } from 'app/shared/model/weekly-working-hours-timesheet.model';
+import { IWeeklyWorkingHoursTimesheet, WeeklyWorkingHoursTimesheet } from 'app/shared/model/weekly-working-hours-timesheet.model';
 
 import * as moment from 'moment';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { WeeklyWorkingHoursTimesheetService } from 'app/entities/weekly-working-hours-timesheet/weekly-working-hours-timesheet.service';
 import { IEmployeeTimesheet } from 'app/shared/model/employee-timesheet.model';
+import { EmployeeTimesheetService } from '../employee-timesheet.service';
 
 @Component({
   selector: 'employee-timesheet-edit-component',
@@ -27,11 +28,10 @@ export class EmployeeTimesheetEditComponent implements OnInit {
   constructor(
     public employeeDialogRef: MatDialogRef<EmployeeTimesheetEditComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private weeklyWorkingHoursService: WeeklyWorkingHoursTimesheetService
+    private weeklyWorkingHoursService: WeeklyWorkingHoursTimesheetService,
+    private employeeService: EmployeeTimesheetService
   ) {
     this.employee = data.employee;
-
-    this.role = data.role;
   }
 
   ngOnInit() {}
@@ -63,14 +63,27 @@ export class EmployeeTimesheetEditComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.data.weeklyWorkingHour.hours = this.employeeWeeklyForm.value.weeklyHour;
-    this.data.weeklyWorkingHour.startDate = moment(this.employeeWeeklyForm.value.startingDate).add(2, 'hours');
-    if (this.employeeWeeklyForm.value.endingDate) {
-      this.data.weeklyWorkingHour.endDate = moment(this.employeeWeeklyForm.value.endingDate).add(2, 'hours');
-    }
-    this.data.weeklyWorkingHour.employee = this.employee;
+    const weeklyHours = new WeeklyWorkingHoursTimesheet();
 
-    this.weeklyWorkingHoursService.update(this.data.weeklyWorkingHour).subscribe(res => {
+    weeklyHours.id = this.data.weeklyWorkingHour.id;
+    weeklyHours.hours = this.employeeWeeklyForm.value.weeklyHour;
+    weeklyHours.startDate = moment(this.employeeWeeklyForm.value.startingDate).add(2, 'hours');
+    if (this.employeeWeeklyForm.value.endingDate) {
+      weeklyHours.endDate = moment(this.employeeWeeklyForm.value.endingDate).add(2, 'hours');
+    }
+
+    weeklyHours.employee = this.employee;
+
+    // this.data.weeklyWorkingHour.hours = this.employeeWeeklyForm.value.weeklyHour;
+    // this.data.weeklyWorkingHour.startDate = moment(this.employeeWeeklyForm.value.startingDate).add(2, 'hours');
+    // if (this.employeeWeeklyForm.value.endingDate) {
+    //   this.data.weeklyWorkingHour.endDate = moment(this.employeeWeeklyForm.value.endingDate).add(2, 'hours');
+    // }
+    // this.data.weeklyWorkingHour.employee = this.employee;
+
+    //  this.employeeDialogRef.close(this.data.weeklyWorkingHour.employee);
+
+    this.weeklyWorkingHoursService.update(weeklyHours).subscribe(res => {
       if (res.ok) {
         this.employeeDialogRef.close(res.body);
       }
