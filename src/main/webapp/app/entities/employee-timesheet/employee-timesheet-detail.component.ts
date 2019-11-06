@@ -38,8 +38,6 @@ export class EmployeeTimesheetDetailComponent implements OnInit {
       this.employee = routeData.employee;
       this.employeeOverviewWeek = this.employee.weeklyWorkingHours;
       this.employeeWeekly.data = this.employeeOverviewWeek;
-      // this.refresh();
-      //  this.pageAndSort();
     });
   }
 
