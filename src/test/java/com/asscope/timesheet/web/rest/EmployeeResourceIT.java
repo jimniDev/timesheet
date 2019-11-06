@@ -87,7 +87,7 @@ public class EmployeeResourceIT {
      */
     public static Employee createEntity(EntityManager em) {
         Employee employee = new Employee()
-            .isEmployed(DEFAULT_IS_EMPLOYED);
+            .editPermitted(DEFAULT_IS_EMPLOYED);
         return employee;
     }
     /**
@@ -98,7 +98,7 @@ public class EmployeeResourceIT {
      */
     public static Employee createUpdatedEntity(EntityManager em) {
         Employee employee = new Employee()
-            .isEmployed(UPDATED_IS_EMPLOYED);
+            .editPermitted(UPDATED_IS_EMPLOYED);
         return employee;
     }
 
@@ -122,7 +122,7 @@ public class EmployeeResourceIT {
         List<Employee> employeeList = employeeRepository.findAll();
         assertThat(employeeList).hasSize(databaseSizeBeforeCreate + 1);
         Employee testEmployee = employeeList.get(employeeList.size() - 1);
-        assertThat(testEmployee.isIsEmployed()).isEqualTo(DEFAULT_IS_EMPLOYED);
+        assertThat(testEmployee.isEditPermitted()).isEqualTo(DEFAULT_IS_EMPLOYED);
     }
 
     @Test
@@ -344,7 +344,7 @@ public class EmployeeResourceIT {
         // Disconnect from session so that the updates on updatedEmployee are not directly saved in db
         em.detach(updatedEmployee);
         updatedEmployee
-            .isEmployed(UPDATED_IS_EMPLOYED);
+            .editPermitted(UPDATED_IS_EMPLOYED);
 
         restEmployeeMockMvc.perform(put("/api/employees")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -355,7 +355,7 @@ public class EmployeeResourceIT {
         List<Employee> employeeList = employeeRepository.findAll();
         assertThat(employeeList).hasSize(databaseSizeBeforeUpdate);
         Employee testEmployee = employeeList.get(employeeList.size() - 1);
-        assertThat(testEmployee.isIsEmployed()).isEqualTo(UPDATED_IS_EMPLOYED);
+        assertThat(testEmployee.isEditPermitted()).isEqualTo(UPDATED_IS_EMPLOYED);
     }
 
     @Test

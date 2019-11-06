@@ -1,6 +1,4 @@
 package com.asscope.timesheet.domain;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -29,8 +27,8 @@ public class Employee implements Serializable {
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
-    @Column(name = "is_employed")
-    private Boolean isEmployed;
+    @Column(name = "edit_permitted", nullable = false, columnDefinition = "bit default 0")
+    private Boolean editPermitted = false;
 
     @JsonIgnoreProperties("employee")
     @OneToMany(mappedBy = "employee")
@@ -78,17 +76,17 @@ public class Employee implements Serializable {
 		this.user = user;
 	}
 
-	public Boolean isIsEmployed() {
-        return isEmployed;
-    }
+	public Boolean isEditPermitted() {
+		return editPermitted;
+	}
 
-    public Employee isEmployed(Boolean isEmployed) {
-        this.isEmployed = isEmployed;
+	public void setEditPermitted(Boolean editPermitted) {
+		this.editPermitted = editPermitted;
+	}
+
+    public Employee editPermitted(Boolean editPermitted) {
+        this.editPermitted = editPermitted;
         return this;
-    }
-
-    public void setIsEmployed(Boolean isEmployed) {
-        this.isEmployed = isEmployed;
     }
 
     public Set<WorkingEntry> getWorkingEntries() {
@@ -213,7 +211,7 @@ public class Employee implements Serializable {
     public String toString() {
         return "Employee{" +
             "id=" + getId() +
-            ", isEmployed='" + isIsEmployed() + "'" +
+            ", editPermitted='" + isEditPermitted() + "'" +
             "}";
     }
 }

@@ -76,6 +76,10 @@
             <button id="pdfBtn" type="button" mat-flat-button color="primary" (click)="createPDF()"
                 [disabled]="workingEntries && pdfService.initialized && workingEntries.length > 0? null : true">Export
                 PDF</button>
+            <mat-form-field id="searchDate">
+                <input matInput (keyup)="applyDateFilter($event.target.value)" (keydown)="onKeyDown($event)" type="tel"
+                    minlength="0" maxLength="2" placeholder="search for date in {{tableMonth}}">
+            </mat-form-field>
         </mat-card>
     </div>
     <div fxFlex="20" fxFlex.lt-xl="30" fxLayout="column" fxLayoutAlign="stretch" fxLayoutGap="8px" class="container">
