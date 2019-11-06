@@ -80,7 +80,7 @@ public class EmployeeResource {
     	EmployeeDTO eDTO = new EmployeeDTO();
     	eDTO.setUser(employee.getUser());
     	eDTO.setId(employee.getId());
-    	eDTO.setIsEmployed(employee.isIsEmployed());
+    	eDTO.setEditPermitted(employee.isEditPermitted());
     	eDTO.setWeeklyWorkingHours(employee.getWeeklyWorkingHours());
     	eDTO.setBalance(employeeService.currentWorktimeBalance(employee.getUser().getId()));
     	return eDTO;

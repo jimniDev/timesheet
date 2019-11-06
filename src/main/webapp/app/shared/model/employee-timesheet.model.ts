@@ -6,7 +6,7 @@ import { IUser } from 'app/core';
 
 export interface IEmployeeTimesheet {
   id?: number;
-  isEmployed?: boolean;
+  editPermitted?: boolean;
   user?: IUser;
   workingEntries?: IWorkingEntryTimesheet[];
   targetWorkingDays?: ITargetWorkingDayTimesheet[];
@@ -19,7 +19,7 @@ export interface IEmployeeTimesheet {
 export class EmployeeTimesheet implements IEmployeeTimesheet {
   constructor(
     public id?: number,
-    public isEmployed?: boolean,
+    public editPermitted?: boolean,
     public user?: IUser,
     public workingEntries?: IWorkingEntryTimesheet[],
     public targetWorkingDays?: ITargetWorkingDayTimesheet[],
@@ -28,6 +28,6 @@ export class EmployeeTimesheet implements IEmployeeTimesheet {
     public activeWeeklyWorkingHours?: IWeeklyWorkingHoursTimesheet,
     public balance?: number
   ) {
-    this.isEmployed = this.isEmployed || false;
+    this.editPermitted = this.editPermitted || false;
   }
 }

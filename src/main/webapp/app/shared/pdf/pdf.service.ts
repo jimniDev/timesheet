@@ -32,7 +32,7 @@ export class PdfService {
       const leftMargin = 15;
       const rightMargin = 15;
       const bottomMargin = 33;
-      const maxRowInPage = 30; // put the following in parts.
+      const maxRowInPage = 30;
       const doc = new jsPDF();
       const rawdataLength = rawData.length;
       let processedData = [];
@@ -55,7 +55,6 @@ export class PdfService {
           break;
       }
       const idealIndexPairs = [];
-
       let checker = 0;
       if (processedData.length > maxRowInPage) {
         const parts = Math.floor(processedData.length / maxRowInPage);
@@ -83,11 +82,11 @@ export class PdfService {
       }
       let start = 0;
       for (let i = 0; i < idealIndexPairs.length; i++) {
-        const tempWEParts = workingEntries.slice(start, idealIndexPairs[i]);
-        const tempBodyParts = processedData.slice(start, idealIndexPairs[i]);
+        const tempWEParts = workingEntries.slice(start, idealIndexPairs[i] + 1);
+        const tempBodyParts = processedData.slice(start, idealIndexPairs[i] + 1);
         workingEntryParts.push(tempWEParts);
         bodyParts.push(tempBodyParts);
-        start = idealIndexPairs[i];
+        start = idealIndexPairs[i] + 1;
       }
 
       for (let x = 0; x < workingEntryParts.length; x++) {
@@ -146,19 +145,18 @@ export class PdfService {
     totalPages: number,
     totalTime: any
   ): void {
-    const logo = new Image();
     const pageSize = doc.internal.pageSize;
     const pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight();
     const name = this.account.firstName + this.account.lastName;
     const month = workingEntries[0].workDay.date.format('MMMM');
     let totalWorkTime: any;
-    logo.src = 'content/images/logo.jpg';
     if (!this.initialized) {
       return;
     }
-    if (logo) {
+    const base64logo = this.getLogo().default;
+    if (base64logo) {
       if (totalPages > 1) {
-        this.addLogo(doc, logo, data, pageHeight);
+        this.addLogo(doc, base64logo, data, pageHeight);
         doc.setFontSize('13');
         if (pageNumber < totalPages && pageNumber > 1) {
           this.addPageNumber(doc, pageNumber, totalPages, data, pageHeight);
@@ -176,7 +174,7 @@ export class PdfService {
         }
       } else {
         totalWorkTime = this.totalWorkTime(workingEntries);
-        this.addLogo(doc, logo, data, pageHeight);
+        this.addLogo(doc, base64logo, data, pageHeight);
         this.addEmployeeNameandMonth(doc, name, month, data);
         this.addTotalWorkTime(doc, totalWorkTime, data, pageHeight);
         this.addSignature(doc, data, pageHeight);
@@ -215,11 +213,12 @@ export class PdfService {
   dataConversionForRowSpan(data: IWorkingEntryTimesheet[], raw_data: any, result: any): any {
     const body = [];
     const totalWorkTime = [];
+    let row = [];
     const dates = result.dates;
     const rowSpan = result.rowSpan;
     const datesIndexInRawData = result.datesIndexInRawData;
     let flag = 0;
-    let row = [];
+
     for (let i = 0; i < dates.length; i++) {
       let tempTotalWorkTime = 0;
       const rowspan = rowSpan[i];
@@ -304,7 +303,7 @@ export class PdfService {
   }
 
   addLogo(doc: jsPDF, logo: any, data: any, pageHeight: any): void {
-    doc.addImage(logo, 'JPG', data.settings.margin.left + 150, pageHeight - 27, 24, 10);
+    doc.addImage(logo, 'PNG', data.settings.margin.left + 150, pageHeight - 27, 24, 10);
   }
 
   addSignature(doc: jsPDF, data: any, pageHeight: any): void {
@@ -350,5 +349,9 @@ export class PdfService {
       properIndexforPageDivision = index;
     }
     return properIndexforPageDivision;
+  }
+
+  getLogo(): any {
+    return require('app/../content/images/logo-base64Img.txt');
   }
 }

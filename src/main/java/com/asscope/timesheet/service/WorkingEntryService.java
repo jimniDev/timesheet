@@ -55,7 +55,7 @@ public class WorkingEntryService {
      * @return the persisted entity.
      * @throws Exception 
      */
-    public WorkingEntry save(WorkingEntry workingEntryToSave) throws OverlappingWorkingTimesException,OlderThanOneMonthTimeEntryException {
+    public WorkingEntry save(WorkingEntry workingEntryToSave) throws OverlappingWorkingTimesException, OlderThanOneMonthTimeEntryException {
         log.debug("Request to save WorkingEntry : {}", workingEntryToSave);
         Employee employee = workingEntryToSave.getEmployee();
         WorkDay workDay = workingEntryToSave.getWorkDay();
@@ -82,13 +82,13 @@ public class WorkingEntryService {
         	workingEntryToSave.setDeleted(false);
         }
         workingEntryToSave.setWorkDay(workDay);
+        
         if(validateOverlappingTime(workingEntryToSave, workDay.getWorkingEntries())) {
     		throw new OverlappingWorkingTimesException();
     	}
-        if(workingEntryToSave.getWorkDay().getDate().compareTo(LocalDate.now().minusMonths(1)) < 0){
+        if(!workingEntryToSave.getEmployee().isEditPermitted() && workingEntryToSave.getWorkDay().getDate().compareTo(LocalDate.now().minusMonths(1)) < 0){
         	throw new OlderThanOneMonthTimeEntryException();
         }
-
         WorkingEntry savedWE = workingEntryRepository.save(workingEntryToSave);
         workDay.addWorkingEntry(savedWE);
         return savedWE;
@@ -230,6 +230,9 @@ public class WorkingEntryService {
              			return true;
              		}
     				if(workingEntryToValidate.getStart().isAfter(wEntry.getStart())) {
+    					return true;
+    				}
+    				if(workingEntryToValidate.getStart().isBefore(wEntry.getStart()) && workingEntryToValidate.getEnd().isAfter(wEntry.getStart())) {
     					return true;
     				}
     			}
