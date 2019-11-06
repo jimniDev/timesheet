@@ -103,7 +103,7 @@ export class EmployeeTimesheetDetailComponent implements OnInit {
     });
 
     diagRef.afterClosed().subscribe(result => {
-      if (result.ok) {
+      if (result) {
         const idx = this.employeeOverviewWeek.findIndex(we => we.id === result.id);
         this.employeeOverviewWeek[idx] = result;
         this.employeeWeekly.data = this.employeeOverviewWeek;
