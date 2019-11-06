@@ -333,8 +333,9 @@ export class TimetableComponent implements OnInit, AfterViewInit {
 
   checkDate(workingentry: IWorkingEntryTimesheet): boolean {
     if (
-      moment().diff(workingentry.workDay.date, 'days') >= 30 ||
-      (workingentry.workDay.date.isSame(moment(), 'date') && workingentry.end === null)
+      !workingentry.employee.editPermitted &&
+      (moment().diff(workingentry.workDay.date, 'days') >= 30 ||
+        (workingentry.workDay.date.isSame(moment(), 'date') && workingentry.end === null))
     ) {
       return true;
     }
