@@ -6,7 +6,6 @@ import com.asscope.timesheet.domain.WorkingEntry;
 import com.asscope.timesheet.domain.Employee;
 import com.asscope.timesheet.domain.Activity;
 import com.asscope.timesheet.domain.WorkDay;
-import com.asscope.timesheet.domain.Location;
 import com.asscope.timesheet.repository.WorkingEntryRepository;
 import com.asscope.timesheet.service.WorkingEntryService;
 import com.asscope.timesheet.web.rest.errors.ExceptionTranslator;
@@ -514,25 +513,6 @@ public class WorkingEntryResourceIT {
 
         // Get all the workingEntryList where workDay equals to workDayId + 1
         defaultWorkingEntryShouldNotBeFound("workDayId.equals=" + (workDayId + 1));
-    }
-
-
-    @Test
-    @Transactional
-    public void getAllWorkingEntriesByLocationIsEqualToSomething() throws Exception {
-        // Initialize the database
-        Location location = LocationResourceIT.createEntity(em);
-        em.persist(location);
-        em.flush();
-        workingEntry.setLocation(location);
-        workingEntryRepository.saveAndFlush(workingEntry);
-        Long locationId = location.getId();
-
-        // Get all the workingEntryList where location equals to locationId
-        defaultWorkingEntryShouldBeFound("locationId.equals=" + locationId);
-
-        // Get all the workingEntryList where location equals to locationId + 1
-        defaultWorkingEntryShouldNotBeFound("locationId.equals=" + (locationId + 1));
     }
 
     /**

@@ -4,7 +4,6 @@ import com.asscope.timesheet.TimesheetApp;
 import com.asscope.timesheet.config.TestSecurityConfiguration;
 import com.asscope.timesheet.domain.Employee;
 import com.asscope.timesheet.domain.WorkingEntry;
-import com.asscope.timesheet.domain.TargetWorkingDay;
 import com.asscope.timesheet.domain.WeeklyWorkingHours;
 import com.asscope.timesheet.domain.WorkDay;
 import com.asscope.timesheet.repository.EmployeeRepository;
@@ -229,26 +228,6 @@ public class EmployeeResourceIT {
         // Get all the employeeList where workingEntry equals to workingEntryId + 1
         defaultEmployeeShouldNotBeFound("workingEntryId.equals=" + (workingEntryId + 1));
     }
-
-
-    @Test
-    @Transactional
-    public void getAllEmployeesByTargetWorkingDayIsEqualToSomething() throws Exception {
-        // Initialize the database
-        TargetWorkingDay targetWorkingDay = TargetWorkingDayResourceIT.createEntity(em);
-        em.persist(targetWorkingDay);
-        em.flush();
-        employee.addTargetWorkingDay(targetWorkingDay);
-        employeeRepository.saveAndFlush(employee);
-        Long targetWorkingDayId = targetWorkingDay.getId();
-
-        // Get all the employeeList where targetWorkingDay equals to targetWorkingDayId
-        defaultEmployeeShouldBeFound("targetWorkingDayId.equals=" + targetWorkingDayId);
-
-        // Get all the employeeList where targetWorkingDay equals to targetWorkingDayId + 1
-        defaultEmployeeShouldNotBeFound("targetWorkingDayId.equals=" + (targetWorkingDayId + 1));
-    }
-
 
     @Test
     @Transactional

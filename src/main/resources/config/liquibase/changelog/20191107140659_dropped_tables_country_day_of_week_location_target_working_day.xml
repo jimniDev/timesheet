@@ -1,0 +1,30 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+    <changeSet author="PhilippRingele (generated)" id="1573135724443-6">
+        <dropForeignKeyConstraint baseTableName="location" constraintName="fk_location_country_id"/>
+    </changeSet>
+    <changeSet author="PhilippRingele (generated)" id="1573135724443-7">
+        <dropForeignKeyConstraint baseTableName="target_working_day" constraintName="fk_target_working_day_day_of_week_id"/>
+    </changeSet>
+    <changeSet author="PhilippRingele (generated)" id="1573135724443-8">
+        <dropForeignKeyConstraint baseTableName="target_working_day" constraintName="fk_target_working_day_employee_id"/>
+    </changeSet>
+    <changeSet author="PhilippRingele (generated)" id="1573135724443-9">
+        <dropForeignKeyConstraint baseTableName="working_entry" constraintName="fk_working_entry_location_id"/>
+    </changeSet>
+    <changeSet author="PhilippRingele (generated)" id="1573135724443-10">
+        <dropTable tableName="country"/>
+    </changeSet>
+    <changeSet author="PhilippRingele (generated)" id="1573135724443-11">
+        <dropTable tableName="day_of_week"/>
+    </changeSet>
+    <changeSet author="PhilippRingele (generated)" id="1573135724443-12">
+        <dropTable tableName="location"/>
+    </changeSet>
+    <changeSet author="PhilippRingele (generated)" id="1573135724443-13">
+        <dropTable tableName="target_working_day"/>
+    </changeSet>
+    <changeSet author="PhilippRingele (generated)" id="1573135724443-14">
+        <dropColumn columnName="location_id" tableName="working_entry"/>
+    </changeSet>
+</databaseChangeLog>
