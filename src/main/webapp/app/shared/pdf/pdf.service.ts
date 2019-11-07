@@ -333,7 +333,7 @@ export class PdfService {
 
   addTotalWorkTime(doc: jsPDF, totalWorkTime: any, data: any, pageHeight: any, targetTime: any, difference: any): void {
     doc.setFontSize('10');
-    doc.text(`Total: ${totalWorkTime} || Target:${targetTime} || Diff:${difference}`, data.settings.margin.left + 55, pageHeight - 18);
+    doc.text(`Total: ${totalWorkTime} | Target:${targetTime} | Diff:${difference}`, data.settings.margin.left + 55, pageHeight - 18);
   }
 
   addPageNumber(doc: jsPDF, pageNumber: any, totalPages: number, data: any, pageHeight: any): void {
