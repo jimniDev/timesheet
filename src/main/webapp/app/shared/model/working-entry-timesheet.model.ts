@@ -2,7 +2,6 @@ import { Moment } from 'moment';
 import { IEmployeeTimesheet } from 'app/shared/model/employee-timesheet.model';
 import { IActivityTimesheet } from 'app/shared/model/activity-timesheet.model';
 import { IWorkDayTimesheet } from 'app/shared/model/work-day-timesheet.model';
-import { ILocationTimesheet } from 'app/shared/model/location-timesheet.model';
 
 export interface IWorkingEntryTimesheet {
   id?: number;
@@ -14,7 +13,6 @@ export interface IWorkingEntryTimesheet {
   employee?: IEmployeeTimesheet;
   activity?: IActivityTimesheet;
   workDay?: IWorkDayTimesheet;
-  location?: ILocationTimesheet;
 }
 
 export class WorkingEntryTimesheet implements IWorkingEntryTimesheet {
@@ -27,8 +25,7 @@ export class WorkingEntryTimesheet implements IWorkingEntryTimesheet {
     public createdAt?: Moment,
     public employee?: IEmployeeTimesheet,
     public activity?: IActivityTimesheet,
-    public workDay?: IWorkDayTimesheet,
-    public location?: ILocationTimesheet
+    public workDay?: IWorkDayTimesheet
   ) {
     this.deleted = this.deleted || false;
     this.locked = this.locked || false;

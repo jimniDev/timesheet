@@ -29,7 +29,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
 
-  monthNames = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER'];
+  monthNames = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
   buttonDisable = false;
   workingEntriesUnfiltered: IWorkingEntryTimesheet[];
   workingEntries: IWorkingEntryTimesheet[];
@@ -55,6 +55,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
 
   filterDate: Moment = moment();
   doesEntryExistNow = false;
+  tableMonth = this.monthNames[this.filterDate.month()];
 
   constructor(
     private workingEntryService: WorkingEntryTimesheetService,
@@ -102,7 +103,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
 
   createPDF(): void {
     this.workingEntries.sort((a, b) => a.workDay.date.valueOf() - b.workDay.date.valueOf());
-    this.pdfService.createPDF(this.workingEntries);
+    this.pdfService.buttonPDF(this.workingEntries);
   }
 
   loadTargetWorkTimeWeekly(year: number, week: number) {
@@ -151,7 +152,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
   }
 
   calcWeeklyDiffTargetActual() {
-    this.weeklyDiffTime = this.secondsToHHMM(this.weeklyTargetMinutes * 60 - this.weeklyActualMinutes * 60);
+    this.weeklyDiffTime = this.secondsToHHMM(this.weeklyActualMinutes * 60 - this.weeklyTargetMinutes * 60);
   }
 
   filterTimeTable(date: YearMonth) {
@@ -159,9 +160,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
       this.loadTargetWorkTime(parseInt(date.year, 10), parseInt(date.month, 10));
       this.loadActualWorkTime(parseInt(date.year, 10), parseInt(date.month, 10));
       this.loadWorkingEntries(parseInt(date.year, 10), parseInt(date.month, 10));
-      // this.workingEntries = this.workingEntriesUnfiltered.filter(
-      //   we => we.workDay.date.year() === date.year() && we.workDay.date.month() === date.month()
-      // );
+      this.tableMonth = this.monthNames[parseInt(date.month, 10) - 1];
     }
     this.DSworkingEntries.data = this.workingEntries;
     if (this.DSworkingEntries.paginator) {
@@ -216,12 +215,6 @@ export class TimetableComponent implements OnInit, AfterViewInit {
     this.DSworkingEntries.data = this.workingEntries;
     const now = moment();
     this.doesEntryExistNow = this.workingEntries.some(entry => entry.start <= now && entry.end >= now);
-    // const nowWorkingEntry = <IWorkingEntryTimesheet>this.workingEntries.find(entry => (entry.start <= now && entry.end >= now));
-    // if (nowWorkingEntry) {
-    //   setTimeout(() => (this.DoesEntryExistNow = true), nowWorkingEntry.end.millisecond() - now.millisecond());
-    // } else {
-    //   this.DoesEntryExistNow = false;
-    // }
     this.loadTargetWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
     this.loadActualWorkTime(this.filterDate.year(), this.filterDate.month() + 1);
     this.loadActualWorkTimeWeekly(this.filterDate.year(), this.filterDate.isoWeek());
@@ -249,9 +242,15 @@ export class TimetableComponent implements OnInit, AfterViewInit {
   }
 
   secondsToHHMM(seconds: number): string {
-    const hour = Math.floor(seconds / 3600);
-    const min = Math.floor((seconds % 3600) / 60);
-    return this.pad(hour, 2) + 'h ' + this.pad(min, 2) + 'm';
+    if (seconds >= 0) {
+      const hour = Math.floor(seconds / 3600);
+      const min = Math.floor((seconds % 3600) / 60);
+      return this.pad(hour, 2) + 'h ' + this.pad(min, 2) + 'm';
+    } else {
+      const hour = Math.ceil(seconds / 3600);
+      const min = Math.ceil((seconds % 3600) / 60);
+      return '-' + this.pad(Math.abs(hour), 2) + 'h ' + this.pad(Math.abs(min), 2) + 'm';
+    }
   }
 
   edittimetableDialog(workingEntry: IWorkingEntryTimesheet): void {
@@ -287,36 +286,36 @@ export class TimetableComponent implements OnInit, AfterViewInit {
     });
     dialogRef.afterClosed().subscribe((result: IWorkingEntryTimesheet) => {
       if (result) {
-        const workDayOfdeletedEntry = workingEntry.workDay;
-        this.workDayService
-          .getTotalWorkingMinutesbyDate(
-            workDayOfdeletedEntry.date.year(),
-            workDayOfdeletedEntry.date.month() + 1,
-            workDayOfdeletedEntry.date.date()
-          )
-          .subscribe(res => {
-            if (res.ok) {
-              workDayOfdeletedEntry.totalWorkingMinutes = <number>res.body;
-            }
-          });
-        this.workDayService
-          .getTotalBreakMinutesbyDate(
-            workDayOfdeletedEntry.date.year(),
-            workDayOfdeletedEntry.date.month() + 1,
-            workDayOfdeletedEntry.date.date()
-          )
-          .subscribe(res => {
-            if (res.ok) {
-              workDayOfdeletedEntry.totalBreakMinutes = <number>res.body;
-            }
-          });
-        this.workingEntries.forEach(entry => {
-          if (entry.workDay.id === workDayOfdeletedEntry.id) {
-            entry.workDay = workDayOfdeletedEntry;
-          }
-        });
-        this.workingEntryService.delete(workingEntry.id).subscribe(res => {
-          if (res.ok) {
+        this.workingEntryService.delete(workingEntry.id).subscribe(del => {
+          if (del.ok) {
+            const workDayOfdeletedEntry = workingEntry.workDay;
+            this.workDayService
+              .getTotalWorkingMinutesbyDate(
+                workDayOfdeletedEntry.date.year(),
+                workDayOfdeletedEntry.date.month() + 1,
+                workDayOfdeletedEntry.date.date()
+              )
+              .subscribe(res => {
+                if (res.ok) {
+                  workDayOfdeletedEntry.totalWorkingMinutes = <number>res.body;
+                }
+              });
+            this.workDayService
+              .getTotalBreakMinutesbyDate(
+                workDayOfdeletedEntry.date.year(),
+                workDayOfdeletedEntry.date.month() + 1,
+                workDayOfdeletedEntry.date.date()
+              )
+              .subscribe(res => {
+                if (res.ok) {
+                  workDayOfdeletedEntry.totalBreakMinutes = <number>res.body;
+                }
+              });
+            this.workingEntries.forEach(entry => {
+              if (entry.workDay.id === workDayOfdeletedEntry.id) {
+                entry.workDay = workDayOfdeletedEntry;
+              }
+            });
             const idx = this.workingEntries.findIndex(we => we.id === workingEntry.id);
             this.workingEntries.splice(idx, 1);
             this.DSworkingEntries.data = this.workingEntries;
@@ -336,11 +335,46 @@ export class TimetableComponent implements OnInit, AfterViewInit {
 
   checkDate(workingentry: IWorkingEntryTimesheet): boolean {
     if (
-      moment().diff(workingentry.workDay.date, 'days') >= 30 ||
-      (workingentry.workDay.date.isSame(moment(), 'date') && workingentry.end === null)
+      !workingentry.employee.editPermitted &&
+      (moment().diff(workingentry.workDay.date, 'days') >= 30 ||
+        (workingentry.workDay.date.isSame(moment(), 'date') && workingentry.end === null))
     ) {
       return true;
     }
     return false;
+  }
+
+  applyDateFilter(searchDate: number) {
+    if (searchDate) {
+      const dateFilteredWorkingEntries = this.workingEntries.filter(we => we.workDay.date.date() == searchDate);
+      this.DSworkingEntries.data = dateFilteredWorkingEntries;
+    } else {
+      this.DSworkingEntries.data = this.workingEntries;
+    }
+  }
+
+  onKeyDown(event) {
+    const e = <KeyboardEvent>event;
+    if (
+      // modification : blocked the period (.)
+      [46, 8, 9, 27, 13].indexOf(e.keyCode) !== -1 ||
+      // Allow: Ctrl+A
+      (e.keyCode === 65 && (e.ctrlKey || e.metaKey)) ||
+      // Allow: Ctrl+C
+      (e.keyCode === 67 && (e.ctrlKey || e.metaKey)) ||
+      // Allow: Ctrl+V
+      (e.keyCode === 86 && (e.ctrlKey || e.metaKey)) ||
+      // Allow: Ctrl+X
+      (e.keyCode === 88 && (e.ctrlKey || e.metaKey)) ||
+      // Allow: home, end, left, right
+      (e.keyCode >= 35 && e.keyCode <= 39)
+    ) {
+      // let it happen, don't do anything
+      return;
+    }
+    // Ensure that it is a number and stop the keypress
+    if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+      e.preventDefault();
+    }
   }
 }

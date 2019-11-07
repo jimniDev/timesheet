@@ -4,7 +4,6 @@ import com.asscope.timesheet.TimesheetApp;
 import com.asscope.timesheet.config.TestSecurityConfiguration;
 import com.asscope.timesheet.domain.Employee;
 import com.asscope.timesheet.domain.WorkingEntry;
-import com.asscope.timesheet.domain.TargetWorkingDay;
 import com.asscope.timesheet.domain.WeeklyWorkingHours;
 import com.asscope.timesheet.domain.WorkDay;
 import com.asscope.timesheet.repository.EmployeeRepository;
@@ -87,7 +86,7 @@ public class EmployeeResourceIT {
      */
     public static Employee createEntity(EntityManager em) {
         Employee employee = new Employee()
-            .isEmployed(DEFAULT_IS_EMPLOYED);
+            .editPermitted(DEFAULT_IS_EMPLOYED);
         return employee;
     }
     /**
@@ -98,7 +97,7 @@ public class EmployeeResourceIT {
      */
     public static Employee createUpdatedEntity(EntityManager em) {
         Employee employee = new Employee()
-            .isEmployed(UPDATED_IS_EMPLOYED);
+            .editPermitted(UPDATED_IS_EMPLOYED);
         return employee;
     }
 
@@ -122,7 +121,7 @@ public class EmployeeResourceIT {
         List<Employee> employeeList = employeeRepository.findAll();
         assertThat(employeeList).hasSize(databaseSizeBeforeCreate + 1);
         Employee testEmployee = employeeList.get(employeeList.size() - 1);
-        assertThat(testEmployee.isIsEmployed()).isEqualTo(DEFAULT_IS_EMPLOYED);
+        assertThat(testEmployee.isEditPermitted()).isEqualTo(DEFAULT_IS_EMPLOYED);
     }
 
     @Test
@@ -230,26 +229,6 @@ public class EmployeeResourceIT {
         defaultEmployeeShouldNotBeFound("workingEntryId.equals=" + (workingEntryId + 1));
     }
 
-
-    @Test
-    @Transactional
-    public void getAllEmployeesByTargetWorkingDayIsEqualToSomething() throws Exception {
-        // Initialize the database
-        TargetWorkingDay targetWorkingDay = TargetWorkingDayResourceIT.createEntity(em);
-        em.persist(targetWorkingDay);
-        em.flush();
-        employee.addTargetWorkingDay(targetWorkingDay);
-        employeeRepository.saveAndFlush(employee);
-        Long targetWorkingDayId = targetWorkingDay.getId();
-
-        // Get all the employeeList where targetWorkingDay equals to targetWorkingDayId
-        defaultEmployeeShouldBeFound("targetWorkingDayId.equals=" + targetWorkingDayId);
-
-        // Get all the employeeList where targetWorkingDay equals to targetWorkingDayId + 1
-        defaultEmployeeShouldNotBeFound("targetWorkingDayId.equals=" + (targetWorkingDayId + 1));
-    }
-
-
     @Test
     @Transactional
     public void getAllEmployeesByWeeklyWorkingHoursIsEqualToSomething() throws Exception {
@@ -344,7 +323,7 @@ public class EmployeeResourceIT {
         // Disconnect from session so that the updates on updatedEmployee are not directly saved in db
         em.detach(updatedEmployee);
         updatedEmployee
-            .isEmployed(UPDATED_IS_EMPLOYED);
+            .editPermitted(UPDATED_IS_EMPLOYED);
 
         restEmployeeMockMvc.perform(put("/api/employees")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -355,7 +334,7 @@ public class EmployeeResourceIT {
         List<Employee> employeeList = employeeRepository.findAll();
         assertThat(employeeList).hasSize(databaseSizeBeforeUpdate);
         Employee testEmployee = employeeList.get(employeeList.size() - 1);
-        assertThat(testEmployee.isIsEmployed()).isEqualTo(UPDATED_IS_EMPLOYED);
+        assertThat(testEmployee.isEditPermitted()).isEqualTo(UPDATED_IS_EMPLOYED);
     }
 
     @Test

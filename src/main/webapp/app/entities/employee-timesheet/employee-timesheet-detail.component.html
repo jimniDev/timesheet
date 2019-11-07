@@ -3,14 +3,8 @@
     <mat-toolbar>
         <span>Employee {{employee.id}} </span>
         <button type="submit" (click)="previousState()" mat-raised-button color="primary">
-            <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+            <mat-icon>keyboard_backspace</mat-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
         </button>
-
-        <!-- <button type="button" [routerLink]="['/employee-timesheet', employee.id, 'edit']" mat-raised-button
-            color="primary">
-            <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
-        </button> -->
-
 
     </mat-toolbar>
     <div fxLayout="row" fxLayoutAlign="center stretch" fxLayout.xs="column" fxLayoutGap="8px" class="container">
@@ -20,12 +14,15 @@
         </mat-card>
 
         <mat-card fxFlex="50">
-            <mat-card-subtitle>Is Employed</mat-card-subtitle>
-            <mat-card-content>{{"Yes"}}</mat-card-content>
+            <mat-card-subtitle>Edit old working entries</mat-card-subtitle>
+            <mat-card-content>
+                <mat-slide-toggle [checked]="editPermit" (change)="editPermitAuth()">{{editPermitString}}
+                </mat-slide-toggle>
+            </mat-card-content>
         </mat-card>
     </div>
 
-    <div fxLayout="column" fxLayoutAlign="space-between" fxLayoutGap="8px" class="container">
+    <div id="tableCard" fxLayout="column" fxLayoutAlign="space-between" fxLayoutGap="8px" class="container">
         <mat-card>
             <mat-card-header
                 style="font-style: oblique;font-family: Verdana, Geneva, Tahoma, sans-serif;font-size: larger;">
@@ -58,10 +55,18 @@
                     <ng-container matColumnDef="actions">
                         <th mat-header-cell *matHeaderCellDef></th>
                         <td mat-cell *matCellDef="let role">
-                            <button mat-icon-button color="warn" fxHide fxShow.lt-sm (click)="deleteRow(role)">
+                            <button type=button mat-icon-button color="accent" fxHide fxShow.lt-md
+                                (click)="editWeeklyDialog(role)">
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                            <button mat-button type="button" color="accent" fxHide.lt-md
+                                (click)="editWeeklyDialog(role)">
+                                Edit
+                            </button>
+                            <button mat-icon-button color="warn" fxHide fxShow.lt-md (click)="deleteRow(role)">
                                 <mat-icon>delete</mat-icon>
                             </button>
-                            <button mat-button color="warn" fxHide.lt-sm (click)="deleteRow(role)">
+                            <button mat-button color="warn" fxHide.lt-md (click)="deleteRow(role)">
                                 Delete
                             </button>
                         </td>
@@ -71,12 +76,13 @@
                     <tr mat-row *matRowDef="let row; columns: ['id', 'hours', 'start', 'end','actions'];">
                     </tr>
                 </table>
-                <mat-paginator [length]="lengthEmployeeWeekly" [pageSize]="10" [pageSizeOptions]="[5, 10, 15, 20]">
+                <mat-paginator [length]="employeeOverviewWeek?employeeOverviewWeek.length:0" [pageSize]="10"
+                    [pageSizeOptions]="[5, 10, 15, 20]">
                 </mat-paginator>
             </mat-card-content>
 
             <mat-card-actions>
-                <button mat-flat-button color="primary" (click)="openDialog()">Add Time Details</button>
+                <button mat-flat-button color="primary" (click)="openWeeklyDialog()">Add Time Details</button>
             </mat-card-actions>
         </mat-card>
     </div>

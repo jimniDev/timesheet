@@ -1,5 +1,6 @@
 mat-toolbar > button {
   margin-left: 10px;
+  padding-left: 9px;
 }
 
 mat-toolbar {
@@ -15,6 +16,10 @@ th.mat-header-cell:last-of-type {
 div:nth-child(1) > div > mat-card:nth-child(1),
 div:nth-child(1) > div > mat-card:nth-child(2) {
   margin-right: 8px;
+}
+
+#tableCard {
+  margin-top: 8px;
 }
 
 @media only screen and (max-width: 600px) {
