@@ -54,10 +54,6 @@ public class WorkingEntry extends AbstractAuditingEntity implements Serializable
     @ManyToOne
     @JsonIgnoreProperties({"workingEntries", "employee", "activeWeeklyWorkingHours"})
     private WorkDay workDay;
-
-    @ManyToOne
-    @JsonIgnoreProperties("workingEntries")
-    private Location location;
     
     @JsonProperty("workingTimeInSeconds")
     public Long getWorkingTimeInSeconds() {
@@ -178,18 +174,6 @@ public class WorkingEntry extends AbstractAuditingEntity implements Serializable
         this.workDay = workDay;
     }
 
-    public Location getLocation() {
-        return location;
-    }
-
-    public WorkingEntry location(Location location) {
-        this.location = location;
-        return this;
-    }
-
-    public void setLocation(Location location) {
-        this.location = location;
-    }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override

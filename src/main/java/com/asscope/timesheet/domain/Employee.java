@@ -39,11 +39,6 @@ public class Employee implements Serializable {
     private Set<WorkingEntry> workingEntries = new HashSet<>();
 
     @JsonIgnoreProperties("employee")
-    @OneToMany(mappedBy = "employee")
-//    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<TargetWorkingDay> targetWorkingDays = new HashSet<>();
-
-    @JsonIgnoreProperties("employee")
     @OneToMany(mappedBy = "employee", fetch = FetchType.EAGER)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<WeeklyWorkingHours> weeklyWorkingHours = new HashSet<>();
@@ -115,31 +110,6 @@ public class Employee implements Serializable {
 
     public void setWorkingEntries(Set<WorkingEntry> workingEntries) {
         this.workingEntries = workingEntries;
-    }
-
-    public Set<TargetWorkingDay> getTargetWorkingDays() {
-        return targetWorkingDays;
-    }
-
-    public Employee targetWorkingDays(Set<TargetWorkingDay> targetWorkingDays) {
-        this.targetWorkingDays = targetWorkingDays;
-        return this;
-    }
-
-    public Employee addTargetWorkingDay(TargetWorkingDay targetWorkingDay) {
-        this.targetWorkingDays.add(targetWorkingDay);
-        targetWorkingDay.setEmployee(this);
-        return this;
-    }
-
-    public Employee removeTargetWorkingDay(TargetWorkingDay targetWorkingDay) {
-        this.targetWorkingDays.remove(targetWorkingDay);
-        targetWorkingDay.setEmployee(null);
-        return this;
-    }
-
-    public void setTargetWorkingDays(Set<TargetWorkingDay> targetWorkingDays) {
-        this.targetWorkingDays = targetWorkingDays;
     }
 
     public Set<WeeklyWorkingHours> getWeeklyWorkingHours() {
