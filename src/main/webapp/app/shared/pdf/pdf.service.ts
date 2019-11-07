@@ -182,7 +182,7 @@ export class PdfService {
     const name = this.account.firstName + ' ' + this.account.lastName;
     const month = workingEntries[0].workDay.date.format('MMMM');
     let totalWorkTime = totalTimeFromServer;
-    const targetTime = this.secondsToHHMM(targettime * 60); //this.secondsToHHMM(workingEntries[0].workDay.targetWorkingMinutes * 60);
+    const targetTime = this.secondsToHHMM(targettime * 60);
     const differnce = this.difference(this.totalWorkTime(workingEntries, datesObj), targetTime);
     if (!this.initialized) {
       return;
@@ -207,7 +207,6 @@ export class PdfService {
           this.addTotalWorkTime(doc, totalWorkTime, data, pageHeight, targetTime, differnce);
         }
       } else {
-        //totalWorkTime = this.totalWorkTime(workingEntries, datesObj);
         this.addLogo(doc, base64logo, data, pageHeight);
         this.addEmployeeNameandMonth(doc, name, month, data);
         this.addTotalWorkTime(doc, totalWorkTime, data, pageHeight, targetTime, differnce);
@@ -247,7 +246,6 @@ export class PdfService {
   dataConversionForRowSpan(data: IWorkingEntryTimesheet[], raw_data: any, result: any): any {
     const body = [];
     const totalWorkTime = [];
-    const totalbreakTime = [];
     let row = [];
     const dates = result.dates;
     const rowSpan = result.rowSpan;
@@ -309,6 +307,7 @@ export class PdfService {
           }
         }
       } else {
+        // tslint:disable-next-line: forin
         for (const keys in raw_data[flag]) {
           //  if (raw_data.hasOwnProperty(keys)) {
           row.push(raw_data[flag][keys]);

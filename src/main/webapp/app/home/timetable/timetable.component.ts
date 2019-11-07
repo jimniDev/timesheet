@@ -346,7 +346,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
 
   applyDateFilter(searchDate: number) {
     if (searchDate) {
-      const dateFilteredWorkingEntries = this.workingEntries.filter(we => we.workDay.date.date() == searchDate);
+      const dateFilteredWorkingEntries = this.workingEntries.filter(we => we.workDay.date.date() === searchDate);
       this.DSworkingEntries.data = dateFilteredWorkingEntries;
     } else {
       this.DSworkingEntries.data = this.workingEntries;
