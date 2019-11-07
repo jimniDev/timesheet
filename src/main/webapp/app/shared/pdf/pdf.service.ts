@@ -18,11 +18,11 @@ export class PdfService {
     });
   }
 
-  public buttonPDF(workingEntries: IWorkingEntryTimesheet[], totalTimeServer: any) {
-    this.createPDF(workingEntries, totalTimeServer);
+  public buttonPDF(workingEntries: IWorkingEntryTimesheet[]) {
+    this.createPDF(workingEntries);
   }
 
-  public createPDF(workingEntries: IWorkingEntryTimesheet[], totalTimeServer: any): void {
+  public createPDF(workingEntries: IWorkingEntryTimesheet[]): void {
     const initialChecking = this.checkEmptyData(workingEntries);
     if (initialChecking === true) {
       const rawData = workingEntries.map(we => [
@@ -40,7 +40,6 @@ export class PdfService {
       let doc: any;
       doc = new jsPDF();
       const rawdataLength = rawData.length;
-      const totaltime = totalTimeServer;
       let processedData = [];
       const bodyParts = [];
       const workingEntryParts = [];
