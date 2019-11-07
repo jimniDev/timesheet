@@ -18,11 +18,11 @@ export class PdfService {
     });
   }
 
-  public buttonPDF(workingEntries: IWorkingEntryTimesheet[]) {
-    this.createPDF(workingEntries);
+  public buttonPDF(workingEntries: IWorkingEntryTimesheet[], totalTimeServer: any) {
+    this.createPDF(workingEntries, totalTimeServer);
   }
 
-  public createPDF(workingEntries: IWorkingEntryTimesheet[]): void {
+  public createPDF(workingEntries: IWorkingEntryTimesheet[], totalTimeServer: any): void {
     const initialChecking = this.checkEmptyData(workingEntries);
     if (initialChecking === true) {
       const rawData = workingEntries.map(we => [
@@ -40,6 +40,7 @@ export class PdfService {
       let doc: any;
       doc = new jsPDF();
       const rawdataLength = rawData.length;
+      const totaltime = totalTimeServer;
       let processedData = [];
       const bodyParts = [];
       const workingEntryParts = [];
@@ -91,13 +92,13 @@ export class PdfService {
           start = idealIndexPairs[i] + 1;
         }
         for (let x = 0; x < workingEntryParts.length; x++) {
-          const total = this.totalWorkTime(workingEntryParts[x]);
+          const total = this.totalWorkTime(workingEntryParts[x], calculateRowSpan);
           totaltimeParts[x] = total;
         }
-        totaltimeParts.push(this.totalWorkTime(workingEntries));
+        totaltimeParts.push(this.totalWorkTime(workingEntries, calculateRowSpan));
       } else {
         bodyParts[0] = processedData;
-        totaltimeParts[0] = this.totalWorkTime(workingEntries);
+        totaltimeParts[0] = this.totalWorkTime(workingEntries, calculateRowSpan);
       }
       if (bodyParts.length > 1) {
         for (let s = 0; s < bodyParts.length; s++) {
@@ -107,7 +108,7 @@ export class PdfService {
             theme: 'grid',
             pageBreak: 'always',
             didDrawPage: (autoTableData: any) =>
-              this.createPage(doc, workingEntryParts[s], autoTableData, s + 1, bodyParts.length, totaltimeParts),
+              this.createPage(doc, workingEntryParts[s], autoTableData, s + 1, bodyParts.length, totaltimeParts, calculateRowSpan),
             margin: { top: topMargin, bottom: bottomMargin, right: rightMargin, left: leftMargin }
           });
         }
@@ -118,7 +119,7 @@ export class PdfService {
           body: bodyParts[0],
           theme: 'grid',
           didDrawPage: (autoTableData: any) =>
-            this.createPage(doc, workingEntries, autoTableData, bodyParts.length, bodyParts.length, totaltimeParts),
+            this.createPage(doc, workingEntries, autoTableData, bodyParts.length, bodyParts.length, totaltimeParts, calculateRowSpan),
           margin: { top: topMargin, bottom: bottomMargin, right: rightMargin, left: leftMargin }
         });
       }
@@ -148,7 +149,8 @@ export class PdfService {
     data: any,
     pageNumber: number,
     totalPages: number,
-    totalTime: any
+    totalTime: any,
+    datesObj: any
   ): void {
     const pageSize = doc.internal.pageSize;
     const pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight();
@@ -156,7 +158,7 @@ export class PdfService {
     const month = workingEntries[0].workDay.date.format('MMMM');
     let totalWorkTime = totalTime[totalTime.length - 1];
     const targetTime = this.secondsToHHMM(workingEntries[0].workDay.targetWorkingMinutes * 60);
-    const differnce = this.difference(this.totalWorkTime(workingEntries), targetTime);
+    const differnce = this.difference(this.totalWorkTime(workingEntries, datesObj), targetTime);
     if (!this.initialized) {
       return;
     }
@@ -180,7 +182,7 @@ export class PdfService {
           this.addTotalWorkTime(doc, totalWorkTime, data, pageHeight, targetTime, differnce);
         }
       } else {
-        // totalWorkTime = this.totalWorkTime(workingEntries);
+        totalWorkTime = this.totalWorkTime(workingEntries, datesObj);
         this.addLogo(doc, base64logo, data, pageHeight);
         this.addEmployeeNameandMonth(doc, name, month, data);
         this.addTotalWorkTime(doc, totalWorkTime, data, pageHeight, targetTime, differnce);
@@ -228,7 +230,7 @@ export class PdfService {
     let flag = 0;
 
     for (let i = 0; i < dates.length; i++) {
-      totalWorkTime[i] = data[datesIndexInRawData[i]].workDay.totalWorkingMinutes;
+      totalWorkTime[i] = this.secondsToHHMM(data[datesIndexInRawData[i]].workDay.totalWorkingMinutes * 60);
       // let tempTotalWorkTime = 0;
       //  const rowspan = rowSpan[i];
       // if (rowspan > 1) {
@@ -297,10 +299,12 @@ export class PdfService {
     return body;
   }
 
-  totalWorkTime(data: IWorkingEntryTimesheet[]): string {
+  totalWorkTime(data: IWorkingEntryTimesheet[], dates: any): string {
     let tempWorkTime = 0;
-    for (let i = 0; i < data.length; i++) {
-      tempWorkTime = tempWorkTime + data[i].workDay.totalWorkingMinutes * 60;
+    let datesInData = dates.datesIndexInRawData;
+    let length = datesInData.length;
+    for (let i = 0; i < length; i++) {
+      tempWorkTime = tempWorkTime + data[datesInData[i]].workDay.totalWorkingMinutes * 60;
     }
     return this.secondsToHHMM(tempWorkTime);
   }
