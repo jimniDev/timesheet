@@ -12,7 +12,6 @@ import javax.validation.constraints.*;
 
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.Optional;
 
 /**
  * A WorkingEntry.

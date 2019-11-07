@@ -36,7 +36,7 @@ public class WorkDay implements Serializable {
     private LocalDate date;
 
     @JsonIgnoreProperties("workDay")
-    @OneToMany(mappedBy = "workDay", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "workDay", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<WorkingEntry> workingEntries = new HashSet<>();
 

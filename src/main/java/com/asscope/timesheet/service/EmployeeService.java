@@ -5,13 +5,14 @@ import com.asscope.timesheet.domain.User;
 import com.asscope.timesheet.domain.WeeklyWorkingHours;
 import com.asscope.timesheet.repository.EmployeeRepository;
 import com.asscope.timesheet.repository.UserRepository;
+import com.asscope.timesheet.repository.WeeklyWorkingHoursRepository;
+import com.asscope.timesheet.repository.WorkDayRepository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.security.Principal;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -35,13 +36,21 @@ public class EmployeeService {
     
     private final UserRepository userRepository;
     
+    private final WeeklyWorkingHoursRepository wwhRepository;
+    
+    private final WorkDayRepository workDayRepository;
+    
     private final HolidayService holidayService;
 
-    public EmployeeService(EmployeeRepository employeeRepository, UserRepository userRepository, HolidayService holidayService) {
-        this.employeeRepository = employeeRepository;
-        this.userRepository = userRepository;
-        this.holidayService = holidayService;
-    }
+	public EmployeeService(EmployeeRepository employeeRepository, UserRepository userRepository,
+			WeeklyWorkingHoursRepository wwhRepository, WorkDayRepository workDayRepository,
+			HolidayService holidayService) {
+		this.employeeRepository = employeeRepository;
+		this.userRepository = userRepository;
+		this.wwhRepository = wwhRepository;
+		this.workDayRepository = workDayRepository;
+		this.holidayService = holidayService;
+	}
 
 	/**
      * Save a employee.
@@ -97,7 +106,7 @@ public class EmployeeService {
     }
     
     public long getTargetWorkMinutesForDate(Employee employee, LocalDate date) {
-    	Optional<WeeklyWorkingHours> oWwh = employee.getWeeklyWorkingHours().stream().filter(wwh -> (wwh.getStartDate().isBefore(date) || wwh.getStartDate().equals(date)) && (wwh.getEndDate() == null || wwh.getEndDate().isAfter(date))).findFirst();
+    	Optional<WeeklyWorkingHours> oWwh = this.wwhRepository.findAllByEmployee(employee).stream().filter(wwh -> (wwh.getStartDate().isBefore(date) || wwh.getStartDate().equals(date)) && (wwh.getEndDate() == null || wwh.getEndDate().isAfter(date))).findFirst();
     	if (oWwh.isPresent()) {
     		return (oWwh.get().getHours() * 60) / 5;
     	} else {
@@ -119,7 +128,7 @@ public class EmployeeService {
     public long getWorkTimeMinutes(String userId, int year, int month) {
     	Optional<Employee> employee = this.findOneByUsername(userId);
     	if (employee.isPresent()) {
-    		return employee.get().getWorkDays().stream()
+    		return workDayRepository.findAllByEmployee(employee.get()).stream()
     				.filter(wd -> wd.getDate().getYear() == year && wd.getDate().getMonthValue() == month)
     				.map(wd -> wd.getTotalWorkingMinutes())
     				.reduce(0L, Long::sum);
@@ -133,8 +142,7 @@ public class EmployeeService {
 		Optional<Employee> employee = this.findOneByUsername(userId);
 		LocalDate date = LocalDate.of(year, month, day);
 		if (employee.isPresent()) {
-			return employee.get()
-					.getWeeklyWorkingHours()
+			return wwhRepository.findAllByEmployee(employee.get())
 					.stream()
 					.filter(wwh -> (wwh.getStartDate().isBefore(date) || wwh.getStartDate().equals(date)) && (wwh.getEndDate() == null || wwh.getEndDate().isAfter(date) || wwh.getEndDate().equals(date)))
 					.map(wwh -> wwh.getHours() * 60L / 5L)
@@ -149,12 +157,9 @@ public class EmployeeService {
     public long weeklyWorkTimeMinutes(String userId, int year, int isoWeek) {
     	Optional<Employee> employee = this.findOneByUsername(userId);
     	if (employee.isPresent()) {
-    		return employee.get().getWorkDays().stream()
+    		return this.workDayRepository.findAllByEmployee(employee.get()).stream()
     				.filter(wd -> wd.getDate().get(IsoFields.WEEK_BASED_YEAR) == year && wd.getDate().get(IsoFields.WEEK_OF_WEEK_BASED_YEAR) == isoWeek)
-    				.map(wd -> {
-    					return wd.getTotalWorkingMinutes();
-    					}
-    				)
+    				.map(wd -> wd.getTotalWorkingMinutes())
     				.reduce(0L, Long::sum);
     	} else {
     		return 0L;
