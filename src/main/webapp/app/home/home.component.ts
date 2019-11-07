@@ -6,7 +6,7 @@ import { TimetableComponent } from './timetable/timetable.component';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { IActivityTimesheet } from 'app/shared/model/activity-timesheet.model';
 import { ActivityTimesheetService } from 'app/entities/activity-timesheet';
-import { HomeDialogComponent } from './home-dialog/home-dialog.component';
+import { StartStopDialogComponent } from './start-stop-dialog/start-stop-dialog.component';
 
 export interface DialogData {
   newWorkingEntry: IWorkingEntryTimesheet;
@@ -73,7 +73,7 @@ export class HomeComponent implements OnInit {
   }
 
   addnewEntry(workingEntry: WorkingEntryTimesheet) {
-    this.timetableComponent.addNewandSort(workingEntry);
+    this.timetableComponent.addEntry(workingEntry);
   }
 
   startStop() {
@@ -87,7 +87,7 @@ export class HomeComponent implements OnInit {
       this.workingEntryService.start().subscribe(res => {
         if (res.ok) {
           const workingEntry = <IWorkingEntryTimesheet>res.body;
-          this.timetableComponent.addNewandSort(workingEntry);
+          this.timetableComponent.addEntry(workingEntry);
           this.startBtnName = 'Stop';
           // this.matcardTitle = 'You can press stop after few seconds';
           this.started = true;
@@ -108,7 +108,7 @@ export class HomeComponent implements OnInit {
 
     this.workingEntryService.active().subscribe(res => {
       if (res.ok) {
-        const dialogRef = this.dialog.open(HomeDialogComponent, dialogConfig);
+        const dialogRef = this.dialog.open(StartStopDialogComponent, dialogConfig);
         dialogRef.afterClosed().subscribe((workingEntry: IWorkingEntryTimesheet) => {
           if (workingEntry) {
             this.workingEntryService.end().subscribe(endRes => {

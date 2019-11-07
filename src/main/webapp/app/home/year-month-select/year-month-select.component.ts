@@ -1,6 +1,7 @@
-import { Component, OnInit, SimpleChanges, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, SimpleChanges, Output, EventEmitter, Input } from '@angular/core';
 import * as moment from 'moment';
 import { MatSelectChange } from '@angular/material/select';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 export interface YearMonth {
   year: string;
@@ -14,6 +15,10 @@ export interface YearMonth {
 })
 export class YearMonthSelectComponent implements OnInit {
   @Output() selectedDate = new EventEmitter<YearMonth>();
+  @Input() changeYear: string = moment()
+    .year()
+    .toString();
+  @Input() changeMonth: string = (moment().month() + 1).toString();
 
   years = Array.from(Array(20), (e, i) => (i + 2019).toString());
   months = Array.from(Array(12), (e, i) => (i + 1).toString());
@@ -23,9 +28,25 @@ export class YearMonthSelectComponent implements OnInit {
   selectedMonth: string = (moment().month() + 1).toString();
   resetButtonDisabled = true;
 
+  yearMonthForm = new FormGroup({
+    yearForm: new FormControl(this.changeYear, Validators.required),
+    monthForm: new FormControl(this.changeMonth, Validators.required)
+  });
+
   constructor() {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.yearMonthForm.get('yearForm').valueChanges.subscribe(value => {
+      this.onChangeYear(value);
+    });
+    this.yearMonthForm.get('monthForm').valueChanges.subscribe(value => {
+      this.onChangeMonth(value);
+    });
+  }
+
+  // changeSelectValue() {
+  //   this.yearMonthForm.patchValue({ yearForm: , monthForm: });
+  // }
 
   onChangeYear(year: MatSelectChange) {
     if (year.value) {
