@@ -20,7 +20,7 @@ import java.util.Optional;
 @Entity
 @Table(name = "working_entry")
 @Where(clause="deleted_flag=0")
-//@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class WorkingEntry extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
