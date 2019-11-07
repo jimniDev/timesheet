@@ -14,7 +14,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "day_of_week")
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+//@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class DayOfWeek implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -29,7 +29,7 @@ public class DayOfWeek implements Serializable {
     private String name;
 
     @OneToMany(mappedBy = "dayOfWeek")
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+//    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<TargetWorkingDay> targetWorkingDays = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

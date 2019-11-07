@@ -8,7 +8,6 @@ import com.asscope.timesheet.service.erros.OlderThanOneMonthTimeEntryException;
 import com.asscope.timesheet.service.erros.OverlappingWorkingTimesException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +18,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing {@link WorkingEntry}.
@@ -35,17 +33,13 @@ public class WorkingEntryService {
     private final WorkDayService workDayService;
 
     private final WorkingEntryRepository workingEntryRepository;
-    
-    private final CacheManager cacheManager;
 
     public WorkingEntryService(WorkingEntryRepository workingEntryRepository, 
     		EmployeeService employeeService, 
-    		WorkDayService workDayService,
-    		CacheManager cacheManager) {
+    		WorkDayService workDayService) {
         this.workingEntryRepository = workingEntryRepository;
         this.employeeService = employeeService;
         this.workDayService = workDayService;
-        this.cacheManager = cacheManager;
     }
 
     /**
@@ -118,15 +112,6 @@ public class WorkingEntryService {
         Optional<Employee> oEmployee = this.employeeService.findOneByUsername(principal.getName());
         if (oEmployee.isPresent() && month.isPresent()) {
         	workingEntries = this.workingEntryRepository.findAllActiveWorkingEntriesByEmployeeAndDate(oEmployee.get(), year, month.get());
-//        			.stream()
-//        			.filter(we -> {
-//        				if (month.isPresent()) {
-//        					return (we.getWorkDay().getDate().getYear() == year) && (we.getWorkDay().getDate().getMonthValue() == month.get());
-//        				} else {
-//        					return we.getWorkDay().getDate().getYear() == year;
-//        				}
-//        			})
-//        			.collect(Collectors.toList());
         }
         return workingEntries;
     }
@@ -151,6 +136,8 @@ public class WorkingEntryService {
     public void delete(Long id) {
         log.debug("Request to delete WorkingEntry : {}", id);
         workingEntryRepository.findById(id).ifPresent((we) -> {
+        	we.getEmployee().getWorkingEntries().removeIf(w -> w.getId() == we.getId());
+        	we.getWorkDay().getWorkingEntries().removeIf(w -> w.getId() == we.getId());
         	we.setDeleted(true);
         });
     }
