@@ -1,16 +1,15 @@
 import { Component, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { EmployeeTimesheet, IEmployeeTimesheet } from 'app/shared/model/employee-timesheet.model';
+import { EmployeeTimesheet } from 'app/shared/model/employee-timesheet.model';
 import { MatDialog } from '@angular/material/dialog';
-import { EmployeeTimeSheetAddDialogComponent } from './employee-timesheet-add-dialog-component';
+import { EmployeeTimeSheetWeeklyDialogComponent } from './employee-time-sheet-weekly-dialog-component';
 import { IWeeklyWorkingHoursTimesheet } from 'app/shared/model/weekly-working-hours-timesheet.model';
-import { MatTableDataSource, MatTable, MatSlideToggleChange } from '@angular/material';
+import { MatTableDataSource, MatTable } from '@angular/material';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { WeeklyWorkingHoursTimesheetService } from '../weekly-working-hours-timesheet';
 import { EmployeeTimesheetEditComponent } from './employee-timesheet-edit-component/employee-timesheet-edit-component';
-import { EmployeeTimesheetService } from './employee-timesheet.service';
 
 @Component({
   selector: 'jhi-employee-timesheet-detail',
@@ -19,10 +18,9 @@ import { EmployeeTimesheetService } from './employee-timesheet.service';
 })
 export class EmployeeTimesheetDetailComponent implements OnInit {
   public employee: EmployeeTimesheet;
+
   public employeeWeekly = new MatTableDataSource<IWeeklyWorkingHoursTimesheet>();
   public employeeOverviewWeek: IWeeklyWorkingHoursTimesheet[];
-  private editPermit: boolean;
-  private editPermitString: string;
 
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: false }) sort: MatSort;
@@ -32,8 +30,7 @@ export class EmployeeTimesheetDetailComponent implements OnInit {
     protected activatedRoute: ActivatedRoute,
     public dialog: MatDialog,
     private cdr: ChangeDetectorRef,
-    private wwhService: WeeklyWorkingHoursTimesheetService,
-    private employeeService: EmployeeTimesheetService
+    private wwhService: WeeklyWorkingHoursTimesheetService
   ) {}
 
   ngOnInit() {
@@ -41,12 +38,6 @@ export class EmployeeTimesheetDetailComponent implements OnInit {
       this.employee = routeData.employee;
       this.employeeOverviewWeek = this.employee.weeklyWorkingHours;
       this.employeeWeekly.data = this.employeeOverviewWeek;
-      this.editPermit = this.employee.editPermitted;
-      if (this.editPermit) {
-        this.editPermitString = 'permitted';
-      } else {
-        this.editPermitString = 'blocked';
-      }
     });
   }
 
@@ -65,28 +56,8 @@ export class EmployeeTimesheetDetailComponent implements OnInit {
     window.history.back();
   }
 
-  editPermitAuth() {
-    if (this.editPermit) {
-      this.employee.editPermitted = false;
-      this.employeeService.update(this.employee).subscribe(res => {
-        if (res) {
-          this.editPermit = false;
-          this.editPermitString = 'blocked';
-        }
-      });
-    } else {
-      this.employee.editPermitted = true;
-      this.employeeService.update(this.employee).subscribe(res => {
-        if (res) {
-          this.editPermit = true;
-          this.editPermitString = 'permitted';
-        }
-      });
-    }
-  }
-
   openWeeklyDialog(): void {
-    const employeeDialogRef = this.dialog.open(EmployeeTimeSheetAddDialogComponent, {
+    const employeeDialogRef = this.dialog.open(EmployeeTimeSheetWeeklyDialogComponent, {
       data: { employee: this.employee },
       disableClose: true
     });
