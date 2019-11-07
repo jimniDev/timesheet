@@ -286,36 +286,36 @@ export class TimetableComponent implements OnInit, AfterViewInit {
     });
     dialogRef.afterClosed().subscribe((result: IWorkingEntryTimesheet) => {
       if (result) {
-        const workDayOfdeletedEntry = workingEntry.workDay;
-        this.workDayService
-          .getTotalWorkingMinutesbyDate(
-            workDayOfdeletedEntry.date.year(),
-            workDayOfdeletedEntry.date.month() + 1,
-            workDayOfdeletedEntry.date.date()
-          )
-          .subscribe(res => {
-            if (res.ok) {
-              workDayOfdeletedEntry.totalWorkingMinutes = <number>res.body;
-            }
-          });
-        this.workDayService
-          .getTotalBreakMinutesbyDate(
-            workDayOfdeletedEntry.date.year(),
-            workDayOfdeletedEntry.date.month() + 1,
-            workDayOfdeletedEntry.date.date()
-          )
-          .subscribe(res => {
-            if (res.ok) {
-              workDayOfdeletedEntry.totalBreakMinutes = <number>res.body;
-            }
-          });
-        this.workingEntries.forEach(entry => {
-          if (entry.workDay.id === workDayOfdeletedEntry.id) {
-            entry.workDay = workDayOfdeletedEntry;
-          }
-        });
-        this.workingEntryService.delete(workingEntry.id).subscribe(res => {
-          if (res.ok) {
+        this.workingEntryService.delete(workingEntry.id).subscribe(del => {
+          if (del.ok) {
+            const workDayOfdeletedEntry = workingEntry.workDay;
+            this.workDayService
+              .getTotalWorkingMinutesbyDate(
+                workDayOfdeletedEntry.date.year(),
+                workDayOfdeletedEntry.date.month() + 1,
+                workDayOfdeletedEntry.date.date()
+              )
+              .subscribe(res => {
+                if (res.ok) {
+                  workDayOfdeletedEntry.totalWorkingMinutes = <number>res.body;
+                }
+              });
+            this.workDayService
+              .getTotalBreakMinutesbyDate(
+                workDayOfdeletedEntry.date.year(),
+                workDayOfdeletedEntry.date.month() + 1,
+                workDayOfdeletedEntry.date.date()
+              )
+              .subscribe(res => {
+                if (res.ok) {
+                  workDayOfdeletedEntry.totalBreakMinutes = <number>res.body;
+                }
+              });
+            this.workingEntries.forEach(entry => {
+              if (entry.workDay.id === workDayOfdeletedEntry.id) {
+                entry.workDay = workDayOfdeletedEntry;
+              }
+            });
             const idx = this.workingEntries.findIndex(we => we.id === workingEntry.id);
             this.workingEntries.splice(idx, 1);
             this.DSworkingEntries.data = this.workingEntries;
