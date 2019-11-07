@@ -10,10 +10,10 @@ import { Platform } from '@angular/cdk/platform';
 import { Subject } from 'rxjs';
 
 @Component({
-  selector: 'employee-time-sheet-weekly-dialog-component',
-  templateUrl: './employee-time-sheet-weekly-dialog-component.html'
+  selector: 'employee-timesheet-add-dialog-component',
+  templateUrl: './employee-timesheet-add-dialog-component.html'
 })
-export class EmployeeTimeSheetWeeklyDialogComponent {
+export class EmployeeTimeSheetAddDialogComponent {
   public employee: IEmployeeTimesheet;
 
   employeeWeeklyForm = new FormGroup({
@@ -23,7 +23,7 @@ export class EmployeeTimeSheetWeeklyDialogComponent {
   });
 
   constructor(
-    public employeeDialogRef: MatDialogRef<EmployeeTimeSheetWeeklyDialogComponent>,
+    public employeeDialogRef: MatDialogRef<EmployeeTimeSheetAddDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private weeklyWorkingHoursService: WeeklyWorkingHoursTimesheetService,
     private platform: Platform

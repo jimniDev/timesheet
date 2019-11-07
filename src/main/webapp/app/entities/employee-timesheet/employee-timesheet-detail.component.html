@@ -3,14 +3,8 @@
     <mat-toolbar>
         <span>Employee {{employee.id}} </span>
         <button type="submit" (click)="previousState()" mat-raised-button color="primary">
-            <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+            <mat-icon>keyboard_backspace</mat-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
         </button>
-
-        <!-- <button type="button" [routerLink]="['/employee-timesheet', employee.id, 'edit']" mat-raised-button
-            color="primary">
-            <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
-        </button> -->
-
 
     </mat-toolbar>
     <div fxLayout="row" fxLayoutAlign="center stretch" fxLayout.xs="column" fxLayoutGap="8px" class="container">
@@ -20,8 +14,11 @@
         </mat-card>
 
         <mat-card fxFlex="50">
-            <mat-card-subtitle>Is Employed</mat-card-subtitle>
-            <mat-card-content>{{"Yes"}}</mat-card-content>
+            <mat-card-subtitle>Edit old working entries</mat-card-subtitle>
+            <mat-card-content>
+                <mat-slide-toggle [checked]="editPermit" (change)="editPermitAuth()">{{editPermitString}}
+                </mat-slide-toggle>
+            </mat-card-content>
         </mat-card>
     </div>
 
@@ -66,10 +63,10 @@
                                 (click)="editWeeklyDialog(role)">
                                 Edit
                             </button>
-                            <button mat-icon-button color="warn" fxHide fxShow.lt-sm (click)="deleteRow(role)">
+                            <button mat-icon-button color="warn" fxHide fxShow.lt-md (click)="deleteRow(role)">
                                 <mat-icon>delete</mat-icon>
                             </button>
-                            <button mat-button color="warn" fxHide.lt-sm (click)="deleteRow(role)">
+                            <button mat-button color="warn" fxHide.lt-md (click)="deleteRow(role)">
                                 Delete
                             </button>
                         </td>

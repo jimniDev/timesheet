@@ -3,13 +3,14 @@ import { ActivatedRoute } from '@angular/router';
 
 import { EmployeeTimesheet } from 'app/shared/model/employee-timesheet.model';
 import { MatDialog } from '@angular/material/dialog';
-import { EmployeeTimeSheetWeeklyDialogComponent } from './employee-time-sheet-weekly-dialog-component';
+import { EmployeeTimeSheetAddDialogComponent } from './employee-timesheet-add-dialog-component';
 import { IWeeklyWorkingHoursTimesheet } from 'app/shared/model/weekly-working-hours-timesheet.model';
 import { MatTableDataSource, MatTable } from '@angular/material';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { WeeklyWorkingHoursTimesheetService } from '../weekly-working-hours-timesheet';
 import { EmployeeTimesheetEditComponent } from './employee-timesheet-edit-component/employee-timesheet-edit-component';
+import { EmployeeTimesheetService } from './employee-timesheet.service';
 
 @Component({
   selector: 'jhi-employee-timesheet-detail',
@@ -18,9 +19,10 @@ import { EmployeeTimesheetEditComponent } from './employee-timesheet-edit-compon
 })
 export class EmployeeTimesheetDetailComponent implements OnInit {
   public employee: EmployeeTimesheet;
-
   public employeeWeekly = new MatTableDataSource<IWeeklyWorkingHoursTimesheet>();
   public employeeOverviewWeek: IWeeklyWorkingHoursTimesheet[];
+  public editPermit: boolean;
+  public editPermitString: string;
 
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: false }) sort: MatSort;
@@ -30,22 +32,42 @@ export class EmployeeTimesheetDetailComponent implements OnInit {
     protected activatedRoute: ActivatedRoute,
     public dialog: MatDialog,
     private cdr: ChangeDetectorRef,
-    private wwhService: WeeklyWorkingHoursTimesheetService
+    private wwhService: WeeklyWorkingHoursTimesheetService,
+    private employeeService: EmployeeTimesheetService
   ) {}
 
   ngOnInit() {
-    this.activatedRoute.data.subscribe(({ employee }) => {
-      this.employee = employee;
+    this.activatedRoute.data.subscribe((routeData: any) => {
+      this.employee = routeData.employee;
+      this.employeeOverviewWeek = this.employee.weeklyWorkingHours;
+      this.employeeWeekly.data = this.employeeOverviewWeek;
+      this.editPermit = this.employee.editPermitted;
+      if (this.editPermit) {
+        this.editPermitString = 'permitted';
+      } else {
+        this.editPermitString = 'blocked';
+      }
+    });
+  }
 
-      this.wwhService.query().subscribe(result => {
-        if (result.ok) {
-          this.employeeOverviewWeek = result.body;
-          this.employeeWeekly = new MatTableDataSource(this.employeeOverviewWeek);
-          this.refresh();
+  editPermitAuth() {
+    if (this.editPermit) {
+      this.employee.editPermitted = false;
+      this.employeeService.update(this.employee).subscribe(res => {
+        if (res) {
+          this.editPermit = false;
+          this.editPermitString = 'blocked';
         }
       });
-      this.pageAndSort();
-    });
+    } else {
+      this.employee.editPermitted = true;
+      this.employeeService.update(this.employee).subscribe(res => {
+        if (res) {
+          this.editPermit = true;
+          this.editPermitString = 'permitted';
+        }
+      });
+    }
   }
 
   refresh() {
@@ -64,7 +86,7 @@ export class EmployeeTimesheetDetailComponent implements OnInit {
   }
 
   openWeeklyDialog(): void {
-    const employeeDialogRef = this.dialog.open(EmployeeTimeSheetWeeklyDialogComponent, {
+    const employeeDialogRef = this.dialog.open(EmployeeTimeSheetAddDialogComponent, {
       data: { employee: this.employee },
       disableClose: true
     });
@@ -101,18 +123,17 @@ export class EmployeeTimesheetDetailComponent implements OnInit {
         hours: weeklyWorkingHour.hours,
         startDate: weeklyWorkingHour.startDate,
         endDate: weeklyWorkingHour.endDate,
-        employee: weeklyWorkingHour.employee,
+        employee: this.employee,
         weeklyWorkingHour
       },
       disableClose: true
     });
 
     diagRef.afterClosed().subscribe(result => {
-      if (result.ok) {
+      if (result) {
         const idx = this.employeeOverviewWeek.findIndex(we => we.id === result.id);
         this.employeeOverviewWeek[idx] = result;
-        this.table.renderRows();
-        this.refresh();
+        this.employeeWeekly.data = this.employeeOverviewWeek;
       }
     });
   }

@@ -5,7 +5,6 @@ import { Observable } from 'rxjs';
 import { SERVER_API_URL } from 'app/app.constants';
 import { createRequestOption } from 'app/shared';
 import { IEmployeeTimesheet } from 'app/shared/model/employee-timesheet.model';
-import { IWorktimeInformationTimesheet } from 'app/shared/model/worktime-information-timesheet.model';
 
 type EntityResponseType = HttpResponse<IEmployeeTimesheet>;
 type EntityArrayResponseType = HttpResponse<IEmployeeTimesheet[]>;
@@ -39,10 +38,6 @@ export class EmployeeTimesheetService {
 
   delete(id: number): Observable<HttpResponse<any>> {
     return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response' });
-  }
-
-  currentWorktimeInformation(year: number): Observable<HttpResponse<IWorktimeInformationTimesheet>> {
-    return this.http.get<IWorktimeInformationTimesheet>(this.resourceUrl + '/me/worktime/' + year, { observe: 'response' });
   }
 
   targetWorkTime(year: number, month: number) {

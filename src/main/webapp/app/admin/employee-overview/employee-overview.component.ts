@@ -15,8 +15,6 @@ export class EmployeeOverviewComponent implements OnInit {
 
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
 
-  // balances = new Array<Observable<number>>();
-
   constructor(private employeeService: EmployeeTimesheetService) {}
 
   ngOnInit() {
@@ -33,7 +31,23 @@ export class EmployeeOverviewComponent implements OnInit {
     this.datasource.filter = filterValue.trim().toLowerCase();
   }
 
-  // getBalance(employeeId: number): Observable<number> {
-  //   return this.employeeService.balanceByEmployee(employeeId).pipe(map(res => res.ok ? res.body : 0));
-  // }
+  secondsToHHMM(seconds: number): string {
+    if (seconds >= 0) {
+      const hour = Math.floor(seconds / 3600);
+      const min = Math.floor((seconds % 3600) / 60);
+      return this.pad(hour, 2) + 'h ' + this.pad(min, 2) + 'm';
+    } else {
+      const hour = Math.ceil(seconds / 3600);
+      const min = Math.ceil((seconds % 3600) / 60);
+      return '-' + this.pad(Math.abs(hour), 2) + 'h ' + this.pad(Math.abs(min), 2) + 'm';
+    }
+  }
+
+  pad(num: number, size: number): string {
+    let s = num + '';
+    while (s.length < size) {
+      s = '0' + s;
+    }
+    return s;
+  }
 }
