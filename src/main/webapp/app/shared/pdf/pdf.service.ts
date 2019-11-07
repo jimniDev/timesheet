@@ -28,6 +28,7 @@ export class PdfService {
       const rawData = workingEntries.map(we => [
         we.workDay.date.format('YYYY-MM-DD'),
         this.secondsToHHMM(we.workDay.totalWorkingMinutes * 60),
+        this.secondsToHHMM(we.workDay.totalBreakMinutes * 60),
         we.start.format('HH:mm'),
         we.end.format('HH:mm'),
         we.activity ? we.activity.name : ''
@@ -129,7 +130,7 @@ export class PdfService {
   }
 
   getColumns() {
-    return [{ date: 'Date', worktime: 'Worktime', from: 'From', to: 'To', activity: 'Activity' }];
+    return [{ date: 'Date', worktime: 'Worktime', Break: 'break', from: 'From', to: 'To', activity: 'Activity' }];
   }
   checkEmptyData(data: any): any {
     let flag = true;
@@ -230,19 +231,6 @@ export class PdfService {
 
     for (let i = 0; i < dates.length; i++) {
       totalWorkTime[i] = this.secondsToHHMM(data[datesIndexInRawData[i]].workDay.totalWorkingMinutes * 60);
-      // let tempTotalWorkTime = 0;
-      //  const rowspan = rowSpan[i];
-      // if (rowspan > 1) {
-      //   for (let x = 0; x < rowSpan[i]; x++) {
-      //     const index = datesIndexInRawData[i];
-      //     tempTotalWorkTime = tempTotalWorkTime + data[datesIndexInRawData[i]].workDay.totalWorkingMinutes//data[index + x].end.diff(data[index + x].start, 'seconds', true);
-      //   }
-      //   totalWorkTime[i] = this.secondsToHHMM(tempTotalWorkTime);
-      //   tempTotalWorkTime = 0;
-      // } else {
-      //   tempTotalWorkTime = data[i].end.diff(data[i].start, 'seconds', true);
-      //   totalWorkTime[i] = this.secondsToHHMM(tempTotalWorkTime);
-      // }
     }
     for (let a = 0; a < result.dates.length; a++) {
       const beginIndex = datesIndexInRawData[a];
@@ -270,7 +258,20 @@ export class PdfService {
                     break;
                 }
                 break;
-              case '4':
+              case '2':
+                switch (flag) {
+                  case beginIndex:
+                    row.push({
+                      rowSpan: counts,
+                      content: this.secondsToHHMM(data[datesIndexInRawData[a]].workDay.totalBreakMinutes * 60),
+                      styles: { valign: 'middle', halign: 'left' }
+                    });
+                    break;
+                  default:
+                    break;
+                }
+                break;
+              case '5':
                 row.push(raw_data[flag][keys]);
                 flag++;
                 body.push(row);
@@ -286,7 +287,7 @@ export class PdfService {
         for (const keys in raw_data[flag]) {
           if (raw_data.hasOwnProperty(keys)) {
             row.push(raw_data[flag][keys]);
-            if (keys === '4') {
+            if (keys === '5') {
               flag++;
               body.push(row);
               row = [];
