@@ -220,19 +220,20 @@ export class PdfService {
     let flag = 0;
 
     for (let i = 0; i < dates.length; i++) {
-      let tempTotalWorkTime = 0;
-      const rowspan = rowSpan[i];
-      if (rowspan > 1) {
-        for (let x = 0; x < rowSpan[i]; x++) {
-          const index = datesIndexInRawData[i];
-          tempTotalWorkTime = tempTotalWorkTime + data[index + x].end.diff(data[index + x].start, 'seconds', true);
-        }
-        totalWorkTime[i] = this.secondsToHHMM(tempTotalWorkTime);
-        tempTotalWorkTime = 0;
-      } else {
-        tempTotalWorkTime = data[i].end.diff(data[i].start, 'seconds', true);
-        totalWorkTime[i] = this.secondsToHHMM(tempTotalWorkTime);
-      }
+      totalWorkTime[i] = data[datesIndexInRawData[i]].workDay.totalWorkingMinutes;
+      // let tempTotalWorkTime = 0;
+      //  const rowspan = rowSpan[i];
+      // if (rowspan > 1) {
+      //   for (let x = 0; x < rowSpan[i]; x++) {
+      //     const index = datesIndexInRawData[i];
+      //     tempTotalWorkTime = tempTotalWorkTime + data[datesIndexInRawData[i]].workDay.totalWorkingMinutes//data[index + x].end.diff(data[index + x].start, 'seconds', true);
+      //   }
+      //   totalWorkTime[i] = this.secondsToHHMM(tempTotalWorkTime);
+      //   tempTotalWorkTime = 0;
+      // } else {
+      //   tempTotalWorkTime = data[i].end.diff(data[i].start, 'seconds', true);
+      //   totalWorkTime[i] = this.secondsToHHMM(tempTotalWorkTime);
+      // }
     }
     for (let a = 0; a < result.dates.length; a++) {
       const beginIndex = datesIndexInRawData[a];
