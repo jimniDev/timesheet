@@ -18,11 +18,11 @@ export class PdfService {
     });
   }
 
-  public buttonPDF(workingEntries: IWorkingEntryTimesheet[]) {
-    this.createPDF(workingEntries);
+  public buttonPDF(workingEntries: IWorkingEntryTimesheet[], targetMinutes: number, actualTime: number) {
+    this.createPDF(workingEntries, targetMinutes, actualTime);
   }
 
-  public createPDF(workingEntries: IWorkingEntryTimesheet[]): void {
+  public createPDF(workingEntries: IWorkingEntryTimesheet[], targetTime: number, actualTime: number): void {
     const initialChecking = this.checkEmptyData(workingEntries);
     if (initialChecking === true) {
       const rawData = workingEntries.map(we => [
@@ -45,6 +45,7 @@ export class PdfService {
       const bodyParts = [];
       const workingEntryParts = [];
       const totaltimeParts = [];
+      const actualTimes = actualTime;
       let calculateRowSpan: any;
       switch (rawdataLength) {
         case 0:
@@ -53,6 +54,8 @@ export class PdfService {
 
         case 1:
           processedData = rawData;
+          calculateRowSpan = this.calculateDataStats(rawData);
+          processedData = this.dataConversionForRowSpan(workingEntries, rawData, calculateRowSpan);
           break;
 
         default:
@@ -108,7 +111,17 @@ export class PdfService {
             theme: 'grid',
             pageBreak: 'always',
             didDrawPage: (autoTableData: any) =>
-              this.createPage(doc, workingEntryParts[s], autoTableData, s + 1, bodyParts.length, totaltimeParts, calculateRowSpan),
+              this.createPage(
+                doc,
+                workingEntryParts[s],
+                autoTableData,
+                s + 1,
+                bodyParts.length,
+                totaltimeParts,
+                calculateRowSpan,
+                targetTime,
+                actualTimes
+              ),
             margin: { top: topMargin, bottom: bottomMargin, right: rightMargin, left: leftMargin }
           });
         }
@@ -119,7 +132,17 @@ export class PdfService {
           body: bodyParts[0],
           theme: 'grid',
           didDrawPage: (autoTableData: any) =>
-            this.createPage(doc, workingEntries, autoTableData, bodyParts.length, bodyParts.length, totaltimeParts, calculateRowSpan),
+            this.createPage(
+              doc,
+              workingEntries,
+              autoTableData,
+              bodyParts.length,
+              bodyParts.length,
+              totaltimeParts,
+              calculateRowSpan,
+              targetTime,
+              actualTimes
+            ),
           margin: { top: topMargin, bottom: bottomMargin, right: rightMargin, left: leftMargin }
         });
       }
@@ -130,7 +153,7 @@ export class PdfService {
   }
 
   getColumns() {
-    return [{ date: 'Date', worktime: 'Worktime', Break: 'BreakTime', from: 'From', to: 'To', activity: 'Activity' }];
+    return [{ date: 'Date', worktime: 'Worktime', Break: 'Break', from: 'From', to: 'To', activity: 'Activity' }];
   }
   checkEmptyData(data: any): any {
     let flag = true;
@@ -150,14 +173,16 @@ export class PdfService {
     pageNumber: number,
     totalPages: number,
     totalTime: any,
-    datesObj: any
+    datesObj: any,
+    targettime: number,
+    totalTimeFromServer: number
   ): void {
     const pageSize = doc.internal.pageSize;
     const pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight();
     const name = this.account.firstName + ' ' + this.account.lastName;
     const month = workingEntries[0].workDay.date.format('MMMM');
-    let totalWorkTime = totalTime[totalTime.length - 1];
-    const targetTime = this.secondsToHHMM(workingEntries[0].workDay.targetWorkingMinutes * 60);
+    let totalWorkTime = totalTimeFromServer;
+    const targetTime = this.secondsToHHMM(targettime * 60); //this.secondsToHHMM(workingEntries[0].workDay.targetWorkingMinutes * 60);
     const differnce = this.difference(this.totalWorkTime(workingEntries, datesObj), targetTime);
     if (!this.initialized) {
       return;
@@ -182,7 +207,7 @@ export class PdfService {
           this.addTotalWorkTime(doc, totalWorkTime, data, pageHeight, targetTime, differnce);
         }
       } else {
-        totalWorkTime = this.totalWorkTime(workingEntries, datesObj);
+        //totalWorkTime = this.totalWorkTime(workingEntries, datesObj);
         this.addLogo(doc, base64logo, data, pageHeight);
         this.addEmployeeNameandMonth(doc, name, month, data);
         this.addTotalWorkTime(doc, totalWorkTime, data, pageHeight, targetTime, differnce);
@@ -285,13 +310,12 @@ export class PdfService {
         }
       } else {
         for (const keys in raw_data[flag]) {
-          if (raw_data.hasOwnProperty(keys)) {
-            row.push(raw_data[flag][keys]);
-            if (keys === '5') {
-              flag++;
-              body.push(row);
-              row = [];
-            }
+          //  if (raw_data.hasOwnProperty(keys)) {
+          row.push(raw_data[flag][keys]);
+          if (keys === '5') {
+            flag++;
+            body.push(row);
+            row = [];
           }
         }
       }
@@ -301,8 +325,8 @@ export class PdfService {
 
   totalWorkTime(data: IWorkingEntryTimesheet[], dates: any): string {
     let tempWorkTime = 0;
-    let datesInData = dates.datesIndexInRawData;
-    let length = datesInData.length;
+    const datesInData = dates.datesIndexInRawData;
+    const length = datesInData.length;
     for (let i = 0; i < length; i++) {
       tempWorkTime = tempWorkTime + data[datesInData[i]].workDay.totalWorkingMinutes * 60;
     }
@@ -334,7 +358,11 @@ export class PdfService {
 
   addTotalWorkTime(doc: jsPDF, totalWorkTime: any, data: any, pageHeight: any, targetTime: any, difference: any): void {
     doc.setFontSize('10');
-    doc.text(`Total: ${totalWorkTime} | Target:${targetTime} | Diff:${difference}`, data.settings.margin.left + 55, pageHeight - 18);
+    doc.text(
+      `Total: ${this.secondsToHHMM(totalWorkTime * 60)} | Target: ${targetTime} | Diff: ${difference}`,
+      data.settings.margin.left + 55,
+      pageHeight - 18
+    );
   }
 
   addPageNumber(doc: jsPDF, pageNumber: any, totalPages: number, data: any, pageHeight: any): void {
