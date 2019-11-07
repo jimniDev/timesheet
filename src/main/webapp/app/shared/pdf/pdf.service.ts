@@ -130,7 +130,7 @@ export class PdfService {
   }
 
   getColumns() {
-    return [{ date: 'Date', worktime: 'Worktime', Break: 'break', from: 'From', to: 'To', activity: 'Activity' }];
+    return [{ date: 'Date', worktime: 'Worktime', Break: 'BreakTime', from: 'From', to: 'To', activity: 'Activity' }];
   }
   checkEmptyData(data: any): any {
     let flag = true;
