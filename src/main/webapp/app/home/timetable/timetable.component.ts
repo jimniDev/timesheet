@@ -260,12 +260,12 @@ export class TimetableComponent implements OnInit, AfterViewInit {
       year: newEntry.workDay.date.year().toString(),
       month: (newEntry.workDay.date.month() + 1).toString()
     };
-    const newEntryYearWeek: YearWeek = { year: newEntry.workDay.date.year().toString(), week: newEntry.workDay.date.isoWeek().toString() };
+    // const newEntryYearWeek: YearWeek = { year: newEntry.workDay.date.year().toString(), week: newEntry.workDay.date.isoWeek().toString() };
 
     this.selectedYear = newEntryYearMonth.year;
     this.selectedMonth = newEntryYearMonth.month;
-    //this.filterTimeTable(newEntryYearMonth);
-    this.loadWeeklyInformation(newEntryYearWeek);
+    this.filterTimeTable(newEntryYearMonth);
+    // this.loadWeeklyInformation(newEntryYearWeek);
     this.loadCurrentWorktimeBalance();
   }
 

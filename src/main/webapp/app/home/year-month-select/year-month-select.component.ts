@@ -44,12 +44,8 @@ export class YearMonthSelectComponent implements OnInit {
     });
   }
 
-  // changeSelectValue() {
-  //   this.yearMonthForm.patchValue({ yearForm: , monthForm: });
-  // }
-
   onChangeYear(year: MatSelectChange) {
-    if (year.value) {
+    if (year.value || year) {
       this.resetButtonDisabled = false;
       this.selectedYear = year.value;
       this.selectedDate.emit(<YearMonth>{ year: this.selectedYear, month: this.selectedMonth });
@@ -57,7 +53,7 @@ export class YearMonthSelectComponent implements OnInit {
   }
 
   onChangeMonth(month: MatSelectChange) {
-    if (month.value) {
+    if (month.value || month) {
       this.resetButtonDisabled = false;
       this.selectedMonth = month.value;
       this.selectedDate.emit(<YearMonth>{ year: this.selectedYear, month: this.selectedMonth });
