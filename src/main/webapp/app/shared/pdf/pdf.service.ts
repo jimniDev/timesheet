@@ -70,11 +70,10 @@ export class PdfService {
   getColumns() {
     return [{ date: 'Date', worktime: 'Worktime', Break: 'Break', from: 'From', to: 'To', activity: 'Activity' }];
   }
-
   totalWorkTime(data: IWorkingEntryTimesheet[], dataStats: any): string {
     const dates = dataStats.dates;
     const index = dataStats.datesIndexInRawData;
-    let processedDates = [];
+    const processedDates = [];
     let tempWorkTime = 0;
     for (let i = 0; i < data.length; i++) {
       if (processedDates.indexOf(data[i].workDay.date.format('DDMMYYYY')) === -1) {
