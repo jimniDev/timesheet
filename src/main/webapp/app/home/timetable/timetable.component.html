@@ -122,7 +122,8 @@
         <mat-card id="filterCard" fxFlex="50" fxLayout="column" fxLayoutAlign="center stretch" fxLayoutGap="8px"
             class="container">
             <div fxLayout="column">
-                <jhi-year-week-select (selectedDate)="loadWeeklyInformation($event)">
+                <jhi-year-week-select (selectedDate)="loadWeeklyInformation($event)" [changeYear]="selectedYear"
+                    [changeWeek]="selectedWeek">
                 </jhi-year-week-select>
                 <div fxFlex="auto" fxLayout="column" fxLayout.lt-lg="row" fxLayoutAlign="space-between"
                     fxLayoutGap="8px">
