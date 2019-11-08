@@ -19,11 +19,7 @@ export class PdfService {
   }
   public buttonPDF(workingEntries: IWorkingEntryTimesheet[], targetMinutes: number, actualTime: number) {
     if (this.checkEmptyData(workingEntries) && workingEntries.length > 0) {
-      try {
-        this.createPDF(workingEntries, targetMinutes, actualTime);
-      } catch (e) {
-        console.log(e);
-      }
+      this.createPDF(workingEntries, targetMinutes, actualTime);
     } else {
       const string = workingEntries.length === 0 ? 'No data' : 'Some Working Entries are not Complete';
       this._snackBar.open(string, 'Undo', { duration: 3000 });
@@ -35,13 +31,13 @@ export class PdfService {
       leftMargin = 15,
       rightMargin = 15,
       bottomMargin = 33,
-      maxRowInPage = 31; // CONFIG FOR PDF GENERATION
+      maxRowInPage = 31;
     let doc: any;
     doc = new jsPDF();
     const body = this.bodyCreationForTable(rawData, workingEntries, maxRowInPage);
     const workingEntryParts = this.dataSplits(this.calculateSplits(workingEntries, maxRowInPage), workingEntries);
     const dataStats = this.calculateDataStats(rawData);
-    const totalTime = this.calculateTotalTimeParts(workingEntryParts, dataStats, this.calculateSplits(workingEntries, maxRowInPage));
+    const totalTime = this.calculateTotalTimeParts(workingEntryParts, dataStats);
     if (body.length > 1) {
       for (let s = 0; s < body.length; s++) {
         doc.autoTable({
@@ -69,27 +65,6 @@ export class PdfService {
   }
   getColumns() {
     return [{ date: 'Date', worktime: 'Worktime', Break: 'Break', from: 'From', to: 'To', activity: 'Activity' }];
-  }
-
-  totalWorkTime(data: IWorkingEntryTimesheet[], dataStats: any): string {
-    const dates = dataStats.dates;
-    const index = dataStats.datesIndexInRawData;
-    let processedDates = [];
-    let tempWorkTime = 0;
-    for (let i = 0; i < data.length; i++) {
-      if (processedDates.indexOf(data[i].workDay.date.format('DDMMYYYY')) === -1) {
-        processedDates.push(data[i].workDay.date.format('DDMMYYYY'));
-        tempWorkTime = tempWorkTime + data[i].workDay.totalWorkingMinutes * 60;
-      }
-    }
-    return this.secondsToHHMM(tempWorkTime);
-  }
-  calculateTotalTimeParts(workingEntries: any, dataStats: any, index: any): any {
-    const totalTimeByParts = [];
-    for (let i = 0; i < workingEntries.length; i++) {
-      totalTimeByParts[i] = this.totalWorkTime(workingEntries[i], dataStats);
-    }
-    return totalTimeByParts;
   }
   checkEmptyData(data: IWorkingEntryTimesheet[]): any {
     let flag = true;
@@ -285,6 +260,28 @@ export class PdfService {
     }
     return splitCollector;
   }
+  totalWorkTime(data: IWorkingEntryTimesheet[], dates: any): string {
+    let tempWorkTime = 0;
+    const datesInData = dates.datesIndexInRawData;
+    const length = datesInData.length;
+    for (let i = 0; i < length; i++) {
+      tempWorkTime = tempWorkTime + data[datesInData[i]].workDay.totalWorkingMinutes * 60;
+    }
+    return this.secondsToHHMM(tempWorkTime);
+  }
+  calculateTotalTimeParts(workingEntries: any, dataStats: any): any {
+    let totalTimeByParts: any;
+    if (workingEntries.length > 1) {
+      for (let x = 0; x < workingEntries.length; x++) {
+        const total = this.totalWorkTime(workingEntries[x], dataStats);
+        totalTimeByParts[x] = total;
+      }
+      totalTimeByParts.push(this.totalWorkTime(workingEntries, dataStats));
+    } else {
+      totalTimeByParts.push(this.totalWorkTime(workingEntries, dataStats));
+    }
+    return totalTimeByParts;
+  }
   createPage(
     doc: jsPDF,
     workingEntries: IWorkingEntryTimesheet[],
@@ -321,7 +318,7 @@ export class PdfService {
         }
         if (pageNumber === totalPages) {
           this.addSignature(doc, data, pageHeight);
-          totalWorkTime = totalTimeFromServer;
+          totalWorkTime = totalTime[totalTime.length - 1];
           this.addSumOnPreviousPage(doc, totalTime[pageNumber - 2], data);
           this.addTotalWorkTime(doc, totalWorkTime, data, pageHeight, targetTime, differnce);
         }
