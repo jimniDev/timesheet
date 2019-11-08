@@ -29,13 +29,15 @@ export class YearMonthSelectComponent implements OnInit {
   resetButtonDisabled = true;
 
   yearMonthForm = new FormGroup({
-    yearForm: new FormControl(this.changeYear, Validators.required),
-    monthForm: new FormControl(this.changeMonth, Validators.required)
+    yearForm: new FormControl(this.changeYear),
+    monthForm: new FormControl(this.changeMonth)
   });
 
   constructor() {}
 
   ngOnInit() {
+    this.changeYear = this.selectedYear;
+    this.changeMonth = this.selectedMonth;
     this.yearMonthForm.get('yearForm').valueChanges.subscribe(value => {
       this.onChangeYear(value);
     });
@@ -44,19 +46,19 @@ export class YearMonthSelectComponent implements OnInit {
     });
   }
 
-  onChangeYear(year: MatSelectChange) {
-    if (year.value || year) {
+  onChangeYear(year) {
+    if (year) {
       this.resetButtonDisabled = false;
-      this.selectedYear = year.value;
-      this.selectedDate.emit(<YearMonth>{ year: this.selectedYear, month: this.selectedMonth });
+      this.changeYear = year;
+      this.selectedDate.emit(<YearMonth>{ year: this.changeYear, month: this.changeMonth });
     }
   }
 
-  onChangeMonth(month: MatSelectChange) {
-    if (month.value || month) {
+  onChangeMonth(month) {
+    if (month) {
       this.resetButtonDisabled = false;
-      this.selectedMonth = month.value;
-      this.selectedDate.emit(<YearMonth>{ year: this.selectedYear, month: this.selectedMonth });
+      this.changeMonth = month;
+      this.selectedDate.emit(<YearMonth>{ year: this.changeYear, month: this.changeMonth });
     }
   }
 

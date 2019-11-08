@@ -2,7 +2,7 @@
     <div fxLayout="row" fxLayoutAlign="center stretch" fxLayoutGap="8px">
         <mat-form-field fxFlex="50">
             <mat-label>Year</mat-label>
-            <mat-select [value]="changeYear" (selectionChange)="onChangeYear($event)" formControlName="yearForm">
+            <mat-select [value]="changeYear" formControlName="yearForm">
                 <mat-option *ngFor="let year of years" [value]="year">
                     {{year}}
                 </mat-option>
@@ -11,7 +11,7 @@
 
         <mat-form-field fxFlex="50">
             <mat-label>Week</mat-label>
-            <mat-select [value]="changeWeek" (selectionChange)="onChangeWeek($event)" formControlName="weekForm">
+            <mat-select [value]="changeWeek" formControlName="weekForm">
                 <mat-option *ngFor="let week of weeks" [value]="week">
                     {{week}}
                 </mat-option>

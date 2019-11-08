@@ -37,11 +37,15 @@ export class YearWeekSelectComponent implements OnInit {
   resetButtonDisabled = true;
 
   yearWeekForm = new FormGroup({
-    yearForm: new FormControl(this.changeYear, Validators.required),
-    weekForm: new FormControl(this.changeWeek, Validators.required)
+    yearForm: new FormControl(this.changeYear),
+    weekForm: new FormControl(this.changeWeek)
   });
 
-  constructor() {
+  constructor() {}
+
+  ngOnInit() {
+    this.changeYear = this.selectedYear;
+    this.changeWeek = this.selectedWeek;
     this.yearWeekForm.get('yearForm').valueChanges.subscribe(value => {
       this.onChangeYear(value);
     });
@@ -50,12 +54,10 @@ export class YearWeekSelectComponent implements OnInit {
     });
   }
 
-  ngOnInit() {}
-
-  onChangeYear(year: MatSelectChange) {
-    if (year.value) {
+  onChangeYear(year) {
+    if (year) {
       this.resetButtonDisabled = false;
-      this.selectedYear = year.value;
+      this.selectedYear = year;
       this.weeks = Array.from(Array(moment(this.selectedYear + '-12-28', 'YYYY-MM-DD').isoWeek()), (e, i) => (i + 1).toString());
       this.selectedDate.emit(<YearWeek>{ year: this.selectedYear, week: this.selectedWeek });
     } else {
@@ -63,10 +65,10 @@ export class YearWeekSelectComponent implements OnInit {
     }
   }
 
-  onChangeWeek(week: MatSelectChange) {
-    if (week.value) {
+  onChangeWeek(week) {
+    if (week) {
       this.resetButtonDisabled = false;
-      this.selectedWeek = week.value;
+      this.selectedWeek = week;
       this.selectedDate.emit(<YearWeek>{ year: this.selectedYear, week: this.selectedWeek });
     } else {
       this.selectedDate.emit(null);
