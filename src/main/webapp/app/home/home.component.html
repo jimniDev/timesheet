@@ -8,10 +8,9 @@
             <mat-card id="addCard" fxFlex="auto">
                 <mat-card-subtitle>Add new entry</mat-card-subtitle>
                 <mat-card-content>
-                    <div fxLayoutAlign="center" fxLayout="row" fxLayout.lt-lg="column" fxLayoutGap="8px"
-                        class="container">
-                        <jhi-date-form (newWorkingEntry)="addnewEntry($event)"></jhi-date-form>
-                    </div>
+
+                    <jhi-date-form (newWorkingEntry)="addnewEntry($event)"></jhi-date-form>
+
                 </mat-card-content>
             </mat-card>
             <mat-card fxFlex="20" fxHide.lt-md>
