@@ -182,7 +182,7 @@ export class AsTimeInputComponent implements OnInit, OnDestroy, ControlValueAcce
   }
 
   onKeyPress() {
-    if (!this.platform.IOS) {
+    if (!(this.platform.IOS || this.platform.EDGE)) {
       const input = this.hoursInput.nativeElement;
       if (this.parts.value.hours.length > 0 && !(input.selectionStart === 0 && input.selectionEnd === input.value.length)) {
         this.minutesInput.nativeElement.focus();
