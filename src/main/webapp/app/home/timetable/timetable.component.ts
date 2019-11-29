@@ -170,6 +170,11 @@ export class TimetableComponent implements OnInit, AfterViewInit {
     });
   }
 
+  createPDF(): void {
+    this.workingEntries.sort((a, b) => a.workDay.date.valueOf() - b.workDay.date.valueOf());
+    this.pdfService.buttonPDF(this.workingEntries, this.targetMinutes, this.actualMinutes);
+  }
+
   loadTargetWorkTimeWeekly(year: number, week: number) {
     this.employeeService.weeklyTargetWorkTime(year, week).subscribe(res => {
       if (res.ok) {
@@ -371,11 +376,6 @@ export class TimetableComponent implements OnInit, AfterViewInit {
     } else {
       this.DSworkingEntries.data = this.workingEntries;
     }
-  }
-
-  createPDF(): void {
-    this.workingEntries.sort((a, b) => a.workDay.date.valueOf() - b.workDay.date.valueOf());
-    this.pdfService.buttonPDF(this.workingEntries);
   }
 
   onKeyDown(event) {

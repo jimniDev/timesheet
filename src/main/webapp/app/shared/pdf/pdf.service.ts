@@ -17,122 +17,80 @@ export class PdfService {
       this.initialized = true;
     });
   }
-
-  public buttonPDF(workingEntries: IWorkingEntryTimesheet[]) {
-    this.createPDF(workingEntries);
+  public buttonPDF(workingEntries: IWorkingEntryTimesheet[], targetMinutes: number, actualTime: number) {
+    if (this.checkEmptyData(workingEntries) && workingEntries.length > 0) {
+      try {
+        this.createPDF(workingEntries, targetMinutes, actualTime);
+      } catch (e) {
+        console.log(e);
+      }
+    } else {
+      const string = workingEntries.length === 0 ? 'No data' : 'Some Working Entries are not Complete';
+      this._snackBar.open(string, 'Undo', { duration: 3000 });
+    }
   }
-
-  public createPDF(workingEntries: IWorkingEntryTimesheet[]): void {
-    const initialChecking = this.checkEmptyData(workingEntries);
-    if (initialChecking === true) {
-      const rawData = workingEntries.map(we => [
-        we.workDay.date.format('YYYY-MM-DD'),
-        this.secondsToHHMM(we.workDay.totalWorkingMinutes * 60),
-        this.secondsToHHMM(we.workDay.totalBreakMinutes * 60),
-        we.start.format('HH:mm'),
-        we.end.format('HH:mm'),
-        we.activity ? we.activity.name : ''
-      ]);
-      const topMargin = 27;
-      const leftMargin = 15;
-      const rightMargin = 15;
-      const bottomMargin = 33;
-      const maxRowInPage = 30;
-      let doc: any;
-      doc = new jsPDF();
-      const rawdataLength = rawData.length;
-      let processedData = [];
-      const bodyParts = [];
-      const workingEntryParts = [];
-      const totaltimeParts = [];
-      let calculateRowSpan: any;
-      switch (rawdataLength) {
-        case 0:
-          console.log('No data for printing');
-          break;
-
-        case 1:
-          processedData = rawData;
-          break;
-
-        default:
-          calculateRowSpan = this.calculateDataStats(rawData);
-          processedData = this.dataConversionForRowSpan(workingEntries, rawData, calculateRowSpan);
-          break;
-      }
-      const idealIndexPairs = [];
-      let checker = 0;
-      if (processedData.length > maxRowInPage) {
-        const parts = Math.floor(processedData.length / maxRowInPage);
-        let starting = 0;
-        let end = 0;
-        for (let i = 0; i <= parts; i++) {
-          if (i === 0) {
-            starting = maxRowInPage * i;
-            end = 29 * (i + 1) + i;
-            checker = this.checkProcessedData(processedData, end);
-            idealIndexPairs.push(checker);
-          } else if (i === parts) {
-            starting = checker + 1;
-            end = processedData.length - 1;
-            idealIndexPairs.push(end);
-          } else {
-            starting = checker + 1;
-            end = 29 * (i + 1) + i;
-            checker = this.checkProcessedData(processedData, end);
-            idealIndexPairs.push(checker);
-          }
-        }
-        let start = 0;
-        for (let i = 0; i < idealIndexPairs.length; i++) {
-          const tempWEParts = workingEntries.slice(start, idealIndexPairs[i] + 1);
-          const tempBodyParts = processedData.slice(start, idealIndexPairs[i] + 1);
-          workingEntryParts.push(tempWEParts);
-          bodyParts.push(tempBodyParts);
-          start = idealIndexPairs[i] + 1;
-        }
-        for (let x = 0; x < workingEntryParts.length; x++) {
-          const total = this.totalWorkTime(workingEntryParts[x], calculateRowSpan);
-          totaltimeParts[x] = total;
-        }
-        totaltimeParts.push(this.totalWorkTime(workingEntries, calculateRowSpan));
-      } else {
-        bodyParts[0] = processedData;
-        totaltimeParts[0] = this.totalWorkTime(workingEntries, calculateRowSpan);
-      }
-      if (bodyParts.length > 1) {
-        for (let s = 0; s < bodyParts.length; s++) {
-          doc.autoTable({
-            head: this.getColumns(),
-            body: bodyParts[s],
-            theme: 'grid',
-            pageBreak: 'always',
-            didDrawPage: (autoTableData: any) =>
-              this.createPage(doc, workingEntryParts[s], autoTableData, s + 1, bodyParts.length, totaltimeParts, calculateRowSpan),
-            margin: { top: topMargin, bottom: bottomMargin, right: rightMargin, left: leftMargin }
-          });
-        }
-        doc.deletePage(1);
-      } else {
+  public createPDF(workingEntries: IWorkingEntryTimesheet[], targetTime: number, actualTime: number): void {
+    const rawData = this.dataMapping(workingEntries);
+    const topMargin = 27,
+      leftMargin = 15,
+      rightMargin = 15,
+      bottomMargin = 33,
+      maxRowInPage = 31; // CONFIG FOR PDF GENERATION
+    let doc: any;
+    doc = new jsPDF();
+    const body = this.bodyCreationForTable(rawData, workingEntries, maxRowInPage);
+    const workingEntryParts = this.dataSplits(this.calculateSplits(workingEntries, maxRowInPage), workingEntries);
+    const dataStats = this.calculateDataStats(rawData);
+    const totalTime = this.calculateTotalTimeParts(workingEntryParts, dataStats, this.calculateSplits(workingEntries, maxRowInPage));
+    if (body.length > 1) {
+      for (let s = 0; s < body.length; s++) {
         doc.autoTable({
           head: this.getColumns(),
-          body: bodyParts[0],
+          body: body[s],
           theme: 'grid',
+          pageBreak: 'always',
           didDrawPage: (autoTableData: any) =>
-            this.createPage(doc, workingEntries, autoTableData, bodyParts.length, bodyParts.length, totaltimeParts, calculateRowSpan),
+            this.createPage(doc, workingEntryParts[s], autoTableData, s + 1, body.length, totalTime, dataStats, targetTime, actualTime),
           margin: { top: topMargin, bottom: bottomMargin, right: rightMargin, left: leftMargin }
         });
       }
-      doc.save('timesheet.pdf');
+      doc.deletePage(1);
     } else {
-      this._snackBar.open('Some Working Entries are not Complete', 'Undo', { duration: 3000 });
+      doc.autoTable({
+        head: this.getColumns(),
+        body: body[0],
+        theme: 'grid',
+        didDrawPage: (autoTableData: any) =>
+          this.createPage(doc, workingEntries, autoTableData, body.length, body.length, totalTime, dataStats, targetTime, actualTime),
+        margin: { top: topMargin, bottom: bottomMargin, right: rightMargin, left: leftMargin }
+      });
     }
+    doc.save('timesheet.pdf');
   }
-
   getColumns() {
-    return [{ date: 'Date', worktime: 'Worktime', Break: 'BreakTime', from: 'From', to: 'To', activity: 'Activity' }];
+    return [{ date: 'Date', worktime: 'Worktime', Break: 'Break', from: 'From', to: 'To', activity: 'Activity' }];
   }
-  checkEmptyData(data: any): any {
+  totalWorkTime(data: IWorkingEntryTimesheet[], dataStats: any): string {
+    const dates = dataStats.dates;
+    const index = dataStats.datesIndexInRawData;
+    const processedDates = [];
+    let tempWorkTime = 0;
+    for (let i = 0; i < data.length; i++) {
+      if (processedDates.indexOf(data[i].workDay.date.format('DDMMYYYY')) === -1) {
+        processedDates.push(data[i].workDay.date.format('DDMMYYYY'));
+        tempWorkTime = tempWorkTime + data[i].workDay.totalWorkingMinutes * 60;
+      }
+    }
+    return this.secondsToHHMM(tempWorkTime);
+  }
+  calculateTotalTimeParts(workingEntries: any, dataStats: any, index: any): any {
+    const totalTimeByParts = [];
+    for (let i = 0; i < workingEntries.length; i++) {
+      totalTimeByParts[i] = this.totalWorkTime(workingEntries[i], dataStats);
+    }
+    return totalTimeByParts;
+  }
+  checkEmptyData(data: IWorkingEntryTimesheet[]): any {
     let flag = true;
     for (let i = 0; i < data.length; i++) {
       if (data[i].start === null || data[i].end === null) {
@@ -142,55 +100,22 @@ export class PdfService {
     }
     return flag;
   }
-
-  createPage(
-    doc: jsPDF,
-    workingEntries: IWorkingEntryTimesheet[],
-    data: any,
-    pageNumber: number,
-    totalPages: number,
-    totalTime: any,
-    datesObj: any
-  ): void {
-    const pageSize = doc.internal.pageSize;
-    const pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight();
-    const name = this.account.firstName + ' ' + this.account.lastName;
-    const month = workingEntries[0].workDay.date.format('MMMM');
-    let totalWorkTime = totalTime[totalTime.length - 1];
-    const targetTime = this.secondsToHHMM(workingEntries[0].workDay.targetWorkingMinutes * 60);
-    const differnce = this.difference(this.totalWorkTime(workingEntries, datesObj), targetTime);
-    if (!this.initialized) {
-      return;
-    }
-    const base64logo = this.getLogo().default;
-    if (base64logo) {
-      if (totalPages > 1) {
-        this.addLogo(doc, base64logo, data, pageHeight);
-        doc.setFontSize('13');
-        if (pageNumber < totalPages && pageNumber > 1) {
-          this.addPageNumber(doc, pageNumber, totalPages, data, pageHeight);
-          this.addSumOnPreviousPage(doc, totalTime[pageNumber - 2], data);
-        }
-        if (pageNumber === 1) {
-          this.addEmployeeNameandMonth(doc, name, month, data);
-          this.addPageNumber(doc, pageNumber, totalPages, data, pageHeight);
-        }
-        if (pageNumber === totalPages) {
-          this.addSignature(doc, data, pageHeight);
-          totalWorkTime = totalTime[totalTime.length - 1];
-          this.addSumOnPreviousPage(doc, totalTime[pageNumber - 2], data);
-          this.addTotalWorkTime(doc, totalWorkTime, data, pageHeight, targetTime, differnce);
-        }
-      } else {
-        totalWorkTime = this.totalWorkTime(workingEntries, datesObj);
-        this.addLogo(doc, base64logo, data, pageHeight);
-        this.addEmployeeNameandMonth(doc, name, month, data);
-        this.addTotalWorkTime(doc, totalWorkTime, data, pageHeight, targetTime, differnce);
-        this.addSignature(doc, data, pageHeight);
-      }
-    }
+  dataMapping(data: IWorkingEntryTimesheet[]): any {
+    const rawData = data.map(we => [
+      we.workDay.date.format('YYYY-MM-DD'),
+      this.secondsToHHMM(we.workDay.totalWorkingMinutes * 60),
+      this.secondsToHHMM(we.workDay.totalBreakMinutes * 60),
+      we.start.format('HH:mm'),
+      we.end.format('HH:mm'),
+      we.activity ? we.activity.name : ''
+    ]);
+    return rawData;
   }
-
+  secondsToHHMM(seconds: number): string {
+    const hour = Math.floor(seconds / 3600);
+    const min = Math.round((seconds % 3600) / 60);
+    return this.pad(hour, 2) + 'h ' + this.pad(min, 2) + 'm';
+  }
   pad(num: number, size: number): string {
     let s = num + '';
     while (s.length < size) {
@@ -198,31 +123,16 @@ export class PdfService {
     }
     return s;
   }
-
-  calculateDataStats(data: any): object {
-    const processingResult = {
-      dates: [],
-      rowSpan: [],
-      datesIndexInRawData: []
-    };
-    const processingResultObject = processingResult;
-    const datesLength = data.length;
-    for (let i = 0; i < datesLength; i++) {
-      if (processingResultObject.dates.indexOf(data[i][0]) === -1) {
-        processingResultObject.dates.push(data[i][0]);
-        processingResultObject.datesIndexInRawData.push(i);
-        processingResultObject.rowSpan.push(1);
-      } else {
-        ++processingResultObject.rowSpan[processingResult.dates.indexOf(data[i][0])];
-      }
-    }
-    return processingResultObject;
+  bodyCreationForTable(rawData: any, workingEntries: IWorkingEntryTimesheet[], maxRows: number): any {
+    const dataStats = this.calculateDataStats(rawData);
+    const body = this.dataConversionForRowSpan(workingEntries, rawData, dataStats);
+    const splitsIndex = this.calculateSplits(rawData, maxRows);
+    const bodyParts = this.dataSplits(splitsIndex, body);
+    return bodyParts;
   }
-
   dataConversionForRowSpan(data: IWorkingEntryTimesheet[], raw_data: any, result: any): any {
     const body = [];
     const totalWorkTime = [];
-    const totalbreakTime = [];
     let row = [];
     const dates = result.dates;
     const rowSpan = result.rowSpan;
@@ -284,37 +194,144 @@ export class PdfService {
           }
         }
       } else {
+        // tslint:disable-next-line: forin
         for (const keys in raw_data[flag]) {
-          if (raw_data.hasOwnProperty(keys)) {
-            row.push(raw_data[flag][keys]);
-            if (keys === '5') {
-              flag++;
-              body.push(row);
-              row = [];
-            }
+          //  if (raw_data.hasOwnProperty(keys)) {
+          row.push(raw_data[flag][keys]);
+          if (keys === '5') {
+            flag++;
+            body.push(row);
+            row = [];
           }
         }
       }
     }
+
     return body;
   }
-
-  totalWorkTime(data: IWorkingEntryTimesheet[], dates: any): string {
-    let tempWorkTime = 0;
-    let datesInData = dates.datesIndexInRawData;
-    let length = datesInData.length;
-    for (let i = 0; i < length; i++) {
-      tempWorkTime = tempWorkTime + data[datesInData[i]].workDay.totalWorkingMinutes * 60;
+  calculateDataStats(data: any): object {
+    const processingResult = {
+      dates: [],
+      rowSpan: [],
+      datesIndexInRawData: []
+    };
+    const processingResultObject = processingResult;
+    const datesLength = data.length;
+    for (let i = 0; i < datesLength; i++) {
+      if (processingResultObject.dates.indexOf(data[i][0]) === -1) {
+        processingResultObject.dates.push(data[i][0]);
+        processingResultObject.datesIndexInRawData.push(i);
+        processingResultObject.rowSpan.push(1);
+      } else {
+        ++processingResultObject.rowSpan[processingResult.dates.indexOf(data[i][0])];
+      }
     }
-    return this.secondsToHHMM(tempWorkTime);
+    return processingResultObject;
   }
-
-  secondsToHHMM(seconds: number): string {
-    const hour = Math.floor(seconds / 3600);
-    const min = Math.round((seconds % 3600) / 60);
-    return this.pad(hour, 2) + 'h ' + this.pad(min, 2) + 'm';
+  checkProcessedData(processedDataSet: any, index: any): any {
+    let properIndexforPageDivision: any;
+    if (typeof processedDataSet[index][0] === 'object') {
+      properIndexforPageDivision = index - 1;
+    } else if (processedDataSet[index].length === 3) {
+      for (let i = index; i >= 0; i--) {
+        if (processedDataSet[i].length === 5) {
+          properIndexforPageDivision = i - 1;
+          break;
+        }
+      }
+    } else {
+      properIndexforPageDivision = index;
+    }
+    return properIndexforPageDivision;
   }
-
+  calculateSplits(rawData: any, maxRows: number): any {
+    const idealIndexPairs = [];
+    let checker = 0;
+    if (rawData.length > maxRows) {
+      const parts = Math.floor(rawData.length / maxRows);
+      let starting = 0;
+      let end = 0;
+      for (let i = 0; i <= parts; i++) {
+        if (i === 0) {
+          starting = maxRows * i;
+          end = 29 * (i + 1) + i;
+          checker = this.checkProcessedData(rawData, end);
+          idealIndexPairs.push(checker);
+        } else if (i === parts) {
+          starting = checker + 1;
+          end = rawData.length - 1;
+          idealIndexPairs.push(end);
+        } else {
+          starting = checker + 1;
+          end = 29 * (i + 1) + i;
+          checker = this.checkProcessedData(rawData, end);
+          idealIndexPairs.push(checker);
+        }
+      }
+      return idealIndexPairs;
+    } else {
+      idealIndexPairs.push(rawData.length);
+      return idealIndexPairs;
+    }
+  }
+  dataSplits(splitsIndex: any, data: any): any {
+    let start = 0;
+    const splitCollector: any = [];
+    for (let i = 0; i < splitsIndex.length; i++) {
+      const tempWEParts = data.slice(start, splitsIndex[i] + 1);
+      splitCollector.push(tempWEParts);
+      start = splitsIndex[i] + 1;
+    }
+    return splitCollector;
+  }
+  createPage(
+    doc: jsPDF,
+    workingEntries: IWorkingEntryTimesheet[],
+    data: any,
+    pageNumber: number,
+    totalPages: number,
+    totalTime: any,
+    datesObj: any,
+    targettime: number,
+    totalTimeFromServer: number
+  ): void {
+    const pageSize = doc.internal.pageSize;
+    const pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight();
+    const name = this.account.firstName + ' ' + this.account.lastName;
+    const month = workingEntries[0].workDay.date.format('MMMM');
+    let totalWorkTime = totalTimeFromServer;
+    const targetTime = this.secondsToHHMM(targettime * 60);
+    const differnce = this.difference(this.totalWorkTime(workingEntries, datesObj), targetTime);
+    if (!this.initialized) {
+      return;
+    }
+    const base64logo = this.getLogo().default;
+    if (base64logo) {
+      if (totalPages > 1) {
+        this.addLogo(doc, base64logo, data, pageHeight);
+        doc.setFontSize('13');
+        if (pageNumber < totalPages && pageNumber > 1) {
+          this.addPageNumber(doc, pageNumber, totalPages, data, pageHeight);
+          this.addSumOnPreviousPage(doc, totalTime[pageNumber - 2], data);
+        }
+        if (pageNumber === 1) {
+          this.addEmployeeNameandMonth(doc, name, month, data);
+          this.addPageNumber(doc, pageNumber, totalPages, data, pageHeight);
+        }
+        if (pageNumber === totalPages) {
+          this.addSignature(doc, data, pageHeight);
+          totalWorkTime = totalTimeFromServer;
+          this.addSumOnPreviousPage(doc, totalTime[pageNumber - 2], data);
+          this.addTotalWorkTime(doc, totalWorkTime, data, pageHeight, targetTime, differnce);
+        }
+      } else {
+        this.addLogo(doc, base64logo, data, pageHeight);
+        this.addEmployeeNameandMonth(doc, name, month, data);
+        this.addTotalWorkTime(doc, totalWorkTime, data, pageHeight, targetTime, differnce);
+        this.addSignature(doc, data, pageHeight);
+      }
+    }
+  }
   addLogo(doc: jsPDF, logo: any, data: any, pageHeight: any): void {
     doc.addImage(logo, 'PNG', data.settings.margin.left + 150, pageHeight - 27, 24, 10);
   }
@@ -334,7 +351,11 @@ export class PdfService {
 
   addTotalWorkTime(doc: jsPDF, totalWorkTime: any, data: any, pageHeight: any, targetTime: any, difference: any): void {
     doc.setFontSize('10');
-    doc.text(`Total: ${totalWorkTime} | Target:${targetTime} | Diff:${difference}`, data.settings.margin.left + 55, pageHeight - 18);
+    doc.text(
+      `Total: ${this.secondsToHHMM(totalWorkTime * 60)} | Target: ${targetTime} | Diff: ${difference}`,
+      data.settings.margin.left + 55,
+      pageHeight - 18
+    );
   }
 
   addPageNumber(doc: jsPDF, pageNumber: any, totalPages: number, data: any, pageHeight: any): void {
@@ -346,28 +367,6 @@ export class PdfService {
     doc.setFontSize('13');
     doc.text(`Sum of previous page: ${totalTimeOnPreviouspage}`, data.settings.margin.left, 25);
   }
-
-  checkProcessedData(processedDataSet: any, index: any): any {
-    let properIndexforPageDivision: any;
-    if (typeof processedDataSet[index][0] === 'object') {
-      properIndexforPageDivision = index - 1;
-    } else if (processedDataSet[index].length === 3) {
-      for (let i = index; i >= 0; i--) {
-        if (processedDataSet[i].length === 5) {
-          properIndexforPageDivision = i - 1;
-          break;
-        }
-      }
-    } else {
-      properIndexforPageDivision = index;
-    }
-    return properIndexforPageDivision;
-  }
-
-  getLogo(): any {
-    return require('app/../content/images/logo-base64Img.txt');
-  }
-
   difference(time: string, time2: string): any {
     const timeHours = +time.slice(0, time.indexOf('h')).toString();
     const timeMinutes = +time.slice(time.indexOf('h') + 2, time.indexOf('m'));
@@ -384,5 +383,8 @@ export class PdfService {
       result = this.pad(diffHours, 2) + 'h ' + this.pad(diffMin, 2) + 'm';
     }
     return result;
+  }
+  getLogo(): any {
+    return require('app/../content/images/logo-base64Img.txt');
   }
 }
