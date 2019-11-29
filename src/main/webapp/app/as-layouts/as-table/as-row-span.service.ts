@@ -67,6 +67,6 @@ export class AsRowSpanService {
   }
 
   public getRowSpan(col: string, index: number): number {
-    return this.spans[index] && this.spans[index][col];
+    return (this.spans[index] && this.spans[index][col]) || 0;
   }
 }

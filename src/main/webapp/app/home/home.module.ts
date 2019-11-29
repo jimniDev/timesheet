@@ -8,7 +8,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { TwoDigitsDirective } from './two-digits.directive';
 import { YearMonthSelectComponent } from './year-month-select/year-month-select.component';
 import { AsLayoutsModule } from 'app/as-layouts/as-layouts.module';
-import { HomeDialogComponent } from './home-dialog/home-dialog.component';
+import { StartStopDialogComponent } from './start-stop-dialog/start-stop-dialog.component';
 import { TimetableEditDialogComponent } from './timetable-edit-dialog/timetable-edit-dialog.component';
 import { PdfModule } from 'app/shared/pdf/pdf.module';
 import { TimetableDeleteDialogComponent } from './timetable-delete-dialog/timetable-delete-dialog.component';
@@ -22,12 +22,12 @@ import { YearWeekSelectComponent } from './year-week-select/year-week-select.com
     DateFormComponent,
     TwoDigitsDirective,
     YearMonthSelectComponent,
-    HomeDialogComponent,
+    StartStopDialogComponent,
     TimetableEditDialogComponent,
     TimetableDeleteDialogComponent,
     YearWeekSelectComponent
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  entryComponents: [HomeDialogComponent, TimetableComponent, TimetableEditDialogComponent, TimetableDeleteDialogComponent]
+  entryComponents: [StartStopDialogComponent, TimetableComponent, TimetableEditDialogComponent, TimetableDeleteDialogComponent]
 })
 export class TimesheetHomeModule {}

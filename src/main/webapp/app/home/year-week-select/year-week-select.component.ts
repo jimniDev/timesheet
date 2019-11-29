@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, SimpleChanges } from '@
 import { Moment } from 'moment';
 import * as moment from 'moment';
 import { MatSelectChange } from '@angular/material';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 export interface YearWeek {
   year: string;
@@ -15,6 +16,12 @@ export interface YearWeek {
 })
 export class YearWeekSelectComponent implements OnInit {
   @Output() selectedDate = new EventEmitter<YearWeek>();
+  @Input() changeYear: string = moment()
+    .year()
+    .toString();
+  @Input() changeWeek: string = moment()
+    .isoWeek()
+    .toString();
 
   selectedYear: string = moment()
     .year()
@@ -29,14 +36,28 @@ export class YearWeekSelectComponent implements OnInit {
     .toString();
   resetButtonDisabled = true;
 
+  yearWeekForm = new FormGroup({
+    yearForm: new FormControl(this.changeYear),
+    weekForm: new FormControl(this.changeWeek)
+  });
+
   constructor() {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.changeYear = this.selectedYear;
+    this.changeWeek = this.selectedWeek;
+    this.yearWeekForm.get('yearForm').valueChanges.subscribe(value => {
+      this.onChangeYear(value);
+    });
+    this.yearWeekForm.get('weekForm').valueChanges.subscribe(value => {
+      this.onChangeWeek(value);
+    });
+  }
 
-  onChangeYear(year: MatSelectChange) {
-    if (year.value) {
+  onChangeYear(year) {
+    if (year) {
       this.resetButtonDisabled = false;
-      this.selectedYear = year.value;
+      this.selectedYear = year;
       this.weeks = Array.from(Array(moment(this.selectedYear + '-12-28', 'YYYY-MM-DD').isoWeek()), (e, i) => (i + 1).toString());
       this.selectedDate.emit(<YearWeek>{ year: this.selectedYear, week: this.selectedWeek });
     } else {
@@ -44,10 +65,10 @@ export class YearWeekSelectComponent implements OnInit {
     }
   }
 
-  onChangeWeek(week: MatSelectChange) {
-    if (week.value) {
+  onChangeWeek(week) {
+    if (week) {
       this.resetButtonDisabled = false;
-      this.selectedWeek = week.value;
+      this.selectedWeek = week;
       this.selectedDate.emit(<YearWeek>{ year: this.selectedYear, week: this.selectedWeek });
     } else {
       this.selectedDate.emit(null);

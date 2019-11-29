@@ -10,10 +10,10 @@ import { RoleTimesheetService } from 'app/entities/role-timesheet';
 import { ActivityTimesheetService } from 'app/entities/activity-timesheet';
 
 @Component({
-  selector: 'home-dialog',
-  templateUrl: 'home-dialog.component.html'
+  selector: 'start-stop-dialog',
+  templateUrl: 'start-stop-dialog.component.html'
 })
-export class HomeDialogComponent implements OnInit {
+export class StartStopDialogComponent implements OnInit {
   modalForm = new FormGroup({
     roleControl: new FormControl('', Validators.required),
     activityControl: new FormControl('', Validators.required),
@@ -27,7 +27,7 @@ export class HomeDialogComponent implements OnInit {
   breaktime: number;
 
   constructor(
-    public dialogRef: MatDialogRef<HomeDialogComponent>,
+    public dialogRef: MatDialogRef<StartStopDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: IWorkingEntryTimesheet,
     private activityService: ActivityTimesheetService,
     private roleService: RoleTimesheetService,
