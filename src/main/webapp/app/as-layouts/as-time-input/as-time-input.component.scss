@@ -3,6 +3,10 @@ div {
   // width: fit-content;
 }
 
+input::-ms-clear {
+  display: none;
+}
+
 input {
   border: none;
   background: none;

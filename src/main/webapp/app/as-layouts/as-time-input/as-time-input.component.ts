@@ -140,6 +140,14 @@ export class AsTimeInputComponent implements OnInit, OnDestroy, ControlValueAcce
     }
   }
 
+  onFocus(event: any) {
+    if (!(this.platform.IOS || this.platform.EDGE)) {
+      event.target.select();
+    } else {
+      setTimeout(event.target.select.bind(event.target), 10);
+    }
+  }
+
   onKeyDown(event) {
     const e = <KeyboardEvent>event;
     if (
@@ -181,16 +189,15 @@ export class AsTimeInputComponent implements OnInit, OnDestroy, ControlValueAcce
     this.disabled = isDisabled;
   }
 
-  onKeyPress() {
-    if (!(this.platform.IOS || this.platform.EDGE)) {
-      const input = this.hoursInput.nativeElement;
-      if (this.parts.value.hours.length > 0 && !(input.selectionStart === 0 && input.selectionEnd === input.value.length)) {
-        this.minutesInput.nativeElement.focus();
-      }
+  hoursChangeToMinutes() {
+    const input = this.hoursInput.nativeElement;
+    if (this.parts.value.hours.length > 1 && !(input.selectionStart === 0 && input.selectionEnd === this.parts.value.hours.length)) {
+      this.minutesInput.nativeElement.focus();
     }
   }
 
   _handleInput(): void {
+    this.hoursChangeToMinutes();
     this.onChange(this.value);
   }
 }
