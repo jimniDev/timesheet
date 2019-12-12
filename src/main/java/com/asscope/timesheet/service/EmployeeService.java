@@ -10,6 +10,7 @@ import com.asscope.timesheet.repository.WorkDayRepository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,15 +42,18 @@ public class EmployeeService {
     private final WorkDayRepository workDayRepository;
     
     private final HolidayService holidayService;
+    
+    private final WorktimeBalanceCacheService wbCache;
 
 	public EmployeeService(EmployeeRepository employeeRepository, UserRepository userRepository,
 			WeeklyWorkingHoursRepository wwhRepository, WorkDayRepository workDayRepository,
-			HolidayService holidayService) {
+			HolidayService holidayService, WorktimeBalanceCacheService wbCache) {
 		this.employeeRepository = employeeRepository;
 		this.userRepository = userRepository;
 		this.wwhRepository = wwhRepository;
 		this.workDayRepository = workDayRepository;
 		this.holidayService = holidayService;
+		this.wbCache = wbCache;
 	}
 
 	/**
@@ -194,6 +198,18 @@ public class EmployeeService {
 	@Transactional(readOnly = true)
 	public long currentWorktimeBalance(String userId) {
 		YearMonth currentMonth = YearMonth.now();
+		Optional<Long> oBalance = this.wbCache.get(userId, currentMonth);
+		if (oBalance.isPresent()) {
+			return oBalance.get();
+		} else {
+			Long balance = worktimeBalance(userId, currentMonth);
+			this.wbCache.set(userId, currentMonth, balance);
+			return balance;
+		}
+	}
+	
+	@Transactional(readOnly = true)
+	public Long worktimeBalance(String userId, YearMonth currentMonth) {
 		this.getTargetWorkTimeMinutes(userId, currentMonth.getYear(), currentMonth.getMonthValue());
 		return IntStream.range(1, currentMonth.getMonthValue())
 				.mapToLong(month -> this.getWorkTimeMinutes(userId, currentMonth.getYear(), month) - this.getTargetWorkTimeMinutes(userId, currentMonth.getYear(), month))
