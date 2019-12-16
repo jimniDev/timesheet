@@ -10,7 +10,6 @@ import com.asscope.timesheet.repository.WorkDayRepository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -210,7 +209,6 @@ public class EmployeeService {
 	
 	@Transactional(readOnly = true)
 	public Long worktimeBalance(String userId, YearMonth currentMonth) {
-		this.getTargetWorkTimeMinutes(userId, currentMonth.getYear(), currentMonth.getMonthValue());
 		return IntStream.range(1, currentMonth.getMonthValue())
 				.mapToLong(month -> this.getWorkTimeMinutes(userId, currentMonth.getYear(), month) - this.getTargetWorkTimeMinutes(userId, currentMonth.getYear(), month))
 				.reduce(0L, Long::sum);
