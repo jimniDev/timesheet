@@ -131,13 +131,12 @@ public class EmployeeService {
     public long getWorkTimeMinutes(String userId, int year, int month) {
     	Optional<Employee> employee = this.findOneByUsername(userId);
     	if (employee.isPresent()) {
-    		return workDayRepository.findAllByEmployee(employee.get()).stream()
-    				.filter(wd -> wd.getDate().getYear() == year && wd.getDate().getMonthValue() == month)
-    				.map(wd -> wd.getTotalWorkingMinutes())
-    				.reduce(0L, Long::sum);
-    	} else {
-    		return 0L;
-    	}
+    		Optional<Long> minutes = employeeRepository.monthlyWorkMinutesOfEmployee(employee.get().getId(), year, month);
+    		if (minutes.isPresent()) {
+    			return minutes.get();
+    		}
+    	} 
+    	return 0L;
     }
     
 	@Transactional(readOnly = true)
