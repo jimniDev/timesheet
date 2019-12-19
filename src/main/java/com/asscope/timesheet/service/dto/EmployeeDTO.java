@@ -5,13 +5,13 @@ import com.asscope.timesheet.domain.Employee;
 public class EmployeeDTO extends Employee {
 	private static final long serialVersionUID = 1L;
 	
-	private Long balance;
+	private Integer balance;
 
-	public Long getBalance() {
+	public Integer getBalance() {
 		return balance;
 	}
 
-	public void setBalance(Long balance) {
+	public void setBalance(Integer balance) {
 		this.balance = balance;
 	}
 	

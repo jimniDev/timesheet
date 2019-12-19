@@ -17,10 +17,11 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.temporal.IsoFields;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.stream.IntStream;
 
 /**
@@ -38,21 +39,15 @@ public class EmployeeService {
     
     private final WeeklyWorkingHoursRepository wwhRepository;
     
-    private final WorkDayRepository workDayRepository;
-    
     private final HolidayService holidayService;
-    
-    private final WorktimeBalanceCacheService wbCache;
 
 	public EmployeeService(EmployeeRepository employeeRepository, UserRepository userRepository,
-			WeeklyWorkingHoursRepository wwhRepository, WorkDayRepository workDayRepository,
-			HolidayService holidayService, WorktimeBalanceCacheService wbCache) {
+			WeeklyWorkingHoursRepository wwhRepository,
+			HolidayService holidayService) {
 		this.employeeRepository = employeeRepository;
 		this.userRepository = userRepository;
 		this.wwhRepository = wwhRepository;
-		this.workDayRepository = workDayRepository;
 		this.holidayService = holidayService;
-		this.wbCache = wbCache;
 	}
 
 	/**
@@ -107,82 +102,92 @@ public class EmployeeService {
         log.debug("Request to delete Employee : {}", id);
         employeeRepository.deleteById(id);
     }
-    
-    public long getTargetWorkMinutesForDate(Employee employee, LocalDate date) {
-    	Optional<WeeklyWorkingHours> oWwh = this.wwhRepository.findAllByEmployee(employee).stream().filter(wwh -> (wwh.getStartDate().isBefore(date) || wwh.getStartDate().equals(date)) && (wwh.getEndDate() == null || wwh.getEndDate().isAfter(date))).findFirst();
-    	if (oWwh.isPresent()) {
-    		return (oWwh.get().getHours() * 60) / 5;
-    	} else {
-    		return 0;
-    	}
-    }
-    
+      
     @Transactional(readOnly = true)
-    public long getTargetWorkTimeMinutes(String userId, int year, int month) {
+    public int getTargetWorkTimeMinutes(String userId, int year, int month) {
     	Employee employee = this.findOneByUsername(userId).get();
     	YearMonth yearMonth = YearMonth.of(year, month);
-    	return yearMonth.atDay(1).datesUntil(yearMonth.atEndOfMonth().plusDays(1L))
-    	.filter(date -> !date.getDayOfWeek().equals(DayOfWeek.SATURDAY) && !date.getDayOfWeek().equals(DayOfWeek.SUNDAY) && !this.holidayService.isfixedHoliday(date) && !this.holidayService.isflexibleHoliday(date))
-    	.map(workDay -> getTargetWorkMinutesForDate(employee, workDay))
-    	.reduce(0L, Long::sum);
+    	return targetWorktimeMinutes(employee, yearMonth.atDay(1), yearMonth.atEndOfMonth());
     }
     
     @Transactional(readOnly = true)
-    public long getWorkTimeMinutes(String userId, int year, int month) {
+    public int getWorkTimeMinutes(String userId, int year, int month) {
     	Optional<Employee> employee = this.findOneByUsername(userId);
     	if (employee.isPresent()) {
-    		Optional<Long> minutes = employeeRepository.monthlyWorkMinutesOfEmployee(employee.get().getId(), year, month);
+    		Optional<Integer> minutes = employeeRepository.monthlyWorkMinutesOfEmployee(employee.get().getId(), year, month);
     		if (minutes.isPresent()) {
     			return minutes.get();
     		}
     	} 
-    	return 0L;
+    	return 0;
     }
     
-	@Transactional(readOnly = true)
-	public long targetWorkTimeMinutes(String userId, Integer year, Integer month, Integer day) {
-		Optional<Employee> employee = this.findOneByUsername(userId);
-		LocalDate date = LocalDate.of(year, month, day);
-		if (employee.isPresent()) {
-			return wwhRepository.findAllByEmployee(employee.get())
-					.stream()
-					.filter(wwh -> (wwh.getStartDate().isBefore(date) || wwh.getStartDate().equals(date)) && (wwh.getEndDate() == null || wwh.getEndDate().isAfter(date) || wwh.getEndDate().equals(date)))
-					.map(wwh -> wwh.getHours() * 60L / 5L)
-					.findFirst()
-					.orElse(0L);
-		} else {
-			return 0L;
-		}
-	}
-	
     @Transactional(readOnly = true)
-    public long weeklyWorkTimeMinutes(String userId, int year, int isoWeek) {
+    public int weeklyWorkTimeMinutes(String userId, int year, int isoWeek) {
     	Optional<Employee> employee = this.findOneByUsername(userId);
     	if (employee.isPresent()) {
-    		return this.workDayRepository.findAllByEmployee(employee.get()).stream()
-    				.filter(wd -> wd.getDate().get(IsoFields.WEEK_BASED_YEAR) == year && wd.getDate().get(IsoFields.WEEK_OF_WEEK_BASED_YEAR) == isoWeek)
-    				.map(wd -> wd.getTotalWorkingMinutes())
-    				.reduce(0L, Long::sum);
-    	} else {
-    		return 0L;
-    	}
+    		Optional<Integer> minutes = employeeRepository.weeklyWorkMinutesOfEmployee(employee.get().getId(), year, isoWeek);
+    		if (minutes.isPresent()) {
+    			return minutes.get();
+    		}
+    	} 
+    	return 0;
     }
 
 	@Transactional(readOnly = true)
-	public long weeklyTargetWorktimeMinutes(String userId, int year, int isoWeek) {
+	public int weeklyTargetWorktimeMinutes(String userId, int year, int isoWeek) {
 		Optional<Employee> employee = this.findOneByUsername(userId);
 		if (employee.isPresent()) {
-			return getWorkingDatesOfIsoWeek(year, isoWeek)
-			.stream()
-			.filter(date -> !holidayService.isHoliday(date))
-			.map(workDay -> getTargetWorkMinutesForDate(employee.get(), workDay))
-	    	.reduce(0L, Long::sum);	
+			SortedSet<LocalDate> dates = getWorkingDatesOfIsoWeek(year, isoWeek);
+			return targetWorktimeMinutes(employee.get(), dates.first(), dates.last());
 		}
-		return 0L;
+		return 0;
 	}
 	
-	public Set<LocalDate> getWorkingDatesOfIsoWeek(int year, int isoWeek) {
-		Set<LocalDate> dates = new HashSet<>();
+	
+	@Transactional(readOnly = true) 
+	public int targetWorktimeMinutes(Employee employee, LocalDate start, LocalDate end) {
+		final Set<WeeklyWorkingHours> wwhs = wwhRepository.findByEmployeeBetweenDates(employee, start, end);
+		final SortedSet<LocalDate> holidays = holidayService.getHolidayDatesBetween(start, end);
+		
+		return start.datesUntil(end.plusDays(1L))
+		.filter(d -> !d.getDayOfWeek().equals(DayOfWeek.SATURDAY) && !d.getDayOfWeek().equals(DayOfWeek.SUNDAY) && !holidays.contains(d))
+		.map(d -> targetTime(wwhs, d))
+		.reduce(0, Integer::sum);
+	}	
+	
+	private int targetTime(Set<WeeklyWorkingHours> wwhs, LocalDate date) {
+		for(WeeklyWorkingHours wwh: wwhs) {
+			if ((wwh.getStartDate().isBefore(date) || wwh.getStartDate().equals(date)) && (wwh.getEndDate() == null || wwh.getEndDate().isAfter(date) || wwh.getEndDate().equals(date))) {
+				return wwh.getHours() * 60 / 5;
+			}
+		}
+		return 0;
+	}
+	
+	@Transactional(readOnly = true)
+	public int currentWorktimeBalance(String userId) {
+		YearMonth currentMonth = YearMonth.now();
+//		Optional<Long> oBalance = this.wbCache.get(userId, currentMonth);
+		return worktimeBalance(userId, currentMonth);
+		//		if (oBalance.isPresent()) {
+//			return oBalance.get();
+//		} else {
+//			Long balance = worktimeBalance(userId, currentMonth);
+//			this.wbCache.set(userId, currentMonth, balance);
+//			return balance;
+//		}
+	}
+	
+	@Transactional(readOnly = true)
+	public int worktimeBalance(String userId, YearMonth currentMonth) {
+		return IntStream.range(1, currentMonth.getMonthValue())
+				.map(month -> this.getWorkTimeMinutes(userId, currentMonth.getYear(), month) - this.getTargetWorkTimeMinutes(userId, currentMonth.getYear(), month))
+				.reduce(0, Integer::sum);
+	}
+	
+	private SortedSet<LocalDate> getWorkingDatesOfIsoWeek(int year, int isoWeek) {
+		SortedSet<LocalDate> dates = new TreeSet<>();
 		for(DayOfWeek dayOW: DayOfWeek.values()) {
 			if(!dayOW.equals(DayOfWeek.SATURDAY) && !dayOW.equals(DayOfWeek.SUNDAY)) {
 				dates.add(LocalDate.ofYearDay(year, 125)
@@ -192,24 +197,15 @@ public class EmployeeService {
 		}
 		return dates;
 	}
-	
-	@Transactional(readOnly = true)
-	public long currentWorktimeBalance(String userId) {
-		YearMonth currentMonth = YearMonth.now();
-		Optional<Long> oBalance = this.wbCache.get(userId, currentMonth);
-		if (oBalance.isPresent()) {
-			return oBalance.get();
-		} else {
-			Long balance = worktimeBalance(userId, currentMonth);
-			this.wbCache.set(userId, currentMonth, balance);
-			return balance;
-		}
+
+	public int targetWorkTimeMinutes(String userId, Integer year, Integer month, Integer day) {
+		Optional<Employee> employee = this.findOneByUsername(userId);
+    	if (employee.isPresent()) {
+    		LocalDate date = LocalDate.of(year, month, day);
+    		return targetWorktimeMinutes(employee.get(), date, date);
+    	}
+    	return 0;
 	}
 	
-	@Transactional(readOnly = true)
-	public Long worktimeBalance(String userId, YearMonth currentMonth) {
-		return IntStream.range(1, currentMonth.getMonthValue())
-				.mapToLong(month -> this.getWorkTimeMinutes(userId, currentMonth.getYear(), month) - this.getTargetWorkTimeMinutes(userId, currentMonth.getYear(), month))
-				.reduce(0L, Long::sum);
-	}
+
 }
