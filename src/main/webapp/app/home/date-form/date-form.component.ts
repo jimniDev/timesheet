@@ -86,15 +86,48 @@ export class DateFormComponent implements OnInit {
 
     this.timeForm.get('dateControl').valueChanges.subscribe(value => {
       this.fillDay();
-      this.fillBreak();
+      this.fillExistedBreak();
     });
 
     this.timeForm.get('activityControl').valueChanges.subscribe((value: IActivityTimesheet) => {
       this.fillDay();
+      this.fillAbsenceBreak();
+    });
+
+    this.timeForm.get('endTime').valueChanges.subscribe(value => {
+      this.fillLawBreak();
     });
   }
 
-  fillBreak() {
+  fillLawBreak() {
+    const start = this.timeForm.get('startTime').value;
+    const end = this.timeForm.get('endTime').value;
+    const activity: IActivityTimesheet = this.timeForm.get('activityControl').value;
+    if (start && end) {
+      const startMoment: moment.Moment = moment(moment().format('YYYY-MM-DD') + ' ' + start);
+      const endMoment: moment.Moment = moment(moment().format('YYYY-MM-DD') + ' ' + end);
+      const diff = moment.duration(endMoment.diff(startMoment)).asHours();
+
+      if (!activity.absence) {
+        if (diff > 9) {
+          this.timeForm.patchValue({ addBreakControl: 45 });
+        } else if (diff > 6) {
+          this.timeForm.patchValue({ addBreakControl: 30 });
+        } else {
+          this.timeForm.patchValue({ addBreakControl: '' });
+        }
+      }
+    }
+  }
+
+  fillAbsenceBreak() {
+    const activity: IActivityTimesheet = this.timeForm.get('activityControl').value;
+    if (activity.absence) {
+      this.timeForm.patchValue({ addBreakControl: '' });
+    }
+  }
+
+  fillExistedBreak() {
     const dateBefore = this.timeForm.get('dateControl').value;
     if (dateBefore) {
       const date: moment.Moment = moment(dateBefore);

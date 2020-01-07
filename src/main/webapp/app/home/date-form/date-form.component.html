@@ -49,8 +49,11 @@
       <mat-form-field>
         <mat-label>Additional break minutes</mat-label>
         <input matInput #breakInput type="tel" placeholder="MM" formControlName="addBreakControl"
-          (keydown)="onKeyDown($event)">
-        <mat-icon matSuffix>free_breakfast</mat-icon>
+          (focus)="tooltip.toggle()" (keydown)="onKeyDown($event)">
+        <mat-icon matSuffix #tooltip="matTooltip" matTooltipPosition="above"
+          matTooltip="30 min (work hour > 6hr), 45 min (work hour > 9hr)">
+          free_breakfast
+        </mat-icon>
       </mat-form-field>
       <button mat-flat-button color="primary" type="submit" [disabled]="!timeForm.valid">Submit</button>
 
