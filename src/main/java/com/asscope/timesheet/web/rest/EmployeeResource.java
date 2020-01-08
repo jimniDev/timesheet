@@ -81,6 +81,7 @@ public class EmployeeResource {
     	eDTO.setUser(employee.getUser());
     	eDTO.setId(employee.getId());
     	eDTO.setEditPermitted(employee.isEditPermitted());
+    	eDTO.setOffice(employee.getOffice());
     	eDTO.setWeeklyWorkingHours(employee.getWeeklyWorkingHours());
     	eDTO.setBalance(employeeService.currentWorktimeBalance(employee.getUser().getId()));
     	return eDTO;

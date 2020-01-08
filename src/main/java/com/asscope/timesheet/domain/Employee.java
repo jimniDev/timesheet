@@ -91,7 +91,7 @@ public class Employee implements Serializable {
     }
     
     public String getOffice() {
-		return office;
+		return this.office;
 	}
 
 	public void setOffice(String office) {

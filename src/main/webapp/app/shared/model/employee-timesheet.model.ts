@@ -28,5 +28,6 @@ export class EmployeeTimesheet implements IEmployeeTimesheet {
     public balance?: number
   ) {
     this.editPermitted = this.editPermitted || false;
+    this.office = this.office || 'FFM';
   }
 }
