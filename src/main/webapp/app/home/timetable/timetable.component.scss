@@ -32,8 +32,20 @@ jhi-year-week-select {
   margin-right: 8px;
 }
 
-#filterCard {
+#filterCard,
+#balanceCard {
   padding-top: 16px;
+  padding-bottom: 16px;
+}
+
+#balanceCard > mat-card-subtitle {
+  width: 80px;
+}
+
+.mat-card-actions,
+.mat-card-content,
+.mat-card-subtitle {
+  margin-bottom: 0px;
 }
 
 #pdfBtn {
@@ -85,6 +97,10 @@ jhi-year-week-select {
   mat-title {
     float: none;
     margin-left: 10px;
+  }
+
+  #balanceCard {
+    padding-left: 32px;
   }
 
   mat-card {
