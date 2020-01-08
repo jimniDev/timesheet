@@ -29,7 +29,7 @@
 
       <div fxLayoutAlign="center stretch" fxLayout.xs="column" fxLayoutGap="8px">
         <mat-form-field fxFlex="50">
-          <mat-label>Role</mat-label>
+          <mat-label>Category</mat-label>
           <mat-select matNativeControl formControlName="roleControl" required>
             <mat-option *ngFor="let role of roles" [value]="role">
               {{role.name}}

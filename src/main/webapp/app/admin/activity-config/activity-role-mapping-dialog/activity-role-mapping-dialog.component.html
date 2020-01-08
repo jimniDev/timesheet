@@ -1,9 +1,9 @@
-<h1 mat-dialog-title>Role-Activity Mapping</h1>
+<h1 mat-dialog-title>Category-Activity Mapping</h1>
 <div mat-dialog-content>
   <form [formGroup]="mappingForm" (ngSubmit)="onSubmit()">
     <div fxLayoutAlign="center stretch" fxLayout="column" fxLayoutGap="8px" class="container">
       <mat-form-field>
-        <mat-label>List of Roles</mat-label>
+        <mat-label>List of Categories</mat-label>
         <mat-select formControlName="role">
           <mat-option *ngFor="let role of roles" [value]="role" (click)="updateName(role.name)">
             {{role.name}}
