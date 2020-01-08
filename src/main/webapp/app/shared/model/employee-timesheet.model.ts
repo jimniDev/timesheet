@@ -6,6 +6,7 @@ import { IUser } from 'app/core';
 export interface IEmployeeTimesheet {
   id?: number;
   editPermitted?: boolean;
+  office?: string;
   user?: IUser;
   workingEntries?: IWorkingEntryTimesheet[];
   weeklyWorkingHours?: IWeeklyWorkingHoursTimesheet[];
@@ -18,6 +19,7 @@ export class EmployeeTimesheet implements IEmployeeTimesheet {
   constructor(
     public id?: number,
     public editPermitted?: boolean,
+    public office?: string,
     public user?: IUser,
     public workingEntries?: IWorkingEntryTimesheet[],
     public weeklyWorkingHours?: IWeeklyWorkingHoursTimesheet[],

@@ -23,6 +23,7 @@ export class EmployeeTimesheetDetailComponent implements OnInit {
   public employeeOverviewWeek: IWeeklyWorkingHoursTimesheet[];
   public editPermit: boolean;
   public editPermitString: string;
+  public office: string;
 
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: false }) sort: MatSort;
@@ -42,12 +43,31 @@ export class EmployeeTimesheetDetailComponent implements OnInit {
       this.employeeOverviewWeek = this.employee.weeklyWorkingHours;
       this.employeeWeekly.data = this.employeeOverviewWeek;
       this.editPermit = this.employee.editPermitted;
+      this.office = this.employee.office;
       if (this.editPermit) {
         this.editPermitString = 'permitted';
       } else {
         this.editPermitString = 'blocked';
       }
     });
+  }
+
+  officeChange() {
+    if (this.office === 'FFM') {
+      this.employee.office = 'FFM';
+      this.employeeService.update(this.employee).subscribe(res => {
+        if (res) {
+          this.office = 'FFM';
+        }
+      });
+    } else if (this.office === 'EBM') {
+      this.employee.office = 'EBM';
+      this.employeeService.update(this.employee).subscribe(res => {
+        if (res) {
+          this.office = 'EBM';
+        }
+      });
+    }
   }
 
   editPermitAuth() {

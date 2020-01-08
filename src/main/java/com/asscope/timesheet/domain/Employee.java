@@ -33,6 +33,9 @@ public class Employee implements Serializable {
     @Column(name = "edit_permitted", nullable = false, columnDefinition = "bit default 0")
     private Boolean editPermitted = false;
 
+    @Column(nullable = false, columnDefinition = "varchar(100) default 'FFM'")
+    private String office;
+    
     @JsonIgnoreProperties("employee")
     @OneToMany(mappedBy = "employee")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
@@ -84,6 +87,19 @@ public class Employee implements Serializable {
 
     public Employee editPermitted(Boolean editPermitted) {
         this.editPermitted = editPermitted;
+        return this;
+    }
+    
+    public String getOffice() {
+		return office;
+	}
+
+	public void setOffice(String office) {
+		this.office = office;
+	}
+	
+    public Employee office(String office) {
+        this.office = office;
         return this;
     }
 
@@ -161,10 +177,13 @@ public class Employee implements Serializable {
     public void setWorkDays(Set<WorkDay> workDays) {
         this.workDays = workDays;
     }
+   
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
-    @Override
+
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -185,6 +204,7 @@ public class Employee implements Serializable {
         return "Employee{" +
             "id=" + getId() +
             ", editPermitted='" + isEditPermitted() + "'" +
+            ", office='" + getOffice() + "'" +
             "}";
     }
 }
