@@ -85,5 +85,7 @@ export class YearWeekSelectComponent implements OnInit {
       .isoWeek()
       .toString();
     this.selectedDate.emit(<YearWeek>{ year: this.selectedYear, week: this.selectedWeek });
+    this.changeYear = this.selectedYear;
+    this.changeWeek = this.selectedWeek;
   }
 }

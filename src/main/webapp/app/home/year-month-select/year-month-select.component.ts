@@ -69,5 +69,7 @@ export class YearMonthSelectComponent implements OnInit {
       .toString();
     this.selectedMonth = (moment().month() + 1).toString();
     this.selectedDate.emit(<YearMonth>{ year: this.selectedYear, month: this.selectedMonth });
+    this.changeYear = this.selectedYear;
+    this.changeMonth = this.selectedMonth;
   }
 }
