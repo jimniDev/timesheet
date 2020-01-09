@@ -55,18 +55,10 @@ export class EmployeeTimesheetDetailComponent implements OnInit {
   officeChange() {
     if (this.office === 'FFM') {
       this.employee.office = 'FFM';
-      this.employeeService.update(this.employee).subscribe(res => {
-        if (res) {
-          //this.office = 'FFM';
-        }
-      });
+      this.employeeService.update(this.employee).subscribe();
     } else if (this.office === 'EBM') {
       this.employee.office = 'EBM';
-      this.employeeService.update(this.employee).subscribe(res => {
-        if (res) {
-          //this.office = 'EBM';
-        }
-      });
+      this.employeeService.update(this.employee).subscribe();
     }
   }
 
