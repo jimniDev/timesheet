@@ -41,7 +41,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
 
   targetTime = '00h 00m';
   actualTime = '00h 00m';
-  diffTime = '00h 00m';
+  monthlyDiffTime = '00h 00m';
   todayTime = '00h 00m';
   balanceTime = '00h 00m';
 
@@ -165,7 +165,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
         this.pdfExportButtonDisabled = false;
         this.targetMinutes = res.body;
         this.targetTime = this.secondsToHHMM(res.body * 60);
-        this.calcDiffTargetActual();
+        this.calcMonthlyDiffTargetActual();
       }
     });
   }
@@ -190,7 +190,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
       if (res.ok) {
         this.actualMinutes = res.body;
         this.actualTime = this.secondsToHHMM(res.body * 60);
-        this.calcDiffTargetActual();
+        this.calcMonthlyDiffTargetActual();
       }
     });
   }
@@ -214,10 +214,8 @@ export class TimetableComponent implements OnInit, AfterViewInit {
     });
   }
 
-  calcDiffTargetActual() {
-    if (this.actualMinutes && this.targetMinutes) {
-      this.diffTime = this.secondsToHHMM(this.targetMinutes * 60 - this.actualMinutes * 60);
-    }
+  calcMonthlyDiffTargetActual() {
+    this.monthlyDiffTime = this.secondsToHHMM(this.targetMinutes * 60 - this.actualMinutes * 60);
   }
 
   calcWeeklyDiffTargetActual() {
