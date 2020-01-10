@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
 /**
  * REST controller for managing {@link com.asscope.timesheet.domain.Employee}.
  */
@@ -51,7 +53,7 @@ public class EmployeeResource {
      */
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     @PutMapping("/employees")
-    public ResponseEntity<Employee> updateEmployee(@RequestBody Employee employee) throws URISyntaxException {
+    public ResponseEntity<Employee> updateEmployee(@Valid @RequestBody Employee employee) throws URISyntaxException {
         log.debug("REST request to update Employee : {}", employee);
         if (employee.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");

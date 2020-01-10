@@ -50,4 +50,6 @@
     <include file="config/liquibase/changelog/20191106105837_added_column_edit_permitted_dropped_column_is_employed.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20191107140659_dropped_tables_country_day_of_week_location_target_working_day.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20200108132004_added_column_office_to_employee.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20200109130800_drop_column_office_in_employee.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20200109131511_add_column_office.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>

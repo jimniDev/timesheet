@@ -7,6 +7,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -33,6 +34,7 @@ public class Employee implements Serializable {
     private Boolean editPermitted = false;
 
     @Column(nullable = false, columnDefinition = "varchar(3) default 'FFM'")
+    @Size(min = 1, max = 3)
     private String office;
 
     @JsonIgnoreProperties("employee")
