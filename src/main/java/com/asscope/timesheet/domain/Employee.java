@@ -7,6 +7,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -17,8 +18,7 @@ import java.util.Set;
  * A Employee.
  */
 @Entity
-@NamedEntityGraph(name = "Employee.weeklyWorkingHours",
-attributeNodes = @NamedAttributeNode("weeklyWorkingHours"))
+@NamedEntityGraph(name = "Employee.weeklyWorkingHours", attributeNodes = @NamedAttributeNode("weeklyWorkingHours"))
 @Table(name = "employee")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Employee implements Serializable {
@@ -32,6 +32,10 @@ public class Employee implements Serializable {
 
     @Column(name = "edit_permitted", nullable = false, columnDefinition = "bit default 0")
     private Boolean editPermitted = false;
+
+    @Column(nullable = false, columnDefinition = "varchar(3) default 'FFM'")
+    @Size(min = 1, max = 3)
+    private String office;
 
     @JsonIgnoreProperties("employee")
     @OneToMany(mappedBy = "employee")
@@ -47,17 +51,18 @@ public class Employee implements Serializable {
     @OneToMany(mappedBy = "employee")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<WorkDay> workDays = new HashSet<>();
-    
+
     @OneToOne
     private User user;
-    
+
     @JsonIgnoreProperties("employee")
     @JsonProperty("activeWeeklyWorkingHours")
     public Optional<WeeklyWorkingHours> getActiveWeeklyWorkingHours() {
-    	return this.weeklyWorkingHours.stream().max((wwH1, wwH2) -> wwH1.getStartDate().compareTo(wwH2.getStartDate()));
+        return this.weeklyWorkingHours.stream().max((wwH1, wwH2) -> wwH1.getStartDate().compareTo(wwH2.getStartDate()));
     }
-       
-    // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
+
+    // jhipster-needle-entity-add-field - JHipster will add fields here, do not
+    // remove
     public Long getId() {
         return id;
     }
@@ -67,23 +72,36 @@ public class Employee implements Serializable {
     }
 
     public User getUser() {
-		return user;
-	}
+        return user;
+    }
 
-	public void setUser(User user) {
-		this.user = user;
-	}
+    public void setUser(User user) {
+        this.user = user;
+    }
 
-	public Boolean isEditPermitted() {
-		return editPermitted;
-	}
+    public Boolean isEditPermitted() {
+        return editPermitted;
+    }
 
-	public void setEditPermitted(Boolean editPermitted) {
-		this.editPermitted = editPermitted;
-	}
+    public void setEditPermitted(Boolean editPermitted) {
+        this.editPermitted = editPermitted;
+    }
 
     public Employee editPermitted(Boolean editPermitted) {
         this.editPermitted = editPermitted;
+        return this;
+    }
+
+    public String getOffice() {
+        return this.office;
+    }
+
+    public void setOffice(String office) {
+        this.office = office;
+    }
+
+    public Employee office(String office) {
+        this.office = office;
         return this;
     }
 
@@ -162,7 +180,8 @@ public class Employee implements Serializable {
         this.workDays = workDays;
     }
 
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
+    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and
+    // setters here, do not remove
 
     @Override
     public boolean equals(Object o) {
@@ -182,9 +201,7 @@ public class Employee implements Serializable {
 
     @Override
     public String toString() {
-        return "Employee{" +
-            "id=" + getId() +
-            ", editPermitted='" + isEditPermitted() + "'" +
-            "}";
+        return "Employee{" + "id=" + getId() + ", editPermitted='" + isEditPermitted() + "'" + ", office='"
+                + getOffice() + "'" + "}";
     }
 }
