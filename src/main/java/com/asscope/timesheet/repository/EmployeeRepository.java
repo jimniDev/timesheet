@@ -24,27 +24,31 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long>, JpaSp
 	@Query("Select e from Employee e")
 	List<Employee> findAllWithWeeklyWorkingHours();
 
-	@Query(value = "SELECT" + 
-			"	SUM(DATEDIFF_BIG(n, we.start, we.jhi_end) - wd.additional_break_minutes) AS workMinutes" + 
-			" FROM [dbo].[work_day] AS wd" + 
-			"	LEFT JOIN  [dbo].working_entry AS we ON wd.id = we.work_day_id" + 
-			" WHERE" + 
-			"	wd.employee_id =  ?1" +
-			"   AND YEAR(wd.date) = ?2" + 
-			"	AND MONTH(wd.date) = ?3" + 
-			"	AND deleted_flag = 0" +
-			" GROUP BY YEAR(wd.date), MONTH(wd.date)", nativeQuery = true)
+	@Query(value = "WITH DailyMinutes as (" +
+					"SELECT	SUM(DATEDIFF_BIG(n, we.start, we.jhi_end)) - wd.additional_break_minutes AS workMinutes" +
+					" FROM [dbo].[work_day] AS wd" +
+					" LEFT JOIN  [dbo].working_entry AS we ON wd.id = we.work_day_id" +
+					" WHERE" +
+					" wd.employee_id =  ?1" +
+					" AND YEAR(wd.date) = ?2" +
+					" AND MONTH(wd.date) = ?3" +
+					" AND deleted_flag = 0" +
+					" GROUP BY wd.id, wd.date, wd.additional_break_minutes)" +
+					" Select sum(workMinutes) as workMinutes from DailyMinutes"
+			, nativeQuery = true)
 	Optional<Integer> monthlyWorkMinutesOfEmployee(Long employeeID, int year, int month);
 	
-	@Query(value = "SELECT" + 
-			"	SUM(DATEDIFF_BIG(n, we.start, we.jhi_end) - wd.additional_break_minutes) AS workMinutes" + 
-			" FROM [dbo].[work_day] AS wd" + 
-			"	LEFT JOIN  [dbo].working_entry AS we ON wd.id = we.work_day_id" + 
-			" WHERE" + 
-			"	wd.employee_id =  ?1" +
-			"   AND YEAR(wd.date) = ?2" + 
-			"	AND DATEPART(ISO_WEEK, wd.date) = ?3" + 
-			"	AND deleted_flag = 0" +
-			" GROUP BY YEAR(wd.date), DATEPART(ISO_WEEK, wd.date)", nativeQuery = true)
+	@Query(value = "WITH DailyMinutes as (" +
+					"SELECT	SUM(DATEDIFF_BIG(n, we.start, we.jhi_end)) - wd.additional_break_minutes AS workMinutes" +
+					" FROM [dbo].[work_day] AS wd" +
+					" LEFT JOIN  [dbo].working_entry AS we ON wd.id = we.work_day_id" +
+					" WHERE" +
+					" wd.employee_id =  ?1" +
+					" AND YEAR(wd.date) = ?2" +
+					" AND DATEPART(ISO_WEEK, wd.date) =?3 "+
+					" AND deleted_flag = 0" +
+					" GROUP BY wd.id, wd.date, wd.additional_break_minutes)" +
+					" Select sum(workMinutes) as workMinutes from DailyMinutes"
+			, nativeQuery = true)
 	Optional<Integer> weeklyWorkMinutesOfEmployee(Long employeeID, int year, int week);
 }
