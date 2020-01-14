@@ -121,9 +121,15 @@ export class PdfService {
   }
 
   secondsToHHMM(seconds: number): string {
-    const hour = Math.floor(seconds / 3600);
-    const min = Math.round((seconds % 3600) / 60);
-    return this.pad(hour, 2) + 'h ' + this.pad(min, 2) + 'm';
+    if (seconds >= 0) {
+      const hour = Math.floor(seconds / 3600);
+      const min = Math.floor((seconds % 3600) / 60);
+      return this.pad(hour, 2) + 'h ' + this.pad(min, 2) + 'm';
+    } else {
+      const hour = Math.ceil(seconds / 3600);
+      const min = Math.ceil((seconds % 3600) / 60);
+      return '-' + this.pad(Math.abs(hour), 2) + 'h ' + this.pad(Math.abs(min), 2) + 'm';
+    }
   }
 
   pad(num: number, size: number): string {
@@ -334,7 +340,7 @@ export class PdfService {
           this.addSumOnPreviousPage(doc, totalTime[pageNumber - 2], data);
         }
         if (pageNumber === 1) {
-          this.addTitle(doc, 'Monthly Timesheet', data);
+          this.addTitle(doc, 'Monthly Timesheet');
           this.addEmployeeNameandMonthYear(doc, name, month, year, data);
           this.addPageNumber(doc, pageNumber, totalPages, data, pageHeight);
         }
@@ -402,19 +408,20 @@ export class PdfService {
   difference(time: string, time2: string): any {
     const timeHours = +time.slice(0, time.indexOf('h')).toString();
     const timeMinutes = +time.slice(time.indexOf('h') + 2, time.indexOf('m'));
+    const timeToSeconds = timeHours * 3600 + timeMinutes * 60;
     const time2Hours = +time2.slice(0, time2.indexOf('h')).toString();
     const time2Minutes = +time2.slice(time2.indexOf('h') + 2, time2.indexOf('m'));
-    let result: string;
-    if (timeHours >= time2Hours) {
-      const diffHours = timeHours - time2Hours;
-      const diffMin = timeMinutes - time2Minutes;
-      result = this.pad(diffHours, 2) + 'h ' + this.pad(diffMin, 2) + 'm';
+    const time2ToSeconds = time2Hours * 3600 + time2Minutes * 60;
+
+    if (timeToSeconds > time2ToSeconds) {
+      const hour = Math.floor((timeToSeconds - time2ToSeconds) / 3600);
+      const min = Math.floor(((timeToSeconds - time2ToSeconds) % 3600) / 60);
+      return this.pad(hour, 2) + 'h ' + this.pad(min, 2) + 'm';
     } else {
-      const diffHours = time2Hours - timeHours;
-      const diffMin = time2Minutes - time2Minutes;
-      result = this.pad(diffHours, 2) + 'h ' + this.pad(diffMin, 2) + 'm';
+      const hour = Math.ceil((timeToSeconds - time2ToSeconds) / 3600);
+      const min = Math.ceil(((timeToSeconds - time2ToSeconds) % 3600) / 60);
+      return '-' + this.pad(Math.abs(hour), 2) + 'h ' + this.pad(Math.abs(min), 2) + 'm';
     }
-    return result;
   }
 
   getLogo(): any {
