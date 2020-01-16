@@ -17,6 +17,7 @@ export class PdfService {
       this.initialized = true;
     });
   }
+
   public buttonPDF(workingEntries: IWorkingEntryTimesheet[], targetMinutes: number, actualTime: number) {
     if (this.checkEmptyData(workingEntries) && workingEntries.length > 0) {
       try {
@@ -29,6 +30,7 @@ export class PdfService {
       this._snackBar.open(string, 'Undo', { duration: 3000 });
     }
   }
+
   public createPDF(workingEntries: IWorkingEntryTimesheet[], targetTime: number, actualTime: number): void {
     const rawData = this.dataMapping(workingEntries);
     const topMargin = 27,
@@ -36,6 +38,7 @@ export class PdfService {
       rightMargin = 15,
       bottomMargin = 33,
       maxRowInPage = 31; // CONFIG FOR PDF GENERATION
+
     let doc: any;
     doc = new jsPDF();
     const body = this.bodyCreationForTable(rawData, workingEntries, maxRowInPage);
@@ -67,9 +70,11 @@ export class PdfService {
     }
     doc.save('timesheet.pdf');
   }
+
   getColumns() {
     return [{ date: 'Date', worktime: 'Worktime', Break: 'Break', from: 'From', to: 'To', activity: 'Activity' }];
   }
+
   totalWorkTime(data: IWorkingEntryTimesheet[], dataStats: any): string {
     const dates = dataStats.dates;
     const index = dataStats.datesIndexInRawData;
@@ -83,6 +88,7 @@ export class PdfService {
     }
     return this.secondsToHHMM(tempWorkTime);
   }
+
   calculateTotalTimeParts(workingEntries: any, dataStats: any, index: any): any {
     const totalTimeByParts = [];
     for (let i = 0; i < workingEntries.length; i++) {
@@ -90,6 +96,7 @@ export class PdfService {
     }
     return totalTimeByParts;
   }
+
   checkEmptyData(data: IWorkingEntryTimesheet[]): any {
     let flag = true;
     for (let i = 0; i < data.length; i++) {
@@ -100,6 +107,7 @@ export class PdfService {
     }
     return flag;
   }
+
   dataMapping(data: IWorkingEntryTimesheet[]): any {
     const rawData = data.map(we => [
       we.workDay.date.format('YYYY-MM-DD'),
@@ -111,11 +119,19 @@ export class PdfService {
     ]);
     return rawData;
   }
+
   secondsToHHMM(seconds: number): string {
-    const hour = Math.floor(seconds / 3600);
-    const min = Math.round((seconds % 3600) / 60);
-    return this.pad(hour, 2) + 'h ' + this.pad(min, 2) + 'm';
+    if (seconds >= 0) {
+      const hour = Math.floor(seconds / 3600);
+      const min = Math.floor((seconds % 3600) / 60);
+      return this.pad(hour, 2) + 'h ' + this.pad(min, 2) + 'm';
+    } else {
+      const hour = Math.ceil(seconds / 3600);
+      const min = Math.ceil((seconds % 3600) / 60);
+      return '-' + this.pad(Math.abs(hour), 2) + 'h ' + this.pad(Math.abs(min), 2) + 'm';
+    }
   }
+
   pad(num: number, size: number): string {
     let s = num + '';
     while (s.length < size) {
@@ -123,6 +139,7 @@ export class PdfService {
     }
     return s;
   }
+
   bodyCreationForTable(rawData: any, workingEntries: IWorkingEntryTimesheet[], maxRows: number): any {
     const dataStats = this.calculateDataStats(rawData);
     const body = this.dataConversionForRowSpan(workingEntries, rawData, dataStats);
@@ -130,6 +147,7 @@ export class PdfService {
     const bodyParts = this.dataSplits(splitsIndex, body);
     return bodyParts;
   }
+
   dataConversionForRowSpan(data: IWorkingEntryTimesheet[], raw_data: any, result: any): any {
     const body = [];
     const totalWorkTime = [];
@@ -209,6 +227,7 @@ export class PdfService {
 
     return body;
   }
+
   calculateDataStats(data: any): object {
     const processingResult = {
       dates: [],
@@ -228,6 +247,7 @@ export class PdfService {
     }
     return processingResultObject;
   }
+
   checkProcessedData(processedDataSet: any, index: any): any {
     let properIndexforPageDivision: any;
     if (typeof processedDataSet[index][0] === 'object') {
@@ -244,6 +264,7 @@ export class PdfService {
     }
     return properIndexforPageDivision;
   }
+
   calculateSplits(rawData: any, maxRows: number): any {
     const idealIndexPairs = [];
     let checker = 0;
@@ -274,6 +295,7 @@ export class PdfService {
       return idealIndexPairs;
     }
   }
+
   dataSplits(splitsIndex: any, data: any): any {
     let start = 0;
     const splitCollector: any = [];
@@ -284,6 +306,7 @@ export class PdfService {
     }
     return splitCollector;
   }
+
   createPage(
     doc: jsPDF,
     workingEntries: IWorkingEntryTimesheet[],
@@ -299,9 +322,11 @@ export class PdfService {
     const pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight();
     const name = this.account.firstName + ' ' + this.account.lastName;
     const month = workingEntries[0].workDay.date.format('MMMM');
+    const year = workingEntries[0].workDay.date.format('YYYY');
     let totalWorkTime = totalTimeFromServer;
     const targetTime = this.secondsToHHMM(targettime * 60);
     const differnce = this.difference(this.totalWorkTime(workingEntries, datesObj), targetTime);
+
     if (!this.initialized) {
       return;
     }
@@ -315,7 +340,8 @@ export class PdfService {
           this.addSumOnPreviousPage(doc, totalTime[pageNumber - 2], data);
         }
         if (pageNumber === 1) {
-          this.addEmployeeNameandMonth(doc, name, month, data);
+          this.addTitle(doc, 'Monthly Timesheet');
+          this.addEmployeeNameandMonthYear(doc, name, month, year, data);
           this.addPageNumber(doc, pageNumber, totalPages, data, pageHeight);
         }
         if (pageNumber === totalPages) {
@@ -326,27 +352,38 @@ export class PdfService {
         }
       } else {
         this.addLogo(doc, base64logo, data, pageHeight);
-        this.addEmployeeNameandMonth(doc, name, month, data);
+        this.addTitle(doc, 'Monthly Timesheet');
+        this.addEmployeeNameandMonthYear(doc, name, month, year, data);
         this.addTotalWorkTime(doc, totalWorkTime, data, pageHeight, targetTime, differnce);
         this.addSignature(doc, data, pageHeight);
       }
     }
   }
+
   addLogo(doc: jsPDF, logo: any, data: any, pageHeight: any): void {
     doc.addImage(logo, 'PNG', data.settings.margin.left + 150, pageHeight - 27, 24, 10);
   }
 
   addSignature(doc: jsPDF, data: any, pageHeight: any): void {
-    doc.setFontSize('13');
+    doc.setFontSize('12');
     doc.setLineWidth(0.4);
     doc.setDrawColor(16, 24, 32);
     doc.line(data.settings.margin.left - 3, pageHeight - 23, data.settings.margin.left + 40, pageHeight - 23);
     doc.text('Signature', data.settings.margin.left + 7, pageHeight - 18);
   }
 
-  addEmployeeNameandMonth(doc: jsPDF, name: string, month: string, data: any): void {
-    doc.setFontSize('13');
-    doc.text(`Employee: ${name}, Month: ${month} `, data.settings.margin.left, 25);
+  addTitle(doc: jsPDF, title: string) {
+    doc.setFontSize('15');
+    // doc.setTextColor(0, 48, 87);
+    const textWidth = (doc.getStringUnitWidth(title) * doc.internal.getFontSize()) / doc.internal.scaleFactor;
+    const textOffset = (doc.internal.pageSize.width - textWidth) / 2;
+    doc.text(`${title}`, textOffset, 13);
+  }
+
+  addEmployeeNameandMonthYear(doc: jsPDF, name: string, month: string, year: string, data: any): void {
+    doc.setFontSize('12');
+    doc.setTextColor(16, 24, 32);
+    doc.text(`Employee: ${name}, Year: ${year}, Month: ${month}`, data.settings.margin.left, 25);
   }
 
   addTotalWorkTime(doc: jsPDF, totalWorkTime: any, data: any, pageHeight: any, targetTime: any, difference: any): void {
@@ -367,23 +404,26 @@ export class PdfService {
     doc.setFontSize('13');
     doc.text(`Sum of previous page: ${totalTimeOnPreviouspage}`, data.settings.margin.left, 25);
   }
+
   difference(time: string, time2: string): any {
     const timeHours = +time.slice(0, time.indexOf('h')).toString();
     const timeMinutes = +time.slice(time.indexOf('h') + 2, time.indexOf('m'));
+    const timeToSeconds = timeHours * 3600 + timeMinutes * 60;
     const time2Hours = +time2.slice(0, time2.indexOf('h')).toString();
     const time2Minutes = +time2.slice(time2.indexOf('h') + 2, time2.indexOf('m'));
-    let result: string;
-    if (timeHours >= time2Hours) {
-      const diffHours = timeHours - time2Hours;
-      const diffMin = timeMinutes - time2Minutes;
-      result = this.pad(diffHours, 2) + 'h ' + this.pad(diffMin, 2) + 'm';
+    const time2ToSeconds = time2Hours * 3600 + time2Minutes * 60;
+
+    if (timeToSeconds > time2ToSeconds) {
+      const hour = Math.floor((timeToSeconds - time2ToSeconds) / 3600);
+      const min = Math.floor(((timeToSeconds - time2ToSeconds) % 3600) / 60);
+      return this.pad(hour, 2) + 'h ' + this.pad(min, 2) + 'm';
     } else {
-      const diffHours = time2Hours - timeHours;
-      const diffMin = time2Minutes - time2Minutes;
-      result = this.pad(diffHours, 2) + 'h ' + this.pad(diffMin, 2) + 'm';
+      const hour = Math.ceil((timeToSeconds - time2ToSeconds) / 3600);
+      const min = Math.ceil(((timeToSeconds - time2ToSeconds) % 3600) / 60);
+      return '-' + this.pad(Math.abs(hour), 2) + 'h ' + this.pad(Math.abs(min), 2) + 'm';
     }
-    return result;
   }
+
   getLogo(): any {
     return require('app/../content/images/logo-base64Img.txt');
   }
