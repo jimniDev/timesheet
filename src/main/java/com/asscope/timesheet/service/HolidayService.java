@@ -32,43 +32,6 @@ public class HolidayService {
 			return LocalDate.of(year, 3, 22).plusDays(dYear + eYear);
 	}
 	
-//	public boolean isHoliday(LocalDate date) {
-//		return isfixedHoliday(date) || isflexibleHoliday(date);
-//	}
-//
-//	public boolean isfixedHoliday(LocalDate date) {	
-//		if(date.getMonthValue() == 1 && date.getDayOfMonth() == 1) {
-//			return true;
-//		}
-//		if(date.getMonthValue() == 5 && date.getDayOfMonth() == 1) {
-//			return true;
-//		}
-//		if(date.getMonthValue() == 10 && date.getDayOfMonth() == 3) {
-//			return true;
-//		}
-//		if(date.getMonthValue() == 12 ) {
-//			if(date.getDayOfMonth() == 24 || date.getDayOfMonth() == 25 || date.getDayOfMonth() == 26 || date.getDayOfMonth() == 31)
-//			return true;
-//		}
-//		
-//		return false;
-//	}
-//
-//	public boolean isflexibleHoliday(LocalDate date) {
-//		List<Integer> holidays = this.holidayMap.get(date.getYear());
-//		if(holidays == null) {
-//			LocalDate easter = getEasterDate(date.getYear());
-//			holidays = new ArrayList<>();
-//			holidays.add(easter.plusDays(50).getDayOfYear());
-//			holidays.add(easter.plusDays(39).getDayOfYear());
-//			holidays.add(easter.plusDays(1).getDayOfYear());
-//			holidays.add(easter.plusDays(60).getDayOfYear());
-//			holidays.add(easter.minusDays(2).getDayOfYear());
-//			this.holidayMap.put(date.getYear(), holidays);
-//		} 
-//		return holidays.contains(date.getDayOfYear());		
-//	}
-	
 	public SortedSet<LocalDate> getHolidayDates(int year) {
 		SortedSet<LocalDate> holidays = new TreeSet<>();
 		holidays.add(LocalDate.of(year, 1, 1));
