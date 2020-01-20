@@ -13,10 +13,10 @@ th.mat-header-cell:last-of-type {
   padding-right: 0px;
 }
 
-div:nth-child(1) > div > mat-card:nth-child(1),
-div:nth-child(1) > div > mat-card:nth-child(2) {
-  margin-right: 8px;
-}
+// div:nth-child(1) > div > mat-card:nth-child(1),
+// div:nth-child(1) > div > mat-card:nth-child(2) {
+//   margin-right: 8px;
+// }
 
 #tableCard {
   margin-top: 8px;
@@ -27,9 +27,9 @@ div:nth-child(1) > div > mat-card:nth-child(2) {
     border-radius: 8px;
   }
 
-  .mat-row {
-    height: auto;
-  }
+  // .mat-row {
+  //   height: auto;
+  // }
 
   td.mat-cell {
     padding: 5px 5px;
@@ -38,7 +38,7 @@ div:nth-child(1) > div > mat-card:nth-child(2) {
   td.mat-cell:first-of-type,
   td.mat-footer-cell:first-of-type,
   th.mat-header-cell:first-of-type {
-    padding-left: 0px;
+    //padding-left: 0px;
     padding-right: 8px;
   }
 }

@@ -11,6 +11,14 @@ import { MatSort } from '@angular/material/sort';
 import { WeeklyWorkingHoursTimesheetService } from '../weekly-working-hours-timesheet';
 import { EmployeeTimesheetEditComponent } from './employee-timesheet-edit-component/employee-timesheet-edit-component';
 import { EmployeeTimesheetService } from './employee-timesheet.service';
+import moment = require('moment');
+import { threadId } from 'worker_threads';
+
+export interface MontlyBalance {
+  year: number;
+  month: number;
+  balance: number;
+}
 
 @Component({
   selector: 'jhi-employee-timesheet-detail',
@@ -24,6 +32,12 @@ export class EmployeeTimesheetDetailComponent implements OnInit {
   public editPermit: boolean;
   public editPermitString: string;
   public office: string;
+  public monthlyBalanceSource = new MatTableDataSource<MontlyBalance>();
+  public yearlyBalance: number;
+  public years = Array.from(Array(20), (e, i) => (i + 2019).toString());
+  public selectedYear: string = moment()
+    .year()
+    .toString();
 
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: false }) sort: MatSort;
@@ -44,12 +58,81 @@ export class EmployeeTimesheetDetailComponent implements OnInit {
       this.employeeWeekly.data = this.employeeOverviewWeek;
       this.editPermit = this.employee.editPermitted;
       this.office = this.employee.office;
+      this.yearlyBalance = this.employee.balance;
       if (this.editPermit) {
         this.editPermitString = 'permitted';
       } else {
         this.editPermitString = 'blocked';
       }
     });
+    this.monthlyBalanceSource.data = [
+      {
+        year: 2019,
+        month: 1,
+        balance: 10
+      },
+      {
+        year: 2019,
+        month: 2,
+        balance: 11
+      },
+      {
+        year: 2019,
+        month: 3,
+        balance: 11
+      },
+      {
+        year: 2019,
+        month: 4,
+        balance: 11
+      },
+      {
+        year: 2019,
+        month: 5,
+        balance: 11
+      },
+      {
+        year: 2019,
+        month: 6,
+        balance: 11
+      },
+      {
+        year: 2019,
+        month: 7,
+        balance: 11
+      },
+      {
+        year: 2019,
+        month: 8,
+        balance: 11
+      },
+      {
+        year: 2019,
+        month: 9,
+        balance: 11
+      },
+      {
+        year: 2019,
+        month: 10,
+        balance: 11
+      },
+      {
+        year: 2019,
+        month: 11,
+        balance: 11
+      },
+      {
+        year: 2019,
+        month: 12,
+        balance: 11
+      }
+    ];
+  }
+
+  onChangeYear(year) {
+    if (year) {
+      // this.selectedDate.emit(<YearMonth>{ year: this.changeYear, month: this.changeMonth });
+    }
   }
 
   officeChange() {
