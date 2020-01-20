@@ -67,4 +67,12 @@ export class EmployeeTimesheetService {
   currentWorkTimeBalance() {
     return this.http.get<number>(this.resourceUrl + '/me/work-time/balance', { observe: 'response' });
   }
+
+  balanceByEmployeeAndYear(employeeId: number, year: number): Observable<HttpResponse<any>> {
+    return this.http.get<any>(`${this.resourceUrl}/${employeeId}/work-time/balance/${year}`, { observe: 'response' });
+  }
+
+  balanceByYear(year: number): Observable<HttpResponse<any>> {
+    return this.http.get<any>(this.resourceUrl + '/me/work-time/balance/' + year, { observe: 'response' });
+  }
 }

@@ -35,9 +35,7 @@ export class EmployeeTimesheetDetailComponent implements OnInit {
   public monthlyBalanceSource = new MatTableDataSource<MontlyBalance>();
   public yearlyBalance: number;
   public years = Array.from(Array(20), (e, i) => (i + 2019).toString());
-  public selectedYear: string = moment()
-    .year()
-    .toString();
+  public selectedYear: number = moment().year();
 
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: false }) sort: MatSort;
@@ -65,68 +63,11 @@ export class EmployeeTimesheetDetailComponent implements OnInit {
         this.editPermitString = 'blocked';
       }
     });
-    this.monthlyBalanceSource.data = [
-      {
-        year: 2019,
-        month: 1,
-        balance: 10
-      },
-      {
-        year: 2019,
-        month: 2,
-        balance: 11
-      },
-      {
-        year: 2019,
-        month: 3,
-        balance: 11
-      },
-      {
-        year: 2019,
-        month: 4,
-        balance: 11
-      },
-      {
-        year: 2019,
-        month: 5,
-        balance: 11
-      },
-      {
-        year: 2019,
-        month: 6,
-        balance: 11
-      },
-      {
-        year: 2019,
-        month: 7,
-        balance: 11
-      },
-      {
-        year: 2019,
-        month: 8,
-        balance: 11
-      },
-      {
-        year: 2019,
-        month: 9,
-        balance: 11
-      },
-      {
-        year: 2019,
-        month: 10,
-        balance: 11
-      },
-      {
-        year: 2019,
-        month: 11,
-        balance: 11
-      },
-      {
-        year: 2019,
-        month: 12,
-        balance: 11
-      }
-    ];
+    // this.employeeService.balanceByYear(this.selectedYear).subscribe(res => {
+    //   if (res) {
+    //     this.monthlyBalanceSource.data = res.body;
+    //   }
+    // });
   }
 
   onChangeYear(year) {
