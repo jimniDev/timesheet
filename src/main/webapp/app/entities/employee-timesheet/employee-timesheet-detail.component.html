@@ -1,41 +1,102 @@
 <div *ngIf="employee">
 
     <mat-toolbar>
+
         <span>Employee {{employee.id}} </span>
         <button type="submit" (click)="previousState()" mat-raised-button color="primary">
             <mat-icon>keyboard_backspace</mat-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
         </button>
-
     </mat-toolbar>
-    <div fxLayout="row" fxLayoutAlign="space-between stretch" fxLayout.xs="column" fxLayoutGap="8px" class="container">
-        <mat-card fxFlex="50">
-            <mat-card-subtitle>Name</mat-card-subtitle>
-            <mat-card-content>{{employee.user.firstName + ' ' + employee.user.lastName}}</mat-card-content>
-        </mat-card>
 
-        <div fxFlex="50" fxLayout="row" fxLayoutAlign="center stretch" fxLayoutGap="8px" class="container">
+    <div fxLayout="row" fxLayoutAlign="space-between start" fxLayout.lt-md="column"
+        fxLayoutAlign.lt-md="space-between stretch" fxLayoutGap="8px">
+        <div fxFlex="50" fxLayout="column" fxLayoutAlign="space-between stretch" fxLayoutGap="8px" class="container">
             <mat-card fxFlex="50">
-                <mat-card-subtitle>Office</mat-card-subtitle>
-                <mat-card-content>
-                    <mat-select required [(value)]="office" (selectionChange)="officeChange()">
-                        <mat-option value="FFM">FFM</mat-option>
-                        <mat-option value="EBM">EBM</mat-option>
-                    </mat-select>
-                </mat-card-content>
+                <mat-card-subtitle>Name</mat-card-subtitle>
+                <mat-card-content>{{employee.user.firstName + ' ' + employee.user.lastName}}</mat-card-content>
             </mat-card>
 
+            <div fxFlex="50" fxLayout="row" fxLayoutAlign="center stretch" fxLayoutGap="8px" class="container">
+                <mat-card fxFlex="50">
+                    <mat-card-subtitle>Office</mat-card-subtitle>
+                    <mat-card-content>
+                        <mat-select required [(value)]="office" (selectionChange)="officeChange()">
+                            <mat-option value="FFM">FFM</mat-option>
+                            <mat-option value="EBM">EBM</mat-option>
+                        </mat-select>
+                    </mat-card-content>
+                </mat-card>
+
+                <mat-card fxFlex="50">
+                    <mat-card-subtitle>Edit old working entries</mat-card-subtitle>
+                    <mat-card-content>
+                        <mat-slide-toggle [checked]="editPermit" (change)="editPermitAuth()">{{editPermitString}}
+                        </mat-slide-toggle>
+                    </mat-card-content>
+                </mat-card>
+            </div>
             <mat-card fxFlex="50">
-                <mat-card-subtitle>Edit old working entries</mat-card-subtitle>
+                <mat-card-subtitle> Weekly Working Hours</mat-card-subtitle>
                 <mat-card-content>
-                    <mat-slide-toggle [checked]="editPermit" (change)="editPermitAuth()">{{editPermitString}}
-                    </mat-slide-toggle>
+                    <table mat-table [dataSource]="employeeWeekly" matSort>
+
+                        <ng-container matColumnDef="id">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
+                            <td mat-cell *matCellDef="let element">{{element.id}}</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="hours">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Hours</th>
+                            <td mat-cell *matCellDef="let element"> {{element.hours}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="start">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Start</th>
+                            <td mat-cell *matCellDef="let element"> {{element.startDate | date:'dd.MM.yy'}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="end">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>End</th>
+                            <td mat-cell *matCellDef="let element"> {{element.endDate | date:'dd.MM.yy'}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="actions">
+                            <th mat-header-cell *matHeaderCellDef></th>
+                            <td mat-cell *matCellDef="let role">
+                                <button type=button mat-icon-button color="accent" fxHide fxShow.lt-md
+                                    (click)="editWeeklyDialog(role)">
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                                <button mat-button type="button" color="accent" fxHide.lt-md
+                                    (click)="editWeeklyDialog(role)">
+                                    Edit
+                                </button>
+                                <button mat-icon-button color="warn" fxHide fxShow.lt-md (click)="deleteRow(role)">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                                <button mat-button color="warn" fxHide.lt-md (click)="deleteRow(role)">
+                                    Delete
+                                </button>
+                            </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="['id', 'hours', 'start', 'end','actions']"></tr>
+                        <tr mat-row *matRowDef="let row; columns: ['id', 'hours', 'start', 'end','actions'];">
+                        </tr>
+                    </table>
+                    <mat-paginator [length]="employeeOverviewWeek?employeeOverviewWeek.length:0" [pageSize]="5"
+                        [pageSizeOptions]="[5, 10, 15]">
+                    </mat-paginator>
                 </mat-card-content>
+
+                <mat-card-actions>
+                    <button mat-flat-button color="primary" (click)="openWeeklyDialog()">Add Time Details</button>
+                </mat-card-actions>
             </mat-card>
         </div>
-    </div>
 
-    <div id="tableCard" fxLayout="row" fxLayout.lt-md="column" fxLayoutAlign="space-between" fxLayoutGap="8px">
-        <mat-card fxFlex="50">
+
+        <mat-card fxFlex="50" fxFlex="50" id="tableCard">
             <mat-card-subtitle>Balance</mat-card-subtitle>
             <div id="tableCard" fxLayout="row" fxLayoutAlign="space-around center" fxLayoutGap="8px">
                 <mat-form-field fxFlex="auto">
@@ -47,7 +108,7 @@
                     </mat-select>
                 </mat-form-field>
                 <mat-chip-list aria-label="Fish selection" fxFlex="auto">
-                    <mat-chip color="accent" selected> <span id="yearBalance"> 243 </span></mat-chip>
+                    <mat-chip color="accent" selected> <span id="yearBalance"> balance : 243 </span></mat-chip>
                 </mat-chip-list>
             </div>
 
@@ -76,64 +137,6 @@
                 </table>
             </mat-card-content>
         </mat-card>
-        <mat-card fxFlex="50">
-            <mat-card-subtitle> Weekly Working Hours</mat-card-subtitle>
-            <mat-card-content>
-                <table mat-table [dataSource]="employeeWeekly" matSort>
 
-                    <ng-container matColumnDef="id">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
-                        <td mat-cell *matCellDef="let element">{{element.id}}</td>
-                    </ng-container>
-
-                    <ng-container matColumnDef="hours">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Hours</th>
-                        <td mat-cell *matCellDef="let element"> {{element.hours}} </td>
-                    </ng-container>
-
-                    <ng-container matColumnDef="start">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Start</th>
-                        <td mat-cell *matCellDef="let element"> {{element.startDate | date:'dd.MM.yy'}} </td>
-                    </ng-container>
-
-                    <ng-container matColumnDef="end">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>End</th>
-                        <td mat-cell *matCellDef="let element"> {{element.endDate | date:'dd.MM.yy'}} </td>
-                    </ng-container>
-
-                    <ng-container matColumnDef="actions">
-                        <th mat-header-cell *matHeaderCellDef></th>
-                        <td mat-cell *matCellDef="let role">
-                            <button type=button mat-icon-button color="accent" fxHide fxShow.lt-md
-                                (click)="editWeeklyDialog(role)">
-                                <mat-icon>edit</mat-icon>
-                            </button>
-                            <button mat-button type="button" color="accent" fxHide.lt-md
-                                (click)="editWeeklyDialog(role)">
-                                Edit
-                            </button>
-                            <button mat-icon-button color="warn" fxHide fxShow.lt-md (click)="deleteRow(role)">
-                                <mat-icon>delete</mat-icon>
-                            </button>
-                            <button mat-button color="warn" fxHide.lt-md (click)="deleteRow(role)">
-                                Delete
-                            </button>
-                        </td>
-                    </ng-container>
-
-                    <tr mat-header-row *matHeaderRowDef="['id', 'hours', 'start', 'end','actions']"></tr>
-                    <tr mat-row *matRowDef="let row; columns: ['id', 'hours', 'start', 'end','actions'];">
-                    </tr>
-                </table>
-                <mat-paginator [length]="employeeOverviewWeek?employeeOverviewWeek.length:0" [pageSize]="5"
-                    [pageSizeOptions]="[5, 10, 15]">
-                </mat-paginator>
-            </mat-card-content>
-
-            <mat-card-actions>
-                <button mat-flat-button color="primary" (click)="openWeeklyDialog()">Add Time Details</button>
-            </mat-card-actions>
-        </mat-card>
     </div>
-
 </div>
