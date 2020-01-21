@@ -28,7 +28,7 @@ export class EmployeeTimesheetDetailComponent implements OnInit {
   public editPermitString: string;
   public office: string;
   public monthlyBalanceSource = new MatTableDataSource<IBalanceHash>();
-  public yearlyBalance: number;
+  public yearlyBalance = 0;
   public years = Array.from(Array(20), (e, i) => i + 2019);
   public selectedYear: number = moment().year();
 
@@ -55,7 +55,6 @@ export class EmployeeTimesheetDetailComponent implements OnInit {
       this.employeeWeekly.data = this.employeeOverviewWeek;
       this.editPermit = this.employee.editPermitted;
       this.office = this.employee.office;
-      this.yearlyBalance = this.employee.balance;
       if (this.editPermit) {
         this.editPermitString = 'permitted';
       } else {
@@ -76,11 +75,13 @@ export class EmployeeTimesheetDetailComponent implements OnInit {
   }
 
   loadBalanceTable(year) {
+    this.yearlyBalance = 0;
     this.employeeService.balanceByYear(year).subscribe(res => {
       if (res) {
         const balanceArr = Object.keys(res.body).map(key => ({ month: key, balance: res.body[key] }));
         console.log(balanceArr);
         this.monthlyBalanceSource.data = balanceArr;
+        balanceArr.forEach(data => (this.yearlyBalance += data.balance));
       }
     });
   }

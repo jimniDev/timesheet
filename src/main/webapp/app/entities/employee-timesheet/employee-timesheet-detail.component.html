@@ -109,9 +109,8 @@
                         </mat-select>
                     </mat-form-field>
                 </form>
-                <mat-chip-list aria-label="Fish selection" fxFlex="auto">
-                    <mat-chip color="accent" selected> <span id="yearBalance"> balance : 243 </span></mat-chip>
-                </mat-chip-list>
+                <span id="yearBalance" fxFlex="auto">
+                    {{minutesToHHMM(yearlyBalance)}} </span>
             </div>
 
             <mat-card-content>
