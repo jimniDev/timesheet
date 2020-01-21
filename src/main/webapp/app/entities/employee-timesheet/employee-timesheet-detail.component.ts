@@ -85,6 +85,26 @@ export class EmployeeTimesheetDetailComponent implements OnInit {
     });
   }
 
+  pad(num: number, size: number): string {
+    let s = num + '';
+    while (s.length < size) {
+      s = '0' + s;
+    }
+    return s;
+  }
+
+  minutesToHHMM(mins: number): string {
+    if (mins >= 0) {
+      const hour = Math.floor(mins / 60);
+      const min = Math.floor(mins % 60);
+      return this.pad(hour, 2) + 'h ' + this.pad(min, 2) + 'm';
+    } else {
+      const hour = Math.ceil(mins / 60);
+      const min = Math.ceil(mins % 60);
+      return '-' + this.pad(Math.abs(hour), 2) + 'h ' + this.pad(Math.abs(min), 2) + 'm';
+    }
+  }
+
   officeChange() {
     if (this.office === 'FFM') {
       this.employee.office = 'FFM';
