@@ -10,15 +10,10 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { WeeklyWorkingHoursTimesheetService } from '../weekly-working-hours-timesheet';
 import { EmployeeTimesheetEditComponent } from './employee-timesheet-edit-component/employee-timesheet-edit-component';
-import { EmployeeTimesheetService } from './employee-timesheet.service';
+import { EmployeeTimesheetService, IBalanceHash } from './employee-timesheet.service';
 import moment = require('moment');
 import { threadId } from 'worker_threads';
-
-export interface MontlyBalance {
-  year: number;
-  month: number;
-  balance: number;
-}
+import { FormControl, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'jhi-employee-timesheet-detail',
@@ -32,14 +27,18 @@ export class EmployeeTimesheetDetailComponent implements OnInit {
   public editPermit: boolean;
   public editPermitString: string;
   public office: string;
-  public monthlyBalanceSource = new MatTableDataSource<MontlyBalance>();
+  public monthlyBalanceSource = new MatTableDataSource<IBalanceHash>();
   public yearlyBalance: number;
-  public years = Array.from(Array(20), (e, i) => (i + 2019).toString());
+  public years = Array.from(Array(20), (e, i) => i + 2019);
   public selectedYear: number = moment().year();
 
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: false }) sort: MatSort;
   @ViewChild(MatTable, { static: false }) table: MatTable<any>;
+
+  yearForm = new FormGroup({
+    yearSelect: new FormControl(this.selectedYear)
+  });
 
   constructor(
     protected activatedRoute: ActivatedRoute,
@@ -63,17 +62,27 @@ export class EmployeeTimesheetDetailComponent implements OnInit {
         this.editPermitString = 'blocked';
       }
     });
-    // this.employeeService.balanceByYear(this.selectedYear).subscribe(res => {
-    //   if (res) {
-    //     this.monthlyBalanceSource.data = res.body;
-    //   }
-    // });
+    this.loadBalanceTable(this.selectedYear);
+    this.yearForm.get('yearSelect').valueChanges.subscribe(value => {
+      this.onChangeYear(value);
+    });
   }
 
   onChangeYear(year) {
     if (year) {
-      // this.selectedDate.emit(<YearMonth>{ year: this.changeYear, month: this.changeMonth });
+      this.selectedYear = year;
+      this.loadBalanceTable(this.selectedYear);
     }
+  }
+
+  loadBalanceTable(year) {
+    this.employeeService.balanceByYear(year).subscribe(res => {
+      if (res) {
+        const balanceArr = Object.keys(res.body).map(key => ({ month: key, balance: res.body[key] }));
+        console.log(balanceArr);
+        this.monthlyBalanceSource.data = balanceArr;
+      }
+    });
   }
 
   officeChange() {

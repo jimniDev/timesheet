@@ -9,6 +9,10 @@ import { IEmployeeTimesheet } from 'app/shared/model/employee-timesheet.model';
 type EntityResponseType = HttpResponse<IEmployeeTimesheet>;
 type EntityArrayResponseType = HttpResponse<IEmployeeTimesheet[]>;
 
+export interface IBalanceHash {
+  [key: number]: number;
+}
+
 @Injectable({ providedIn: 'root' })
 export class EmployeeTimesheetService {
   public resourceUrl = SERVER_API_URL + 'api/employees';
@@ -72,7 +76,7 @@ export class EmployeeTimesheetService {
     return this.http.get<any>(`${this.resourceUrl}/${employeeId}/work-time/balance/${year}`, { observe: 'response' });
   }
 
-  balanceByYear(year: number): Observable<HttpResponse<any>> {
-    return this.http.get<any>(this.resourceUrl + '/me/work-time/balance/' + year, { observe: 'response' });
+  balanceByYear(year: number): Observable<HttpResponse<IBalanceHash>> {
+    return this.http.get<IBalanceHash>(this.resourceUrl + '/me/work-time/balance/' + year, { observe: 'response' });
   }
 }
