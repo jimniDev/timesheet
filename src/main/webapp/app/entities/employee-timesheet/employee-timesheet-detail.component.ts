@@ -11,9 +11,8 @@ import { MatSort } from '@angular/material/sort';
 import { WeeklyWorkingHoursTimesheetService } from '../weekly-working-hours-timesheet';
 import { EmployeeTimesheetEditComponent } from './employee-timesheet-edit-component/employee-timesheet-edit-component';
 import { EmployeeTimesheetService, IBalanceHash } from './employee-timesheet.service';
-import moment = require('moment');
-import { threadId } from 'worker_threads';
 import { FormControl, FormGroup } from '@angular/forms';
+import * as moment from 'moment';
 
 @Component({
   selector: 'jhi-employee-timesheet-detail',
