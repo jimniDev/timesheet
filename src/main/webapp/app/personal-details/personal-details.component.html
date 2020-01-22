@@ -2,8 +2,8 @@
     <mat-card id="tableCard">
         <mat-card-subtitle>Balance</mat-card-subtitle>
         <div id="tableCard" fxLayout="row" fxLayoutAlign="space-around center" fxLayoutGap="8px">
-            <form [formGroup]="yearForm" fxFlex="50">
-                <mat-form-field fxFlex="auto">
+            <form [formGroup]="yearForm" fxFlex="auto">
+                <mat-form-field>
                     <mat-label>Year</mat-label>
                     <mat-select [(value)]="selectedYear" formControlName="yearSelect">
                         <mat-option *ngFor="let year of years" [value]="year">

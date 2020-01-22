@@ -12,7 +12,7 @@ import { IBalanceHash, EmployeeTimesheetService } from 'app/entities/employee-ti
   styleUrls: ['./personal-details.component.scss']
 })
 export class PersonalDetailsComponent implements OnInit {
-  selectedYear: number;
+  public selectedYear = moment().year();
   public monthlyBalanceSource = new MatTableDataSource<IBalanceHash>();
   public yearlyBalance = 0;
   public years = Array.from(Array(20), (e, i) => i + 2019);
@@ -24,7 +24,6 @@ export class PersonalDetailsComponent implements OnInit {
   constructor(private employeeService: EmployeeTimesheetService, private accountService: AccountService) {}
 
   ngOnInit() {
-    this.selectedYear = moment().year();
     this.loadBalanceTable(this.selectedYear);
     this.yearForm.get('yearSelect').valueChanges.subscribe(value => {
       this.onChangeYear(value);
