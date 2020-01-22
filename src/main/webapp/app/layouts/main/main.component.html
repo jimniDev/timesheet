@@ -2,8 +2,11 @@
     <a mat-list-item (click)='login()' *ngIf="!isAuthenticated()" (click)="asNavbar.closeOnLtMd()">
         <mat-icon mat-list-icon style="color: #002F5D;">note</mat-icon> Login
     </a>
-    <a mat-list-item routerLink="/" *ngIf="isAuthenticated()" (click)="asNavbar.closeOnLtMd()">
+    <a *ngIf="isAuthenticated()" mat-list-item routerLink="/" (click)="asNavbar.closeOnLtMd()">
         <mat-icon mat-list-icon style="color: #008478;">home</mat-icon> Home
+    </a>
+    <a *ngIf="isAuthenticated()" routerLink="personal-details" (click)="asNavbar.closeOnLtMd()" mat-list-item>
+        <mat-icon mat-list-icon style="color: #002F5D;">person</mat-icon> Personal Details
     </a>
     <a *jhiHasAnyAuthority="'ROLE_ADMIN'" routerLink="admin/employee-overview" (click)="asNavbar.closeOnLtMd()"
         mat-list-item>
