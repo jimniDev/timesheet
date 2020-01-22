@@ -215,7 +215,7 @@ export class TimetableComponent implements OnInit, AfterViewInit {
   }
 
   calcMonthlyDiffTargetActual() {
-    this.monthlyDiffTime = this.secondsToHHMM(this.targetMinutes * 60 - this.actualMinutes * 60);
+    this.monthlyDiffTime = this.secondsToHHMM(this.actualMinutes * 60 - this.targetMinutes * 60);
   }
 
   calcWeeklyDiffTargetActual() {

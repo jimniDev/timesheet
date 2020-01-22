@@ -10,15 +10,10 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { WeeklyWorkingHoursTimesheetService } from '../weekly-working-hours-timesheet';
 import { EmployeeTimesheetEditComponent } from './employee-timesheet-edit-component/employee-timesheet-edit-component';
-import { EmployeeTimesheetService } from './employee-timesheet.service';
+import { EmployeeTimesheetService, IBalanceHash } from './employee-timesheet.service';
 import moment = require('moment');
 import { threadId } from 'worker_threads';
-
-export interface MontlyBalance {
-  year: number;
-  month: number;
-  balance: number;
-}
+import { FormControl, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'jhi-employee-timesheet-detail',
@@ -32,16 +27,18 @@ export class EmployeeTimesheetDetailComponent implements OnInit {
   public editPermit: boolean;
   public editPermitString: string;
   public office: string;
-  public monthlyBalanceSource = new MatTableDataSource<MontlyBalance>();
-  public yearlyBalance: number;
-  public years = Array.from(Array(20), (e, i) => (i + 2019).toString());
-  public selectedYear: string = moment()
-    .year()
-    .toString();
+  public monthlyBalanceSource = new MatTableDataSource<IBalanceHash>();
+  public yearlyBalance = 0;
+  public years = Array.from(Array(20), (e, i) => i + 2019);
+  public selectedYear: number = moment().year();
 
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: false }) sort: MatSort;
   @ViewChild(MatTable, { static: false }) table: MatTable<any>;
+
+  yearForm = new FormGroup({
+    yearSelect: new FormControl(this.selectedYear)
+  });
 
   constructor(
     protected activatedRoute: ActivatedRoute,
@@ -58,80 +55,54 @@ export class EmployeeTimesheetDetailComponent implements OnInit {
       this.employeeWeekly.data = this.employeeOverviewWeek;
       this.editPermit = this.employee.editPermitted;
       this.office = this.employee.office;
-      this.yearlyBalance = this.employee.balance;
       if (this.editPermit) {
         this.editPermitString = 'permitted';
       } else {
         this.editPermitString = 'blocked';
       }
     });
-    this.monthlyBalanceSource.data = [
-      {
-        year: 2019,
-        month: 1,
-        balance: 10
-      },
-      {
-        year: 2019,
-        month: 2,
-        balance: 11
-      },
-      {
-        year: 2019,
-        month: 3,
-        balance: 11
-      },
-      {
-        year: 2019,
-        month: 4,
-        balance: 11
-      },
-      {
-        year: 2019,
-        month: 5,
-        balance: 11
-      },
-      {
-        year: 2019,
-        month: 6,
-        balance: 11
-      },
-      {
-        year: 2019,
-        month: 7,
-        balance: 11
-      },
-      {
-        year: 2019,
-        month: 8,
-        balance: 11
-      },
-      {
-        year: 2019,
-        month: 9,
-        balance: 11
-      },
-      {
-        year: 2019,
-        month: 10,
-        balance: 11
-      },
-      {
-        year: 2019,
-        month: 11,
-        balance: 11
-      },
-      {
-        year: 2019,
-        month: 12,
-        balance: 11
-      }
-    ];
+    this.loadBalanceTable(this.selectedYear);
+    this.yearForm.get('yearSelect').valueChanges.subscribe(value => {
+      this.onChangeYear(value);
+    });
   }
 
   onChangeYear(year) {
     if (year) {
-      // this.selectedDate.emit(<YearMonth>{ year: this.changeYear, month: this.changeMonth });
+      this.selectedYear = year;
+      this.loadBalanceTable(this.selectedYear);
+    }
+  }
+
+  loadBalanceTable(year) {
+    this.yearlyBalance = 0;
+    this.employeeService.balanceByYear(year).subscribe(res => {
+      if (res) {
+        const balanceArr = Object.keys(res.body).map(key => ({ month: key, balance: res.body[key] }));
+        console.log(balanceArr);
+        this.monthlyBalanceSource.data = balanceArr;
+        balanceArr.forEach(data => (this.yearlyBalance += data.balance));
+      }
+    });
+  }
+
+  pad(num: number, size: number): string {
+    let s = num + '';
+    while (s.length < size) {
+      s = '0' + s;
+    }
+    return s;
+  }
+
+  minutesToHHMM(mins: number): string {
+    if (mins >= 0) {
+      const hour = Math.floor(mins / 60);
+      const min = Math.floor(mins % 60);
+      return this.pad(hour, 2) + 'h ' + this.pad(min, 2) + 'm';
+    } else {
+      const hour = Math.ceil(mins / 60);
+      const min = Math.ceil(mins % 60);
+      return '-' + this.pad(Math.abs(hour), 2) + 'h ' + this.pad(Math.abs(min), 2) + 'm';
     }
   }
 
