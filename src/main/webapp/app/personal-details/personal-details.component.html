@@ -1,8 +1,8 @@
 <div *ngIf="isAuthenticated()">
     <mat-card id="tableCard">
         <mat-card-subtitle>Balance</mat-card-subtitle>
-        <div id="tableCard" fxLayout="row" fxLayoutAlign="space-around center" fxLayoutGap="8px">
-            <form [formGroup]="yearForm" fxFlex="auto">
+        <div id="tableCard" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="8px">
+            <form [formGroup]="yearForm">
                 <mat-form-field>
                     <mat-label>Year</mat-label>
                     <mat-select [(value)]="selectedYear" formControlName="yearSelect">
@@ -12,7 +12,7 @@
                     </mat-select>
                 </mat-form-field>
             </form>
-            <span id="yearBalance" fxFlex="auto">
+            <span id="yearBalance">
                 {{minutesToHHMM(yearlyBalance)}} </span>
         </div>
 
