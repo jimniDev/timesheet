@@ -1,11 +1,9 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
-import moment = require('moment');
-
+import * as moment from 'moment';
 import { FormGroup, FormControl } from '@angular/forms';
 import { AccountService } from 'app/core';
 import { IBalanceHash, EmployeeTimesheetService } from 'app/entities/employee-timesheet';
-
 @Component({
   selector: 'jhi-personal-details',
   templateUrl: './personal-details.component.html',
