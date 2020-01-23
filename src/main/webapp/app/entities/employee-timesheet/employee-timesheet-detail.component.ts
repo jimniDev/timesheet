@@ -20,6 +20,7 @@ import * as moment from 'moment';
   styleUrls: ['./employee-timesheet-detail.component.scss']
 })
 export class EmployeeTimesheetDetailComponent implements OnInit {
+  public selectedYear: number = moment().year();
   public employee: EmployeeTimesheet;
   public employeeWeekly = new MatTableDataSource<IWeeklyWorkingHoursTimesheet>();
   public employeeOverviewWeek: IWeeklyWorkingHoursTimesheet[];
@@ -29,7 +30,6 @@ export class EmployeeTimesheetDetailComponent implements OnInit {
   public monthlyBalanceSource = new MatTableDataSource<IBalanceHash>();
   public yearlyBalance = 0;
   public years = Array.from(Array(20), (e, i) => i + 2019);
-  public selectedYear: number = moment().year();
 
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: false }) sort: MatSort;
