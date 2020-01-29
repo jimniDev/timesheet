@@ -210,17 +210,12 @@ public class EmployeeService {
 	@Transactional(readOnly = true)
 	public HashMap<Integer, Integer> getAllMonthlyBalancesByYear(String name, Integer year) {
 		HashMap<Integer, Integer> monthBalance = new HashMap<Integer, Integer>();
-		if (year == YearMonth.now().getYear()) {
-			for (int i = 1; i < YearMonth.now().getMonthValue() + 1; i++) {
-				monthBalance.put(i,
-						this.getWorkTimeMinutes(name, year, i) - this.getTargetWorkTimeMinutes(name, year, i));
-			}
-		} else {
 			for (int i = 1; i < 13; i++) {
-				monthBalance.put(i,
-						this.getWorkTimeMinutes(name, year, i) - this.getTargetWorkTimeMinutes(name, year, i));
+				if (this.getWorkTimeMinutes(name, year, i) != 0) {
+					monthBalance.put(i,
+							this.getWorkTimeMinutes(name, year, i) - this.getTargetWorkTimeMinutes(name, year, i));
+				}
 			}
-		}
 		return monthBalance;
 	}
 

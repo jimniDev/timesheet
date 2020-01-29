@@ -23,6 +23,7 @@ export class PersonalDetailsComponent implements OnInit {
 
   ngOnInit() {
     this.loadBalanceTable(this.selectedYear);
+    this.yearForm.patchValue({ yearSelect: moment().year() });
     this.yearForm.get('yearSelect').valueChanges.subscribe(value => {
       this.onChangeYear(value);
     });
