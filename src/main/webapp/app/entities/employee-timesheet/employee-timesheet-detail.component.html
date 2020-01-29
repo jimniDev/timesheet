@@ -102,7 +102,7 @@
                 <form [formGroup]="yearForm">
                     <mat-form-field fxFlex="auto">
                         <mat-label>Year</mat-label>
-                        <mat-select [(value)]="selectedYear" formControlName="yearSelect">
+                        <mat-select formControlName="yearSelect">
                             <mat-option *ngFor="let year of years" [value]="year">
                                 {{year}}
                             </mat-option>
