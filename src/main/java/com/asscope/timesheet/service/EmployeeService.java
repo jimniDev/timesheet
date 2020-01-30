@@ -6,7 +6,6 @@ import com.asscope.timesheet.domain.WeeklyWorkingHours;
 import com.asscope.timesheet.repository.EmployeeRepository;
 import com.asscope.timesheet.repository.UserRepository;
 import com.asscope.timesheet.repository.WeeklyWorkingHoursRepository;
-import com.asscope.timesheet.repository.WorkDayRepository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
