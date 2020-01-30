@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URISyntaxException;
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -46,9 +47,11 @@ public class EmployeeResource {
      * {@code PUT  /employees} : Updates an existing employee.
      *
      * @param employee the employee to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated employee,
-     * or with status {@code 400 (Bad Request)} if the employee is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the employee couldn't be updated.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body
+     *         the updated employee, or with status {@code 400 (Bad Request)} if the
+     *         employee is not valid, or with status
+     *         {@code 500 (Internal Server Error)} if the employee couldn't be
+     *         updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
@@ -59,16 +62,17 @@ public class EmployeeResource {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         Employee result = employeeService.save(employee);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, employee.getId().toString()))
-            .body(result);
+        return ResponseEntity.ok().headers(
+                HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, employee.getId().toString()))
+                .body(result);
     }
 
     /**
      * {@code GET  /employees} : get all the employees.
      *
      * @param criteria the criteria which the requested entities should match.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of employees in body.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list
+     *         of employees in body.
      */
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     @GetMapping("/employees")
@@ -77,23 +81,24 @@ public class EmployeeResource {
         List<Employee> entityList = employeeService.findAll();
         return ResponseEntity.ok().body(entityList.stream().map(e -> mapToDto(e)).collect(Collectors.toList()));
     }
-    
+
     private EmployeeDTO mapToDto(Employee employee) {
-    	EmployeeDTO eDTO = new EmployeeDTO();
-    	eDTO.setUser(employee.getUser());
-    	eDTO.setId(employee.getId());
-    	eDTO.setEditPermitted(employee.isEditPermitted());
-    	eDTO.setOffice(employee.getOffice());
-    	eDTO.setWeeklyWorkingHours(employee.getWeeklyWorkingHours());
-    	eDTO.setBalance(employeeService.currentWorktimeBalance(employee.getUser().getId()));
-    	return eDTO;
+        EmployeeDTO eDTO = new EmployeeDTO();
+        eDTO.setUser(employee.getUser());
+        eDTO.setId(employee.getId());
+        eDTO.setEditPermitted(employee.isEditPermitted());
+        eDTO.setOffice(employee.getOffice());
+        eDTO.setWeeklyWorkingHours(employee.getWeeklyWorkingHours());
+        eDTO.setBalance(employeeService.currentWorktimeBalance(employee.getUser().getId()));
+        return eDTO;
     }
 
     /**
      * {@code GET  /employees/:id} : get the "id" employee.
      *
      * @param id the id of the employee to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the employee, or with status {@code 404 (Not Found)}.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body
+     *         the employee, or with status {@code 404 (Not Found)}.
      */
     @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
     @GetMapping("/employees/{id}")
@@ -102,59 +107,88 @@ public class EmployeeResource {
         Optional<Employee> employee = employeeService.findOne(id);
         return ResponseUtil.wrapOrNotFound(employee);
     }
-    
+
     @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
-    @GetMapping({"/employees/me/target-work-time/{year}/{month}"})
-    public ResponseEntity<Integer> getTargetWorktimeInformation(Principal principal, @PathVariable("year") Integer year, @PathVariable("month") Integer month) {
-    	log.debug("REST request to get worktimeInformation for Employee : {}", principal.getName());
-    	return ResponseEntity.ok().body(employeeService.getTargetWorkTimeMinutes(principal.getName(), year, month));
+    @GetMapping("/employees/me/target-work-time/{year}/{month}")
+    public ResponseEntity<Integer> getTargetWorktimeInformation(Principal principal, @PathVariable("year") Integer year,
+            @PathVariable("month") Integer month) {
+        log.debug("REST request to get worktimeInformation for Employee : {}", principal.getName());
+        return ResponseEntity.ok().body(employeeService.getTargetWorkTimeMinutes(principal.getName(), year, month));
     }
-    
+
     @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
-    @GetMapping({"/employees/me/work-time/{year}/{month}"})
-    public ResponseEntity<Integer> getWorktimeInformation(Principal principal, @PathVariable("year") Integer year, @PathVariable("month") Integer month) {
-    	log.debug("REST request to get worktime in minutes for Employee : {}", principal.getName());
-    	return ResponseEntity.ok().body(employeeService.getWorkTimeMinutes(principal.getName(), year, month));
+    @GetMapping("/employees/me/work-time/{year}/{month}")
+    public ResponseEntity<Integer> getWorktimeInformation(Principal principal, @PathVariable("year") Integer year,
+            @PathVariable("month") Integer month) {
+        log.debug("REST request to get worktime in minutes for Employee : {}", principal.getName());
+        return ResponseEntity.ok().body(employeeService.getWorkTimeMinutes(principal.getName(), year, month));
     }
-    
+
     @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
-    @GetMapping({"/employees/me/target-work-time/{year}/{month}/{day}"})
-    public ResponseEntity<Integer> getTargetWorktimeInformation(Principal principal, @PathVariable("year") Integer year, @PathVariable("month") Integer month, @PathVariable("day") Integer day) {
-    	log.debug("REST request to get worktimeInformation for Employee : {}", principal.getName());
-    	return ResponseEntity.ok().body(employeeService.targetWorkTimeMinutes(principal.getName(), year, month, day));
+    @GetMapping("/employees/me/target-work-time/{year}/{month}/{day}")
+    public ResponseEntity<Integer> getTargetWorktimeInformation(Principal principal, @PathVariable("year") Integer year,
+            @PathVariable("month") Integer month, @PathVariable("day") Integer day) {
+        log.debug("REST request to get worktimeInformation for Employee : {}", principal.getName());
+        return ResponseEntity.ok().body(employeeService.targetWorkTimeMinutes(principal.getName(), year, month, day));
     }
-    
+
     @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
     @GetMapping("/employees/me/target-work-time/{year}/iso-week/{isoWeek}")
-    public ResponseEntity<Integer> getTargetWorktimeInformation(Principal principal, @PathVariable("year") int year, @PathVariable("isoWeek") int isoWeek) {
-    	log.debug("REST request to get weekly worktimeInformation for Employee : {}", principal.getName());
-    	return ResponseEntity.ok().body(employeeService.weeklyTargetWorktimeMinutes(principal.getName(), year, isoWeek));
+    public ResponseEntity<Integer> getTargetWorktimeInformation(Principal principal, @PathVariable("year") int year,
+            @PathVariable("isoWeek") int isoWeek) {
+        log.debug("REST request to get weekly worktimeInformation for Employee : {}", principal.getName());
+        return ResponseEntity.ok()
+                .body(employeeService.weeklyTargetWorktimeMinutes(principal.getName(), year, isoWeek));
     }
-    
+
     @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
     @GetMapping("/employees/me/work-time/{year}/iso-week/{isoWeek}")
-    public ResponseEntity<Integer> getWorktimeInformation(Principal principal, @PathVariable("year") int year, @PathVariable("isoWeek") int isoWeek) {
-    	log.debug("REST request to get weekly worktimeInformation for Employee : {}", principal.getName());
-    	return ResponseEntity.ok().body(employeeService.weeklyWorkTimeMinutes(principal.getName(), year, isoWeek));
+    public ResponseEntity<Integer> getWorktimeInformation(Principal principal, @PathVariable("year") int year,
+            @PathVariable("isoWeek") int isoWeek) {
+        log.debug("REST request to get weekly worktimeInformation for Employee : {}", principal.getName());
+        return ResponseEntity.ok().body(employeeService.weeklyWorkTimeMinutes(principal.getName(), year, isoWeek));
     }
-    
+
     @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
     @GetMapping("/employees/me/work-time/balance")
     public ResponseEntity<Integer> currentBalance(Principal principal) {
-    	log.debug("REST request to get current worktime balance for employee : {}", principal.getName());
-    	return ResponseEntity.ok().body(employeeService.currentWorktimeBalance(principal.getName()));
+        log.debug("REST request to get current worktime balance for employee : {}", principal.getName());
+        return ResponseEntity.ok().body(employeeService.currentWorktimeBalance(principal.getName()));
     }
-    
+
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     @GetMapping("/employees/{id}/work-time/balance")
     public ResponseEntity<Integer> currentBalance(@PathVariable long id) {
-    	log.debug("REST request to get current worktime balance for employee : {}", id);
-    	Optional<Employee> employee = employeeService.findOne(id);
-    	if (employee.isPresent()) {
-        	return ResponseEntity.ok().body(employeeService.currentWorktimeBalance(employee.get().getUser().getId()));
-    	} else {
-    		return ResponseEntity.notFound().build();
-    	}
+        log.debug("REST request to get current worktime balance for employee : {}", id);
+        Optional<Employee> employee = employeeService.findOne(id);
+        if (employee.isPresent()) {
+            return ResponseEntity.ok().body(employeeService.currentWorktimeBalance(employee.get().getUser().getId()));
+        } else {
+            return ResponseEntity.notFound().build();
+        }
 
     }
+
+    @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
+    @GetMapping("/employees/me/work-time/balance/{year}")
+    public ResponseEntity<HashMap<Integer, Integer>> monthlyBalanceByYear(Principal principal,
+            @PathVariable("year") Integer year) {
+        log.debug("REST request to get monthly worktime balances by year for employee  : {}", principal.getName());
+        return ResponseEntity.ok().body(employeeService.getAllMonthlyBalancesByYear(principal.getName(), year));
+    }
+
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
+    @GetMapping("/employees/{id}/work-time/balance/{year}")
+    public ResponseEntity<HashMap<Integer, Integer>> monthlyBalanceByYear(@PathVariable long id,
+            @PathVariable("year") Integer year) {
+        log.debug("REST request to get monthly worktime balances by year for employee : {}", id);
+        Optional<Employee> employee = employeeService.findOne(id);
+        if (employee.isPresent()) {
+            return ResponseEntity.ok()
+                    .body(employeeService.getAllMonthlyBalancesByYear(employee.get().getUser().getId(), year));
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 }

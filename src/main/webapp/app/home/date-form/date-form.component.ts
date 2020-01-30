@@ -135,6 +135,8 @@ export class DateFormComponent implements OnInit {
         res => {
           if (res.ok) {
             this.timeForm.patchValue({ addBreakControl: res.body });
+          } else {
+            this.timeForm.patchValue({ addBreakControl: '' });
           }
         },
         err => {
@@ -203,6 +205,12 @@ export class DateFormComponent implements OnInit {
             if (err.error.errorKey === 'overlappingtime') {
               // then show the snackbar.
               this._snackBar.open('Time Entry is overlapped', 'Close', {
+                duration: 5000
+              });
+            }
+            if (err.error.errorKey === 'olderthan1month') {
+              // then show the snackbar.
+              this._snackBar.open('Time Entry is older than 1month', 'Close', {
                 duration: 5000
               });
             }

@@ -10,7 +10,9 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { WeeklyWorkingHoursTimesheetService } from '../weekly-working-hours-timesheet';
 import { EmployeeTimesheetEditComponent } from './employee-timesheet-edit-component/employee-timesheet-edit-component';
-import { EmployeeTimesheetService } from './employee-timesheet.service';
+import { EmployeeTimesheetService, IBalanceHash } from './employee-timesheet.service';
+import { FormControl, FormGroup } from '@angular/forms';
+import * as moment from 'moment';
 
 @Component({
   selector: 'jhi-employee-timesheet-detail',
@@ -18,16 +20,24 @@ import { EmployeeTimesheetService } from './employee-timesheet.service';
   styleUrls: ['./employee-timesheet-detail.component.scss']
 })
 export class EmployeeTimesheetDetailComponent implements OnInit {
+  public selectedYear: number = moment().year();
   public employee: EmployeeTimesheet;
   public employeeWeekly = new MatTableDataSource<IWeeklyWorkingHoursTimesheet>();
   public employeeOverviewWeek: IWeeklyWorkingHoursTimesheet[];
   public editPermit: boolean;
   public editPermitString: string;
   public office: string;
+  public monthlyBalanceSource = new MatTableDataSource<IBalanceHash>();
+  public yearlyBalance = 0;
+  public years = Array.from(Array(20), (e, i) => i + 2019);
 
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: false }) sort: MatSort;
   @ViewChild(MatTable, { static: false }) table: MatTable<any>;
+
+  yearForm = new FormGroup({
+    yearSelect: new FormControl(this.selectedYear)
+  });
 
   constructor(
     protected activatedRoute: ActivatedRoute,
@@ -50,6 +60,50 @@ export class EmployeeTimesheetDetailComponent implements OnInit {
         this.editPermitString = 'blocked';
       }
     });
+    this.loadBalanceTable(this.selectedYear);
+    this.yearForm.patchValue({ yearSelect: moment().year() });
+    this.yearForm.get('yearSelect').valueChanges.subscribe(value => {
+      this.onChangeYear(value);
+    });
+  }
+
+  onChangeYear(year) {
+    if (year) {
+      this.selectedYear = year;
+      this.loadBalanceTable(this.selectedYear);
+    }
+  }
+
+  loadBalanceTable(year) {
+    this.yearlyBalance = 0;
+    this.employeeService.balanceByYear(year).subscribe(res => {
+      if (res) {
+        const balanceArr = Object.keys(res.body).map(key => ({ month: key, balance: res.body[key] }));
+        console.log(balanceArr);
+        this.monthlyBalanceSource.data = balanceArr;
+        balanceArr.forEach(data => (this.yearlyBalance += data.balance));
+      }
+    });
+  }
+
+  pad(num: number, size: number): string {
+    let s = num + '';
+    while (s.length < size) {
+      s = '0' + s;
+    }
+    return s;
+  }
+
+  minutesToHHMM(mins: number): string {
+    if (mins >= 0) {
+      const hour = Math.floor(mins / 60);
+      const min = Math.floor(mins % 60);
+      return this.pad(hour, 2) + 'h ' + this.pad(min, 2) + 'm';
+    } else {
+      const hour = Math.ceil(mins / 60);
+      const min = Math.ceil(mins % 60);
+      return '-' + this.pad(Math.abs(hour), 2) + 'h ' + this.pad(Math.abs(min), 2) + 'm';
+    }
   }
 
   officeChange() {
