@@ -76,7 +76,7 @@ export class EmployeeTimesheetDetailComponent implements OnInit {
 
   loadBalanceTable(year) {
     this.yearlyBalance = 0;
-    this.employeeService.balanceByYear(year).subscribe(res => {
+    this.employeeService.balanceByEmployeeAndYear(this.employee.id, year).subscribe(res => {
       if (res) {
         const balanceArr = Object.keys(res.body).map(key => ({ month: key, balance: res.body[key] }));
         console.log(balanceArr);
