@@ -211,7 +211,7 @@ public class EmployeeService {
 	public HashMap<Integer, Integer> getAllMonthlyBalancesByYear(String name, Integer year) {
 		HashMap<Integer, Integer> monthBalance = new HashMap<Integer, Integer>();
 			for (int i = 1; i < 13; i++) {
-				if (this.getWorkTimeMinutes(name, year, i) != 0) {
+				if (this.getTargetWorkTimeMinutes(name, year, i) != 0) {
 					monthBalance.put(i,
 							this.getWorkTimeMinutes(name, year, i) - this.getTargetWorkTimeMinutes(name, year, i));
 				}
