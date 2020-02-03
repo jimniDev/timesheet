@@ -194,6 +194,8 @@ public class UserService {
      			   // if there is no employee mapped to the user, create a new employee.
      			   Employee employee = new Employee();
      			   employee.setUser(user);
+     			   employee.setOffice("FFM");
+     			   employee.setEditPermitted(false);
      			   employeeRepository.save(employee);
      		   });
     }
