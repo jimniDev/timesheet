@@ -1,5 +1,140 @@
-# timesheet
-This project was aimed to create new software service to track the working time of AS Scope employees.
+# 🕓Timesheet
+
+## Introduction
+
+- Mobile Web App service to track the working time of AS Scope employees
+
+- `Timesheet` 은 직원들의 근무 시간을 실시간으로 추적하고 기록하는 근무시간관리 웹서비스로, 사용자가 간편하게 2번의 클릭만으로 근무시간을 기록할 수 있게 만든 반응형 웹 어플리케이션입니다.
+
+### Role
+
+- Frontend 담당(80%) + 디자인
+- 전체 프론트엔드를 웹버전, 모바일 버전 반응형으로 Angular로 구현하였습니다.
+- 프로젝트 중간에 추가되는 기능들의 API 개발도 수행하였습니다 (10%)
+
+## Skills
+
+- Java (Spring)
+- Angular
+- JHipster
+- MSSQL
+- Microsoft Azure
+
+## Function
+
+### 🕑 근무시간 기록
+
+- 실시간 출근, 퇴근 기록
+- 출퇴근 기록 생성, 수정, 삭제
+- 휴가 생성, 관리
+- 근무시간, 잔여근무시간 조회
+  외 ...
+
+### 💾 파일 저장
+
+- 근무기록표 PDF 저장
+
+## Structure (FE)
+
+    📦app
+    ┣ 📂admin
+    ┃ ┣ 📂activity-config
+    ┃ ┃ ┣ 📂activity-creation-dialog
+    ┃ ┃ ┣ 📂activity-edit-dialog
+    ┃ ┃ ┣ 📂activity-role-mapping-dialog
+    ┃ ┃ ┣ 📂activity-table
+    ┃ ┃ ┣ 📂role-creation-dialog
+    ┃ ┃ ┣ 📂role-edit-dialog
+    ┃ ┃ ┣ 📂role-table
+    ┃ ┃ ┣ 📜activity-config.component.html
+    ┃ ┃ ┣ 📜activity-config.component.scss
+    ┃ ┃ ┣ 📜activity-config.component.ts
+    ┃ ┃ ┗ 📜activity-config.route.ts
+    ┃ ┣ 📂employee-overview
+    ┃ ┣ 📜admin.module.ts
+    ┃ ┣ 📜admin.route.ts
+    ┃ ┗ 📜index.ts
+    ┣ 📂as-layouts
+    ┃ ┣ 📂as-grid
+    ┃ ┣ 📂as-interactive
+    ┃ ┣ 📂as-main
+    ┃ ┣ 📂as-main-card
+    ┃ ┣ 📂as-navbar
+    ┃ ┣ 📂as-table
+    ┃ ┣ 📂as-time-input
+    ┃ ┗ 📜as-layouts.module.ts
+    ┣ 📂blocks
+    ┃ ┣ 📂config
+    ┃ ┗ 📂interceptor
+    ┣ 📂core
+    ┃ ┣ 📂auth
+    ┃ ┣ 📂login
+    ┃ ┃ ┗ 📜login.service.ts
+    ┃ ┣ 📂user
+    ┃ ┣ 📜core.module.ts
+    ┃ ┗ 📜index.ts
+    ┣ 📂entities
+    ┃ ┣ 📂activity-timesheet
+    ┃ ┃ ┣ 📜activity-timesheet.service.ts
+    ┃ ┃ ┗ 📜index.ts
+    ┃ ┣ 📂employee-timesheet
+    ┃ ┃ ┗ 📜index.ts
+    ┃ ┣ 📂role-timesheet
+    ┃ ┣ 📂weekly-working-hours-timesheet
+    ┃ ┣ 📂work-day-timesheet
+    ┃ ┣ 📂working-entry-timesheet
+    ┃ ┗ 📜entity.module.ts
+    ┣ 📂home
+    ┃ ┣ 📂date-form
+    ┃ ┣ 📂start-stop-dialog
+    ┃ ┣ 📂timetable
+    ┃ ┣ 📂timetable-delete-dialog
+    ┃ ┣ 📂timetable-edit-dialog
+    ┃ ┣ 📂year-month-select
+    ┃ ┣ 📂year-week-select
+    ┃ ┣ 📜home.component.html
+    ┃ ┣ 📜home.component.ts
+    ┃ ┣ 📜home.module.ts
+    ┃ ┣ 📜home.route.ts
+    ┃ ┣ 📜home.scss
+    ┃ ┣ 📜index.ts
+    ┃ ┗ 📜two-digits.directive.ts
+    ┣ 📂layouts
+    ┃ ┣ 📂error
+    ┃ ┣ 📂main
+    ┃ ┗ 📜index.ts
+    ┣ 📂personal-details
+    ┣ 📂shared
+    ┃ ┣ 📂auth
+    ┃ ┃ ┗ 📜has-any-authority.directive.ts
+    ┃ ┣ 📂constants
+    ┃ ┃ ┣ 📜error.constants.ts
+    ┃ ┃ ┣ 📜input.constants.ts
+    ┃ ┃ ┗ 📜pagination.constants.ts
+    ┃ ┣ 📂language
+    ┃ ┃ ┗ 📜find-language-from-key.pipe.ts
+    ┃ ┣ 📂model
+    ┃ ┃ ┣ 📜activity-timesheet.model.ts
+    ┃ ┃ ┣ 📜employee-timesheet.model.ts
+    ┃ ┃ ┣ 📜role-timesheet.model.ts
+    ┃ ┃ ┣ 📜weekly-working-hours-timesheet.model.ts
+    ┃ ┃ ┣ 📜work-day-timesheet.model.ts
+    ┃ ┃ ┗ 📜working-entry-timesheet.model.ts
+    ┃ ┣ 📂pdf
+    ┃ ┣ 📂util
+    ┃ ┣ 📜index.ts
+    ┃ ┣ 📜shared-common.module.ts
+    ┃ ┣ 📜shared-libs.module.ts
+    ┃ ┗ 📜shared.module.ts
+    ┣ 📜app-routing.module.ts
+    ┣ 📜app.constants.ts
+    ┣ 📜app.main.ts
+    ┣ 📜app.module.ts
+    ┣ 📜polyfills.ts
+    ┣ 📜timesheet_tree.txt
+    ┗ 📜vendor.ts
+
+## Running
 
 This application was generated using JHipster 6.1.2, you can find documentation and help at [https://www.jhipster.tech/documentation-archive/v6.1.2](https://www.jhipster.tech/documentation-archive/v6.1.2).
 
