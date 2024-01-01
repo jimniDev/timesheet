@@ -3,10 +3,14 @@
 ## Introduction
 
 - Mobile Web App service to track the working time of AS Scope employees
-
+- `Timesheet` is a responsive web application that tracks and records employees' working hours in real-time. It allows users to effortlessly record working hours with just two clicks.
 - `Timesheet` 은 직원들의 근무 시간을 실시간으로 추적하고 기록하는 근무시간관리 웹서비스로, 사용자가 간편하게 2번의 클릭만으로 근무시간을 기록할 수 있게 만든 반응형 웹 어플리케이션입니다.
 
 ### Role
+
+- Frontend Developer (80%) + Design
+- Implemented the entire frontend as a responsive web and mobile application using Angular.
+- Also involved in the development of additional functionalities' APIs during the project (10%).
 
 - Frontend 담당(80%) + 디자인
 - 전체 프론트엔드를 웹버전, 모바일 버전 반응형으로 Angular로 구현하였습니다.
@@ -22,16 +26,23 @@
 
 ## Function
 
-### 🕑 근무시간 기록
+### 🕑  Recording Working Hours (근무시간 기록)
 
+- Real-time check-in and check-out recording
+- Creation, modification, and deletion of check-in and check-out records
+- Vacation creation and management
+- Inquiry of working hours and remaining working hours
+- and more...
+  
 - 실시간 출근, 퇴근 기록
 - 출퇴근 기록 생성, 수정, 삭제
 - 휴가 생성, 관리
 - 근무시간, 잔여근무시간 조회
   외 ...
 
-### 💾 파일 저장
+### 💾  Data to File Export (파일 저장)
 
+- Saving working hour records as PDF- 
 - 근무기록표 PDF 저장
 
 ## Structure (FE)
